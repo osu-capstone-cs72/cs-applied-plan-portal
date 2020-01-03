@@ -1,1 +1,1 @@
-console.log("Client JavaScript start.");
+console.log("JavaScript start");
