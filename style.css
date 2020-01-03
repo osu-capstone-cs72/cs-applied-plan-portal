@@ -1,0 +1,25 @@
+/* Basic CSS for test plan submission form */
+
+/* Page header box */
+header {
+  color: #ffffff;
+  background-color: black;
+  padding: 15px;
+}
+
+/* User submission section */
+#user-submit {
+    padding: 25px;
+    display: inline-block;
+}
+
+/* Course fields section */
+#plan-fields {
+    padding: 25px;
+}
+
+/* Submit button */
+#submit-button {
+    padding: 10px 20px;
+    margin: 10px;
+}
