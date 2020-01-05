@@ -4,12 +4,13 @@ console.log("JavaScript start");
 var submitButton = document.getElementById('submit-button');
 
 // define variables for the input text values
-var userId, course1, course2, course3, course4, course5, course6, course7,
-course8, course9, course10, course11, course12 = "";
+var userId, planName, course1, course2, course3, course4, course5, course6, course7,
+course8, course9, course10, course11 = "";
 
 // assign all of the input values to variables
 function getInputs() {
     userId = document.getElementById('user-id').value;
+    planName = document.getElementById('plan-name').value;
     course1 = document.getElementById('course-1').value;
     course2 = document.getElementById('course-2').value;
     course3 = document.getElementById('course-3').value;
@@ -30,8 +31,8 @@ function clearInputs() {
 }
 
 // submit the users plan
-function submitPlan(userId, course1, course2, course3, course4, course5,
-    course6, course7, course8, course9, course10, course11, course12) {
+function submitPlan(userId, planName, course1, course2, course3, course4,
+    course5, course6, course7, course8, course9, course10, course11, course12) {
 
     var postRequest = new XMLHttpRequest();
     var postURL = "/appliedplanportal/form";
@@ -39,6 +40,7 @@ function submitPlan(userId, course1, course2, course3, course4, course5,
 
     var postObj = {
         userId: userId,
+        planName: planName,
         course1: course1,
         course2: course2,
         course3: course3,
@@ -60,21 +62,20 @@ function submitPlan(userId, course1, course2, course3, course4, course5,
         if (event.target.status !== 200) {
             alert("Error storing plan in database:\n" + event.target.response);
         } else {
-            console.log("Plan submitted.");
+            console.log("Plan submitted");
         }
     });
 
     postRequest.send(requestBody);
     console.log("postRequest:", requestBody);
-    alert("Request:\n" + requestBody);
 }
 
 // user clicks on the "Submit Plan" button
 submitButton.addEventListener("click", function(e) {
-    console.log("Submit button pressed.");
+    console.log("Submit button pressed");
     getInputs();
-    submitPlan(userId, course1, course2, course3, course4, course5, course6,
-        course7, course8, course9, course10, course11, course12);
+    submitPlan(userId, planName, course1, course2, course3, course4, course5,
+        course6, course7, course8, course9, course10, course11, course12);
     clearInputs();
 });
 

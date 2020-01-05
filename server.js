@@ -37,29 +37,53 @@ app.use(bodyParser.json());
 // submit the user's plan to the database
 app.post('/appliedplanportal/form', function (req, res, next) {
 
-    con.query('select firstName, lastName from User', function (err, result, fields) {
+    // define the form data as variables
+    var userId = req.body.userId;
+    var planName = req.body.planName;
+    let courses = [req.body.course1, req.body.course2, req.body.course3,
+        req.body.course4, req.body.course5, req.body.course6, req.body.course7,
+        req.body.course8, req.body.course9, req.body.course10,
+        req.body.course11, req.body.course12];
+
+    // insert the student id and plan name into the Plan table
+    var sql = 'INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);'
+    con.query(sql, [userId, planName], function (err, result, fields) {
         if (err) {
             res.status(500).send("Error saving plan");
             throw err;
         } else {
-            res.status(200).send("Plan saved");
-            console.log(result);
+
+            // get the plan ID
+            var planId = result.insertId;
+            console.log("Inserted plan", planId);
+
+            // insert the selected coures into the SelectedCourse table
+            sql = 'INSERT INTO SelectedCourse (planId, courseId) VALUES (?, (SELECT courseId FROM Course WHERE courseCode=?));'
+
+            // insert each course one at a time
+            for (i = 0; i < courses.length && courses[i] != ""; i++) {
+                con.query(sql, [planId, courses[i]], function (err, result, fields) {
+                    if (err) {
+                        res.status(500).send("Error saving course")
+                        throw err;
+                    } else {
+                        console.log("Inserted course into plan", planId);
+                        //res.status(200).send("Plan saved");
+                    }
+                });
+            }
+
         }
     });
 
 });
 
+// statically serve files from the public directory
 app.use(express.static('public'));
-
-// user has requested the homepage
-app.get('/', function (req, res, next) {
-    console.log("Homepage")
-});
 
 // everything else gets a 404 error
 app.get('*', function (req, res, next) {
-    res.status(404).send;
-    console.log("404");
+    res.status(404).send("Not found");
 });
 
 // listen on the current port

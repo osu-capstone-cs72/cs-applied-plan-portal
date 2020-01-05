@@ -1,22 +1,25 @@
 -- phpMyAdmin SQL Dump
--- version 2.11.9.4
--- http://www.phpmyadmin.net
+-- version 4.7.1
+-- https://www.phpmyadmin.net/
 --
--- Host: oniddb
--- Generation Time: Jan 03, 2020 at 02:13 PM
--- Server version: 5.5.62
--- PHP Version: 5.2.6-1+lenny16
+-- Host: sql3.freesqldatabase.com
+-- Generation Time: Jan 05, 2020 at 05:53 PM
+-- Server version: 5.5.54-0ubuntu0.12.04.1
+-- PHP Version: 7.0.33-0ubuntu0.16.04.3
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `thomasza-db`
+-- Database: `sql3317654`
 --
 
 -- --------------------------------------------------------
@@ -25,21 +28,13 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `Comment`
 --
 
-CREATE TABLE IF NOT EXISTS `Comment` (
-  `commentId` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Comment` (
+  `commentId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `time` time NOT NULL,
-  `text` varchar(100) NOT NULL,
-  PRIMARY KEY (`commentId`),
-  KEY `fk_planIdComment` (`planId`),
-  KEY `fk_userId` (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `Comment`
---
-
+  `text` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -47,15 +42,14 @@ CREATE TABLE IF NOT EXISTS `Comment` (
 -- Table structure for table `Course`
 --
 
-CREATE TABLE IF NOT EXISTS `Course` (
-  `courseId` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Course` (
+  `courseId` int(11) NOT NULL,
   `credits` int(11) NOT NULL,
   `courseName` varchar(100) NOT NULL,
   `courseCode` varchar(8) NOT NULL,
   `courseUrl` varchar(300) NOT NULL,
-  `restriction` int(11) NOT NULL,
-  PRIMARY KEY (`courseId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+  `restriction` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Course`
@@ -94,20 +88,13 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `course
 -- Table structure for table `Plan`
 --
 
-CREATE TABLE IF NOT EXISTS `Plan` (
-  `planId` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Plan` (
+  `planId` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `planName` varchar(50) NOT NULL,
   `studentId` int(11) NOT NULL,
-  `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`planId`),
-  KEY `fk_studentId` (`studentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `Plan`
---
-
+  `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -115,17 +102,10 @@ CREATE TABLE IF NOT EXISTS `Plan` (
 -- Table structure for table `PlanReview`
 --
 
-CREATE TABLE IF NOT EXISTS `PlanReview` (
+CREATE TABLE `PlanReview` (
   `planId` int(11) NOT NULL,
-  `advisorId` int(11) NOT NULL,
-  PRIMARY KEY (`planId`,`advisorId`),
-  KEY `fk_advisorId` (`advisorId`)
+  `advisorId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `PlanReview`
---
-
 
 -- --------------------------------------------------------
 
@@ -133,17 +113,10 @@ CREATE TABLE IF NOT EXISTS `PlanReview` (
 -- Table structure for table `SelectedCourse`
 --
 
-CREATE TABLE IF NOT EXISTS `SelectedCourse` (
+CREATE TABLE `SelectedCourse` (
   `planId` int(11) NOT NULL,
-  `courseId` int(11) NOT NULL,
-  PRIMARY KEY (`planId`,`courseId`),
-  KEY `fk_courseId` (`courseId`)
+  `courseId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `SelectedCourse`
---
-
 
 -- --------------------------------------------------------
 
@@ -151,14 +124,13 @@ CREATE TABLE IF NOT EXISTS `SelectedCourse` (
 -- Table structure for table `User`
 --
 
-CREATE TABLE IF NOT EXISTS `User` (
-  `userId` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `User` (
+  `userId` int(11) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `role` int(11) NOT NULL,
-  PRIMARY KEY (`userId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+  `role` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `User`
@@ -181,6 +153,76 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (14, 'R2', 'D2', 'artoo@gmail.com', 0),
 (15, 'C', '3PO', 'human_cyborg_relations@aol.com', 0);
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Comment`
+--
+ALTER TABLE `Comment`
+  ADD PRIMARY KEY (`commentId`),
+  ADD KEY `fk_planIdComment` (`planId`),
+  ADD KEY `fk_userId` (`userId`);
+
+--
+-- Indexes for table `Course`
+--
+ALTER TABLE `Course`
+  ADD PRIMARY KEY (`courseId`),
+  ADD UNIQUE KEY `courseCode` (`courseCode`);
+
+--
+-- Indexes for table `Plan`
+--
+ALTER TABLE `Plan`
+  ADD PRIMARY KEY (`planId`),
+  ADD KEY `fk_studentId` (`studentId`);
+
+--
+-- Indexes for table `PlanReview`
+--
+ALTER TABLE `PlanReview`
+  ADD PRIMARY KEY (`planId`,`advisorId`),
+  ADD KEY `fk_advisorId` (`advisorId`);
+
+--
+-- Indexes for table `SelectedCourse`
+--
+ALTER TABLE `SelectedCourse`
+  ADD PRIMARY KEY (`planId`,`courseId`),
+  ADD KEY `fk_courseId` (`courseId`);
+
+--
+-- Indexes for table `User`
+--
+ALTER TABLE `User`
+  ADD PRIMARY KEY (`userId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Comment`
+--
+ALTER TABLE `Comment`
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `Course`
+--
+ALTER TABLE `Course`
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+--
+-- AUTO_INCREMENT for table `Plan`
+--
+ALTER TABLE `Plan`
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `User`
+--
+ALTER TABLE `User`
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- Constraints for dumped tables
 --
@@ -212,3 +254,8 @@ ALTER TABLE `PlanReview`
 ALTER TABLE `SelectedCourse`
   ADD CONSTRAINT `fk_courseId` FOREIGN KEY (`courseId`) REFERENCES `Course` (`courseId`),
   ADD CONSTRAINT `fk_planIdCourse` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
