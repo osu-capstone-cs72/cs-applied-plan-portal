@@ -7,7 +7,7 @@ var submitButton = document.getElementById('submit-button');
 var userId, planName, course1, course2, course3, course4, course5, course6, course7,
 course8, course9, course10, course11 = "";
 
-// assign all of the input values to variables
+// assign all of the form values to variables
 function getInputs() {
     userId = document.getElementById('user-id').value;
     planName = document.getElementById('plan-name').value;
@@ -78,6 +78,3 @@ submitButton.addEventListener("click", function(e) {
         course6, course7, course8, course9, course10, course11, course12);
     clearInputs();
 });
-
-// update select to include new options
-function updateSelect(newOptions) {}

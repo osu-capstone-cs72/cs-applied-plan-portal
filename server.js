@@ -9,14 +9,10 @@ var port = process.env.PORT || 3306;
 
 // create database connection using environment variables
 var con = mysql.createConnection({
-    //    host: process.env.SQL_HOST,
-    //    user: process.env.SQL_USER,
-    //    password: process.env.SQL_PASSWORD,
-    //    database: process.env.SQL_DB_NAME
-    host: "sql3.freesqldatabase.com",
-    user: "sql3317654",
-    password: "B5AVPkNRNz",
-    database: "sql3317654"
+    host: process.env.SQL_HOST,
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DB_NAME
 });
 
 // connect to the database
@@ -48,6 +44,7 @@ app.post('/appliedplanportal/form', function (req, res, next) {
     // insert the student id and plan name into the Plan table
     var sql = 'INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);'
     con.query(sql, [userId, planName], function (err, result, fields) {
+
         if (err) {
             res.status(500).send("Error saving plan");
             throw err;
@@ -57,23 +54,28 @@ app.post('/appliedplanportal/form', function (req, res, next) {
             var planId = result.insertId;
             console.log("Inserted plan", planId);
 
-            // insert the selected coures into the SelectedCourse table
+            // insert the selected course into the SelectedCourse table
             sql = 'INSERT INTO SelectedCourse (planId, courseId) VALUES (?, (SELECT courseId FROM Course WHERE courseCode=?));'
 
             // insert each course one at a time
             for (i = 0; i < courses.length && courses[i] != ""; i++) {
+
                 con.query(sql, [planId, courses[i]], function (err, result, fields) {
                     if (err) {
                         res.status(500).send("Error saving course")
                         throw err;
                     } else {
                         console.log("Inserted course into plan", planId);
-                        //res.status(200).send("Plan saved");
                     }
                 });
+
             }
 
+            // once all courses are added confirm that the plan was saved
+            res.status(200).send("Plan saved");
+
         }
+
     });
 
 });
