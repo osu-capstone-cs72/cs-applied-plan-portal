@@ -1,0 +1,29 @@
+{
+  "name": "cs-applied-plan-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "\u001b[D\u001b[D\u001b[D\u001bserver.js)",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal/issues"
+  },
+  "homepage": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal#readme"
+}
