@@ -1,4 +1,5 @@
 console.log("Server JavaScript start");
+var dotenv = require('dotenv').config();
 var bodyParser = require('body-parser');
 var express = require('express');
 var mysql = require('mysql');
@@ -18,8 +19,11 @@ var con = mysql.createConnection({
 // connect to the database
 con.connect(function (err) {
 
-    if (err) console.log(err);
-    console.log("Connected to database");
+    if (err) {
+        throw err;
+    } else {
+        console.log("Connected to database");
+    }
 
 });
 
