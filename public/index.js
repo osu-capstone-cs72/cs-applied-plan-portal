@@ -7,7 +7,7 @@ var submitButton = document.getElementById('submit-button');
 var userId, planName, course1, course2, course3, course4, course5, course6, course7,
 course8, course9, course10, course11 = "";
 
-// assign all of the form values to variables
+// assign all of the form text values to variables
 function getInputs() {
     userId = document.getElementById('user-id').value;
     planName = document.getElementById('plan-name').value;
@@ -25,7 +25,7 @@ function getInputs() {
     course12 = document.getElementById('course-12').value;
 }
 
-// clear all of the input fields for the form
+// clear all of the input text fields of the form
 function clearInputs() {
     document.getElementById('plan-form').reset();
 }
@@ -60,9 +60,10 @@ function submitPlan(userId, planName, course1, course2, course3, course4,
 
     postRequest.addEventListener('load', function (event) {
         if (event.target.status !== 200) {
-            alert("Error storing plan in database:\n" + event.target.response);
+            alert("Error submitting plan:\n" + event.target.response);
         } else {
-            console.log("Plan submitted");
+            alert("Plan submitted successfully.");
+            clearInputs();
         }
     });
 
@@ -76,5 +77,4 @@ submitButton.addEventListener("click", function(e) {
     getInputs();
     submitPlan(userId, planName, course1, course2, course3, course4, course5,
         course6, course7, course8, course9, course10, course11, course12);
-    clearInputs();
 });
