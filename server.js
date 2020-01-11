@@ -32,11 +32,11 @@ const mysqlPool = mysql.createPool({
 ///////////////////////////
 
 // takes an array of strings and makes them uppercase, free of white space,
-// and removes emtpy strings
+// and removes empty strings from the array
 function formatStringArray(stringArray) {
 
     return stringArray
-            .map(function(x){return x.toUpperCase().replace(/\s+/g, '')})
+            .map(function(string){return string.toUpperCase().replace(/\s+/g, '')})
             .filter(function(value, index, arr){return value != ""});
 
 }
@@ -47,55 +47,85 @@ function formatStringArray(stringArray) {
 
 // checks that the submitted form data does not violate any constraints
 // returns a value that can be used to identify which constraint was violated
-// async function enforceConstraints(userId, planName, courses) {
-//
-//     new Promise((resolve, reject) => {
-//         userConstraint();
-//     }).then(function()) {
-//         studentConstraint();
-//     }).then(function()) {
-//         courseConstraint();
-//     }).then(function()) {
-//         requiredCourseConstraint();
-//     }).then(function()) {
-//         creditConstraint();
-//     }).then(function()) {
-//         duplicateCourseConstraint();
-//     });
-// }
+function enforceConstraints(userId, courses) {
 
-// determines if the user exists
-// returns false if the constraint is violated
-function userConstraint() {
-    return true;
+    return userConstraint(userId, courses)
+        // .then(function() {
+        //     studentConstraint();
+        // })
+        // .then(function() {
+        //     courseConstraint();
+        // })
+        // .then(function() {
+        //     requiredCourseConstraint();
+        // })
+        // .then(function() {
+        //     creditConstraint();
+        // })
+        // .then(function() {
+        //     duplicateCourseConstraint();
+        // })
+        .then(function() {
+            console.log("Plan does not violate any constraints");
+            return 0;
+        })
+        .catch(function(constraintData) {
+            // see if the error was from a constraint violation
+            if(constraintData[3]) {
+                return constraintData[3];
+            } else {
+                throw Error(constraintData[2]);
+            }
+        });
+
 }
 
-// determines if the user is not a student
-// returns false if the constraint is violated
+// checks that the user exists
+function userConstraint(userId, courses, status) {
+
+    return new Promise((resolve, reject) => {
+
+        // insert the student id and plan name into the Plan table
+        var sql = 'SELECT * FROM User WHERE userId=?;'
+        mysqlPool.query(sql, userId, function (err, result, fields) {
+            if(err) {
+                console.log("Error checking user constraint");
+                reject([userId, courses, err, 0]);
+            } else {
+
+                // check if the user exists
+                if(!result.length) {
+                    reject([userId, courses, "", 1]);
+                }
+
+                resolve([0, courses, "", 0]);
+            }
+        });
+    });
+
+}
+
+// checks that the user is a student
 function studentConstraint() {
     return true;
 }
 
-// determines if any courses are invalid
-// returns false if the constraint is violated
+// checks that all courses are valid
 function courseConstraint() {
     return true;
 }
 
-// determines if less than 32 credits are selected
-// returns false if the constraint is violated
+// checks that at least 32 credits are selected
 function creditConstraint() {
     return true;
 }
 
-// determines if the same course is selected more than once
-// returns false if the constraint is violated
+// checks that no single course is selected more than once
 function duplicateCourseConstraint() {
     return true;
 }
 
-// determines if any of the courses are required courses
-// returns false if the constraint is violated
+// checks that no required courses are selected
 function requiredCourseConstraint() {
     return true;
 }
@@ -131,7 +161,7 @@ function insertPlan(userId, planName, courses) {
         var sql = 'INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);'
         mysqlPool.query(sql, [userId, planName], function (err, result, fields) {
             if(err) {
-                console.log("Error saving plan name and user ID");
+                console.log("Error saving plan");
                 reject([0, courses, err]);
             } else {
                 // get the new plan ID
@@ -214,46 +244,53 @@ app.post('/appliedplanportal/form', (req, res, next) => {
         req.body.course8, req.body.course9, req.body.course10,
         req.body.course11, req.body.course12]);
 
-    // only accept a plan if it does not violate any constraints
-    //enforceConstraints(userId, planName, courses);
-    switch(0) {
-        case 0:
-            console.log("Plan does not violate any constraints");
-            savePlan(userId, planName, courses)
-                .then(() => {
-                    console.log("Plan submitted - 200");
-                    res.status(200).send("Plan submitted.");
-                })
-                .catch(() => {
-                    console.log("An internal server error occurred - 500");
-                    res.status(500).send("An internal server error occurred. Please try again later.");
-                });
-            break;
-        case 1:
-            console.log("Constraint Violated: The user does not exist - 400");
-            res.status(400).send("Invalid user ID. Unable to submit plan.");
-            break;
-        case 2:
-            console.log("Constraint Violated: The user is not a student - 400");
-            res.status(400).send("Only students can submit plans.");
-            break;
-        case 3:
-            console.log("Constraint Violated: At least one course is invalid - 400");
-            res.status(400).send("At least one selected course is invalid.");
-            break;
-        case 4:
-            console.log("Constraint Violated: Less than 32 credits selected - 400");
-            res.status(400).send("Less than 32 credits selected.");
-            break;
-        case 5:
-            console.log("Constraint Violated: A course was selected more than once - 400");
-            res.status(400).send("A course was selected more than once.");
-            break;
-        case 6:
-            console.log("Constraint Violated: A required course was selected - 400");
-            res.status(400).send("A required course was selected.");
-            break;
-    }
+    // only save a plan if it does not violate any constraints
+    enforceConstraints(userId, courses)
+        .then(function(constraintViolation) {
+            switch(constraintViolation) {
+                case 0:
+                    savePlan(userId, planName, courses)
+                        .then(() => {
+                            console.log("Plan submitted - 200");
+                            res.status(200).send("Plan submitted.");
+                        })
+                        .catch(() => {
+                            console.log("An internal server error occurred - 500");
+                            res.status(500).send("An internal server error occurred. Please try again later.");
+                        });
+                    break;
+                case 1:
+                    console.log("Constraint Violated: The user does not exist - 400");
+                    res.status(400).send("Invalid user ID. Unable to submit plan.");
+                    break;
+                case 2:
+                    console.log("Constraint Violated: The user is not a student - 400");
+                    res.status(400).send("Only students can submit plans.");
+                    break;
+                case 3:
+                    console.log("Constraint Violated: At least one course is invalid - 400");
+                    res.status(400).send("At least one selected course is invalid.");
+                    break;
+                case 4:
+                    console.log("Constraint Violated: Less than 32 credits selected - 400");
+                    res.status(400).send("Less than 32 credits selected.");
+                    break;
+                case 5:
+                    console.log("Constraint Violated: A course was selected more than once - 400");
+                    res.status(400).send("A course was selected more than once.");
+                    break;
+                case 6:
+                    console.log("Constraint Violated: A required course was selected - 400");
+                    res.status(400).send("A required course was selected.");
+                    break;
+            }
+
+        })
+        .catch(() => {
+            console.log("An internal server error occurred - 500");
+            res.status(500).send("An internal server error occurred. Please try again later.");
+        });
+
 });
 
 // statically serve files from the public directory
