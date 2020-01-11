@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql3.freesqldatabase.com
--- Generation Time: Jan 05, 2020 at 05:53 PM
+-- Generation Time: Jan 11, 2020 at 08:32 PM
 -- Server version: 5.5.54-0ubuntu0.12.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.3
 
@@ -217,7 +217,7 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
 --
 -- AUTO_INCREMENT for table `User`
 --
@@ -252,8 +252,8 @@ ALTER TABLE `PlanReview`
 -- Constraints for table `SelectedCourse`
 --
 ALTER TABLE `SelectedCourse`
-  ADD CONSTRAINT `fk_courseId` FOREIGN KEY (`courseId`) REFERENCES `Course` (`courseId`),
-  ADD CONSTRAINT `fk_planIdCourse` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`);
+  ADD CONSTRAINT `fk_planIdCourse` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_courseId` FOREIGN KEY (`courseId`) REFERENCES `Course` (`courseId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
