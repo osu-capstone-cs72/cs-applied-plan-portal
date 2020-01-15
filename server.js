@@ -1,10 +1,8 @@
 console.log("Server JavaScript start");
-const dotenv = require('dotenv').config();
-const bodyParser = require('body-parser');
-const express = require('express');
-const mysql = require('mysql');
-const path = require('path');
-const fs = require('fs');
+require("dotenv").config();
+const bodyParser = require("body-parser");
+const express = require("express");
+const mysql = require("mysql");
 const app = express();
 
 // set the server information using enviorment variables
@@ -13,7 +11,7 @@ const mysqlPort = process.env.SQL_PORT || 3306;
 const mysqlHost = process.env.SQL_HOST;
 const mysqlUser = process.env.SQL_USER;
 const mysqlPassword = process.env.SQL_PASSWORD;
-const mysqlDatabase = process.env.SQL_DB_NAME
+const mysqlDatabase = process.env.SQL_DB_NAME;
 
 // create a MySQL resource pool
 const maxConnections = 10;
@@ -27,7 +25,7 @@ const mysqlPool = mysql.createPool({
 });
 
 ///////////////////////////
-////*General Functions*////
+// //*General Functions*////
 ///////////////////////////
 
 // takes an array of strings and makes them uppercase, free of white space,
@@ -35,13 +33,13 @@ const mysqlPool = mysql.createPool({
 function formatStringArray(stringArray) {
 
   return stringArray
-    .map(function(string){return string.toUpperCase().replace(/\s+/g, '')})
-    .filter(function(value, index, arr){return value != ""});
+    .map((string) => { return string.toUpperCase().replace(/\s+/g, ""); })
+    .filter((value) => { return value !== ""; });
 
 }
 
 //////////////////////////////
-////*Constraint Functions*////
+// //*Constraint Functions*////
 //////////////////////////////
 
 // checks that the submitted form data does not violate any constraints
@@ -64,41 +62,40 @@ function enforceConstraints(userId, courses) {
     // .then(function() {
     //     duplicateCourseConstraint();
     // })
-    .then(function() {
+    .then(() => {
       console.log("Plan does not violate any constraints");
       return 0;
     })
-    .catch(function(constraintData) {
+    .catch((constraintData) => {
       // see if the error was from a constraint violation
-      if(constraintData[3]) {
+      if (constraintData[3])
         return constraintData[3];
-      } else {
+      else
         throw Error(constraintData[2]);
-      }
+
     });
 
 }
 
 // checks that the user exists
-function userConstraint(userId, courses, status) {
+function userConstraint(userId, courses) {
 
   return new Promise((resolve, reject) => {
 
     // insert the student id and plan name into the Plan table
-    const sql = 'SELECT * FROM User WHERE userId=?;'
-    mysqlPool.query(sql, userId, function (err, result, fields) {
+    const sql = "SELECT * FROM User WHERE userId=?;";
+    mysqlPool.query(sql, userId, (err, result) => {
 
-      if(err) {
+      if (err) {
         console.log("Error checking user constraint");
         reject([userId, courses, err, 0]);
       } else {
 
         // check if the user exists
-        if(!result.length) {
+        if (!result.length)
           reject([userId, courses, "", 1]);
-        } else {
+        else
           resolve([0, courses, "", 0]);
-        }
 
       }
     });
@@ -107,46 +104,46 @@ function userConstraint(userId, courses, status) {
 }
 
 // checks that the user is a student
-function studentConstraint() {
-  return true;
-}
+// function studentConstraint() {
+//   return true;
+// }
 
 // checks that all courses are valid
-function courseConstraint() {
-  return true;
-}
+// function courseConstraint() {
+//   return true;
+// }
 
 // checks that at least 32 credits are selected
-function creditConstraint() {
-  return true;
-}
+// function creditConstraint() {
+//   return true;
+// }
 
 // checks that no single course is selected more than once
-function duplicateCourseConstraint() {
-  return true;
-}
+// function duplicateCourseConstraint() {
+//   return true;
+// }
 
 // checks that no required courses are selected
-function requiredCourseConstraint() {
-  return true;
-}
+// function requiredCourseConstraint() {
+//   return true;
+// }
 
 ////////////////////////////
-////*Database Functions*////
+// //*Database Functions*////
 ////////////////////////////
 
 // save a complete plan to the database including selected courses
 function savePlan(userId, planName, courses) {
 
   return insertPlan(userId, planName, courses)
-    .then(function(planData) {
+    .then((planData) => {
       return insertSelectedCourses(planData[0], planData[1]);
     })
-    .then(function() {
+    .then(() => {
       console.log("Plan saved");
     })
-    .catch(function(planData) {
-      if(planData[0]) deletePlan(planData[0]);
+    .catch((planData) => {
+      if (planData[0]) deletePlan(planData[0]);
       console.log(planData[2]);
       throw Error(planData[2]);
     });
@@ -159,16 +156,16 @@ function insertPlan(userId, planName, courses) {
   return new Promise((resolve, reject) => {
 
     // insert the student id and plan name into the Plan table
-    const sql = 'INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);'
-    mysqlPool.query(sql, [userId, planName], function (err, result, fields) {
+    const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
+    mysqlPool.query(sql, [userId, planName], (err, result) => {
 
-      if(err) {
+      if (err) {
         console.log("Error saving plan");
         reject([0, courses, err]);
       } else {
 
         // get the new plan ID
-        planId = result.insertId;
+        const planId = result.insertId;
         console.log("Inserted plan", planId);
         resolve([planId, courses, ""]);
 
@@ -183,21 +180,21 @@ function insertSelectedCourses(planId, courses) {
 
   return new Promise((resolve, reject) => {
 
-    let sql = 'INSERT INTO SelectedCourse (planId, courseId) VALUES ';
-    let sqlArray = [];
+    let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+    const sqlArray = [];
 
     // expand the sql string and array based on the number of courses
-    courses.forEach(function(currentValue, index) {
-      sql += '(?, (SELECT courseId FROM Course WHERE courseCode=?)),';
+    courses.forEach((currentValue) => {
+      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
       sqlArray.push(planId);
       sqlArray.push(currentValue);
     });
     // replace the last character of the sql query with ;
-    sql = sql.replace(/.$/,';');
+    sql = sql.replace(/.$/, ";");
 
     // add each of the courses to the SelectedCourse table
-    mysqlPool.query(sql, sqlArray, function (err, result, fields) {
-      if(err) {
+    mysqlPool.query(sql, sqlArray, (err) => {
+      if (err) {
         console.log("Error adding courses to plan", planId);
         reject([planId, courses, err]);
       } else {
@@ -214,9 +211,9 @@ function deletePlan(planId) {
 
   return new Promise((resolve, reject) => {
     // delete the plan
-    const sql = 'DELETE FROM Plan WHERE planId=?;'
-    mysqlPool.query(sql, planId, function (err, result, fields) {
-      if(err) {
+    const sql = "DELETE FROM Plan WHERE planId=?;";
+    mysqlPool.query(sql, planId, (err) => {
+      if (err) {
         console.log("Error deleting plan", planId, ":\n", err);
         reject(err);
       } else {
@@ -229,63 +226,63 @@ function deletePlan(planId) {
 }
 
 //////////////////////////////////////
-////*Express Middleware Functions*////
+// //*Express Middleware Functions*////
 //////////////////////////////////////
 
 // parse request bodies as JSON
 app.use(bodyParser.json());
 
 // user submits a plan
-app.post('/appliedplanportal/form', (req, res, next) => {
+app.post("/appliedplanportal/plan", (req, res) => {
 
   // define the user form data
   console.log("New plan submitted");
   const userId = req.body.userId;
   const planName = req.body.planName;
-  let courses = formatStringArray([req.body.course1, req.body.course2, req.body.course3,
+  const courses = formatStringArray([req.body.course1, req.body.course2, req.body.course3,
     req.body.course4, req.body.course5, req.body.course6, req.body.course7,
     req.body.course8, req.body.course9, req.body.course10,
     req.body.course11, req.body.course12]);
 
   // only save a plan if it does not violate any constraints
   enforceConstraints(userId, courses)
-    .then(function(constraintViolation) {
-      switch(constraintViolation) {
-        case 0:
-          savePlan(userId, planName, courses)
-            .then(() => {
-              console.log("Plan submitted - 200");
-              res.status(200).send("Plan submitted.");
-            })
-            .catch(() => {
-              console.log("An internal server error occurred - 500");
-              res.status(500).send("An internal server error occurred. Please try again later.");
-            });
-          break;
-        case 1:
-          console.log("Constraint Violated: The user does not exist - 400");
-          res.status(400).send("Invalid user ID. Unable to submit plan.");
-          break;
-        case 2:
-          console.log("Constraint Violated: The user is not a student - 400");
-          res.status(400).send("Only students can submit plans.");
-          break;
-        case 3:
-          console.log("Constraint Violated: At least one course is invalid - 400");
-          res.status(400).send("At least one selected course is invalid.");
-          break;
-        case 4:
-          console.log("Constraint Violated: Less than 32 credits selected - 400");
-          res.status(400).send("Less than 32 credits selected.");
-          break;
-        case 5:
-          console.log("Constraint Violated: A course was selected more than once - 400");
-          res.status(400).send("A course was selected more than once.");
-          break;
-        case 6:
-          console.log("Constraint Violated: A required course was selected - 400");
-          res.status(400).send("A required course was selected.");
-          break;
+    .then((constraintViolation) => {
+      switch (constraintViolation) {
+      case 0:
+        savePlan(userId, planName, courses)
+          .then(() => {
+            console.log("Plan submitted - 200");
+            res.status(200).send("Plan submitted.");
+          })
+          .catch(() => {
+            console.log("An internal server error occurred - 500");
+            res.status(500).send("An internal server error occurred. Please try again later.");
+          });
+        break;
+      case 1:
+        console.log("Constraint Violated: The user does not exist - 400");
+        res.status(400).send("Invalid user ID. Unable to submit plan.");
+        break;
+      case 2:
+        console.log("Constraint Violated: The user is not a student - 400");
+        res.status(400).send("Only students can submit plans.");
+        break;
+      case 3:
+        console.log("Constraint Violated: At least one course is invalid - 400");
+        res.status(400).send("At least one selected course is invalid.");
+        break;
+      case 4:
+        console.log("Constraint Violated: Less than 32 credits selected - 400");
+        res.status(400).send("Less than 32 credits selected.");
+        break;
+      case 5:
+        console.log("Constraint Violated: A course was selected more than once - 400");
+        res.status(400).send("A course was selected more than once.");
+        break;
+      case 6:
+        console.log("Constraint Violated: A required course was selected - 400");
+        res.status(400).send("A required course was selected.");
+        break;
       }
 
     })
@@ -297,14 +294,14 @@ app.post('/appliedplanportal/form', (req, res, next) => {
 });
 
 // statically serve files from the public directory
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // everything else gets a 404 error
-app.get('*', (req, res, next) => {
+app.get("*", (req, res) => {
   res.status(404).send("Not found");
 });
 
 // listen on the current port
-let server = app.listen(port, function () {
+app.listen(port, () => {
   console.log("Server is listening on port", port);
 });
