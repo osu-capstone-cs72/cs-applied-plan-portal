@@ -44,7 +44,7 @@ CREATE TABLE `Comment` (
 
 CREATE TABLE `Course` (
   `courseId` int(11) NOT NULL,
-  `credits` int(11) NOT NULL,
+  `credits` int(2) NOT NULL,
   `courseName` varchar(100) NOT NULL,
   `courseCode` varchar(8) NOT NULL,
   `courseUrl` varchar(300) NOT NULL,
