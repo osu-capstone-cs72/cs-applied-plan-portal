@@ -9,15 +9,15 @@ header {
 
 /* form for submiting a plan */
 #plan-form {
-    padding: 10px;
+  padding: 10px;
 }
 
 /* button for submiting plan */
 #submit-button {
-    margin: 10px 50px;
+  margin: 10px 50px;
 }
 
 /* input elements of the form */
 input {
-    margin: 10px;
+  margin: 10px;
 }
