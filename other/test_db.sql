@@ -33,7 +33,7 @@ CREATE TABLE `Comment` (
   `planId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `text` varchar(100) NOT NULL
+  `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
