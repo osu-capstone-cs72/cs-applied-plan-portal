@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql3.freesqldatabase.com
--- Generation Time: Jan 11, 2020 at 08:32 PM
+-- Generation Time: Jan 15, 2020 at 12:16 AM
 -- Server version: 5.5.54-0ubuntu0.12.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.3
 
@@ -32,7 +32,7 @@ CREATE TABLE `Comment` (
   `commentId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `time` time NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -217,7 +217,7 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
 --
 -- AUTO_INCREMENT for table `User`
 --
