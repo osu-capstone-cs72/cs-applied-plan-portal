@@ -3,7 +3,6 @@ const dotenv = require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const mysql = require('mysql');
-const async = require('async');
 const path = require('path');
 const fs = require('fs');
 const app = express();
