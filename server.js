@@ -14,14 +14,14 @@ const mysqlPassword = process.env.SQL_PASSWORD;
 const mysqlDatabase = process.env.SQL_DB_NAME;
 
 // create a MySQL resource pool
-const maxConnections = 10;
+const MAX_CONNECTIONS = 10;
 const mysqlPool = mysql.createPool({
   port: mysqlPort,
   host: mysqlHost,
   user: mysqlUser,
   password: mysqlPassword,
   database: mysqlDatabase,
-  connectionLimit: maxConnections
+  connectionLimit: MAX_CONNECTIONS
 });
 
 ///////////////////////////
