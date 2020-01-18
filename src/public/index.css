@@ -36,4 +36,15 @@
 .search-container {
   margin: 10px;
   padding: 8px;
+  display: inline-block;
+}
+
+.expand-btn {
+  float: right;
+}
+
+.course-filter {
+  float: right;
+  margin: 25px;
+  margin-right: 50px;
 }
