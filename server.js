@@ -294,7 +294,7 @@ app.post("/appliedplanportal/plan", (req, res) => {
 });
 
 // statically serve files from the public directory
-app.use(express.static("public"));
+app.use(express.static("views/public"));
 
 // everything else gets a 404 error
 app.get("*", (req, res) => {
