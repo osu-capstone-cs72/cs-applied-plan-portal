@@ -4,25 +4,10 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
+const mysqlPool = require("./utils/mysqlPool").pool;
 
-// set the server information using enviorment variables
+// set the server port to listen on
 const port = process.env.PORT;
-const mysqlPort = process.env.SQL_PORT || 3306;
-const mysqlHost = process.env.SQL_HOST;
-const mysqlUser = process.env.SQL_USER;
-const mysqlPassword = process.env.SQL_PASSWORD;
-const mysqlDatabase = process.env.SQL_DB_NAME;
-
-// create a MySQL resource pool
-const MAX_CONNECTIONS = 10;
-const mysqlPool = mysql.createPool({
-  port: mysqlPort,
-  host: mysqlHost,
-  user: mysqlUser,
-  password: mysqlPassword,
-  database: mysqlDatabase,
-  connectionLimit: MAX_CONNECTIONS
-});
 
 ///////////////////////////
 // //*General Functions*////
