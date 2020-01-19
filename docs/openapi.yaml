@@ -1,23 +1,46 @@
+# View this document on https://editor.swagger.io.
+
 openapi: 3.0.0
 
 info:
   description: >
-    A portal that streamlines the planning process for OSU CS Applied students
+    A portal that streamlines the planning process for Oregon State University
+    CS Applied students
   version: 1.0.0
   title: OSU CS Applied Plan Portal
   contact:
-    email: "thomasza@oregonstate.edu"
+    email: 'thomasza@oregonstate.edu'
   license:
-    name: MIT
+    name: MIT License
     url: 'https://github.com/osu-capstone-cs72/cs-applied-plan-portal/blob/master/LICENSE'
 
 paths:
+  /users/login:
+    post:
+      summary: Log a User in
+      description: >
+        TODO
+      operationId: login
+      tags:
+        - Users
+
+  /users/logout:
+    post:
+      summary: Log a User out
+      description: >
+        TODO
+      operationId: logout
+      tags:
+        - Users
+
   '/users/{userId}':
     get:
       summary: Fetch data about a specific User
       description: >
         Returns information about a User with the provided `userId`.
       operationId: getUserById
+      tags:
+        - Users
       parameters:
         - name: userId
           in: path
@@ -27,8 +50,6 @@ paths:
             type: integer
             format: int64
           example: 72
-      tags:
-        - Users
       responses:
         '200':
           description: Success
@@ -48,6 +69,127 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  '/users/{userId}/plans':
+    get:
+      summary: Fetch a list of applied Plans that belong to this User
+      description: >
+        TODO
+      operationId: getPlansOfUser
+      tags:
+        - Users
+
+  /courses:
+    get:
+      summary: Fetch a list containing all Courses
+      description: >
+        TODO
+      operationId: getAllCourses
+      tags:
+        - Courses
+
+    post:
+      summary: Create a new Course
+      description: >
+        TODO
+      operationId: createCourse
+      tags:
+        - Courses
+
+    put:
+      summary: Update a Course
+      description: >
+        TODO
+      operationId: updateCourse
+      tags:
+        - Courses
+
+    delete:
+      summary: Remove a Course
+      description: >
+        TODO
+      operationId: deleteCourse
+      tags:
+        - Courses
+
+  '/courses/{courseId}':
+    get:
+      summary: Fetch data about a specific Course
+      description: >
+        TODO
+      operationId: getCourseById
+      tags:
+        - Courses
+
+  '/courses/{courseCode}':
+    get:
+      summary: Fetch data about a specific Course based on a course code
+      description: >
+        TODO
+      operationId: getCourseByCode
+      tags:
+        - Courses
+
+  /plans:
+    post:
+      summary: Create a new applied Plan
+      description: >
+        TODO
+      operationId: createPlan
+      tags:
+        - Plans
+
+    put:
+      summary: Update an applied Plan
+      description: >
+        TODO
+      operationId: updatePlan
+      tags:
+        - Plans
+
+    delete:
+      summary: Remove an applied Plan
+      description: >
+        TODO
+      operationId: deletePlan
+      tags:
+        - Plans
+
+  '/plans/{planId}':
+    get:
+      summary: Fetch data about a specific applied Plan
+      description: >
+        TODO
+      operationId: getPlanById
+      tags:
+        - Plans
+
+  '/plans/{planId}/comments':
+    get:
+      summary: Fetch a list of comments linked to an applied Plan
+      description: >
+        TODO
+      operationId: getCommentsOfPlan
+      tags:
+        - Plans
+
+  /comments:
+    post:
+      summary: Create a new Comment
+      description: >
+        TODO
+      operationId: createComment
+      tags:
+        - Comments
+
+  '/comments/{commentId}':
+    get:
+      summary: Fetch data about a specific Comment
+      description: >
+        TODO
+      operationId: getCommentById
+      tags:
+        - Comments
 
 components:
   schemas:
