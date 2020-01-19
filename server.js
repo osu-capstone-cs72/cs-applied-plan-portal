@@ -5,23 +5,10 @@ const express = require("express");
 const mysql = require("mysql");
 const app = express();
 const mysqlPool = require("./utils/mysqlPool").pool;
+const formatStringArray = require("./utils/format");
 
 // set the server port to listen on
 const port = process.env.PORT;
-
-///////////////////////////
-// //*General Functions*////
-///////////////////////////
-
-// takes an array of strings and makes them uppercase, free of white space,
-// and removes empty strings from the array
-function formatStringArray(stringArray) {
-
-  return stringArray
-    .map((string) => { return string.toUpperCase().replace(/\s+/g, ""); })
-    .filter((value) => { return value !== ""; });
-
-}
 
 //////////////////////////////
 // //*Constraint Functions*////
