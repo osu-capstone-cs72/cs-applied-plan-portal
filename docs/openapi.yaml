@@ -1,0 +1,229 @@
+openapi: 3.0.0
+
+info:
+  description: >
+    A portal that streamlines the planning process for OSU CS Applied students
+  version: 1.0.0
+  title: OSU CS Applied Plan Portal
+  contact:
+    email: "thomasza@oregonstate.edu"
+  license:
+    name: MIT
+    url: 'https://github.com/osu-capstone-cs72/cs-applied-plan-portal/blob/master/LICENSE'
+
+paths:
+  '/users/{userId}':
+    get:
+      summary: Fetch data about a specific User
+      description: >
+        Returns information about a User with the provided `userId`.
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the User to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User with the specified `userId` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Comment:
+      description: An object representing information about a comment
+      type: object
+      properties:
+        commentId:
+          description: The ID to uniquely identify the comment
+          type: integer
+          format: int64
+          example: 72
+        planId:
+          description: The ID of the plan that the comment is attached to
+          type: integer
+          format: int64
+          example: 72
+        userId:
+          description: The ID of the user who created the comment
+          type: integer
+          format: int64
+          example: 72
+        time:
+          description: 'The time that the comment was created, in UTC'
+          type: string
+          format: date-time
+          example: '2020-05-15T14:30:29Z'
+        text:
+          description: The text content of the comment
+          type: string
+          example: 'Your plan looks good!'
+
+    Course:
+      description: An object representing information about a course
+      type: object
+      properties:
+        courseId:
+          description: The ID to uniquely identify the course
+          type: integer
+          format: int64
+          example: 72
+        credits:
+          description: The number of credits the course offers
+          type: integer
+          format: int32
+          example: 4
+        courseName:
+          description: The name of the course
+          type: string
+          example: Cloud Application Development
+        courseCode:
+          description: The course code
+          type: string
+          example: CS493
+        courseUrl:
+          description: >
+            The URL that corresponds with the OSU catalog listing of the course
+          type: string
+          example: 'https://example.com'
+        restriction:
+          description: >
+            The restriction code of this course in the CS applied program
+          type: integer
+          format: int64
+          example: 2
+
+    Plan:
+      description: An object representing information about an applied plan
+      type: object
+      properties:
+        planId:
+          description: The ID to uniquely identify the plan
+          type: integer
+          format: int64
+          example: 72
+        studentId:
+          description: >
+            The ID to uniquely identify the student that created the plan
+          type: integer
+          format: int64
+          example: 72
+        planName:
+          description: 'The name of the plan, decided by the student'
+          type: string
+          example: My Artificial Intelligence Plan
+        status:
+          description: >
+            An integer represents a specific status of a plan: 0 is `Rejected`,
+            1 is `Awaiting Student Changes`, 2 is `Awaiting Review`, 3 is
+            `Awaiting Final Review`, 4 is `Accepted`
+          type: string
+          example: 3
+        lastUpdated:
+          description: 'The time when the plan was last changed, in UTC'
+          type: string
+          format: date-time
+          example: '2020-05-15T14:30:29Z'
+
+    User:
+      description: An object representing information about an application user
+      type: object
+      properties:
+        userId:
+          description: The ID to uniquely identify the user
+          type: integer
+          format: int64
+          example: 72
+        firstName:
+          description: The first name of the user
+          type: string
+          example: John
+        lastName:
+          description: The last name of the user
+          type: string
+          example: Doe
+        email:
+          description: The OSU email of the user
+          type: string
+          format: email
+          example: 'email@example.com'
+        role:
+          description: >
+            The role of the user in the system: 0 is `Student`, 1 is `Advisor`,
+            2 is `Head Advisor`
+          type: integer
+          format: int64
+          example: 1
+
+    Error:
+      description: An object describing an error response from the system
+      type: object
+      properties:
+        error:
+          description: A message describing the error
+          type: string
+          example: Error message
+
+  requestBodies:
+    Comment:
+      description: A Comment object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Comment'
+
+    Course:
+      description: A Course object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Course'
+
+    Plan:
+      description: A Plan object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Plan'
+
+    User:
+      description: A User object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+tags:
+  - name: Users
+    description: API endpoints related to application Users
+  - name: Courses
+    description: API endpoints related to Courses
+  - name: Plans
+    description: API endpoints related to applied Plans
+  - name: Comments
+    description: API endpoints related to the Comments
