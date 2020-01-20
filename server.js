@@ -1,3 +1,6 @@
+// File: server.js
+// Description: handles server functions and setup
+
 console.log("Server JavaScript start");
 
 // setup database connection and routing

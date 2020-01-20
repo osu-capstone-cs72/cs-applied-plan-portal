@@ -1,5 +1,5 @@
 // File: index.js
-// Description: main routing module, handles general routing
+// Description: handles all API routing
 
 const bodyParser = require("body-parser");
 const express = require('express');
