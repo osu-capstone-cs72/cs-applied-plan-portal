@@ -4,12 +4,119 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
-const mysqlPool = require("./utils/mysqlPool").pool;
+//const pool = require("./utils/mysqlPool").pool;
 const formatStringArray = require("./utils/format");
-const enforceConstraints = require("./utils/validation");
+
+// set the server information using enviorment variables
+const mysqlPort = process.env.SQL_PORT || 3306;
+const mysqlHost = process.env.SQL_HOST;
+const mysqlUser = process.env.SQL_USER;
+const mysqlPassword = process.env.SQL_PASSWORD;
+const mysqlDatabase = process.env.SQL_DB_NAME;
+
+// create a MySQL resource pool
+const MAX_CONNECTIONS = 25;
+const pool = mysql.createPool({
+  port: mysqlPort,
+  host: mysqlHost,
+  user: mysqlUser,
+  password: mysqlPassword,
+  database: mysqlDatabase,
+  connectionLimit: MAX_CONNECTIONS
+});
 
 // set the server port to listen on
 const port = process.env.PORT;
+
+//////////////////////////////
+// //*Constraint Functions*////
+//////////////////////////////
+
+// checks that the submitted form data does not violate any constraints
+// returns a value that can be used to identify which constraint was violated
+function enforceConstraints(userId, courses) {
+
+  return userConstraint(userId, courses)
+    // .then(function() {
+    //     studentConstraint();
+    // })
+    // .then(function() {
+    //     courseConstraint();
+    // })
+    // .then(function() {
+    //     requiredCourseConstraint();
+    // })
+    // .then(function() {
+    //     creditConstraint();
+    // })
+    // .then(function() {
+    //     duplicateCourseConstraint();
+    // })
+    .then(() => {
+      console.log("Plan does not violate any constraints");
+      return 0;
+    })
+    .catch((constraintData) => {
+      // see if the error was from a constraint violation
+      if (constraintData[3])
+        return constraintData[3];
+      else
+        throw Error(constraintData[2]);
+
+    });
+
+}
+
+// checks that the user exists
+function userConstraint(userId, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    // insert the student id and plan name into the Plan table
+    const sql = "SELECT * FROM User WHERE userId=?;";
+    pool.query(sql, userId, (err, result) => {
+
+      if (err) {
+        console.log("Error checking user constraint");
+        reject([userId, courses, err, 0]);
+      } else {
+
+        // check if the user exists
+        if (!result.length)
+          reject([userId, courses, "", 1]);
+        else
+          resolve([0, courses, "", 0]);
+
+      }
+    });
+  });
+
+}
+
+// checks that the user is a student
+// function studentConstraint() {
+//   return true;
+// }
+
+// checks that all courses are valid
+// function courseConstraint() {
+//   return true;
+// }
+
+// checks that at least 32 credits are selected
+// function creditConstraint() {
+//   return true;
+// }
+
+// checks that no single course is selected more than once
+// function duplicateCourseConstraint() {
+//   return true;
+// }
+
+// checks that no required courses are selected
+// function requiredCourseConstraint() {
+//   return true;
+// }
 
 ////////////////////////////
 // //*Database Functions*////
@@ -40,7 +147,7 @@ function insertPlan(userId, planName, courses) {
 
     // insert the student id and plan name into the Plan table
     const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
-    mysqlPool.query(sql, [userId, planName], (err, result) => {
+    pool.query(sql, [userId, planName], (err, result) => {
 
       if (err) {
         console.log("Error saving plan");
@@ -76,7 +183,7 @@ function insertSelectedCourses(planId, courses) {
     sql = sql.replace(/.$/, ";");
 
     // add each of the courses to the SelectedCourse table
-    mysqlPool.query(sql, sqlArray, (err) => {
+    pool.query(sql, sqlArray, (err) => {
       if (err) {
         console.log("Error adding courses to plan", planId);
         reject([planId, courses, err]);
@@ -95,7 +202,7 @@ function deletePlan(planId) {
   return new Promise((resolve, reject) => {
     // delete the plan
     const sql = "DELETE FROM Plan WHERE planId=?;";
-    mysqlPool.query(sql, planId, (err) => {
+    pool.query(sql, planId, (err) => {
       if (err) {
         console.log("Error deleting plan", planId, ":\n", err);
         reject(err);
