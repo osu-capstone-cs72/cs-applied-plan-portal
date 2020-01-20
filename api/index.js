@@ -1,26 +1,25 @@
 // File: index.js
-// Description: handles all API routing
+// Description: main routing module, handles general routing
 
 const bodyParser = require("body-parser");
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const router = express();
+const app = express();
+
+//app.use('/comment', require('./comment'));
+//app.use('/course', require('./course'));
+app.use('/plan', require('./plan'));
+//app.use('/user', require('./user'));
 
 // parse request bodies as JSON
-router.use(bodyParser.json());
-
-// router.use('/comment', require('./comment'));
-// router.use('/course', require('./course'));
-router.use('/plan', require('./plan'));
-// router.use('/user', require('./user'));
+app.use(bodyParser.json());
 
 // statically serve files from the public directory
-router.use(express.static("views/public"));
+app.use(express.static("views/public"));
 
 // everything else gets a 404 error
-router.get("*", (req, res) => {
+app.get("*", (req, res) => {
   res.status(404).send("Not found");
 });
 
-module.exports = router;
+module.exports = app;

@@ -1,17 +1,20 @@
 // File: plan.js
 // Description: handles routing for plans
 
-const formatStringArray = require("../utils/format");
-const enforceConstraints = require("../utils/validation");
-const savePlan = require("../models/plan");
 const bodyParser = require("body-parser");
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const router = express();
+const app = express();
+
+const formatStringArray = require("../utils/format");
+const enforceConstraints = require("../utils/validation");
+const savePlan = require("../models/plan");
+
+// parse request bodies as JSON
+app.use(bodyParser.json());
 
 // user submits a plan
-router.post("/plan", (req, res) => {
+app.post("/", (req, res) => {
 
   // define the user form data
   console.log("New plan submitted");
@@ -71,4 +74,9 @@ router.post("/plan", (req, res) => {
 
 });
 
-module.exports = router;
+// everything else gets a 404 error
+app.get("*", (req, res) => {
+  res.status(404).send("Not found");
+});
+
+module.exports = app;
