@@ -3,7 +3,7 @@
 
 const pool = require("../utils/mysqlPool").pool;
 
-// save a complete plan to the database including selected courses
+// save a plan with its selected courses. remove the plan if an error occurs
 module.exports = function savePlan(userId, planName, courses) {
 
   return insertPlan(userId, planName, courses)
@@ -21,7 +21,7 @@ module.exports = function savePlan(userId, planName, courses) {
 
 }
 
-// insert a new row in the Plan table while returning the new plan ID
+// save basic plan information such as the student id and the plan name
 function insertPlan(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
@@ -46,7 +46,7 @@ function insertPlan(userId, planName, courses) {
 
 }
 
-// insert new rows in the SelectedCourse table
+// save a list of selected courses for a plan
 function insertSelectedCourses(planId, courses) {
 
   return new Promise((resolve, reject) => {
@@ -77,7 +77,7 @@ function insertSelectedCourses(planId, courses) {
 
 }
 
-// delete a plan from the database
+// delete a plan from the database, including its list of selected courses
 function deletePlan(planId) {
 
   return new Promise((resolve, reject) => {
