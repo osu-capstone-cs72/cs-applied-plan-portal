@@ -1,7 +1,7 @@
 // File: validation.js
 // Description: validates a submitted form against a list of constraints
 
-const mysqlPool = require("./mysqlPool").pool;
+const pool = require("./mysqlPool").pool;
 
 // checks that the submitted form data does not violate any constraints
 // returns a value that can be used to identify which constraint was violated
@@ -45,7 +45,7 @@ function userConstraint(userId, courses) {
 
     // insert the student id and plan name into the Plan table
     const sql = "SELECT * FROM User WHERE userId=?;";
-    mysqlPool.query(sql, userId, (err, result) => {
+    pool.query(sql, userId, (err, result) => {
 
       if (err) {
         console.log("Error checking user constraint");
