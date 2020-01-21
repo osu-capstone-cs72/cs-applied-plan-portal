@@ -22,9 +22,9 @@ module.exports = function enforceConstraints(userId, planName, courses) {
     .then((conData) => {
       return courseConstraint(conData[0], conData[1], conData[2]);
     })
-    // .then((conData) => {
-    //   return requiredCourseConstraint(conData[0], conData[1], conData[2]);
-    // })
+    .then((conData) => {
+      return restrictionConstraint(conData[0], conData[1], conData[2]);
+    })
     // .then((conData) => {
     //   return creditConstraint(conData[0], conData[1], conData[2]);
     // })
@@ -61,7 +61,6 @@ function userConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        // check if the user exists
         if (!results.length)
           reject([userId, planName, courses, "", 1]);
         else
@@ -87,7 +86,6 @@ function studentConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        // check if the user is a student
         if (!results.length)
           reject([userId, planName, courses, "", 2]);
         else
@@ -105,7 +103,6 @@ function planNameConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    // check if plan name is valid length
     if (planName.length < PLAN_NAME_MIN || planName.length > PLAN_NAME_MAX)
       reject([userId, planName, courses, "", 3]);
     else
@@ -120,7 +117,6 @@ function zeroCourseConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    // check to see if any courses are selected
     if (!courses.length)
       reject([userId, planName, courses, "", 4]);
     else
@@ -153,7 +149,6 @@ function courseConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        // check if all courses are valid
         if (results[0].valid !== courses.length)
           reject([userId, planName, courses, "", 5]);
         else
@@ -166,10 +161,44 @@ function courseConstraint(userId, planName, courses) {
 
 }
 
-// checks that no required courses are selected
-// function requiredCourseConstraint() {
-//   return true;
-// }
+// checks if there are any restrictions on selected courses
+function restrictionConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
+    const sqlArray = [];
+
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "?,";
+      sqlArray.push(currentValue);
+    });
+    // replace the last character of the sql query with the end of the query
+    sql = sql.replace(/.$/, ") AND restriction > 0 ORDER BY restriction;");
+
+    // check if there were any restrictions and if so, which ones
+    pool.query(sql, sqlArray, (err, results) => {
+      if (err) {
+        console.log("Error checking restriction constraint");
+        reject([userId, planName, courses, err, 0]);
+      } else {
+
+        if (results.length) {
+          if (results[0].restriction === 1)
+            reject([userId, planName, courses, "", 6]);
+          else
+            reject([userId, planName, courses, "", 7]);
+        } else {
+          resolve([userId, planName, courses, "", 0]);
+        }
+
+      }
+    });
+
+  });
+
+}
 
 // checks that at least 32 credits are selected
 // function creditConstraint() {
