@@ -28,7 +28,7 @@ function insertPlan(userId, planName, courses) {
 
     // insert the student id and plan name into the Plan table
     const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
-    pool.query(sql, [userId, planName], (err, result) => {
+    pool.query(sql, [userId, planName], (err, results) => {
 
       if (err) {
         console.log("Error saving plan");
@@ -36,7 +36,7 @@ function insertPlan(userId, planName, courses) {
       } else {
 
         // get the new plan ID
-        const planId = result.insertId;
+        const planId = results.insertId;
         console.log("Inserted plan", planId);
         resolve([planId, courses, ""]);
 

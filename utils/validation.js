@@ -16,9 +16,9 @@ module.exports = function enforceConstraints(userId, planName, courses) {
     .then((conData) => {
       return planNameConstraint(conData[0], conData[1], conData[2]);
     })
-    // .then((conData) => {
-    //   return courseConstraint(conData[0], conData[1], conData[2]);
-    // })
+    .then((conData) => {
+      return courseConstraint(conData[0], conData[1], conData[2]);
+    })
     // .then((conData) => {
     //   return requiredCourseConstraint(conData[0], conData[1], conData[2]);
     // })
@@ -33,7 +33,7 @@ module.exports = function enforceConstraints(userId, planName, courses) {
       return 0;
     })
     .catch((conData) => {
-      // see if the error was from a constraint violation
+      // check if the error was from a constraint violation
       if (conData[4]) {
         return conData[4];
       } else {
@@ -51,7 +51,7 @@ function userConstraint(userId, planName, courses) {
   return new Promise((resolve, reject) => {
 
     const sql = "SELECT * FROM User WHERE userId=?;";
-    pool.query(sql, userId, (err, result) => {
+    pool.query(sql, userId, (err, results) => {
 
       if (err) {
         console.log("Error checking user constraint");
@@ -59,7 +59,7 @@ function userConstraint(userId, planName, courses) {
       } else {
 
         // check if the user exists
-        if (!result.length)
+        if (!results.length)
           reject([userId, planName, courses, "", 1]);
         else
           resolve([userId, planName, courses, "", 0]);
@@ -77,15 +77,15 @@ function studentConstraint(userId, planName, courses) {
   return new Promise((resolve, reject) => {
 
     const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
-    pool.query(sql, userId, (err, result) => {
+    pool.query(sql, userId, (err, results) => {
 
       if (err) {
-        console.log("Error checking user constraint");
+        console.log("Error checking student constraint");
         reject([userId, planName, courses, err, 0]);
       } else {
 
         // check if the user is a student
-        if (!result.length)
+        if (!results.length)
           reject([userId, planName, courses, "", 2]);
         else
           resolve([userId, planName, courses, "", 0]);
@@ -113,7 +113,43 @@ function planNameConstraint(userId, planName, courses) {
 }
 
 // checks that all courses are valid
-// function courseConstraint() {
+function courseConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
+    const sqlArray = [];
+
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "?,";
+      sqlArray.push(currentValue);
+    });
+    // replace the last character of the sql query with );
+    sql = sql.replace(/.$/, ");");
+
+    // find the number of valid courses and check it against the course array
+    pool.query(sql, sqlArray, (err, results) => {
+      if (err) {
+        console.log("Error checking course constraint");
+        reject([userId, planName, courses, err, 0]);
+      } else {
+
+        // check if all courses are valid
+        if (results[0].valid !== courses.length)
+          reject([userId, planName, courses, "", 4]);
+        else
+          resolve([userId, planName, courses, "", 0]);
+
+      }
+    });
+
+  });
+
+}
+
+// checks that no required courses are selected
+// function requiredCourseConstraint() {
 //   return true;
 // }
 
@@ -124,10 +160,5 @@ function planNameConstraint(userId, planName, courses) {
 
 // checks that no single course is selected more than once
 // function duplicateCourseConstraint() {
-//   return true;
-// }
-
-// checks that no required courses are selected
-// function requiredCourseConstraint() {
 //   return true;
 // }
