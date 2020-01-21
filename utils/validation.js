@@ -1,6 +1,8 @@
 // File: validation.js
 // Description: validates a submitted form against a list of constraints
 
+const PLAN_NAME_MIN = 5;
+const PLAN_NAME_MAX = 50;
 const pool = require("./mysqlPool").pool;
 
 // checks that the submitted form data does not violate any constraints
@@ -9,23 +11,22 @@ module.exports = function enforceConstraints(userId, planName, courses) {
 
   return userConstraint(userId, planName, courses)
     .then((conData) => {
-      console.log("About to check if student:", conData[0], conData[1], conData[2]);
       return studentConstraint(conData[0], conData[1], conData[2]);
     })
-    // .then(() => {
-    //     planNameConstraint();
+    .then((conData) => {
+      return planNameConstraint(conData[0], conData[1], conData[2]);
+    })
+    // .then((conData) => {
+    //   return courseConstraint(conData[0], conData[1], conData[2]);
     // })
-    // .then(() => {
-    //     courseConstraint();
+    // .then((conData) => {
+    //   return requiredCourseConstraint(conData[0], conData[1], conData[2]);
     // })
-    // .then(() => {
-    //     requiredCourseConstraint();
+    // .then((conData) => {
+    //   return creditConstraint(conData[0], conData[1], conData[2]);
     // })
-    // .then(() => {
-    //     creditConstraint();
-    // })
-    // .then(() => {
-    //     duplicateCourseConstraint();
+    // .then((conData) => {
+    //   return duplicateCourseConstraint(conData[0], conData[1], conData[2]);
     // })
     .then(() => {
       console.log("Plan does not violate any constraints");
@@ -75,7 +76,6 @@ function studentConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    console.log("About to check if student (SQL):", userId, planName, courses);
     const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
     pool.query(sql, userId, (err, result) => {
 
@@ -98,9 +98,19 @@ function studentConstraint(userId, planName, courses) {
 }
 
 // checks that the plan name is a valid length
-// function planNameConstraint() {
-//   return true;
-// }
+function planNameConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    // check if plan name is valid length
+    if (planName.length < PLAN_NAME_MIN || planName.length > PLAN_NAME_MAX)
+      reject([userId, planName, courses, "", 3]);
+    else
+      resolve([userId, planName, courses, "", 0]);
+
+  });
+
+}
 
 // checks that all courses are valid
 // function courseConstraint() {
