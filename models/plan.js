@@ -42,6 +42,7 @@ function insertPlan(userId, planName, courses) {
 
       }
     });
+
   });
 
 }
@@ -73,6 +74,7 @@ function insertSelectedCourses(planId, courses) {
         resolve([planId, courses, ""]);
       }
     });
+
   });
 
 }
@@ -92,6 +94,7 @@ function deletePlan(planId) {
         resolve();
       }
     });
+
   });
 
 }

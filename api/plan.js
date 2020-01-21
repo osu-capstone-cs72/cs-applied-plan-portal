@@ -26,7 +26,7 @@ app.post("/", (req, res) => {
     req.body.course11, req.body.course12]);
 
   // only save a plan if it does not violate any constraints
-  enforceConstraints(userId, courses)
+  enforceConstraints(userId, planName, courses)
     .then((constraintViolation) => {
       switch (constraintViolation) {
       case 0:
@@ -49,18 +49,22 @@ app.post("/", (req, res) => {
         res.status(400).send("Only students can submit plans.");
         break;
       case 3:
+        console.log("Constraint Violated: Invalid plan name length - 400\n");
+        res.status(400).send("The plan name must be between 5 and 50 characters long.");
+        break;
+      case 4:
         console.log("Constraint Violated: At least one course is invalid - 400\n");
         res.status(400).send("At least one selected course is invalid.");
         break;
-      case 4:
+      case 5:
         console.log("Constraint Violated: Less than 32 credits selected - 400\n");
         res.status(400).send("Less than 32 credits selected.");
         break;
-      case 5:
+      case 6:
         console.log("Constraint Violated: A course was selected more than once - 400\n");
         res.status(400).send("A course was selected more than once.");
         break;
-      case 6:
+      case 7:
         console.log("Constraint Violated: A required course was selected - 400\n");
         res.status(400).send("A required course was selected.");
         break;
