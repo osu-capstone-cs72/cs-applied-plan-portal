@@ -36,7 +36,7 @@ module.exports = function enforceConstraints(userId, courses) {
 
     });
 
-}
+};
 
 // checks that the user exists
 function userConstraint(userId, courses) {

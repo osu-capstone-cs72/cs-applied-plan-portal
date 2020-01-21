@@ -1,7 +1,7 @@
 // File: mysqlPool.js
 // Description: creates a mysql pool
 
-var mysql = require('mysql');
+const mysql = require("mysql");
 
 // set the server information using enviorment variables
 const mysqlPort = process.env.SQL_PORT || 3306;

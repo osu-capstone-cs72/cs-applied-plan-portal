@@ -9,4 +9,4 @@ module.exports = function formatStringArray(stringArray) {
     .map((string) => { return string.toUpperCase().replace(/\s+/g, ""); })
     .filter((value) => { return value !== ""; });
 
-}
+};

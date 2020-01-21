@@ -1,9 +1,9 @@
 // File: plan.js
 // Description: handles routing for plans
 
+require("path");
 const bodyParser = require("body-parser");
-const express = require('express');
-const path = require('path');
+const express = require("express");
 const app = express();
 
 const formatStringArray = require("../utils/format");
@@ -20,9 +20,9 @@ app.post("/", (req, res) => {
   console.log("New plan submitted");
   const userId = req.body.userId;
   const planName = req.body.planName;
-  const courses = formatStringArray([req.body.course1, req.body.course2, req.body.course3,
-    req.body.course4, req.body.course5, req.body.course6, req.body.course7,
-    req.body.course8, req.body.course9, req.body.course10,
+  const courses = formatStringArray([req.body.course1, req.body.course2,
+    req.body.course3, req.body.course4, req.body.course5, req.body.course6,
+    req.body.course7, req.body.course8, req.body.course9, req.body.course10,
     req.body.course11, req.body.course12]);
 
   // only save a plan if it does not violate any constraints
