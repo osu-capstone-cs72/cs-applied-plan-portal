@@ -12,12 +12,14 @@ export default class CourseContainer extends React.Component {
         this.state = {
             initialCourses: [],
             courses: [],
+            addCourses: [],
             filter: ""
         }
 
         this.loadCourses = this.loadCourses.bind(this);
         this.filterSearch = this.filterSearch.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.addCourse = this.addCourse.bind(this);
     }
 
     loadCourses(){
@@ -55,6 +57,15 @@ export default class CourseContainer extends React.Component {
         });
     }
 
+    addCourse(course){
+        let newCourses = this.state.addCourses;
+        newCourses.unshift(course);
+        this.setState({
+            addCourses: newCourses
+        });
+        this.props.updateCourses(newCourses);
+    }
+
     componentWillMount(){
         this.loadCourses()
     }
@@ -74,8 +85,8 @@ export default class CourseContainer extends React.Component {
                 </form>
             </div>
             <div className="explore-courses">
-                {this.state.courses.map(c => <Course key={c} code={c.code} title={c.title} credits={c.credits} 
-                description={c.description} prereqs={c.prereqs} />) }
+                {this.state.courses.map(c => <Course key={c.code} code={c.code} title={c.title} credits={c.credits} 
+                description={c.description} prereqs={c.prereqs} addCourse={this.addCourse}/>) }
             </div>
         </div>
         );

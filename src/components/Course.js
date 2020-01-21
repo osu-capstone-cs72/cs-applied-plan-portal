@@ -11,12 +11,17 @@ export default class Course extends React.Component {
         }
 
         this.arrowButton = this.arrowButton.bind(this);
+        this.addButton = this.addButton.bind(this);
     }
 
     arrowButton(){
         this.setState({
             full: !this.state.full
         })
+    }
+
+    addButton(){
+        this.props.addCourse(this.props);
     }
 
     render(){
@@ -27,7 +32,7 @@ export default class Course extends React.Component {
             {this.state.full && <p>{this.props.description}</p>} 
             {this.state.full && <p>Prerequisites: {this.props.prereqs}</p>}
             <div className="course-btn-container">
-                <button className="btn btn-add">+ Add to plan</button> 
+                <button className="btn btn-add" onClick={this.addButton}>+ Add to plan</button> 
                 {this.state.full ? <button className="expand-btn" onClick={this.arrowButton}><i className="fad fa-angle-double-up"></i>-</button>
                 : <button className="expand-btn" onClick={this.arrowButton}><i className="fad fa-angle-double-down"></i>+</button>}
             </div>
