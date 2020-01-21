@@ -20,6 +20,9 @@ module.exports = function enforceConstraints(userId, planName, courses) {
       return zeroCourseConstraint(conData[0], conData[1], conData[2]);
     })
     .then((conData) => {
+      return duplicateCourseConstraint(conData[0], conData[1], conData[2]);
+    })
+    .then((conData) => {
       return courseConstraint(conData[0], conData[1], conData[2]);
     })
     .then((conData) => {
@@ -27,9 +30,6 @@ module.exports = function enforceConstraints(userId, planName, courses) {
     })
     // .then((conData) => {
     //   return creditConstraint(conData[0], conData[1], conData[2]);
-    // })
-    // .then((conData) => {
-    //   return duplicateCourseConstraint(conData[0], conData[1], conData[2]);
     // })
     .then(() => {
       console.log("Plan does not violate any constraints");
@@ -126,6 +126,24 @@ function zeroCourseConstraint(userId, planName, courses) {
 
 }
 
+// checks that no single course is selected more than once
+function duplicateCourseConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    const seenCourses = Object.create(null);
+    for (let i = 0; i < courses.length; ++i) {
+      const courseCode = courses[i];
+      if (courseCode in seenCourses)
+        reject([userId, planName, courses, "", 5]);
+      seenCourses[courseCode] = true;
+    }
+    resolve([userId, planName, courses, "", 0]);
+
+  });
+
+}
+
 // checks that all courses are valid
 function courseConstraint(userId, planName, courses) {
 
@@ -150,7 +168,7 @@ function courseConstraint(userId, planName, courses) {
       } else {
 
         if (results[0].valid !== courses.length)
-          reject([userId, planName, courses, "", 5]);
+          reject([userId, planName, courses, "", 6]);
         else
           resolve([userId, planName, courses, "", 0]);
 
@@ -186,9 +204,9 @@ function restrictionConstraint(userId, planName, courses) {
 
         if (results.length) {
           if (results[0].restriction === 1)
-            reject([userId, planName, courses, "", 6]);
-          else
             reject([userId, planName, courses, "", 7]);
+          else
+            reject([userId, planName, courses, "", 8]);
         } else {
           resolve([userId, planName, courses, "", 0]);
         }
@@ -202,10 +220,5 @@ function restrictionConstraint(userId, planName, courses) {
 
 // checks that at least 32 credits are selected
 // function creditConstraint() {
-//   return true;
-// }
-
-// checks that no single course is selected more than once
-// function duplicateCourseConstraint() {
 //   return true;
 // }
