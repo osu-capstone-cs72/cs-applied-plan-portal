@@ -17,6 +17,9 @@ module.exports = function enforceConstraints(userId, planName, courses) {
       return planNameConstraint(conData[0], conData[1], conData[2]);
     })
     .then((conData) => {
+      return zeroCourseConstraint(conData[0], conData[1], conData[2]);
+    })
+    .then((conData) => {
       return courseConstraint(conData[0], conData[1], conData[2]);
     })
     // .then((conData) => {
@@ -112,6 +115,21 @@ function planNameConstraint(userId, planName, courses) {
 
 }
 
+// checks to see if any courses are selected
+function zeroCourseConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    // check to see if any courses are selected
+    if (!courses.length)
+      reject([userId, planName, courses, "", 4]);
+    else
+      resolve([userId, planName, courses, "", 0]);
+
+  });
+
+}
+
 // checks that all courses are valid
 function courseConstraint(userId, planName, courses) {
 
@@ -137,7 +155,7 @@ function courseConstraint(userId, planName, courses) {
 
         // check if all courses are valid
         if (results[0].valid !== courses.length)
-          reject([userId, planName, courses, "", 4]);
+          reject([userId, planName, courses, "", 5]);
         else
           resolve([userId, planName, courses, "", 0]);
 
