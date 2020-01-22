@@ -3,6 +3,7 @@
 
 const PLAN_NAME_MIN = 5;
 const PLAN_NAME_MAX = 50;
+const PLAN_CREDITS_MIN = 32;
 const pool = require("./mysqlPool").pool;
 
 // checks that the submitted form data does not violate any constraints
@@ -28,9 +29,9 @@ module.exports = function enforceConstraints(userId, planName, courses) {
     .then((conData) => {
       return restrictionConstraint(conData[0], conData[1], conData[2]);
     })
-    // .then((conData) => {
-    //   return creditConstraint(conData[0], conData[1], conData[2]);
-    // })
+    .then((conData) => {
+      return creditConstraint(conData[0], conData[1], conData[2]);
+    })
     .then(() => {
       console.log("Plan does not violate any constraints");
       return 0;
@@ -132,12 +133,14 @@ function duplicateCourseConstraint(userId, planName, courses) {
   return new Promise((resolve, reject) => {
 
     const seenCourses = Object.create(null);
+
     for (let i = 0; i < courses.length; ++i) {
       const courseCode = courses[i];
       if (courseCode in seenCourses)
         reject([userId, planName, courses, "", 5]);
       seenCourses[courseCode] = true;
     }
+
     resolve([userId, planName, courses, "", 0]);
 
   });
@@ -218,7 +221,37 @@ function restrictionConstraint(userId, planName, courses) {
 
 }
 
-// checks that at least 32 credits are selected
-// function creditConstraint() {
-//   return true;
-// }
+// checks that at the minimum plan credits are selected
+function creditConstraint(userId, planName, courses) {
+
+  return new Promise((resolve, reject) => {
+
+    let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
+    const sqlArray = [];
+
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "?,";
+      sqlArray.push(currentValue);
+    });
+    // replace the last character of the sql query with );
+    sql = sql.replace(/.$/, ");");
+
+    // check if the sum of credits is less than the min
+    pool.query(sql, sqlArray, (err, results) => {
+      if (err) {
+        console.log("Error checking credit constraint");
+        reject([userId, planName, courses, err, 0]);
+      } else {
+
+        if (results[0].sumCredits < PLAN_CREDITS_MIN)
+          reject([userId, planName, courses, "", 9]);
+        else
+          resolve([userId, planName, courses, "", 0]);
+
+      }
+    });
+
+  });
+
+}
