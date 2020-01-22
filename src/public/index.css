@@ -1,0 +1,54 @@
+
+.student-create-plan {
+  display: flex;
+
+}
+
+.course-container {
+  flex: 50%;
+  margin: 10px;
+}
+
+.edit-plan {
+  border-right: 2px solid black;
+  flex: 50%;
+  height: 100vh;
+}
+
+.explore-courses {
+  margin: 10px;
+  padding: 8px;
+  height: 85vh;
+  overflow: scroll;
+}
+
+.course {
+  border: 1px solid black;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f2f2f2;
+}
+
+.btn.btn-add {
+  background-color: #b3b3b3;
+}
+
+.search-container {
+  margin: 10px;
+  padding: 8px;
+  display: inline-block;
+}
+
+.expand-btn {
+  float: right;
+}
+
+.course-filter {
+  float: right;
+  margin: 25px;
+  margin-right: 50px;
+}
+
+.edit-plan {
+  margin: 15px;
+}
