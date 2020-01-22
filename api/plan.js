@@ -7,8 +7,12 @@ const express = require("express");
 const app = express();
 
 const formatStringArray = require("../utils/format");
-const enforceConstraints = require("../utils/validation");
+const validation = require("../utils/validation");
 const savePlan = require("../models/plan");
+
+const NAME_MIN = validation.NAME_MIN;
+const NAME_MAX = validation.NAME_MAX;
+const CREDITS_MIN = validation.CREDITS_MIN;
 
 // parse request bodies as JSON
 app.use(bodyParser.json());
@@ -26,7 +30,7 @@ app.post("/", (req, res) => {
     req.body.course11, req.body.course12]);
 
   // only save a plan if it does not violate any constraints
-  enforceConstraints(userId, planName, courses)
+  validation.enforceConstraints(userId, planName, courses)
     .then((constraintViolation) => {
       switch (constraintViolation) {
         case 0:
@@ -50,7 +54,8 @@ app.post("/", (req, res) => {
           break;
         case 3:
           console.log("Constraint Violated: Invalid plan name length - 400\n");
-          res.status(400).send("The plan name must be between 5 and 50 characters long.");
+          res.status(400).send("The plan name must be between " + NAME_MIN +
+            " and " + NAME_MAX + " characters long.");
           break;
         case 4:
           console.log("Constraint Violated: No courses selected - 400\n");
@@ -73,7 +78,7 @@ app.post("/", (req, res) => {
           res.status(400).send("A graduate or professional/technical course was selected.");
           break;
         case 9:
-          console.log("Constraint Violated: Less than 32 credits selected - 400\n");
+          console.log("Constraint Violated: Less than " + CREDITS_MIN + " credits selected - 400\n");
           res.status(400).send("Less than 32 credits selected.");
           break;
       }

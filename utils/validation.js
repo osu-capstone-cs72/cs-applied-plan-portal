@@ -1,14 +1,17 @@
 // File: validation.js
 // Description: validates a submitted form against a list of constraints
 
-const PLAN_NAME_MIN = 5;
-const PLAN_NAME_MAX = 50;
-const PLAN_CREDITS_MIN = 32;
+const NAME_MIN = 5;
+exports.NAME_MIN = NAME_MIN;
+const NAME_MAX = 50;
+exports.NAME_MAX = NAME_MAX;
+const CREDITS_MIN = 32;
+exports.CREDITS_MIN = CREDITS_MIN;
 const pool = require("./mysqlPool").pool;
 
 // checks that the submitted form data does not violate any constraints
 // returns a value that can be used to identify which constraint was violated
-module.exports = function enforceConstraints(userId, planName, courses) {
+function enforceConstraints(userId, planName, courses) {
 
   return userConstraint(userId, planName, courses)
     .then((conData) => {
@@ -47,7 +50,8 @@ module.exports = function enforceConstraints(userId, planName, courses) {
 
     });
 
-};
+}
+exports.enforceConstraints = enforceConstraints;
 
 // checks that the user exists
 function userConstraint(userId, planName, courses) {
@@ -104,7 +108,7 @@ function planNameConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    if (planName.length < PLAN_NAME_MIN || planName.length > PLAN_NAME_MAX)
+    if (planName.length < NAME_MIN || planName.length > NAME_MAX)
       reject([userId, planName, courses, "", 3]);
     else
       resolve([userId, planName, courses, "", 0]);
@@ -244,7 +248,7 @@ function creditConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (results[0].sumCredits < PLAN_CREDITS_MIN)
+        if (results[0].sumCredits < CREDITS_MIN)
           reject([userId, planName, courses, "", 9]);
         else
           resolve([userId, planName, courses, "", 0]);

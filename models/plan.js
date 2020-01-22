@@ -4,7 +4,7 @@
 const pool = require("../utils/mysqlPool").pool;
 
 // save a plan with its selected courses. remove the plan if an error occurs
-module.exports = function savePlan(userId, planName, courses) {
+function savePlan(userId, planName, courses) {
 
   return insertPlan(userId, planName, courses)
     .then((planData) => {
@@ -19,7 +19,8 @@ module.exports = function savePlan(userId, planName, courses) {
       throw Error(planData[2]);
     });
 
-};
+}
+exports.savePlan = savePlan;
 
 // save basic plan information such as the student id and the plan name
 function insertPlan(userId, planName, courses) {
