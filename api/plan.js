@@ -50,8 +50,8 @@ app.post("/", (req, res) => {
           break;
         case 3:
           console.log("Constraint Violated: Invalid plan name length - 400\n");
-          res.status(400).send("The plan name must be between " + NAME_MIN +
-            " and " + NAME_MAX + " characters long.");
+          res.status(400).send(`The plan name must be between ${NAME_MIN} and
+            ${NAME_MAX} characters long.`);
           break;
         case 4:
           console.log("Constraint Violated: No courses selected - 400\n");
@@ -74,8 +74,8 @@ app.post("/", (req, res) => {
           res.status(400).send("A graduate or professional/technical course was selected.");
           break;
         case 9:
-          console.log("Constraint Violated: Less than " + CREDITS_MIN + " credits selected - 400\n");
-          res.status(400).send("Less than 32 credits selected.");
+          console.log(`Constraint Violated: Less than ${CREDITS_MIN} credits selected - 400\n`);
+          res.status(400).send(`Less than ${CREDITS_MIN} credits selected.`);
           break;
       }
 
