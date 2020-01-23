@@ -7,7 +7,7 @@ const app = express();
 
 const formatStringArray = require("../utils/format");
 const validation = require("../utils/validation");
-const savePlan = require("../models/plan");
+const savePlan = require("../models/plan").savePlan;
 
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
@@ -35,8 +35,8 @@ app.post("/", (req, res) => {
               console.log("Plan submitted - 200\n");
               res.status(200).send("Plan submitted.");
             })
-            .catch(() => {
-              console.log("An internal server error occurred - 500\n");
+            .catch((err) => {
+              console.log("An internal server error occurred - 500\n Error:", err);
               res.status(500).send("An internal server error occurred. Please try again later.");
             });
           break;
@@ -80,8 +80,8 @@ app.post("/", (req, res) => {
       }
 
     })
-    .catch(() => {
-      console.log("An internal server error occurred - 500\n");
+    .catch((err) => {
+      console.log("An internal server error occurred - 500\n Error:", err);
       res.status(500).send("An internal server error occurred. Please try again later.");
     });
 

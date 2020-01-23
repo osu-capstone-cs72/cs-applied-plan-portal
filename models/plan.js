@@ -7,12 +7,8 @@ const pool = require("../utils/mysqlPool").pool;
 function savePlan(userId, planName, courses) {
 
   return insertPlan(userId, planName, courses)
-    .then((planData) => {
-      return insertSelectedCourses(planData[0], planData[1]);
-    })
-    .then(() => {
-      console.log("Plan saved");
-    })
+    .then((planData) => insertSelectedCourses(planData[0], planData[1]))
+    .then(() => console.log("Plan saved"))
     .catch((planData) => {
       if (planData[0]) deletePlan(planData[0]);
       console.log(planData[2]);
