@@ -2,7 +2,6 @@
 // Description: handles routing for plans
 
 require("path");
-const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 
@@ -13,9 +12,6 @@ const savePlan = require("../models/plan");
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
 const CREDITS_MIN = validation.CREDITS_MIN;
-
-// parse request bodies as JSON
-app.use(bodyParser.json());
 
 // user submits a plan
 app.post("/", (req, res) => {
