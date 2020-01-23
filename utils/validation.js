@@ -14,27 +14,13 @@ const pool = require("./mysqlPool").pool;
 function enforceConstraints(userId, planName, courses) {
 
   return userConstraint(userId, planName, courses)
-    .then((conData) => {
-      return studentConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return planNameConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return zeroCourseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return duplicateCourseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return courseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return restrictionConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return creditConstraint(conData[0], conData[1], conData[2]);
-    })
+    .then((conData) => studentConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => planNameConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => zeroCourseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => duplicateCourseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => courseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => restrictionConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => creditConstraint(conData[0], conData[1], conData[2]))
     .then(() => {
       console.log("Plan does not violate any constraints");
       return 0;
@@ -47,7 +33,6 @@ function enforceConstraints(userId, planName, courses) {
         console.log("Error while trying to check constraints");
         throw Error(conData[3]);
       }
-
     });
 
 }
