@@ -6,7 +6,7 @@
 module.exports = function formatStringArray(stringArray) {
 
   return stringArray
-    .map((string) => { return string.toUpperCase().replace(/\s+/g, ""); })
-    .filter((value) => { return value !== ""; });
+    .map(string => string.toUpperCase().replace(/\s+/g, ""))
+    .filter(value => value !== "");
 
 };
