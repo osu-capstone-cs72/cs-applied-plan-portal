@@ -19,7 +19,7 @@
     "brace-style": ["error", "1tbs", {"allowSingleLine": true}],
     "camelcase": ["error"],
     "comma-spacing": ["error"],
-    "curly": ["error", "multi-or-nest", "consistent"],
+    "curly": ["error", "all"],
     "eqeqeq": ["error", "smart"],
     "indent": ["error", 2, {"SwitchCase": 1}],
     "key-spacing": ["error"],
