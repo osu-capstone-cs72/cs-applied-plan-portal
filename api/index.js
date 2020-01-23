@@ -15,7 +15,7 @@ app.use("/plan", require("./plan"));
 app.use(bodyParser.json());
 
 // statically serve files from the public directory
-app.use(express.static("views/public"));
+app.use(express.static("src/public"));
 
 // everything else gets a 404 error
 app.get("*", (req, res) => {
