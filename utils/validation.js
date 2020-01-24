@@ -51,7 +51,7 @@ function userConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (!results.length) {
+        if (results.length === 0) {
           reject([userId, planName, courses, "", 1]);
         } else {
           resolve([userId, planName, courses, "", 0]);
@@ -77,7 +77,7 @@ function studentConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (!results.length) {
+        if (results.length  === 0) {
           reject([userId, planName, courses, "", 2]);
         } else {
           resolve([userId, planName, courses, "", 0]);
@@ -110,7 +110,7 @@ function zeroCourseConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    if (!courses.length) {
+    if (courses.length === 0) {
       reject([userId, planName, courses, "", 4]);
     } else {
       resolve([userId, planName, courses, "", 0]);
