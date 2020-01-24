@@ -334,52 +334,205 @@ paths:
     post:
       summary: Create a new applied Plan
       description: >
-        TODO: Complete this section while implementing this API route
+        Creates a new applied Plan in the database when a student submits one.
       operationId: createPlan
       tags:
         - Plan
+      requestBody:
+        required: true
+        description: A Plan object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plan'
+      responses:
+        '201':
+          description: Successfully added new Plan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    description: Unique ID of the Plan
+                    type: integer
+                    format: int64
+                    example: 72
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized request - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       summary: Update an applied Plan
       description: >
-        TODO: Complete this section while implementing this API route
+        Replaces an existing applied Plan with an updated one.
       operationId: updatePlan
       tags:
         - Plan
-
-    delete:
-      summary: Remove an applied Plan
-      description: >
-        TODO: Complete this section while implementing this API route
-      operationId: deletePlan
-      tags:
-        - Plan
+      requestBody:
+        required: true
+        description: A Plan object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plan'
+      responses:
+        '200':
+          description: Successfully updated Plan
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized request - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   '/plan/{planId}':
     get:
       summary: Fetch data about a specific applied Plan
       description: >
-        TODO: Complete this section while implementing this API route
+        Returns information about a specific applied Plan with the provided
+        `planId`.
       operationId: getPlanById
       tags:
         - Plan
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     patch:
       summary: Patch a specific Applied plan
       description: >
-        TODO: Complete this section while implementing this API route
-      opeartionId: patchPlanById
+        Performs a partial update to a specific applied Plan.
+      opeartionId: updatePlanById
       tags:
         - Plan
+      requestBody:
+        required: true
+        description: A Plan object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plan'
+      responses:
+        '200':
+          description: Successfully updated Plan
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Remove a specific applied Plan
+      description: >
+        Deletes an existing applied Plan from the database.
+      operationId: deletePlanById
+      tags:
+        - Plan
+      responses:
+        '204':
+          description: Successfully deleted Plan
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   '/plan/{planId}/comments':
     get:
       summary: Fetch a list of comments linked to an applied Plan
       description: >
-        TODO: Complete this section while implementing this API route
+        Returns a list of comments related to an applied Plan with the provided
+        `planId`.
       operationId: getCommentsOfPlan
       tags:
         - Plan
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /comment:
     post:
