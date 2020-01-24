@@ -49,14 +49,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized request - user not logged in
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
           content:
             application/json:
               schema:
@@ -86,7 +80,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized request - invalid credentials
+          description: Invalid credentials
           content:
             application/json:
               schema:
@@ -108,15 +102,15 @@ paths:
         - User
       responses:
         '200':
-          description: Successfully logged in
+          description: Successfully logged out
         '400':
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized request - user not logged in
+        '403':
+          description: Request not made by an authorized user
           content:
             application/json:
               schema:
@@ -151,14 +145,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '401':
-          description: Unauthorized request - user not logged in
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
           content:
             application/json:
               schema:
@@ -201,7 +189,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
           content:
             application/json:
               schema:
@@ -364,56 +352,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized request - user not logged in
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    put:
-      summary: Update an applied Plan
-      description: >
-        Replaces an existing applied Plan with an updated one.
-      operationId: updatePlan
-      tags:
-        - Plan
-      requestBody:
-        required: true
-        description: A Plan object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Plan'
-      responses:
-        '200':
-          description: Successfully updated Plan
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized request - user not logged in
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
           content:
             application/json:
               schema:
@@ -434,11 +374,26 @@ paths:
       operationId: getPlanById
       tags:
         - Plan
+      parameters:
+        - name: planId
+          in: path
+          description: ID of the plan to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
       responses:
         '200':
           description: Success
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `planId` not found
           content:
             application/json:
               schema:
@@ -451,12 +406,21 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     patch:
-      summary: Patch a specific Applied plan
+      summary: Partially update a specific Applied plan
       description: >
         Performs a partial update to a specific applied Plan.
-      opeartionId: updatePlanById
+      operationId: updatePartialPlanById
       tags:
         - Plan
+      parameters:
+        - name: planId
+          in: path
+          description: ID of the plan to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
       requestBody:
         required: true
         description: A Plan object
@@ -474,7 +438,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `planId` not found
           content:
             application/json:
               schema:
@@ -493,11 +463,26 @@ paths:
       operationId: deletePlanById
       tags:
         - Plan
+      parameters:
+        - name: planId
+          in: path
+          description: ID of the plan to remove
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
       responses:
         '204':
           description: Successfully deleted Plan
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `planId` not found
           content:
             application/json:
               schema:
@@ -518,11 +503,26 @@ paths:
       operationId: getCommentsOfPlan
       tags:
         - Plan
+      parameters:
+        - name: planId
+          in: path
+          description: ID of the plan to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
       responses:
         '200':
           description: Success
         '403':
-          description: Forbidden request
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `planId` not found
           content:
             application/json:
               schema:
