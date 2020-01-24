@@ -538,19 +538,84 @@ paths:
     post:
       summary: Create a new Comment
       description: >
-        TODO: Complete this section while implementing this API route
+        Creates a new Comment related to an Applied plan
       operationId: createComment
       tags:
         - Comment
+      requestBody:
+        required: true
+        description: A Comment object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Successfully added new Comment
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `planId` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
   '/comment/{commentId}':
     get:
       summary: Fetch data about a specific Comment
       description: >
-        TODO: Complete this section while implementing this API route
+        Returns information about a Comment with the provided `commentId`
       operationId: getCommentById
       tags:
         - Comment
+      parameters:
+        - name: commentId
+          in: path
+          description: ID of the Comment to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 72
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Request not made by an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Plan with the specified `commentId` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
