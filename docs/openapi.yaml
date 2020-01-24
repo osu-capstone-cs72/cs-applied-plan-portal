@@ -19,7 +19,7 @@ paths:
     post:
       summary: Create a new User
       description: >
-        TODO: Complete this section while implementing this API route
+        Creates a new User in the database.
       operationId: createUser
       tags:
         - User
@@ -49,6 +49,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized request - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '403':
           description: Forbidden request
           content:
@@ -66,19 +72,61 @@ paths:
     post:
       summary: Log a User in
       description: >
-        TODO: Complete this section while implementing this API route
+        Logs the user in via ONID.
       operationId: login
       tags:
         - User
+      responses:
+        '200':
+          description: Successfully logged in
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized request - invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /user/logout:
     post:
       summary: Log a User out
       description: >
-        TODO: Complete this section while implementing this API route
+        Logs a user out.
       operationId: logout
       tags:
         - User
+      responses:
+        '200':
+          description: Successfully logged in
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized request - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   '/user/{onid}':
     get:
@@ -103,6 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized request - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '403':
           description: Forbidden request
           content:
@@ -110,20 +164,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: User with the specified `userId` not found
+          description: User with the specified `onid` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  '/user/{onid}/plan':
+  '/user/{onid}/plans':
     get:
       summary: Fetch a list of applied Plan that belong to this User
       description: >
-        TODO: Complete this section while implementing this API route
+        Fetches all applied Plans a specific User is completing/reviewing,
+        depending on the role of that User in the system.
       operationId: getPlansOfUser
       tags:
         - User
+      parameters:
+        - name: onid
+          in: path
+          description: ONID of the User to fetch
+          required: true
+          schema:
+            type: string
+          example: doejohn
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User with the specified `onid` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   '/course/{courseId}':
     get:
