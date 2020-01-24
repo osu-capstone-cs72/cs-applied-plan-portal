@@ -12,7 +12,8 @@ const savePlan = require("../models/plan").savePlan;
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
 const CREDITS_MIN = validation.CREDITS_MIN;
-let message = "";
+let message = "An internal server error occurred. Please try again later.";
+let status = 500;
 
 // user submits a plan
 app.post("/", (req, res) => {
@@ -34,59 +35,71 @@ app.post("/", (req, res) => {
           savePlan(userId, planName, courses)
             .then(() => {
               console.log("Plan submitted - 200\n");
-              res.status(200).send("Plan submitted.");
+              message = "Plan submitted.";
+              status = 200;
             })
             .catch((err) => {
               console.log("An internal server error occurred - 500\n Error:", err);
-              res.status(500).send("An internal server error occurred. Please try again later.");
+              message = "An internal server error occurred. Please try again later.";
+              status = 500;
             });
           break;
         case 1:
           console.log("Constraint Violated: The user does not exist - 400\n");
           message = "Invalid user ID. Unable to submit plan.";
+          status = 400;
           break;
         case 2:
           console.log("Constraint Violated: The user is not a student - 400\n");
           message = "Only students can submit plans.";
+          status = 400;
           break;
         case 3:
           console.log("Constraint Violated: Invalid plan name length - 400\n");
           message = `The plan name must be between ${NAME_MIN} and ${NAME_MAX} characters long.`;
+          status = 400;
           break;
         case 4:
           console.log("Constraint Violated: No courses selected - 400\n");
           message = "No courses selected.";
+          status = 400;
           break;
         case 5:
           console.log("Constraint Violated: A course was selected more than once - 400\n");
           message = "A course was selected more than once.";
+          status = 400;
           break;
         case 6:
           console.log("Constraint Violated: At least one course is invalid - 400\n");
           message = "At least one selected course is invalid.";
+          status = 400;
           break;
         case 7:
           console.log("Constraint Violated: A required course was selected - 400\n");
           message = "A required course was selected.";
+          status = 400;
           break;
         case 8:
           console.log("Constraint Violated: A graduate or professional/technical course was selected - 400\n");
           message = "A graduate or professional/technical course was selected.";
+          status = 400;
           break;
         case 9:
           console.log(`Constraint Violated: Less than ${CREDITS_MIN} credits selected - 400\n`);
           message = `Less than ${CREDITS_MIN} credits selected.`;
+          status = 400;
           break;
         default:
           console.log("An internal server error occurred - 500\n");
-          res.status(500).send("An internal server error occurred. Please try again later.");
+          let message = "An internal server error occurred. Please try again later.";
+          let status = 500;
           break;
       }
-      res.status(400).send(message);
+      res.status(status).send(message);
     })
     .catch((err) => {
       console.log("An internal server error occurred - 500\n Error:", err);
-      res.status(500).send("An internal server error occurred. Please try again later.");
+      res.status(status).send(message);
     });
 
 });
