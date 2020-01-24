@@ -1,6 +1,6 @@
 # View this document on https://editor.swagger.io.
 
-openapi: 3.0.0
+openapi: 3.0.2
 
 info:
   description: >
@@ -15,41 +15,49 @@ info:
     url: 'https://github.com/osu-capstone-cs72/cs-applied-plan-portal/blob/master/LICENSE'
 
 paths:
-  /users/login:
+  /user:
+    post:
+      summary: Create a new User
+      description: >
+        TODO: Complete this section while implementing this API route
+      operationId: createUser
+      tags:
+        - User
+
+  /user/login:
     post:
       summary: Log a User in
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: login
       tags:
-        - Users
+        - User
 
-  /users/logout:
+  /user/logout:
     post:
       summary: Log a User out
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: logout
       tags:
-        - Users
+        - User
 
-  '/users/{userId}':
+  '/user/{onid}':
     get:
       summary: Fetch data about a specific User
       description: >
-        Returns information about a User with the provided `userId`.
-      operationId: getUserById
+        Returns information about a User with the provided `onid`.
+      operationId: getUserByOnid
       tags:
-        - Users
+        - User
       parameters:
-        - name: userId
+        - name: onid
           in: path
-          description: ID of the User to fetch
+          description: ONID of the User to fetch
           required: true
           schema:
-            type: integer
-            format: int64
-          example: 72
+            type: string
+          example: doejohn
       responses:
         '200':
           description: Success
@@ -70,126 +78,110 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  '/users/{userId}/plans':
+  '/user/{onid}/plan':
     get:
-      summary: Fetch a list of applied Plans that belong to this User
+      summary: Fetch a list of applied Plan that belong to this User
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getPlansOfUser
       tags:
-        - Users
+        - User
 
-  /courses:
-    get:
-      summary: Fetch a list containing all Courses
-      description: >
-        TODO
-      operationId: getAllCourses
-      tags:
-        - Courses
-
-    post:
-      summary: Create a new Course
-      description: >
-        TODO
-      operationId: createCourse
-      tags:
-        - Courses
-
-    put:
-      summary: Update a Course
-      description: >
-        TODO
-      operationId: updateCourse
-      tags:
-        - Courses
-
-    delete:
-      summary: Remove a Course
-      description: >
-        TODO
-      operationId: deleteCourse
-      tags:
-        - Courses
-
-  '/courses/{courseId}':
+  '/course/{courseId}':
     get:
       summary: Fetch data about a specific Course
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getCourseById
       tags:
-        - Courses
+        - Course
 
-  '/courses/{courseCode}':
+  '/course/{courseCode}':
     get:
-      summary: Fetch data about a specific Course based on a course code
+      summary: Fetch data about a specific Course based on course code
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getCourseByCode
       tags:
-        - Courses
+        - Course
 
-  /plans:
+  '/course/{courseName}':
+    get:
+      summary: Fetch data about a specific Course based on course name
+      description: >
+        TODO: Complete this section while implementing this API route
+      operationId: getCourseByName
+      tags:
+        - Course
+
+  /plan:
     post:
       summary: Create a new applied Plan
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: createPlan
       tags:
-        - Plans
+        - Plan
 
     put:
       summary: Update an applied Plan
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: updatePlan
       tags:
-        - Plans
+        - Plan
 
     delete:
       summary: Remove an applied Plan
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: deletePlan
       tags:
-        - Plans
+        - Plan
 
-  '/plans/{planId}':
+  '/plan/{planId}':
     get:
       summary: Fetch data about a specific applied Plan
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getPlanById
       tags:
-        - Plans
+        - Plan
 
-  '/plans/{planId}/comments':
+    patch:
+      summary: Patch a specific Applied plan
+      description: >
+        TODO: Complete this section while implementing this API route
+      opeartionId: patchPlanById
+      tags:
+        - Plan
+
+  '/plan/{planId}/comments':
     get:
       summary: Fetch a list of comments linked to an applied Plan
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getCommentsOfPlan
       tags:
-        - Plans
+        - Plan
 
-  /comments:
+  /comment:
     post:
       summary: Create a new Comment
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: createComment
       tags:
-        - Comments
+        - Comment
 
-  '/comments/{commentId}':
+  '/comment/{commentId}':
     get:
       summary: Fetch data about a specific Comment
       description: >
-        TODO
+        TODO: Complete this section while implementing this API route
       operationId: getCommentById
       tags:
-        - Comments
+        - Comment
 
 components:
   schemas:
@@ -361,11 +353,11 @@ components:
             $ref: '#/components/schemas/User'
 
 tags:
-  - name: Users
+  - name: User
     description: API endpoints related to application Users
-  - name: Courses
+  - name: Course
     description: API endpoints related to Courses
-  - name: Plans
+  - name: Plan
     description: API endpoints related to applied Plans
-  - name: Comments
-    description: API endpoints related to the Comments
+  - name: Comment
+    description: API endpoints related to Comments
