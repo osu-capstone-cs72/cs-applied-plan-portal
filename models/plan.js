@@ -10,7 +10,9 @@ function savePlan(userId, planName, courses) {
     .then((planData) => insertSelectedCourses(planData[0], planData[1]))
     .then(() => console.log("Plan saved"))
     .catch((planData) => {
-      if (planData[0]) deletePlan(planData[0]);
+      if (planData[0]) {
+        deletePlan(planData[0]);
+      }
       console.log(planData[2]);
       throw Error(planData[2]);
     });
