@@ -160,7 +160,7 @@ paths:
 
   '/user/{onid}/plans':
     get:
-      summary: Fetch a list of applied Plan that belong to this User
+      summary: Fetch a list of applied Plans that belong to this User
       description: >
         Fetches all applied Plans a specific User is completing/reviewing,
         depending on the role of that User in the system.
@@ -400,7 +400,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     patch:
-      summary: Partially update a specific Applied plan
+      summary: Partially update a specific applied Plan
       description: >
         Performs a partial update to a specific applied Plan.
       operationId: updatePartialPlanById
