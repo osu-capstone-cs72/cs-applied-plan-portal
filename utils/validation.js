@@ -14,27 +14,13 @@ const pool = require("./mysqlPool").pool;
 function enforceConstraints(userId, planName, courses) {
 
   return userConstraint(userId, planName, courses)
-    .then((conData) => {
-      return studentConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return planNameConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return zeroCourseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return duplicateCourseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return courseConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return restrictionConstraint(conData[0], conData[1], conData[2]);
-    })
-    .then((conData) => {
-      return creditConstraint(conData[0], conData[1], conData[2]);
-    })
+    .then((conData) => studentConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => planNameConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => zeroCourseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => duplicateCourseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => courseConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => restrictionConstraint(conData[0], conData[1], conData[2]))
+    .then((conData) => creditConstraint(conData[0], conData[1], conData[2]))
     .then(() => {
       console.log("Plan does not violate any constraints");
       return 0;
@@ -47,7 +33,6 @@ function enforceConstraints(userId, planName, courses) {
         console.log("Error while trying to check constraints");
         throw Error(conData[3]);
       }
-
     });
 
 }
@@ -66,10 +51,11 @@ function userConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (!results.length)
+        if (results.length === 0) {
           reject([userId, planName, courses, "", 1]);
-        else
+        } else {
           resolve([userId, planName, courses, "", 0]);
+        }
 
       }
     });
@@ -91,10 +77,11 @@ function studentConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (!results.length)
+        if (results.length  === 0) {
           reject([userId, planName, courses, "", 2]);
-        else
+        } else {
           resolve([userId, planName, courses, "", 0]);
+        }
 
       }
     });
@@ -108,10 +95,11 @@ function planNameConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    if (planName.length < NAME_MIN || planName.length > NAME_MAX)
+    if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
       reject([userId, planName, courses, "", 3]);
-    else
+    } else {
       resolve([userId, planName, courses, "", 0]);
+    }
 
   });
 
@@ -122,10 +110,11 @@ function zeroCourseConstraint(userId, planName, courses) {
 
   return new Promise((resolve, reject) => {
 
-    if (!courses.length)
+    if (courses.length === 0) {
       reject([userId, planName, courses, "", 4]);
-    else
+    } else {
       resolve([userId, planName, courses, "", 0]);
+    }
 
   });
 
@@ -174,10 +163,11 @@ function courseConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (results[0].valid !== courses.length)
+        if (results[0].valid !== courses.length) {
           reject([userId, planName, courses, "", 6]);
-        else
+        } else {
           resolve([userId, planName, courses, "", 0]);
+        }
 
       }
     });
@@ -210,10 +200,13 @@ function restrictionConstraint(userId, planName, courses) {
       } else {
 
         if (results.length) {
-          if (results[0].restriction === 1)
+
+          if (results[0].restriction === 1) {
             reject([userId, planName, courses, "", 7]);
-          else
+          } else {
             reject([userId, planName, courses, "", 8]);
+          }
+
         } else {
           resolve([userId, planName, courses, "", 0]);
         }
@@ -248,10 +241,11 @@ function creditConstraint(userId, planName, courses) {
         reject([userId, planName, courses, err, 0]);
       } else {
 
-        if (results[0].sumCredits < CREDITS_MIN)
+        if (results[0].sumCredits < CREDITS_MIN) {
           reject([userId, planName, courses, "", 9]);
-        else
+        } else {
           resolve([userId, planName, courses, "", 0]);
+        }
 
       }
     });

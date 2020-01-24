@@ -2,20 +2,16 @@
 // Description: handles routing for plans
 
 require("path");
-const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 
 const formatStringArray = require("../utils/format");
 const validation = require("../utils/validation");
-const savePlan = require("../models/plan");
+const savePlan = require("../models/plan").savePlan;
 
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
 const CREDITS_MIN = validation.CREDITS_MIN;
-
-// parse request bodies as JSON
-app.use(bodyParser.json());
 
 // user submits a plan
 app.post("/", (req, res) => {
@@ -39,14 +35,14 @@ app.post("/", (req, res) => {
               console.log("Plan submitted - 200\n");
               res.status(200).send("Plan submitted.");
             })
-            .catch(() => {
-              console.log("An internal server error occurred - 500\n");
+            .catch((err) => {
+              console.log("An internal server error occurred - 500\n Error:", err);
               res.status(500).send("An internal server error occurred. Please try again later.");
             });
           break;
         case 1:
           console.log("Constraint Violated: The user does not exist - 400\n");
-          res.status(400).send("Invalid user ID. Unable to submit plan.");
+          res.status(400).send("Invalid ONID. Unable to submit plan.");
           break;
         case 2:
           console.log("Constraint Violated: The user is not a student - 400\n");
@@ -54,8 +50,8 @@ app.post("/", (req, res) => {
           break;
         case 3:
           console.log("Constraint Violated: Invalid plan name length - 400\n");
-          res.status(400).send("The plan name must be between " + NAME_MIN +
-            " and " + NAME_MAX + " characters long.");
+          res.status(400).send(`The plan name must be between ${NAME_MIN} ` +
+            `and ${NAME_MAX} characters long.`);
           break;
         case 4:
           console.log("Constraint Violated: No courses selected - 400\n");
@@ -78,14 +74,17 @@ app.post("/", (req, res) => {
           res.status(400).send("A graduate or professional/technical course was selected.");
           break;
         case 9:
-          console.log("Constraint Violated: Less than " + CREDITS_MIN + " credits selected - 400\n");
-          res.status(400).send("Less than 32 credits selected.");
+          console.log(`Constraint Violated: Less than ${CREDITS_MIN} credits selected - 400\n`);
+          res.status(400).send(`Less than ${CREDITS_MIN} credits selected.`);
+          break;
+        default:
+          console.log("An internal server error occurred - 500\n");
+          res.status(500).send("An internal server error occurred. Please try again later.");
           break;
       }
-
     })
-    .catch(() => {
-      console.log("An internal server error occurred - 500\n");
+    .catch((err) => {
+      console.log("An internal server error occurred - 500\n Error:", err);
       res.status(500).send("An internal server error occurred. Please try again later.");
     });
 
