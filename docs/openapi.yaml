@@ -23,6 +23,44 @@ paths:
       operationId: createUser
       tags:
         - User
+      requestBody:
+        required: true
+        description: A User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Successfully added new User
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    description: Unique ID of the User
+                    type: integer
+                    format: int64
+                    example: 72
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /user/login:
     post:
@@ -66,7 +104,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '403':
-          description: Unauthorized request
+          description: Forbidden request
           content:
             application/json:
               schema:
