@@ -7,12 +7,13 @@ const app = express();
 const getCourse = require("../models/course").getCourse;
 
 // user requests course data
-app.get("/:courseCode", (req, res) => {
+app.get("/:mode/:searchText", (req, res) => {
 
   console.log("User searching for courses");
-  const courseCode = req.params.courseCode;
+  const searchText = req.params.searchText;
+  const mode = req.params.mode;
 
-  getCourse(courseCode, "courseCode")
+  getCourse(searchText, mode)
     .then((results) => {
       if (results.length === 0) {
         console.log("No courses found - 404\n");
