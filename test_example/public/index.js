@@ -31,8 +31,13 @@ function submitPlan(courseCode) {
       alert("Error submitting plan:\n" + event.target.response);
     } else {
       alert("Response:\n" + event.target.response);
+
+      // turn the result into an object
       const obj = JSON.parse(event.target.response);
-      console.log(obj.credits, obj.courseName, obj.courseCode, obj.restriction);
+
+      // if I want to access some data from the first result...
+      console.log(obj[0].credits, obj[0].courseName, obj[0].courseCode);
+
       clearInputs();
     }
   });

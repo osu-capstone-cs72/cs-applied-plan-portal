@@ -13,10 +13,10 @@ function getCourse(searchText, mode) {
     let sql = "SELECT * FROM Course WHERE courseId = ?;";
     switch (mode) {
       case "courseCode":
-        sql = "SELECT * FROM Course WHERE courseCode = ?;";
+        sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT(?, '%');";
         break;
       case "courseName":
-        sql = "SELECT * FROM Course WHERE courseName = ?;";
+        sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT(?, '%');";
         break;
     }
 
@@ -31,7 +31,8 @@ function getCourse(searchText, mode) {
         if (results.length === 0) {
           resolve(results);
         } else {
-          resolve(results[0]);
+          console.log(results);
+          resolve(results);
         }
 
       }
