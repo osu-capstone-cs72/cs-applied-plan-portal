@@ -2,22 +2,22 @@
 // Description: handles routing for courses
 
 require("path");
-const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 
-// parse request bodies as JSON
-app.use(bodyParser.json());
+// user requests course data
+app.get("/:courseCode", (req, res) => {
 
-// user requests a course
-app.get("/", (req, res) => {
+  const courseCode = req.params.courseCode;
 
   const text = `{
     "credits":4,
     "courseName":"Web Development",
     "courseCode":"CS290",
-    "restriction":0
-    }`;
+    "restriction":0,
+    "description": "How to design and implement a multi-tier.",
+    "Prerequisites": "CS 162 or 165."
+  }`;
 
   const obj = JSON.parse(text);
 

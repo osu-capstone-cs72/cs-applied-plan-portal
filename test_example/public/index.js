@@ -20,14 +20,10 @@ function clearInputs() {
 function submitPlan(courseCode) {
 
   const postRequest = new XMLHttpRequest();
-  const postURL = "/course";
+  const postURL = `/course/${courseCode}`;
   postRequest.open("GET", postURL);
+  console.log(postURL);
 
-  const postObj = {
-    courseCode: courseCode
-  };
-
-  const requestBody = JSON.stringify(postObj);
   postRequest.setRequestHeader("Content-Type", "application/json");
 
   postRequest.addEventListener("load", (event) => {
@@ -41,8 +37,7 @@ function submitPlan(courseCode) {
     }
   });
 
-  postRequest.send(requestBody);
-  console.log("postRequest:", requestBody);
+  postRequest.send();
 }
 
 // user clicks on the "Submit Plan" button
