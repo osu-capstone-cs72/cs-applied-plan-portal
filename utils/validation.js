@@ -129,8 +129,9 @@ function duplicateCourseConstraint(userId, planName, courses) {
 
     for (let i = 0; i < courses.length; ++i) {
       const courseCode = courses[i];
-      if (courseCode in seenCourses)
+      if (courseCode in seenCourses) {
         reject([userId, planName, courses, "", 5]);
+      }
       seenCourses[courseCode] = true;
     }
 

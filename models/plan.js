@@ -82,6 +82,7 @@ function insertSelectedCourses(planId, courses) {
 function deletePlan(planId) {
 
   return new Promise((resolve, reject) => {
+
     // delete the plan
     const sql = "DELETE FROM Plan WHERE planId=?;";
     pool.query(sql, planId, (err) => {
