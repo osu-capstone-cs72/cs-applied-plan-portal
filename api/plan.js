@@ -90,9 +90,4 @@ app.post("/", (req, res) => {
 
 });
 
-// everything else gets a 404 error
-app.get("*", (req, res) => {
-  res.status(404).send("Not found");
-});
-
 module.exports = app;
