@@ -27,14 +27,7 @@ function getCourse(searchText, mode) {
         console.log("Error searching for course");
         reject(err);
       } else {
-
-        if (results.length === 0) {
-          resolve(results);
-        } else {
-          console.log(results);
-          resolve(results);
-        }
-
+        resolve(results);
       }
     });
 
