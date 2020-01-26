@@ -8,6 +8,7 @@ const app = express();
 const formatStringArray = require("../utils/format");
 const validation = require("../utils/validation");
 const savePlan = require("../models/plan").savePlan;
+const getPlan = require("../models/plan").getPlan;
 
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
@@ -81,6 +82,29 @@ app.post("/", (req, res) => {
           console.log("An internal server error occurred - 500\n");
           res.status(500).send("An internal server error occurred. Please try again later.");
           break;
+      }
+    })
+    .catch((err) => {
+      console.log("An internal server error occurred - 500\n Error:", err);
+      res.status(500).send("An internal server error occurred. Please try again later.");
+    });
+
+});
+
+// user gets a plan
+app.get("/:planId", (req, res) => {
+
+  console.log("User viewing plan");
+  const planId = req.params.planId;
+
+  getPlan(planId)
+    .then((results) => {
+      if (results.length === 0) {
+        console.log("No plan found - 404\n");
+        res.status(404).send("No plan found.");
+      } else {
+        console.log("Plan found - 200\n");
+        res.status(200).send(results);
       }
     })
     .catch((err) => {
