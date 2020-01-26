@@ -20,6 +20,32 @@ function savePlan(userId, planName, courses) {
 }
 exports.savePlan = savePlan;
 
+// get all data for a specific plan, including selected courses
+function getPlan(planId) {
+
+  return new Promise((resolve, reject) => {
+
+    const sql = "SELECT * FROM Plan NATURAL JOIN SelectedCourse WHERE planId = ?;";
+    pool.query(sql, [planId], (err, results) => {
+      if (err) {
+        console.log("Error searching for plan");
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+
+  })
+    .then((results) => {
+      return results;
+    })
+    .catch((err) => {
+      throw Error(err);
+    });
+
+}
+exports.getPlan = getPlan;
+
 // save basic plan information such as the student id and the plan name
 function insertPlan(userId, planName, courses) {
 
