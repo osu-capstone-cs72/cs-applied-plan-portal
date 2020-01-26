@@ -2,6 +2,34 @@
 // Description: data functions that handle plans
 
 const pool = require("../utils/mysqlPool").pool;
+const {Type} = require("../utils/type");
+
+// Schema of an applied Plan used for the validator and the database.
+const planSchema = {
+  status: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 4
+  },
+  planName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50
+  },
+  studentId: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity
+  },
+  lastUpdated: {
+    required: true,
+    type: Type.timestamp
+  }
+};
+exports.planSchema = planSchema;
 
 // save a plan with its selected courses. remove the plan if an error occurs
 function savePlan(userId, planName, courses) {
