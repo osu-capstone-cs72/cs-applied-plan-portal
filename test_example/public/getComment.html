@@ -18,13 +18,17 @@
         </header>
 
         <main class="content">
-          <h1> Example of requests and responses from server </h1>
-          <a href="/addPlan.html">Submiting a plan</a>
-          <a href="/getCourse.html">Getting information about courses</a>
-          <a href="/planList.html">Getting a list of plans created by a user</a>
-          <a href="/getComment.html">Get a comment by ID</a>
+
+            <form id="plan-form">
+                Comment ID:<br>
+                <input type="text" name="user-id" id="course-code"><br>
+            </form>
+
+            <button type="button" id="submit-button">Get comment</button>
 
         </main>
 
     </body>
+
+    <script src="getComment.js" charset="utf-8"></script>
 </html>
