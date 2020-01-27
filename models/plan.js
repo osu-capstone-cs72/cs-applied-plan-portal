@@ -46,6 +46,33 @@ function getPlan(planId) {
 }
 exports.getPlan = getPlan;
 
+// get all comments from a plan
+function getPlanComments(planId) {
+
+  return new Promise((resolve, reject) => {
+
+    const sql = "SELECT * FROM Comment WHERE planId = ?;";
+    pool.query(sql, [planId], (err, results) => {
+
+      if (err) {
+        console.log("Error searching for comments");
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+
+  })
+    .then((results) => {
+      return results;
+    })
+    .catch((err) => {
+      throw Error(err);
+    });
+
+}
+exports.getPlanComments = getPlanComments;
+
 // save basic plan information such as the student id and the plan name
 function insertPlan(userId, planName, courses) {
 
