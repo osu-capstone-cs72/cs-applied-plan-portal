@@ -20,7 +20,7 @@ function clearInputs() {
 function submitPlan(courseCode) {
 
   const postRequest = new XMLHttpRequest();
-  const postURL = `/comment/${courseCode}`;
+  const postURL = `/plan/${courseCode}/comment`;
   postRequest.open("GET", postURL);
   console.log(postURL);
 

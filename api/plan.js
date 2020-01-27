@@ -9,6 +9,7 @@ const formatStringArray = require("../utils/format");
 const validation = require("../utils/validation");
 const savePlan = require("../models/plan").savePlan;
 const getPlan = require("../models/plan").getPlan;
+const getPlanComments = require("../models/plan").getPlanComments;
 
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
@@ -104,6 +105,29 @@ app.get("/:planId", (req, res) => {
         res.status(404).send("No plan found.");
       } else {
         console.log("Plan found - 200\n");
+        res.status(200).send(results);
+      }
+    })
+    .catch((err) => {
+      console.log("An internal server error occurred - 500\n Error:", err);
+      res.status(500).send("An internal server error occurred. Please try again later.");
+    });
+
+});
+
+// get all of the comments from a plan
+app.get("/:planId/comment", (req, res) => {
+
+  console.log("View plan comments");
+  const planId = req.params.planId;
+
+  getPlanComments(planId)
+    .then((results) => {
+      if (results.length === 0) {
+        console.log("No comments found - 404\n");
+        res.status(404).send("No comments found.");
+      } else {
+        console.log("Comments found - 200\n");
         res.status(200).send(results);
       }
     })
