@@ -21,3 +21,9 @@ header {
 input {
   margin: 10px;
 }
+
+/* links */
+a {
+  display: block;
+  padding: 20px;
+}
