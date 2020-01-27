@@ -21,7 +21,7 @@ const planSchema = {
   studentId: {
     required: true,
     type: Type.integer,
-    minValue: 0,
+    minValue: 1,
     maxValue: Infinity
   },
   lastUpdated: {

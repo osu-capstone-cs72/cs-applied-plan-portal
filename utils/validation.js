@@ -15,27 +15,37 @@ exports.CREDITS_MIN = CREDITS_MIN;
 // Validates an object against a provided schema.
 //
 // Note:
-// - An object can have properties that are not in the schema and can still
-//   be valid. Extra properties not in schema are ignored in sanitization.
+// - An object can have properties that are not in the schema and can still be
+//   valid.
 //
-// - For request bodies coming from PATCH requests, not all required properties
-//   are provided. In these cases, this function checks for "some" required
-//   keys instead of "every" key against the schema.
-function validateAgainstSchema(obj, schema, isPatch = false) {
-  if (isPatch) {
-    // object is valid if it exists and there must exist a property in object
-    // that is also in the schema and is valid within that schema
-    return obj && Object.keys(obj).some(key => {
-      hasProperty(schema, key) && validateProperty(obj, key, schema);
-    });
+// - Extra properties not in schema are ignored and are not included in the
+//   sanitized object.
+//
+// - For partial objects (e.g. usually those come from PATCH requests), not all
+//   properties are provided. In these cases, this function ignores keys not in
+//   the schema and only validates the rest.
+function validateAgainstSchema(obj, schema, isPartialObj = false) {
+  if (isPartialObj) {
+    // object is valid if
+    return ( // it is an object
+      obj === Object(obj) &&
+      // and for every property in the object, the property is not in
+      // the schema or satisfies the schema if required
+      Object.keys(obj).every(key =>
+        !hasProperty(schema, key) || validateProperty(obj, key, schema)
+      )
+    );
   } else {
-    // object is valid if it exists and for every required property in schema,
-    // the object must also have that key
-    return obj && Object.keys(schema).every(key => {
-      // a property is valid if it's not required by the schema,
-      // otherwise it must pass the validation
-      !schema[key].required || validateProperty(obj, key, schema);
-    });
+    // object is valid if
+    return (
+      // it is an object
+      obj === Object(obj) &&
+      // and for every property in the schema, the property is not required by
+      // the schema or satisfies the schema if required
+      Object.keys(schema).every(key =>
+        !schema[key].required || validateProperty(obj, key, schema)
+      )
+    );
   }
 }
 exports.validateAgainstSchema = validateAgainstSchema;
@@ -68,6 +78,8 @@ function validateProperty(obj, property, schema) {
       return validator.isISO8601(obj[property] + "", {
         strict: true
       });
+
+    // fail-safe; if property is not of the allowed types, it's not valid
     default:
       return false;
   }
@@ -79,18 +91,20 @@ function validateProperty(obj, property, schema) {
 // Note:
 // - This function assumes the object has been validated against the schema.
 // - This function does not support nested objects or with arrays inside.
-function sanitizeObject(obj, schema) {
-  const sanitizedObj = {};
+function sanitizeUsingSchema(obj, schema) {
+  const validObj = {};
   if (obj) {
+    // since this function assumes the object has been validated against the
+    // schema, a property is valid if it is in the schema
     Object.keys(schema).forEach(key => {
       if (hasProperty(obj, key)) {
-        sanitizedObj[key] = obj[key];
+        validObj[key] = obj[key];
       }
     });
   }
-  return sanitizedObj;
+  return validObj;
 }
-exports.sanitizeObject = sanitizeObject;
+exports.sanitizeUsingSchema = sanitizeUsingSchema;
 
 // checks that the submitted form data does not violate any constraints
 // returns a value that can be used to identify which constraint was violated
