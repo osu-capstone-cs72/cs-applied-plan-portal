@@ -6,10 +6,10 @@ const express = require("express");
 const app = express();
 const getCourse = require("../models/course").getCourse;
 
-// user requests course data
+// search for course data
 app.get("/:mode/:searchText", (req, res) => {
 
-  console.log("User searching for courses");
+  console.log("Search for course data");
   const searchText = req.params.searchText;
   const mode = req.params.mode;
 

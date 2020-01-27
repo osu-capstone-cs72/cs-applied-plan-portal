@@ -7,11 +7,11 @@ const app = express();
 
 const getComment = require("../models/comment").getComment;
 
-// get a comment by id
+// get comment by id
 app.get("/:commentId", (req, res) => {
 
   const commentId = req.params.commentId;
-  console.log("Viewing comment", commentId);
+  console.log("Get comment", commentId);
 
   getComment(commentId)
     .then((results) => {

@@ -15,11 +15,11 @@ const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
 const CREDITS_MIN = validation.CREDITS_MIN;
 
-// user submits a plan
+// submit a plan
 app.post("/", (req, res) => {
 
   // define the user form data
-  console.log("New plan submitted");
+  console.log("Submit a plan");
   const userId = req.body.userId;
   const planName = req.body.planName;
   const courses = formatStringArray([req.body.course1, req.body.course2,
@@ -34,8 +34,8 @@ app.post("/", (req, res) => {
         case 0:
           savePlan(userId, planName, courses)
             .then(() => {
-              console.log("Plan submitted - 200\n");
-              res.status(200).send("Plan submitted.");
+              console.log("Plan saved - 200\n");
+              res.status(200).send("Plan saved.");
             })
             .catch((err) => {
               console.log("An internal server error occurred - 500\n Error:", err);
@@ -92,11 +92,11 @@ app.post("/", (req, res) => {
 
 });
 
-// user gets a plan
+// view plan
 app.get("/:planId", (req, res) => {
 
-  console.log("User viewing plan");
   const planId = req.params.planId;
+  console.log("View plan", planId);
 
   getPlan(planId)
     .then((results) => {
@@ -115,10 +115,10 @@ app.get("/:planId", (req, res) => {
 
 });
 
-// get all of the comments from a plan
+// get a plans comments
 app.get("/:planId/comment", (req, res) => {
 
-  console.log("View plan comments");
+  console.log("Get a plans comments");
   const planId = req.params.planId;
 
   getPlanComments(planId)

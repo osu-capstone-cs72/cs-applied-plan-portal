@@ -7,11 +7,11 @@ const app = express();
 
 const getUserPlans = require("../models/user").getUserPlans;
 
-// user gets a list of their plans
+// get all of the plans created by user
 app.get("/:userId/plan", (req, res) => {
 
   const userId = req.params.userId;
-  console.log("Viewing list of plans for user", userId);
+  console.log("Get all of the plans created by user", userId);
 
   getUserPlans(userId)
     .then((results) => {
