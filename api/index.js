@@ -9,7 +9,7 @@ const app = express();
 // parse request bodies as JSON
 app.use(bodyParser.json());
 
-// app.use("/comment", require("./comment"));
+app.use("/comment", require("./comment"));
 app.use("/course", require("./course"));
 app.use("/plan", require("./plan"));
 app.use("/user", require("./user"));
