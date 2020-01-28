@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql3.freesqldatabase.com
--- Generation Time: Jan 25, 2020 at 01:02 AM
+-- Generation Time: Jan 28, 2020 at 08:43 PM
 -- Server version: 5.5.54-0ubuntu0.12.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.3
 
@@ -35,6 +35,14 @@ CREATE TABLE `Comment` (
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Comment`
+--
+
+INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
+(1, 308, 1, '2020-01-27 21:59:27', 'This is my plan.'),
+(2, 308, 9, '2020-01-27 21:59:27', 'This plan looks good.');
 
 -- --------------------------------------------------------
 
@@ -97,6 +105,15 @@ CREATE TABLE `Plan` (
   `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `Plan`
+--
+
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `lastUpdated`) VALUES
+(308, 2, 'Luke\'s Plan', 1, '2020-01-26 04:57:57'),
+(309, 3, 'Han\'s Plan', 5, '2020-01-26 04:57:57'),
+(310, 2, 'Luke made another plan', 1, '2020-01-27 20:38:53');
+
 -- --------------------------------------------------------
 
 --
@@ -108,6 +125,13 @@ CREATE TABLE `PlanReview` (
   `advisorId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `PlanReview`
+--
+
+INSERT INTO `PlanReview` (`planId`, `advisorId`) VALUES
+(308, 9);
+
 -- --------------------------------------------------------
 
 --
@@ -118,6 +142,19 @@ CREATE TABLE `SelectedCourse` (
   `planId` int(11) NOT NULL,
   `courseId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `SelectedCourse`
+--
+
+INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
+(310, 7),
+(310, 9),
+(308, 14),
+(308, 15),
+(308, 16),
+(309, 19),
+(309, 22);
 
 -- --------------------------------------------------------
 
@@ -209,7 +246,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `Course`
 --
@@ -219,7 +256,7 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=308;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
 --
 -- AUTO_INCREMENT for table `User`
 --
@@ -233,7 +270,7 @@ ALTER TABLE `User`
 -- Constraints for table `Comment`
 --
 ALTER TABLE `Comment`
-  ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`),
+  ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
