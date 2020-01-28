@@ -14,6 +14,9 @@ exports.CREDITS_MIN = CREDITS_MIN;
 
 // Validates an object against a provided schema.
 //
+// Returns true if the object satisfies the schema. Returns false and logs
+// errors otherwise.
+//
 // Note:
 // - An object can have properties that are not in the schema and can still be
 //   valid.
@@ -24,64 +27,79 @@ exports.CREDITS_MIN = CREDITS_MIN;
 // - For partial objects (e.g. usually those come from PATCH requests), not all
 //   properties are provided. In these cases, this function ignores keys not in
 //   the schema and only validates the rest.
-function validateAgainstSchema(obj, schema, isPartialObj = false) {
-  if (isPartialObj) {
-    // object is valid if
-    return ( // it is an object
-      obj === Object(obj) &&
-      // and for every property in the object, the property is not in
-      // the schema or satisfies the schema if required
-      Object.keys(obj).every(key =>
-        !hasProperty(schema, key) || validateProperty(obj, key, schema)
-      )
-    );
-  } else {
-    // object is valid if
-    return (
-      // it is an object
-      obj === Object(obj) &&
-      // and for every property in the schema, the property is not required by
-      // the schema or satisfies the schema if required
-      Object.keys(schema).every(key =>
-        !schema[key].required || validateProperty(obj, key, schema)
-      )
-    );
-  }
-}
-exports.validateAgainstSchema = validateAgainstSchema;
-
-// Validates a single property of an object against a provided schema.
-//
-// The property should be already in the schema, but there's a fail-safe that
-// returns false if the schema doesn't have the property.
-function validateProperty(obj, property, schema) {
-  // fail-safe to avoid TypeError when reading property of `undefined`
-  if (!hasProperty(schema, property)) {
+function isValidToSchema(obj, schema, isPartialObj = false) {
+  if (obj !== Object(obj)) {
+    console.error("Constraint violated: Invalid input type");
     return false;
   }
 
+  if (isPartialObj) {
+    // object is valid if for every property in the object, the property is not
+    // in the schema or satisfies the schema if required
+    return Object.keys(obj).every(key =>
+      !hasProperty(schema, key) || isValidProperty(obj, key, schema)
+    );
+  } else {
+    // object is valid if for every property in the schema, the property is not
+    // required by the schema or satisfies the schema if required
+    return Object.keys(schema).every(key =>
+      !schema[key].required || isValidProperty(obj, key, schema)
+    );
+  }
+}
+exports.isValidToSchema = isValidToSchema;
+
+// Validates a single property of an object against a provided schema.
+//
+// Returns true if the property of the object is valid against the schema.
+// Returns false and logs errors otherwise.
+//
+// The property should be already in the schema, but there's a fail-safe that
+// returns false if the schema doesn't have the property.
+function isValidProperty(obj, property, schema) {
+  // fail-safe to avoid TypeError when reading property of `undefined`
+  if (!hasProperty(schema, property)) {
+    console.error(`Constraint violated: Property "${property}" not in schema`);
+    return false;
+  }
+
+  let isValid;
+
   switch (schema[property].type) {
     case Type.integer:
-      return validator.isInt(obj[property] + "", {
+      isValid = validator.isInt(obj[property] + "", {
         min: schema[property].minValue,
         max: schema[property].maxValue
       });
+      break;
 
     case Type.string:
-      return validator.isLength(obj[property] + "", {
+      isValid = validator.isLength(obj[property] + "", {
         min: schema[property].minLength,
         max: schema[property].maxLength
       });
+      break;
 
     case Type.timestamp:
       // time format must be ISO 8601, e.g. "2020-05-15T14:30:29Z"
-      return validator.isISO8601(obj[property] + "", {
+      isValid = validator.isISO8601(obj[property] + "", {
         strict: true
       });
+      break;
 
     // fail-safe; if property is not of the allowed types, it's not valid
     default:
-      return false;
+      isValid = false;
+      break;
+  }
+
+  // return true if pass the validator or log the error message
+  // and return false otherwise
+  if (isValid) {
+    return true;
+  } else {
+    console.error(schema[property].getErrorMessage());
+    return false;
   }
 }
 
