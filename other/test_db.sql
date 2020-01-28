@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql3.freesqldatabase.com
--- Generation Time: Jan 28, 2020 at 08:43 PM
+-- Generation Time: Jan 28, 2020 at 09:18 PM
 -- Server version: 5.5.54-0ubuntu0.12.04.1
 -- PHP Version: 7.0.33-0ubuntu0.16.04.3
 
@@ -42,7 +42,8 @@ CREATE TABLE `Comment` (
 
 INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (1, 308, 1, '2020-01-27 21:59:27', 'This is my plan.'),
-(2, 308, 9, '2020-01-27 21:59:27', 'This plan looks good.');
+(2, 308, 9, '2020-01-27 21:59:27', 'This plan looks good.'),
+(3, 309, 5, '2020-01-28 21:13:24', 'This is my plan.');
 
 -- --------------------------------------------------------
 
@@ -130,7 +131,8 @@ CREATE TABLE `PlanReview` (
 --
 
 INSERT INTO `PlanReview` (`planId`, `advisorId`) VALUES
-(308, 9);
+(308, 9),
+(309, 11);
 
 -- --------------------------------------------------------
 
@@ -246,7 +248,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `Course`
 --
@@ -283,7 +285,7 @@ ALTER TABLE `Plan`
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_planId_Review` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`),
+  ADD CONSTRAINT `fk_planId_Review` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`),
   ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`);
 
