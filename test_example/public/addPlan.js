@@ -71,7 +71,7 @@ function submitPlan(userId, planName, course1, course2, course3, course4,
   postRequest.setRequestHeader("Content-Type", "application/json");
 
   postRequest.addEventListener("load", (event) => {
-    if (event.target.status !== 200) {
+    if (event.target.status !== 201) {
       alert("Error submitting plan:\n" + event.target.response);
     } else {
       alert("Plan submitted successfully.");
