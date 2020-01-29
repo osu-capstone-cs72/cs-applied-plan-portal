@@ -1,5 +1,5 @@
-import React from 'react';
-import StudentCreatePlan from './StudentCreatePlan'
+import React from "react";
+import StudentCreatePlan from "./StudentCreatePlan";
 
 function App() {
   return (
