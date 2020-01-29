@@ -14,8 +14,9 @@ exports.CREDITS_MIN = CREDITS_MIN;
 
 // Validates an object against a provided schema.
 //
-// Returns true if the object satisfies the schema. Returns false and logs
-// errors otherwise.
+// Returns an empty string (a falsy value) if the object is valid to the schema.
+// Otherwise, returns a non-empty string (a truthy value) specifying the
+// validation error message.
 //
 // Note:
 // - An object can have properties that are not in the schema and can still be
@@ -27,44 +28,71 @@ exports.CREDITS_MIN = CREDITS_MIN;
 // - For partial objects (e.g. usually those come from PATCH requests), not all
 //   properties are provided. In these cases, this function ignores keys not in
 //   the schema and only validates the rest.
-function isValidToSchema(obj, schema, isPartialObj = false) {
+function getSchemaViolationMessage(obj, schema, isPartialObj = false) {
+  // return an error string if the input is not an object
   if (obj !== Object(obj)) {
-    console.error("Constraint violated: Invalid input type");
-    return false;
+    return "Constraint violated: Invalid input type\n\n";
   }
 
-  if (isPartialObj) {
-    // object is valid if for every property in the object, the property is not
-    // in the schema or satisfies the schema if required
-    return Object.keys(obj).every(key =>
-      !hasProperty(schema, key) || isValidProperty(obj, key, schema)
-    );
-  } else {
-    // object is valid if for every property in the schema, the property is not
-    // required by the schema or satisfies the schema if required
-    return Object.keys(schema).every(key =>
-      !schema[key].required || isValidProperty(obj, key, schema)
-    );
+  // return an error string if object doesn't have matching keys with schema
+  if (Object.keys(obj).every(key => !(key in schema))) {
+    return "Constraint violated: Input has no matching key with schema\n\n";
   }
+
+  // at this point, it is guaranteed that the object has some matching keys with
+  // the schema and possibly some keys that are not in the schema
+  let errorMessage = "";
+
+  if (isPartialObj) {
+    // partial-object case: for every property in the object
+    Object.keys(obj).forEach(key => {
+      // validate if property is in schema, otherwise ignore it
+      if (hasProperty(schema, key)) {
+        // append an error message if any or an empty string if no error
+        errorMessage += getPropertyViolationMessage(obj, key, schema);
+      }
+    });
+  } else {
+    // strict-object case: for every property in the schema
+    Object.keys(schema).forEach(key => {
+      // validate if property is required by schema, otherwise ignore it
+      if (schema[key].required) {
+        errorMessage += getPropertyViolationMessage(obj, key, schema);
+      }
+    });
+  }
+
+  // final result is still an empty string if there's no schema violation,
+  // otherwise it contains validation error messages separated by newlines
+  return errorMessage;
 }
-exports.isValidToSchema = isValidToSchema;
+exports.getSchemaViolationMessage = getSchemaViolationMessage;
 
 // Validates a single property of an object against a provided schema.
 //
-// Returns true if the property of the object is valid against the schema.
-// Returns false and logs errors otherwise.
+// Returns an empty string (a falsy value) if the property is valid to the
+// schema. Otherwise, returns a non-empty string (a truthy value) specifying the
+// validation error message.
 //
-// The property should be already in the schema, but there's a fail-safe that
-// returns false if the schema doesn't have the property.
-function isValidProperty(obj, property, schema) {
-  // fail-safe to avoid TypeError when reading property of `undefined`
+// Preconditions:
+// - Requires the property to be already in the schema.
+function getPropertyViolationMessage(obj, property, schema) {
+  // if property is not in the schema, return an error string
+  // (this should never happen)
   if (!hasProperty(schema, property)) {
-    console.error(`Constraint violated: Property "${property}" not in schema`);
-    return false;
+    return `Constraint violated: Property "${property}" not in schema\n\n`;
   }
 
+  // if object does not have the property at all, return an error string
+  if (!hasProperty(obj, property)) {
+    return `Constraint violated: Property "${property}" not in input\n\n`;
+  }
+
+  // at this point, it is guaranteed that both object and schema have a matching
+  // property
   let isValid;
 
+  // validate the property based on its type
   switch (schema[property].type) {
     case Type.integer:
       isValid = validator.isInt(obj[property] + "", {
@@ -81,26 +109,21 @@ function isValidProperty(obj, property, schema) {
       break;
 
     case Type.timestamp:
-      // time format must be ISO 8601, e.g. "2020-05-15T14:30:29Z"
+      // time format must be ISO 8601, e.g. "2020-12-31T23:59:59Z"
       isValid = validator.isISO8601(obj[property] + "", {
         strict: true
       });
       break;
 
-    // fail-safe; if property is not of the allowed types, it's not valid
+    // if property is not of the allowed types, it's not valid
     default:
       isValid = false;
       break;
   }
 
-  // return true if pass the validator or log the error message
-  // and return false otherwise
-  if (isValid) {
-    return true;
-  } else {
-    console.error(schema[property].getErrorMessage());
-    return false;
-  }
+  // return an empty string if pass the validator or return a non-empty error
+  // string otherwise
+  return isValid ? "" : (schema[property].getErrorMessage() + "\n\n");
 }
 
 // Sanitizes an object using a provided schema by extracting valid properties to
