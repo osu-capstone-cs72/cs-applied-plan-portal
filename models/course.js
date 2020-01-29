@@ -5,39 +5,26 @@ const pool = require("../utils/mysqlPool").pool;
 
 // search for a course using text and a mode setting
 // the mode can be courseId, courseCode, or courseName
-function getCourse(searchText, mode) {
+async function getCourse(searchText, mode) {
 
-  return new Promise((resolve, reject) => {
+  // set sql query based on mode
+  let sql = "SELECT * FROM Course WHERE courseId = ?;";
+  switch (mode) {
+    case "courseCode":
+      sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT(?, '%');";
+      break;
+    case "courseName":
+      sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT(?, '%');";
+      break;
+  }
 
-    // set sql query based on mode
-    let sql = "SELECT * FROM Course WHERE courseId = ?;";
-    switch (mode) {
-      case "courseCode":
-        sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT(?, '%');";
-        break;
-      case "courseName":
-        sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT(?, '%');";
-        break;
-    }
-
-    // excute sql query
-    pool.query(sql, [searchText], (err, results) => {
-
-      if (err) {
-        console.log("Error searching for course");
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-
-  })
-    .then((results) => {
-      return results;
-    })
-    .catch((err) => {
-      throw Error(err);
-    });
+  try {
+    const results = await pool.query(sql, [searchText]);
+    return results[0];
+  } catch (err) {
+    console.log("Error searching for course");
+    throw Error(err);
+  }
 
 }
 exports.getCourse = getCourse;
