@@ -12,6 +12,7 @@
     "express": "^4.17.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "mysql": "^2.17.1",
+    "mysql2": "^2.1.0",
     "path": "^0.12.7",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
