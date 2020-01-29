@@ -63,9 +63,6 @@ function getPlanComments(planId) {
     });
 
   })
-    .then((results) => {
-      return results;
-    })
     .catch((err) => {
       throw Error(err);
     });

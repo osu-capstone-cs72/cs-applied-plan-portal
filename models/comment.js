@@ -20,12 +20,33 @@ function getComment(commentId) {
     });
 
   })
-    .then((results) => {
-      return results;
-    })
     .catch((err) => {
       throw Error(err);
     });
 
 }
 exports.getComment = getComment;
+
+// create a new comment by its ID
+function createComment(planId, userId, text) {
+
+  return new Promise((resolve, reject) => {
+
+    const sql = "INSERT INTO Comment (planId, userId, text) VALUES (?, ?, ?);;";
+    pool.query(sql, [planId, userId, text], (err) => {
+
+      if (err) {
+        console.log("Error adding comment");
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+
+  })
+    .catch((err) => {
+      throw Error(err);
+    });
+
+}
+exports.createComment = createComment;
