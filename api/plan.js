@@ -10,6 +10,7 @@ const validation = require("../utils/validation");
 const savePlan = require("../models/plan").savePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlanComments = require("../models/plan").getPlanComments;
+const deletePlan = require("../models/plan").deletePlan;
 
 const NAME_MIN = validation.NAME_MIN;
 const NAME_MAX = validation.NAME_MAX;
@@ -34,8 +35,8 @@ app.post("/", (req, res) => {
         case 0:
           savePlan(userId, planName, courses)
             .then(() => {
-              console.log("Plan saved - 200\n");
-              res.status(200).send("Plan saved.");
+              console.log("Plan saved - 201\n");
+              res.status(201).send("Plan saved.");
             })
             .catch((err) => {
               console.log("An internal server error occurred - 500\n Error:", err);
@@ -106,6 +107,29 @@ app.get("/:planId", (req, res) => {
       } else {
         console.log("Plan found - 200\n");
         res.status(200).send(results);
+      }
+    })
+    .catch((err) => {
+      console.log("An internal server error occurred - 500\n Error:", err);
+      res.status(500).send("An internal server error occurred. Please try again later.");
+    });
+
+});
+
+// delete a plan
+app.delete("/:planId", (req, res) => {
+
+  const planId = req.params.planId;
+  console.log("Delete plan", planId);
+
+  deletePlan(planId)
+    .then((results) => {
+      if (results.affectedRows === 0) {
+        console.log("No plan found - 404\n");
+        res.status(404).send("No plan found.");
+      } else {
+        console.log("Plan deleted - 204\n");
+        res.status(204).send("Plan deleted");
       }
     })
     .catch((err) => {

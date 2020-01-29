@@ -131,23 +131,24 @@ function insertSelectedCourses(planId, courses) {
 
 }
 
-// delete a plan from the database, including its list of selected courses
+// delete a plan from the database, including selected courses and comments
 function deletePlan(planId) {
 
   return new Promise((resolve, reject) => {
 
     // delete the plan
     const sql = "DELETE FROM Plan WHERE planId=?;";
-    pool.query(sql, planId, (err) => {
+    pool.query(sql, planId, (err, results) => {
       if (err) {
         console.log("Error deleting plan", planId, ":\n", err);
         reject(err);
       } else {
         console.log("Plan", planId, "deleted");
-        resolve();
+        resolve(results);
       }
     });
 
   });
 
 }
+exports.deletePlan = deletePlan;
