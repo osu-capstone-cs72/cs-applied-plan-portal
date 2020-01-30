@@ -13,23 +13,23 @@ async function enforceConstraints(userId, planName, courses) {
 
   try {
 
-    let violation = "";
+    let violation = "Valid.";
     violation = await userConstraint(userId);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await studentConstraint(userId);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await planNameConstraint(planName);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await zeroCourseConstraint(courses);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await duplicateCourseConstraint(courses);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await courseConstraint(courses);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await restrictionConstraint(courses);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     violation = await creditConstraint(courses);
-    if (violation !== "") { return violation; }
+    if (violation !== "Valid.") { return violation; }
     console.log("Plan does not violate any constraints");
     return violation;
 
@@ -55,7 +55,7 @@ async function userConstraint(userId) {
     if (results[0].length === 0) {
       return "Invalid ONID. Unable to submit plan.";
     } else {
-      return "";
+      return "Valid.";
     }
 
   } catch (err) {
@@ -76,7 +76,7 @@ async function studentConstraint(userId) {
     if (results[0].length  === 0) {
       return "Only students can submit plans.";
     } else {
-      return "";
+      return "Valid.";
     }
 
   } catch (err) {
@@ -93,7 +93,7 @@ async function planNameConstraint(planName) {
     return `The plan name must be between ${NAME_MIN} ` +
     `and ${NAME_MAX} characters long.`;
   } else {
-    return "";
+    return "Valid.";
   }
 
 }
@@ -104,7 +104,7 @@ async function zeroCourseConstraint(courses) {
   if (courses.length === 0) {
     return "No courses selected.";
   } else {
-    return "";
+    return "Valid.";
   }
 
 }
@@ -121,7 +121,7 @@ async function duplicateCourseConstraint(courses) {
     }
     seenCourses[courseCode] = true;
   }
-  return "";
+  return "Valid.";
 
 }
 
@@ -147,7 +147,7 @@ async function courseConstraint(courses) {
     if (results[0][0].valid !== courses.length) {
       return "At least one selected course is invalid.";
     } else {
-      return "";
+      return "Valid.";
     }
 
   } catch (err) {
@@ -183,7 +183,7 @@ async function restrictionConstraint(courses) {
         return "A graduate or professional/technical course was selected.";
       }
     } else {
-      return "";
+      return "Valid.";
     }
 
   } catch (err) {
@@ -215,7 +215,7 @@ async function creditConstraint(courses) {
     if (results[0][0].sumCredits < CREDITS_MIN) {
       return `Less than ${CREDITS_MIN} credits selected.`;
     } else {
-      return "";
+      return "Valid.";
     }
 
   } catch (err) {
