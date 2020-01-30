@@ -23,8 +23,8 @@ app.post("/", async (req, res) => {
   try {
 
     // only save a plan if it does not violate any constraints
-    const validate = await enforceConstraints(userId, planName, courses);
-    if (validate.value === 0) {
+    const violation = await enforceConstraints(userId, planName, courses);
+    if (violation === "") {
 
       // save the plan
       await savePlan(userId, planName, courses);
@@ -34,8 +34,8 @@ app.post("/", async (req, res) => {
     } else {
 
       // send an error that explains the violated constraint
-      console.log(validate.message, "- 400\n");
-      res.status(400).send(validate.message);
+      console.log(violation, "- 400\n");
+      res.status(400).send(violation);
 
     }
 

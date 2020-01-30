@@ -7,47 +7,29 @@ const NAME_MIN = 5;
 const NAME_MAX = 50;
 const CREDITS_MIN = 32;
 
-const V1 = "Invalid ONID. Unable to submit plan.";
-const V2 = "Only students can submit plans.";
-const V3 = `The plan name must be between ${NAME_MIN} ` +
-`and ${NAME_MAX} characters long.`;
-const V4 = "No courses selected.";
-const V5 = "A course was selected more than once.";
-const V6 = "At least one selected course is invalid.";
-const V7 = "A required course was selected.";
-const V8 = "A graduate or professional/technical course was selected.";
-const V9 = `Less than ${CREDITS_MIN} credits selected.`;
-
-// constructor for a validation object
-// tracks value and message of a constraint violation
-function Validator(value, message) {
-  this.value = value;
-  this.message = message;
-}
-
 // checks that the submitted form data does not violate any constraints
 // returns a value that can be used to identify which constraint was violated
 async function enforceConstraints(userId, planName, courses) {
 
   try {
 
-    let violation = new Validator(0, "");
+    let violation = "";
     violation = await userConstraint(userId);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await studentConstraint(userId);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await planNameConstraint(planName);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await zeroCourseConstraint(courses);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await duplicateCourseConstraint(courses);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await courseConstraint(courses);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await restrictionConstraint(courses);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     violation = await creditConstraint(courses);
-    if (violation.value !== 0) { return violation; }
+    if (violation !== "") { return violation; }
     console.log("Plan does not violate any constraints");
     return violation;
 
@@ -65,15 +47,15 @@ async function userConstraint(userId) {
   try {
 
     // don't bother checking an empty string
-    if (userId.length === 0) { return new Validator(1, V1); }
+    if (userId.length === 0) { return "Invalid ONID. Unable to submit plan."; }
 
     const sql = "SELECT * FROM User WHERE userId=?;";
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      return new Validator(1, V1);
+      return "Invalid ONID. Unable to submit plan.";
     } else {
-      return new Validator(0, "");
+      return "";
     }
 
   } catch (err) {
@@ -92,9 +74,9 @@ async function studentConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length  === 0) {
-      return new Validator(2, V2);
+      return "Only students can submit plans.";
     } else {
-      return new Validator(0, "");
+      return "";
     }
 
   } catch (err) {
@@ -108,9 +90,10 @@ async function studentConstraint(userId) {
 async function planNameConstraint(planName) {
 
   if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
-    return new Validator(3, V3);
+    return `The plan name must be between ${NAME_MIN} ` +
+    `and ${NAME_MAX} characters long.`;
   } else {
-    return new Validator(0, "");
+    return "";
   }
 
 }
@@ -119,9 +102,9 @@ async function planNameConstraint(planName) {
 async function zeroCourseConstraint(courses) {
 
   if (courses.length === 0) {
-    return new Validator(4, V4);
+    return "No courses selected.";
   } else {
-    return new Validator(0, "");
+    return "";
   }
 
 }
@@ -134,11 +117,11 @@ async function duplicateCourseConstraint(courses) {
   for (let i = 0; i < courses.length; ++i) {
     const courseCode = courses[i];
     if (courseCode in seenCourses) {
-      return new Validator(5, V5);
+      return "A course was selected more than once.";
     }
     seenCourses[courseCode] = true;
   }
-  return new Validator(0, "");
+  return "";
 
 }
 
@@ -162,9 +145,9 @@ async function courseConstraint(courses) {
 
     // find the number of valid courses and check it against the course array
     if (results[0][0].valid !== courses.length) {
-      return new Validator(6, V6);
+      return "At least one selected course is invalid.";
     } else {
-      return new Validator(0, "");
+      return "";
     }
 
   } catch (err) {
@@ -195,12 +178,12 @@ async function restrictionConstraint(courses) {
     // check if there were any restrictions and if so, which ones
     if (results[0].length !== 0) {
       if (results[0][0].restriction === 1) {
-        return new Validator(7, V7);
+        return "A required course was selected.";
       } else {
-        return new Validator(8, V8);
+        return "A graduate or professional/technical course was selected.";
       }
     } else {
-      return new Validator(0, "");
+      return "";
     }
 
   } catch (err) {
@@ -230,9 +213,9 @@ async function creditConstraint(courses) {
 
     // check if the sum of credits is less than the min
     if (results[0][0].sumCredits < CREDITS_MIN) {
-      return new Validator(9, V9);
+      return `Less than ${CREDITS_MIN} credits selected.`;
     } else {
-      return new Validator(0, "");
+      return "";
     }
 
   } catch (err) {
