@@ -9,15 +9,15 @@ const pool = require("./utils/mysqlPool").pool;
 const app = require("./api/index");
 
 // confirm that connection was made to the database
-function testConnection(pool, callback) {
-  pool.query("SELECT courseId FROM Course WHERE courseId = 1", (err) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Connected to database");
-      callback();
-    }
-  });
+async function testConnection(pool, callback) {
+  try {
+    await pool.query("SELECT courseId FROM Course WHERE courseId = 1");
+    console.log("Connected to database");
+    callback();
+  } catch (err) {
+    console.log("Error connecting to database");
+    throw Error(err);
+  }
 }
 
 // listen for incoming requests
