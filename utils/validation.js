@@ -46,7 +46,7 @@ async function enforceConstraints(userId, planName, courses) {
     if (violation.value !== 0) { return violation; }
     violation = await restrictionConstraint(courses);
     if (violation.value !== 0) { return violation; }
-    violation = await creditConstraint(userId, planName, courses);
+    violation = await creditConstraint(courses);
     if (violation.value !== 0) { return violation; }
     console.log("Plan does not violate any constraints");
     return violation;
@@ -211,7 +211,7 @@ async function restrictionConstraint(courses) {
 }
 
 // checks that at least the minimum plan credits are selected
-async function creditConstraint(userId, planName, courses) {
+async function creditConstraint(courses) {
 
   let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
   const sqlArray = [];

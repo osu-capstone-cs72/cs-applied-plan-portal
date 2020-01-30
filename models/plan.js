@@ -31,14 +31,18 @@ async function savePlan(userId, planName, courses) {
 }
 exports.savePlan = savePlan;
 
-// get all data for a specific plan, including selected courses
+// get all data for a specific plan, including selected courses, and reviews
 async function getPlan(planId) {
 
   try {
 
-    const sql = "SELECT * FROM Plan NATURAL JOIN SelectedCourse WHERE planId = ?;";
-    const results = await pool.query(sql, planId);
-    return results[0];
+    let sql = "SELECT * FROM Plan WHERE planId = ?;";
+    const result1 = await pool.query(sql, planId);
+    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ?;";
+    const result2 = await pool.query(sql, planId);
+    sql = "SELECT * FROM PlanReview WHERE planId = ?;";
+    const result3 = await pool.query(sql, planId);
+    return [result1[0], result2[0], result3[0]];
 
   } catch (err) {
     console.log("Error searching for plan");

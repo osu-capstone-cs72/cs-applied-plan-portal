@@ -46,7 +46,7 @@ app.post("/", async (req, res) => {
 
 });
 
-// view plan
+// view a plan
 app.get("/:planId", async (req, res) => {
 
   const planId = req.params.planId;
@@ -55,7 +55,7 @@ app.get("/:planId", async (req, res) => {
   try {
 
     const results = await getPlan(planId);
-    if (results.length === 0) {
+    if (results[0].length === 0) {
       console.log("No plan found - 404\n");
       res.status(404).send("No plan found.");
     } else {
