@@ -53,18 +53,13 @@ function submitPlan(userId, planName, course1, course2, course3, course4,
   const postObj = {
     userId: userId,
     planName: planName,
-    course1: course1,
-    course2: course2,
-    course3: course3,
-    course4: course4,
-    course5: course5,
-    course6: course6,
-    course7: course7,
-    course8: course8,
-    course9: course9,
-    course10: course10,
-    course11: course11,
-    course12: course12
+    courses: [course1,
+      course2, course3,
+      course4, course5,
+      course6, course7,
+      course8, course9,
+      course10, course11,
+      course12]
   };
 
   const requestBody = JSON.stringify(postObj);
