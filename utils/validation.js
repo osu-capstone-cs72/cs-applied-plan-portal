@@ -13,29 +13,22 @@ async function enforceConstraints(userId, planName, courses) {
 
   try {
 
-    let violation = "Valid.";
-    violation = await userConstraint(userId);
-    if (violation !== "Valid.") { return violation; }
-    violation = await studentConstraint(userId);
-    if (violation !== "Valid.") { return violation; }
-    violation = await planNameConstraint(planName);
-    if (violation !== "Valid.") { return violation; }
-    violation = await zeroCourseConstraint(courses);
-    if (violation !== "Valid.") { return violation; }
-    violation = await duplicateCourseConstraint(courses);
-    if (violation !== "Valid.") { return violation; }
-    violation = await courseConstraint(courses);
-    if (violation !== "Valid.") { return violation; }
-    violation = await restrictionConstraint(courses);
-    if (violation !== "Valid.") { return violation; }
-    violation = await creditConstraint(courses);
-    if (violation !== "Valid.") { return violation; }
-    console.log("Plan does not violate any constraints");
-    return violation;
+    await userConstraint(userId);
+    await studentConstraint(userId);
+    await planNameConstraint(planName);
+    await zeroCourseConstraint(courses);
+    await duplicateCourseConstraint(courses);
+    await courseConstraint(courses);
+    await restrictionConstraint(courses);
+    await creditConstraint(courses);
+    return "valid";
 
   } catch (err) {
-    console.log("Error while trying to check constraints");
-    throw Error(err);
+    if (err === "Internal error") {
+      throw err;
+    } else {
+      return err;
+    }
   }
 
 }
@@ -44,23 +37,29 @@ exports.enforceConstraints = enforceConstraints;
 // checks that the user exists
 async function userConstraint(userId) {
 
+  const violation = "Invalid ONID. Unable to submit plan.";
+
   try {
 
     // don't bother checking an empty string
-    if (userId.length === 0) { return "Invalid ONID. Unable to submit plan."; }
+    if (userId.length === 0) { throw violation; }
 
     const sql = "SELECT * FROM User WHERE userId=?;";
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      return "Invalid ONID. Unable to submit plan.";
+      throw violation;
     } else {
-      return "Valid.";
+      return;
     }
 
   } catch (err) {
-    console.log("Error checking user constraint");
-    throw Error(err);
+    if (internalError(err, violation)) {
+      console.log("Error checking user constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
   }
 
 }
@@ -68,20 +67,26 @@ async function userConstraint(userId) {
 // checks that the user is a student
 async function studentConstraint(userId) {
 
+  const violation = "Only students can submit plans.";
+
   try {
 
     const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
     const results = await pool.query(sql, userId);
 
     if (results[0].length  === 0) {
-      return "Only students can submit plans.";
+      throw violation;
     } else {
-      return "Valid.";
+      return;
     }
 
   } catch (err) {
-    console.log("Error checking student constraint");
-    throw Error(err);
+    if (internalError(err, violation)) {
+      console.log("Error checking student constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
   }
 
 }
@@ -90,10 +95,10 @@ async function studentConstraint(userId) {
 async function planNameConstraint(planName) {
 
   if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
-    return `The plan name must be between ${NAME_MIN} ` +
+    throw `The plan name must be between ${NAME_MIN} ` +
     `and ${NAME_MAX} characters long.`;
   } else {
-    return "Valid.";
+    return;
   }
 
 }
@@ -102,9 +107,9 @@ async function planNameConstraint(planName) {
 async function zeroCourseConstraint(courses) {
 
   if (courses.length === 0) {
-    return "No courses selected.";
+    throw "No courses selected.";
   } else {
-    return "Valid.";
+    return;
   }
 
 }
@@ -117,17 +122,18 @@ async function duplicateCourseConstraint(courses) {
   for (let i = 0; i < courses.length; ++i) {
     const courseCode = courses[i];
     if (courseCode in seenCourses) {
-      return "A course was selected more than once.";
+      throw "A course was selected more than once.";
     }
     seenCourses[courseCode] = true;
   }
-  return "Valid.";
+  return;
 
 }
 
 // checks that all courses are valid
 async function courseConstraint(courses) {
 
+  const violation = "At least one selected course is invalid.";
   let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
   const sqlArray = [];
 
@@ -145,14 +151,18 @@ async function courseConstraint(courses) {
 
     // find the number of valid courses and check it against the course array
     if (results[0][0].valid !== courses.length) {
-      return "At least one selected course is invalid.";
+      throw violation;
     } else {
-      return "Valid.";
+      return;
     }
 
   } catch (err) {
-    console.log("Error checking course constraint");
-    throw Error(err);
+    if (internalError(err, violation)) {
+      console.log("Error checking course constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
   }
 
 }
@@ -160,6 +170,8 @@ async function courseConstraint(courses) {
 // checks if there are any restrictions on selected courses
 async function restrictionConstraint(courses) {
 
+  const violationReq = "A required course was selected.";
+  const violationGrad = "A graduate or professional course was selected.";
   let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
   const sqlArray = [];
 
@@ -178,17 +190,21 @@ async function restrictionConstraint(courses) {
     // check if there were any restrictions and if so, which ones
     if (results[0].length !== 0) {
       if (results[0][0].restriction === 1) {
-        return "A required course was selected.";
+        throw violationReq;
       } else {
-        return "A graduate or professional/technical course was selected.";
+        throw violationGrad;
       }
     } else {
-      return "Valid.";
+      return;
     }
 
   } catch (err) {
-    console.log("Error checking restriction constraint");
-    throw Error(err);
+    if (internalError(err, violationReq) && internalError(err, violationGrad)) {
+      console.log("Error checking restriction constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
   }
 
 }
@@ -196,6 +212,7 @@ async function restrictionConstraint(courses) {
 // checks that at least the minimum plan credits are selected
 async function creditConstraint(courses) {
 
+  const violation = `Less than ${CREDITS_MIN} credits selected.`;
   let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
   const sqlArray = [];
 
@@ -213,14 +230,28 @@ async function creditConstraint(courses) {
 
     // check if the sum of credits is less than the min
     if (results[0][0].sumCredits < CREDITS_MIN) {
-      return `Less than ${CREDITS_MIN} credits selected.`;
+      throw violation;
     } else {
-      return "Valid.";
+      return;
     }
 
   } catch (err) {
-    console.log("Error checking credit constraint");
-    throw Error(err);
+    if (internalError(err, violation)) {
+      console.log("Error checking credit constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
   }
 
+}
+
+// checks to see if an error is a violation or an internal error
+function internalError (err, violation) {
+  if (err !== violation) {
+    console.log("Error checking user constraint\n", err);
+    return true;
+  } else {
+    return false;
+  }
 }

@@ -24,7 +24,7 @@ app.post("/", async (req, res) => {
 
     // only save a plan if it does not violate any constraints
     const violation = await enforceConstraints(userId, planName, courses);
-    if (violation === "Valid.") {
+    if (violation === "valid") {
 
       // save the plan
       await savePlan(userId, planName, courses);
