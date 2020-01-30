@@ -4,148 +4,128 @@
 const pool = require("../utils/mysqlPool").pool;
 
 // save a plan with its selected courses. remove the plan if an error occurs
-function savePlan(userId, planName, courses) {
+async function savePlan(userId, planName, courses) {
 
-  return insertPlan(userId, planName, courses)
-    .then((planData) => insertSelectedCourses(planData[0], planData[1]))
-    .then(() => console.log("Plan saved"))
-    .catch((planData) => {
-      if (planData[0]) {
-        deletePlan(planData[0]);
-      }
-      console.log(planData[2]);
-      throw Error(planData[2]);
-    });
+  try {
+
+    // save the basic plan information
+    const planId = await insertPlan(userId, planName);
+
+    // while inserting the selected courses, if there is an error
+    // we will need to delete the plan
+    try {
+      await insertSelectedCourses(planId, courses);
+    } catch (err) {
+      deletePlan(planId);
+      throw Error(err);
+    }
+
+    console.log("Plan saved");
+    return;
+
+  } catch (err) {
+    console.log("Error saving plan");
+    throw Error(err);
+  }
 
 }
 exports.savePlan = savePlan;
 
 // get all data for a specific plan, including selected courses
-function getPlan(planId) {
+async function getPlan(planId) {
 
-  return new Promise((resolve, reject) => {
+  try {
 
     const sql = "SELECT * FROM Plan NATURAL JOIN SelectedCourse WHERE planId = ?;";
-    pool.query(sql, [planId], (err, results) => {
-      if (err) {
-        console.log("Error searching for plan");
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
+    const results = await pool.query(sql, planId);
+    return results[0];
 
-  })
-    .then((results) => {
-      return results;
-    })
-    .catch((err) => {
-      throw Error(err);
-    });
+  } catch (err) {
+    console.log("Error searching for plan");
+    throw Error(err);
+  }
 
 }
 exports.getPlan = getPlan;
 
 // get all comments from a plan
-function getPlanComments(planId) {
+async function getPlanComments(planId) {
 
-  return new Promise((resolve, reject) => {
+  try {
 
     const sql = "SELECT * FROM Comment WHERE planId = ?;";
-    pool.query(sql, [planId], (err, results) => {
+    const results = await pool.query(sql, planId);
+    return results[0];
 
-      if (err) {
-        console.log("Error searching for comments");
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-
-  })
-    .catch((err) => {
-      throw Error(err);
-    });
+  } catch (err) {
+    console.log("Error searching for comments");
+    throw Error(err);
+  }
 
 }
 exports.getPlanComments = getPlanComments;
 
 // save basic plan information such as the student id and the plan name
-function insertPlan(userId, planName, courses) {
+async function insertPlan(userId, planName) {
 
-  return new Promise((resolve, reject) => {
+  try {
 
     // insert the student id and plan name into the Plan table
     const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
-    pool.query(sql, [userId, planName], (err, results) => {
+    const results = await pool.query(sql, [userId, planName]);
+    return results[0].insertId;
 
-      if (err) {
-        console.log("Error saving plan");
-        reject([0, courses, err]);
-      } else {
-
-        // get the new plan ID
-        const planId = results.insertId;
-        console.log("Inserted plan", planId);
-        resolve([planId, courses, ""]);
-
-      }
-    });
-
-  });
+  } catch (err) {
+    console.log("Error inserting basic plan data");
+    throw Error(err);
+  }
 
 }
 
 // save a list of selected courses for a plan
-function insertSelectedCourses(planId, courses) {
+async function insertSelectedCourses(planId, courses) {
 
-  return new Promise((resolve, reject) => {
+  let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+  const sqlArray = [];
 
-    let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
-    const sqlArray = [];
+  // expand the sql string and array based on the number of courses
+  courses.forEach((currentValue) => {
+    sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+    sqlArray.push(planId);
+    sqlArray.push(currentValue);
+  });
+  // replace the last character of the sql query with ;
+  sql = sql.replace(/.$/, ";");
 
-    // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
-      sqlArray.push(planId);
-      sqlArray.push(currentValue);
-    });
-    // replace the last character of the sql query with ;
-    sql = sql.replace(/.$/, ";");
+  try {
 
     // add each of the courses to the SelectedCourse table
-    pool.query(sql, sqlArray, (err) => {
-      if (err) {
-        console.log("Error adding courses to plan", planId);
-        reject([planId, courses, err]);
-      } else {
-        console.log("Added courses to plan", planId);
-        resolve([planId, courses, ""]);
-      }
-    });
+    await pool.query(sql, sqlArray);
+    console.log("Added courses to plan", planId);
+    return ([planId, courses, ""]);
 
-  });
+  } catch (err) {
+    console.log("Error adding courses to plan", planId);
+    throw Error(err);
+  }
 
 }
 
 // delete a plan from the database, including selected courses and comments
-function deletePlan(planId) {
+async function deletePlan(planId) {
 
-  return new Promise((resolve, reject) => {
+  try {
 
     // delete the plan
     const sql = "DELETE FROM Plan WHERE planId=?;";
-    pool.query(sql, planId, (err, results) => {
-      if (err) {
-        console.log("Error deleting plan", planId, ":\n", err);
-        reject(err);
-      } else {
-        console.log("Plan", planId, "deleted");
-        resolve(results);
-      }
-    });
+    const results = await pool.query(sql, planId);
+    console.log("Plan", planId, "deleted");
+    return results;
 
-  });
+  } catch (err) {
+    console.log("Error deleting plan", planId, ":\n", err);
+    throw Error(err);
+  }
 
 }
 exports.deletePlan = deletePlan;
