@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 
-const formatStringArray = require("../utils/format");
+const {formatStringArray, noEmptyString} = require("../utils/format");
 const validation = require("../utils/validation");
 const enforceConstraints = require("../utils/validation").enforceConstraints;
 const savePlan = require("../models/plan").savePlan;
@@ -22,7 +22,7 @@ app.post("/", async (req, res) => {
 
   // define the user form data
   console.log("Submit a plan");
-  const userId = req.body.userId;
+  const userId = noEmptyString(req.body.userId);
   const planName = req.body.planName;
   const courses = formatStringArray([req.body.course1, req.body.course2,
     req.body.course3, req.body.course4, req.body.course5, req.body.course6,
@@ -36,7 +36,7 @@ app.post("/", async (req, res) => {
     switch (validate) {
       case 0:
         await savePlan(userId, planName, courses);
-        console.log("Plan saved - 201\n");
+        console.log("Submited plan saved - 201\n");
         res.status(201).send("Plan saved.");
         break;
       case 1:
