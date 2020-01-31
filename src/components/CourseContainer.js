@@ -24,20 +24,21 @@ export default class CourseContainer extends React.Component {
 
     this.loadCourses = this.loadCourses.bind(this);
     this.filterSearch = this.filterSearch.bind(this);
+    this.newFilterSearch = this.newFilterSearch.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.addCourse = this.addCourse.bind(this);
   }
 
   loadCourses() {
-    const postRequest = new XMLHttpRequest();
-    const postURL = `/course/courseCode/CS290`;
-    postRequest.open("GET", postURL);
-    console.log("postURL:" + postURL);
+    // const postRequest = new XMLHttpRequest();
+    // const postURL = `/course/courseCode/CS290`;
+    // postRequest.open("GET", postURL);
+    // console.log("postURL:" + postURL);
 
-    this.setState({
-      initialCourses: courses,
-      courses: courses
-    });
+    // this.setState({
+    //   initialCourses: courses,
+    //   courses: courses
+    // });
   }
 
   filterSearch(event) {
@@ -51,6 +52,26 @@ export default class CourseContainer extends React.Component {
     this.setState({
       courses: courses
     });
+  }
+
+  newFilterSearch() {
+    const value = document.getElementById("search-container").value;
+    const getURL = `/course/courseCode/${value}`;
+    const getRequest = new XMLHttpRequest();
+    getRequest.addEventListener("load", (event) => {
+      alert("here");
+      if (event.target.status !== 200) {
+        alert("Error getting course:\n" + event.target.response);
+      } else {
+        alert("Response:\n" + event.target.response);
+        // turn the result into an object
+        const obj = JSON.parse(event.target.response);
+        // if I want to access some data from the first result...
+        console.log(obj[0].credits, obj[0].courseName, obj[0].courseCode);
+      }
+    }, false);
+    getRequest.open("GET", getURL);
+    getRequest.send();
   }
 
   handleFilterChange(value) {
@@ -83,8 +104,8 @@ export default class CourseContainer extends React.Component {
         <div className="top-bar">
           <div className="search-container">
             <form className="form-inline my-2 my-lg-0">
-              <input className="form-control mr-sm-2" type="text" placeholder="Search.." name="search" onChange={this.filterSearch}/>
-              <button className="btn btn-outline-success my-2 my-sm-0" type="submit"><i className="fa fa-search"></i></button>
+              <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
+              <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.newFilterSearch}><i className="fa fa-search"></i></button>
             </form>
           </div>
           <form className="course-filter form-group">
@@ -92,8 +113,9 @@ export default class CourseContainer extends React.Component {
           </form>
         </div>
         <div className="explore-courses">
-          {this.state.courses.map(c => <Course key={c.code} code={c.code} title={c.title} credits={c.credits}
-            description={c.description} prereqs={c.prereqs} addCourse={this.addCourse}/>) }
+          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.code} code={c.code} title={c.title} credits={c.credits}
+            description={c.description} prereqs={c.prereqs} addCourse={this.addCourse}/>) :
+            <div>Search for courses...</div>}
         </div>
       </div>
     );
