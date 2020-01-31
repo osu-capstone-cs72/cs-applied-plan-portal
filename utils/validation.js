@@ -2,255 +2,194 @@
 // Description: validates a submitted form against a list of constraints
 
 const NAME_MIN = 5;
-exports.NAME_MIN = NAME_MIN;
 const NAME_MAX = 50;
-exports.NAME_MAX = NAME_MAX;
 const CREDITS_MIN = 32;
-exports.CREDITS_MIN = CREDITS_MIN;
+
 const pool = require("./mysqlPool").pool;
 
-// checks that the submitted form data does not violate any constraints
-// returns a value that can be used to identify which constraint was violated
-function enforceConstraints(userId, planName, courses) {
+// Phrased this way to allow for top-level error instantiation without a wrapper object.
+const { UserError, PrivilegeError, PlanNameError, EmptyPlanError, DuplicateCourseError, InvalidCourseError, CourseRestrictionError, PlanCreditsError, InternalValidationError } = require("./errors");
 
-  return userConstraint(userId, planName, courses)
-    .then((conData) => studentConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => planNameConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => zeroCourseConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => duplicateCourseConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => courseConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => restrictionConstraint(conData[0], conData[1], conData[2]))
-    .then((conData) => creditConstraint(conData[0], conData[1], conData[2]))
-    .then(() => {
-      console.log("Plan does not violate any constraints");
-      return 0;
-    })
-    .catch((conData) => {
-      // check if the error was from a constraint violation
-      if (conData[4]) {
-        return conData[4];
+// Check that the submitted form data complies with all constraints.
+// Returns a ValidationError instance with the properties "status" and "message."
+const enforceConstraints = async (userId, planName, courses) => {
+  return await Promise.all([
+    checkUserValid(userId),
+    checkUserStudent(userId),
+    checkPlanName(planName),
+    checkPlanEmpty(courses),
+    checkDuplicateCourses(courses),
+    checkInvalidCourses(courses),
+    checkRestrictedCourses(courses),
+    checkPlanCredits(courses)
+  ]).then(() => {
+    console.log("The plan does not violate any constraints.");
+    return null;
+  }).catch(error => {
+    console.log(`The plan failed to validate with a ${error.name}.`);
+    return error;
+  });
+};
+
+// Check that the user exists in the database.
+const checkUserValid = async (userId) => new Promise(function(resolve, reject) {
+  const sql = "SELECT * FROM User WHERE userId=?;";
+  pool.query(sql, userId, function(error, results) {
+    if (error) {
+      console.log("An error occurred while checking the user constraint.");
+      reject(new InternalValidationError());
+    } else {
+      if (results.length === 0) {
+        reject(new UserError());
       } else {
-        console.log("Error while trying to check constraints");
-        throw Error(conData[3]);
+        resolve();
+      }
+    }
+  });
+});
+
+// Check that the user is a student.
+const checkUserStudent = async (userId) => new Promise(function(resolve, reject) {
+  const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
+  pool.query(sql, userId, function(error, results) {
+    if (error) {
+      console.log("An error occurred while checking the student constraint.");
+      reject(new InternalValidationError());
+    } else {
+      if (results.length === 0) {
+        reject(new PrivilegeError());
+      } else {
+        resolve();
+      }
+    }
+  });
+});
+
+// Check that the plan's name has a valid length.
+const checkPlanName = async (planName) => new Promise(function(resolve, reject) {
+  if (planName.length < NAME_MIN) {
+    reject(new PlanNameError(`The plan's name must be at least ${NAME_MIN} characters.`));
+  } else if (planName.length > NAME_MAX) {
+    reject(new PlanNameError(`The plan's name must not exceed ${NAME_MAX} characters.`));
+  } else {
+    resolve();
+  }
+});
+
+// Check whether the plan contains any courses.
+const checkPlanEmpty = async (courses) => new Promise(function(resolve, reject) {
+  if (courses.length === 0) {
+    reject(new EmptyPlanError());
+  } else {
+    resolve();
+  }
+});
+
+// Check that no courses have been included more than once.
+const checkDuplicateCourses = async (courses) => new Promise(function(resolve, reject) {
+  // Confirm that every course in the plan is the last (only) instance of that plan.
+  try {
+    courses.forEach(code => {
+      if (courses.indexOf(code) !== courses.lastIndexOf(code)) {
+        throw new DuplicateCourseError(code);
       }
     });
+  } catch (err) {
+    reject(err);
+  }
+  resolve();
+});
 
-}
+// Check that all courses are valid.
+const checkInvalidCourses = async (courses) => new Promise(function(resolve, reject) {
+  let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
+  let sqlArray = [];
+  
+  // Expand the SQL string and array based on the number of courses.
+  courses.forEach((currentValue) => {
+    sql += "?,";
+    sqlArray.push(currentValue);
+  });
+  
+  // Replace the last character of the SQL query with );
+  sql = sql.replace(/.$/, ");");
+  
+  // Find the number of valid courses and check it against the course array.
+  pool.query(sql, sqlArray, (err, results) => {
+    if (err) {
+      console.log("An error occurred while checking invalid courses.");
+      reject(new InternalValidationError(err));
+    } else {
+       if (results[0].valid !== courses.length) {
+        reject(new InvalidCourseError());
+      } else {
+        resolve();
+      }
+    }
+  });
+});
+
+// Check if there are any restrictions on the selected courses.
+const checkRestrictedCourses = async (courses) => new Promise(function(resolve, reject) {
+  let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
+  let sqlArray = [];
+  
+  // Expand the SQL string and array based on the number of courses.
+  courses.forEach((currentValue) => {
+    sql += "?,";
+    sqlArray.push(currentValue);
+  });
+  
+  // Replace the last character of the SQL query with the end of the query.
+  sql = sql.replace(/.$/, ") AND restriction > 0 ORDER BY restriction;");
+  
+  // Check if any courses are restricted, and if so, which ones.
+  pool.query(sql, sqlArray, (err, results) => {
+    if (err) {
+      console.log("An error occurred while checking course restrictions.");
+      reject(new InternalValidationError(err));
+    } else {
+      if (results.length) {
+        if (results[0].restriction === 1) {
+          reject(new CourseRestrictionError("A required course was selected."));
+        } else {
+          reject(new CourseRestrictionError("A graduate, professional, or technical course was selected."));
+        }
+      } else {
+        resolve();
+      }
+    }
+  });
+});
+
+// Check that the plan contains the minimum number of credits.
+const checkPlanCredits = async (courses) => new Promise(function(resolve, reject) {
+  let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
+  let sqlArray = [];
+  
+  // Expand the SQL string and array based on the number of courses.
+  courses.forEach((currentValue) => {
+    sql += "?,";
+    sqlArray.push(currentValue);
+  });
+  
+  // Replace the last character of the SQL query with );
+  sql = sql.replace(/.$/, ");");
+  
+  // Check whether the sum of credits is less than the minimum value.
+  pool.query(sql, sqlArray, (err, results) => {
+    if (err) {
+      console.log("An error occurred while checking the plan's total credits.");
+      reject(new InternalValidationError(err));
+    } else {
+      let sum = results[0].sumCredits;
+      if (sum < CREDITS_MIN) {
+        reject(new PlanCreditsError(`The plan must have at least ${CREDITS_MIN} credits, but only ${sum} were selected.`));
+      } else {
+        resolve();
+      }
+    }
+  });
+});
+
 exports.enforceConstraints = enforceConstraints;
-
-// checks that the user exists
-function userConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    const sql = "SELECT * FROM User WHERE userId=?;";
-    pool.query(sql, userId, (err, results) => {
-
-      if (err) {
-        console.log("Error checking user constraint");
-        reject([userId, planName, courses, err, 0]);
-      } else {
-
-        if (results.length === 0) {
-          reject([userId, planName, courses, "", 1]);
-        } else {
-          resolve([userId, planName, courses, "", 0]);
-        }
-
-      }
-    });
-
-  });
-
-}
-
-// checks that the user is a student
-function studentConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
-    pool.query(sql, userId, (err, results) => {
-
-      if (err) {
-        console.log("Error checking student constraint");
-        reject([userId, planName, courses, err, 0]);
-      } else {
-
-        if (results.length  === 0) {
-          reject([userId, planName, courses, "", 2]);
-        } else {
-          resolve([userId, planName, courses, "", 0]);
-        }
-
-      }
-    });
-
-  });
-
-}
-
-// checks that the plan name is a valid length
-function planNameConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
-      reject([userId, planName, courses, "", 3]);
-    } else {
-      resolve([userId, planName, courses, "", 0]);
-    }
-
-  });
-
-}
-
-// checks to see if any courses are selected
-function zeroCourseConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    if (courses.length === 0) {
-      reject([userId, planName, courses, "", 4]);
-    } else {
-      resolve([userId, planName, courses, "", 0]);
-    }
-
-  });
-
-}
-
-// checks that no single course is selected more than once
-function duplicateCourseConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    const seenCourses = Object.create(null);
-
-    for (let i = 0; i < courses.length; ++i) {
-      const courseCode = courses[i];
-      if (courseCode in seenCourses) {
-        reject([userId, planName, courses, "", 5]);
-      }
-      seenCourses[courseCode] = true;
-    }
-
-    resolve([userId, planName, courses, "", 0]);
-
-  });
-
-}
-
-// checks that all courses are valid
-function courseConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
-    const sqlArray = [];
-
-    // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "?,";
-      sqlArray.push(currentValue);
-    });
-    // replace the last character of the sql query with );
-    sql = sql.replace(/.$/, ");");
-
-    // find the number of valid courses and check it against the course array
-    pool.query(sql, sqlArray, (err, results) => {
-      if (err) {
-        console.log("Error checking course constraint");
-        reject([userId, planName, courses, err, 0]);
-      } else {
-
-        if (results[0].valid !== courses.length) {
-          reject([userId, planName, courses, "", 6]);
-        } else {
-          resolve([userId, planName, courses, "", 0]);
-        }
-
-      }
-    });
-
-  });
-
-}
-
-// checks if there are any restrictions on selected courses
-function restrictionConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
-    const sqlArray = [];
-
-    // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "?,";
-      sqlArray.push(currentValue);
-    });
-    // replace the last character of the sql query with the end of the query
-    sql = sql.replace(/.$/, ") AND restriction > 0 ORDER BY restriction;");
-
-    // check if there were any restrictions and if so, which ones
-    pool.query(sql, sqlArray, (err, results) => {
-      if (err) {
-        console.log("Error checking restriction constraint");
-        reject([userId, planName, courses, err, 0]);
-      } else {
-
-        if (results.length) {
-
-          if (results[0].restriction === 1) {
-            reject([userId, planName, courses, "", 7]);
-          } else {
-            reject([userId, planName, courses, "", 8]);
-          }
-
-        } else {
-          resolve([userId, planName, courses, "", 0]);
-        }
-
-      }
-    });
-
-  });
-
-}
-
-// checks that at the minimum plan credits are selected
-function creditConstraint(userId, planName, courses) {
-
-  return new Promise((resolve, reject) => {
-
-    let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
-    const sqlArray = [];
-
-    // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "?,";
-      sqlArray.push(currentValue);
-    });
-    // replace the last character of the sql query with );
-    sql = sql.replace(/.$/, ");");
-
-    // check if the sum of credits is less than the min
-    pool.query(sql, sqlArray, (err, results) => {
-      if (err) {
-        console.log("Error checking credit constraint");
-        reject([userId, planName, courses, err, 0]);
-      } else {
-
-        if (results[0].sumCredits < CREDITS_MIN) {
-          reject([userId, planName, courses, "", 9]);
-        } else {
-          resolve([userId, planName, courses, "", 0]);
-        }
-
-      }
-    });
-
-  });
-
-}
