@@ -28,7 +28,6 @@
     "key-spacing": ["error"],
     "keyword-spacing": ["error"],
     "linebreak-style": ["error", "unix"],
-    "max-len": ["warn", {"code": 80}],
     "newline-per-chained-call": ["warn", {"ignoreChainWithDepth": 2}],
     "no-trailing-spaces": ["error"],
     "no-var": ["error"],
