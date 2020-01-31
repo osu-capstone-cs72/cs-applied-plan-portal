@@ -142,7 +142,7 @@ exports.sanitizeUsingSchema = sanitizeUsingSchema;
 // Schema of an applied Plan used for the validator and the database.
 const planSchema = {
   status: {
-    required: true,
+    required: false,
     type: Type.integer,
     minValue: 0,
     maxValue: 4,
