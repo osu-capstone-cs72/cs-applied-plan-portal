@@ -1,6 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default class FilterBar extends React.Component {
+  static get propTypes() {
+    return {
+      options: PropTypes.any,
+      value: PropTypes.any,
+      onValueChange: PropTypes.func
+    };
+  }
+
   constructor(props) {
     super(props);
 
