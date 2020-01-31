@@ -3,9 +3,15 @@ import Course from "./Course";
 import FilterBar from "./FilterBar";
 import courses from "./CourseList";
 import filters from "./FilterList";
+import PropTypes from "prop-types";
 import "../public/index.css";
-
 export default class CourseContainer extends React.Component {
+  static get propTypes() {
+    return {
+      updateCourses: PropTypes.func
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -69,10 +75,6 @@ export default class CourseContainer extends React.Component {
       addCourses: newCourses
     });
     this.props.updateCourses(newCourses);
-  }
-
-  componentWillMount() {
-    this.loadCourses();
   }
 
   render() {
