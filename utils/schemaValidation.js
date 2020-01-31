@@ -175,7 +175,7 @@ const planSchema = {
     }
   },
   lastUpdated: {
-    required: true,
+    required: false,
     type: Type.timestamp,
     getErrorMessage: function() {
       return "Constraint violated: Invalid plan timestamp\n" +
