@@ -1,6 +1,15 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 export default class PlanCourse extends React.Component {
+  static get propTypes() {
+    return {
+      code: PropTypes.any,
+      title: PropTypes.any,
+      credits: PropTypes.any,
+      remove: PropTypes.func
+    };
+  }
+
   constructor(props) {
     super(props);
 
