@@ -1,9 +1,7 @@
 // File: validation.js
 // Description: validates a submitted form against a list of constraints
 
-const validator = require("validator");
 const pool = require("./mysqlPool").pool;
-const {Type} = require("./type");
 
 const NAME_MIN = 5;
 exports.NAME_MIN = NAME_MIN;
@@ -390,11 +388,4 @@ function creditConstraint(userId, planName, courses) {
     });
 
   });
-
-}
-
-// A shorthand to check whether an object has a property that is
-// neither `null` nor `undefined`.
-function hasProperty(obj, property) {
-  return obj && obj[property] !== null && obj[property] !== undefined;
 }

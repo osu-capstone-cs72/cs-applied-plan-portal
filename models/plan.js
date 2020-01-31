@@ -2,53 +2,6 @@
 // Description: data functions that handle plans
 
 const pool = require("../utils/mysqlPool").pool;
-const {Type} = require("../utils/type");
-
-// Schema of an applied Plan used for the validator and the database.
-const planSchema = {
-  status: {
-    required: true,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: 4,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan status\n" +
-        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
-        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
-    }
-  },
-  planName: {
-    required: true,
-    type: Type.string,
-    minLength: 5,
-    maxLength: 50,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan name\n" +
-        `The plan name must be a string between ${this.minLength} and ` +
-        `${this.maxLength} characters long.`;
-    }
-  },
-  studentId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid user ID\n" +
-        "The user ID associated with this plan must be an integer at least " +
-        `${this.minValue}.`;
-    }
-  },
-  lastUpdated: {
-    required: true,
-    type: Type.timestamp,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan timestamp\n" +
-        "The plan timestamp must be in ISO 8601 format.";
-    }
-  }
-};
-exports.planSchema = planSchema;
 
 // save a plan with its selected courses. remove the plan if an error occurs
 function savePlan(userId, planName, courses) {
