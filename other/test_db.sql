@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sql3317654`
+-- Database: `testdatabase_osu`
 --
 
 -- --------------------------------------------------------
