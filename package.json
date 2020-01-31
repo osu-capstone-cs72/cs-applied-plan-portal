@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "proxy": "http://localhost:3306",
   "directories": {
     "doc": "docs"
   },
   "dependencies": {
+    "concurrently": "^5.1.0",
     "css-loader": "^3.4.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -37,7 +39,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
     "build": "node_modules/.bin/webpack --config webpack.config.js --mode production",
-    "serve": "node_modules/.bin/http-server ./dist"
+    "serve": "node_modules/.bin/http-server ./dist",
+    "builddev": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+    "serverdev": "nodemon server.js",
+    "dev": "concurrently \"npm run builddev\" \"npm run serverdev\""
   },
   "repository": {
     "type": "git",
