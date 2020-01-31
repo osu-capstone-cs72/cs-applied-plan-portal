@@ -1,8 +1,15 @@
 import React from "react";
 import PlanCourse from "./PlanCourse";
+import PropTypes from "prop-types";
 import "../public/index.css";
 
 export default class EditPlan extends React.Component {
+  static get propTypes() {
+    return {
+      remove: PropTypes.func,
+      courses: PropTypes.any
+    };
+  }
 
   constructor(props) {
     super(props);
@@ -21,7 +28,7 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.courses.map(c => <PlanCourse code={c.code} title={c.title}
+            {this.props.courses.map(c => <PlanCourse key={c.code} code={c.code} title={c.title}
               credits={c.credits} remove={this.props.remove}/>)}
           </tbody>
         </table>
