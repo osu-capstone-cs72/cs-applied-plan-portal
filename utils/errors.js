@@ -19,7 +19,7 @@ exports.UserError = UserError;
 class PrivilegeError extends ValidationError {
   constructor() {
     super();
-    this.message = `The user is not permitted submit a plan.`;
+    this.message = `The user is not permitted to submit a plan.`;
   }
 }
 exports.PrivilegeError = PrivilegeError;
@@ -37,7 +37,7 @@ exports.PlanNameError = PlanNameError;
 class EmptyPlanError extends ValidationError {
   constructor() {
     super();
-    this.message = `The plan cannot not be empty.`;
+    this.message = `The plan cannot be empty.`;
   }
 }
 exports.EmptyPlanError = EmptyPlanError;
