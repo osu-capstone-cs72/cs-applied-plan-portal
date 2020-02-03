@@ -54,26 +54,11 @@ export default class CourseContainer extends React.Component {
     });
   }
 
-  newFilterSearch() {
-
+  newFilterSearch = () => {
     const value = document.getElementById("search-container").value;
-    const getURL = `/api/course/courseCode/${value}`;
-    const getRequest = new XMLHttpRequest();
-    getRequest.open("GET", getURL);
-
-    getRequest.setRequestHeader("Content-Type", "application/json");
-
-    getRequest.addEventListener("load", (event) => {
-      if (event.target.status !== 200) {
-        alert("Error getting course:\n" + event.target.response);
-      } else {
-        alert("Response:\n" + event.target.response);
-        const obj = JSON.parse(event.target.response);
-        alert("obJ: " + obj);
-      }
-    });
-    getRequest.send();
-
+    fetch(`/api/course/courseCode/${value}`)
+    .then(res => res.json())
+    .then(res => alert(res));
   }
 
   handleFilterChange(value) {
