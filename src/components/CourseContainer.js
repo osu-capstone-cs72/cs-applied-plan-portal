@@ -54,11 +54,20 @@ export default class CourseContainer extends React.Component {
     });
   }
 
-  newFilterSearch = () => {
+  async newFilterSearch() {
+
     const value = document.getElementById("search-container").value;
-    fetch(`/api/course/courseCode/${value}`)
-    .then(res => res.json())
-    .then(res => alert(res));
+    const url = `/api/course/courseCode/${value}`;
+
+    try {
+      const results = await fetch(url);
+      const obj = await results.json();
+      console.log(obj);
+      alert(JSON.stringify(obj));
+    } catch (err) {
+      alert(err);
+    }
+
   }
 
   handleFilterChange(value) {
@@ -92,8 +101,8 @@ export default class CourseContainer extends React.Component {
           <div className="search-container">
             <form className="form-inline my-2 my-lg-0">
               <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
-              <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.newFilterSearch}><i className="fa fa-search"></i></button>
             </form>
+            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.newFilterSearch}><i className="fa fa-search"></i></button>
           </div>
           <form className="course-filter form-group">
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
