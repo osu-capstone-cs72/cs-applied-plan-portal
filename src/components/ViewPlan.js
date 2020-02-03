@@ -1,14 +1,18 @@
 import React from "react";
-import EditPlan from "./EditPlan";
-import CourseContainer from "./CourseContainer";
+import PlanTable from "./PlanTable";
+import PlanMetadata from "./PlanMetadata";
+import PlanComments from "./PlanComments";
 
 export default class ViewPlan extends React.Component {
 
   render() {
     return (
       <div className="view-plan">
-        <p>Welcome to the view plan page</p>
+        <PlanMetadata />
+        <PlanTable />
+        <PlanComments />
       </div>
     );
   }
+
 }
