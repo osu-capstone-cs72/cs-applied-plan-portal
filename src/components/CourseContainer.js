@@ -1,7 +1,6 @@
 import React from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
-import courses from "./CourseList";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
 import "../public/index.css";
@@ -16,57 +15,32 @@ export default class CourseContainer extends React.Component {
     super(props);
 
     this.state = {
-      initialCourses: [],
       courses: [],
       addCourses: [],
       filter: ""
     };
 
-    this.loadCourses = this.loadCourses.bind(this);
     this.filterSearch = this.filterSearch.bind(this);
-    this.newFilterSearch = this.newFilterSearch.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.addCourse = this.addCourse.bind(this);
   }
 
-  loadCourses() {
-    // const postRequest = new XMLHttpRequest();
-    // const postURL = `/course/courseCode/CS290`;
-    // postRequest.open("GET", postURL);
-    // console.log("postURL:" + postURL);
-
-    // this.setState({
-    //   initialCourses: courses,
-    //   courses: courses
-    // });
-  }
-
-  filterSearch(event) {
-    let courses = this.state.initialCourses;
-    courses = courses.filter(c => {
-      return (
-        c.code.toLowerCase().includes(event.target.value.toLowerCase()) ||
-                c.title.toLowerCase().includes(event.target.value.toLowerCase())
-      );
-    });
-    this.setState({
-      courses: courses
-    });
-  }
-
-  async newFilterSearch() {
+  async filterSearch() {
 
     const value = document.getElementById("search-container").value;
     const url = `/api/course/courseCode/${value}`;
+    let obj = [];
 
     try {
       const results = await fetch(url);
-      const obj = await results.json();
-      console.log(obj);
-      alert(JSON.stringify(obj));
+      obj = await results.json();
     } catch (err) {
       alert(err);
     }
+
+    this.setState({
+      courses: obj
+    });
 
   }
 
@@ -74,7 +48,7 @@ export default class CourseContainer extends React.Component {
     this.setState({
       filter: value
     });
-    let courses = this.state.initialCourses;
+    let courses = this.state.courses;
     courses = courses.filter(c => {
       return (
         c.code.startsWith(value)
@@ -102,15 +76,15 @@ export default class CourseContainer extends React.Component {
             <form className="form-inline my-2 my-lg-0">
               <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
             </form>
-            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.newFilterSearch}><i className="fa fa-search"></i></button>
+            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.filterSearch}><i className="fa fa-search"></i></button>
           </div>
           <form className="course-filter form-group">
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
           </form>
         </div>
         <div className="explore-courses">
-          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.code} code={c.code} title={c.title} credits={c.credits}
-            description={c.description} prereqs={c.prereqs} addCourse={this.addCourse}/>) :
+          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseId} code={c.courseCode} title={c.courseName} credits={c.credits}
+            description={c.description} prereqs={c.prerequisites} addCourse={this.addCourse}/>) :
             <div>Search for courses...</div>}
         </div>
       </div>
