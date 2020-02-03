@@ -17,13 +17,6 @@ app.use("/api/user", require("./user"));
 // statically serve files from the public directory
 app.use(express.static("src/public"));
 
-// TEST EXAMPLE, REMOVE LATER
-app.get("/api/getList", (req, res) => {
-  const list = ["item1", "item2", "item3"];
-  res.json(list);
-  console.log("Sent list of items");
-});
-
 // everything else gets a 404 error
 app.get("*", (req, res) => {
   console.log("Request:", req.url);
