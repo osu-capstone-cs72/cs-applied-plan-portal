@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "proxy": "http://localhost:3306",
   "directories": {
     "doc": "docs"
   },
@@ -12,38 +11,30 @@
     "css-loader": "^3.4.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "mysql": "^2.17.1",
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
+    "style-loader": "^1.1.3",
+    "validator": "^12.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "style-loader": "^1.1.3",
-    "validator": "^12.2.0"
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
-    "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.12.1",
-    "nodemon": "^2.0.2",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
+    "nodemon": "^2.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
-    "build": "node_modules/.bin/webpack --config webpack.config.js --mode production",
+    "start": "concurrently \"npm run builddev\" \"npm run serverdev\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
     "serve": "node_modules/.bin/http-server ./dist",
-    "builddev": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "serverdev": "nodemon server.js",
-    "dev": "concurrently \"npm run builddev\" \"npm run serverdev\""
+    "builddev": "react-scripts start",
+    "serverdev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -54,5 +45,17 @@
   "bugs": {
     "url": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal/issues"
   },
-  "homepage": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal#readme"
+  "homepage": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal#readme",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

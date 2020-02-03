@@ -43,9 +43,9 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     proxy: {
-      open: true,
-      "/apipath": "http://localhost:" + process.env.PORT,
-      "/apipath2": "http://localhost:"  + process.env.PORT
+      "/api": {
+        target: "http://localhost:" + process.env.PORT,
+      }
     }
   },
   plugins: [
