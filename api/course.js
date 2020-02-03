@@ -21,7 +21,7 @@ app.get("/:mode/:searchText", async (req, res) => {
       res.status(404).send("No courses found.");
     } else {
       console.log("Courses found - 200\n");
-      res.status(200).send(results);
+      res.status(200).send([JSON.stringify(results)]);
     }
 
   } catch (err) {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from "react";
 
 class List extends Component {
   // Initialize the state
@@ -16,9 +16,11 @@ class List extends Component {
 
   // Retrieves the list of items from the Express app
   getList = () => {
-    fetch('/api/getList')
+    fetch("/api/course/courseCode/cs101")
+
     .then(res => res.json())
-    .then(list => this.setState({ list }))
+    .then(list => this.setState({list}));
+    console.log(this.state.list);
   }
 
   render() {
