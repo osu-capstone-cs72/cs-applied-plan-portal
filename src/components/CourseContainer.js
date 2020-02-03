@@ -54,17 +54,19 @@ export default class CourseContainer extends React.Component {
     });
   }
 
-  newFilterSearch = () => {
+  async newFilterSearch() {
 
     const value = document.getElementById("search-container").value;
     const url = `/api/course/courseCode/${value}`;
-    fetch(url)
-    .then(res => res.json())
-    .then(obj => {
-        console.log(obj);
-        alert(JSON.stringify(obj));
-      }
-    );
+
+    try {
+      const results = await fetch(url);
+      const obj = await results.json();
+      console.log(obj);
+      alert(JSON.stringify(obj));
+    } catch (err) {
+      alert(err);
+    }
 
   }
 
