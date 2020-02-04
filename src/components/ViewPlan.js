@@ -34,17 +34,16 @@ export default class ViewPlan extends React.Component {
 
   async searchPlans() {
 
-    const value = document.getElementById("search-plans-input").value;
-    let url = `/api/plan/${value}`;
-    let obj = [];
-
-    // get plan data
     try {
-      const results = await fetch(url);
-      if (!results.ok) {
-        throw results;
-      } else {
-        obj = await results.json();
+      const value = document.getElementById("search-plans-input").value;
+      let url = `/api/plan/${value}`;
+      let obj = [];
+
+      // get plan data
+      let response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
         this.setState({
           courses: obj
         });
@@ -60,29 +59,40 @@ export default class ViewPlan extends React.Component {
         this.setState({
           status: parseInt(obj[0][0].status)
         });
-      }
-    } catch (err) {
-      err.text().then(errorMessage => {
-        alert(errorMessage);
-      });
-    }
-
-    // get plan comments
-    url = `/api/plan/${value}/comment`;
-    try {
-      const results = await fetch(url);
-      if (!results.ok) {
-        throw results;
       } else {
-        obj = await results.json();
+        // we got a bad status code
+        try {
+          throw response;
+        } catch (err) {
+          err.text().then(err => {
+            alert(err);
+          });
+        }
+      }
+
+      // get plan comments
+      url = `/api/plan/${value}/comment`;
+      response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
         this.setState({
           comments: obj
         });
+      } else {
+        // we got a bad status code
+        try {
+          throw response;
+        } catch (err) {
+          err.text().then(errorMessage => {
+            alert(errorMessage);
+          });
+        }
       }
+
     } catch (err) {
-      err.text().then(errorMessage => {
-        alert(errorMessage);
-      });
+      // this is a server error
+      alert("An internal server error occurred. Please try again later.");
     }
 
   }

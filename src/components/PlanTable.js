@@ -21,10 +21,10 @@ export default class PlanTable extends React.Component {
             </tr>
             {this.props.courses[1].map((course) => (
               <tr key={course.courseId}>
-                <td key={course.courseId}>{course.courseCode}</td>
-                <td key={course.courseId}>{course.courseName}</td>
-                <td key={course.courseId}>{course.credits}</td>
-                <td key={course.courseId}>{course.prerequisites}</td>
+                <td key={course.courseId + "a"}>{course.courseCode}</td>
+                <td key={course.courseId + "b"}>{course.courseName}</td>
+                <td key={course.courseId + "c"}>{course.credits}</td>
+                <td key={course.courseId + "d"}>{course.prerequisites}</td>
               </tr>
             ))}
           </tbody>
