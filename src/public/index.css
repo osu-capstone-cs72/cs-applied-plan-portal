@@ -9,10 +9,21 @@
   margin: 10px;
 }
 
+.form {
+  display: inline;
+}
+
 .edit-plan {
   border-right: 2px solid black;
   flex: 50%;
   height: 100vh;
+  position: relative;
+}
+
+.submit-button {
+  position: absolute;
+  bottom: 55px;
+  right: 30px;
 }
 
 .explore-courses {
