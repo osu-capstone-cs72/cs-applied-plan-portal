@@ -22,10 +22,10 @@ export default class ViewPlan extends React.Component {
       }], []],
 
       comments: [{
-        commentId: 1,
-        userId: 5,
-        time: Date.now(),
-        text: "This is the comment"
+        commentId: 0,
+        userId: 0,
+        time: null,
+        text: ""
       }]
     };
 
@@ -76,7 +76,7 @@ export default class ViewPlan extends React.Component {
       } else {
         obj = await results.json();
         this.setState({
-          courses: obj
+          comments: obj
         });
       }
     } catch (err) {
@@ -84,6 +84,7 @@ export default class ViewPlan extends React.Component {
         alert(errorMessage);
       });
     }
+
   }
 
   render() {
