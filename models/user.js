@@ -2,6 +2,20 @@
 // Description: Provides data functions that handle the User entity.
 
 const pool = require("../utils/mysqlPool").pool;
+const {userSchema, sanitizeUsingSchema} = require("../utils/schemaValidation");
+
+async function createUser(user) {
+  try {
+    user = sanitizeUsingSchema(user, userSchema);
+    const sql = "INSERT INTO User SET ?";
+    const results = await pool.query(sql, user);
+    return results[0];
+  } catch (err) {
+    console.error("Error creating new User");
+    throw Error(err);  // bubble the error up
+  }
+}
+exports.createUser = createUser;
 
 async function getUserByOnid(onid) {
   try {
