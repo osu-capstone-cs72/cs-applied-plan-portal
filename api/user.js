@@ -6,7 +6,11 @@ const express = require("express");
 const validator = require("validator");
 
 const userModel = require("../models/user");
-const {userSchema, getSchemaViolations} = require("../utils/schemaValidation");
+const {
+  userSchema,
+  getSchemaViolations,
+  sanitizeUsingSchema
+} = require("../utils/schemaValidation");
 
 const app = express();
 
@@ -14,12 +18,13 @@ app.post("/", async (req, res) => {
   const schemaViolations = getSchemaViolations(req.body, userSchema);
   if (!schemaViolations) {
     try {
-      const result = await userModel.createUser(req.body);
+      const sanitizedNewUser = sanitizeUsingSchema(req.body, userSchema);
+      const result = await userModel.createUser(sanitizedNewUser);
 
       console.log("201: User created\n");
       res.status(201).send({userId: result.insertId});
     } catch (err) {
-      console.error("500: Error creating new User\n");
+      console.error("500: Error creating new User:", err);
       res.status(500).send("Error creating new User. Please try again later.");
     }
   } else {
@@ -28,11 +33,11 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.get("/:onid", async (req, res) => {
-  if (validator.isInt(req.params.onid + "")) {
+app.get("/:userId", async (req, res) => {
+  if (validator.isInt(req.params.userId + "")) {
     try {
-      const onid = parseInt(req.params.onid);
-      const results = await userModel.getUserByOnid(onid);
+      const userId = parseInt(req.params.userId);
+      const results = await userModel.getUserById(userId);
 
       if (Array.isArray(results) && results.length > 0) {
         console.log("200: User found\n");
@@ -46,17 +51,17 @@ app.get("/:onid", async (req, res) => {
       res.status(500).send("Unable to fetch User. Please try again later.");
     }
   } else {
-    console.error("400: Invalid ONID\n");
-    res.status(400).send("Invalid ONID");
+    console.error("400: Invalid User Id\n");
+    res.status(400).send("Invalid User Id");
   }
 });
 
 // get all of the plans created by user
-app.get("/:onid/plans", async (req, res) => {
-  if (validator.isInt(req.params.onid + "")) {
+app.get("/:userId/plans", async (req, res) => {
+  if (validator.isInt(req.params.userId + "")) {
     try {
-      const onid = parseInt(req.params.onid);
-      const results = await userModel.getUserPlans(onid);
+      const userId = parseInt(req.params.userId);
+      const results = await userModel.getUserPlans(userId);
 
       if (Array.isArray(results) && results.length > 0) {
         console.log("200: Plans found\n");
@@ -70,8 +75,8 @@ app.get("/:onid/plans", async (req, res) => {
       res.status(500).send("Unable to fetch Plans. Please try again later.");
     }
   } else {
-    console.error("400: Invalid ONID\n");
-    res.status(400).send("Invalid ONID");
+    console.error("400: Invalid User ID\n");
+    res.status(400).send("Invalid User ID");
   }
 });
 
