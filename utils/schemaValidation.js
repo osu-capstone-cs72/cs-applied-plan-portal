@@ -4,6 +4,52 @@
 const validator = require("validator");
 const {Type} = require("./type");
 
+// Schema of an applied Plan used for the validator and the database.
+const planSchema = {
+  status: {
+    required: false,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 4,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan status\n" +
+        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
+        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
+    }
+  },
+  planName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan name\n" +
+        `The plan name must be a string between ${this.minLength} and ` +
+        `${this.maxLength} characters long.`;
+    }
+  },
+  studentId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user ID\n" +
+        "The user ID associated with this plan must be an integer at least " +
+        `${this.minValue}.`;
+    }
+  },
+  lastUpdated: {
+    required: false,
+    type: Type.timestamp,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan timestamp\n" +
+        "The plan timestamp must be in ISO 8601 format.";
+    }
+  }
+};
+exports.planSchema = planSchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.
@@ -138,52 +184,6 @@ function sanitizeUsingSchema(obj, schema) {
   return validObj;
 }
 exports.sanitizeUsingSchema = sanitizeUsingSchema;
-
-// Schema of an applied Plan used for the validator and the database.
-const planSchema = {
-  status: {
-    required: false,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: 4,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan status\n" +
-        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
-        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
-    }
-  },
-  planName: {
-    required: true,
-    type: Type.string,
-    minLength: 5,
-    maxLength: 50,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan name\n" +
-        `The plan name must be a string between ${this.minLength} and ` +
-        `${this.maxLength} characters long.`;
-    }
-  },
-  studentId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid user ID\n" +
-        "The user ID associated with this plan must be an integer at least " +
-        `${this.minValue}.`;
-    }
-  },
-  lastUpdated: {
-    required: false,
-    type: Type.timestamp,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan timestamp\n" +
-        "The plan timestamp must be in ISO 8601 format.";
-    }
-  }
-};
-exports.planSchema = planSchema;
 
 // A shorthand to check whether an object has a property that is
 // neither `null` nor `undefined`.
