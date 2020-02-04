@@ -113,10 +113,6 @@
   margin: 10px auto;
 }
 
-.table-container {
-  width: 100%;
-}
-
 .courses-table {
   margin: 50px auto;
   width: 90%;
@@ -138,15 +134,46 @@
   margin: 25px;
 }
 
-table, th, td {
+.table-container {
+  width: 100%;
+}
+
+.table-container table, .table-container th, .table-container td {
   border: 1px solid black;
   border-collapse: collapse;
 }
 
-th, td {
+.table-container th, .table-container td {
   padding: 5px;
 }
 
-th {
+.table-container th {
   text-align: left;
+}
+
+.plan-comments {
+  margin: 50px auto;
+  text-align: center;
+  width: 100%;
+}
+
+.comment-container {
+  text-align: center;
+  margin: 25px auto;
+  padding: 25px;
+  width: 250px;
+  background-color: #b3b3b3;
+}
+
+.comment-user {
+  font-weight: bold;
+  font-size: large;
+}
+
+.comment-time {
+  font-style: italic;
+}
+
+.comment-text {
+  font-size: large;
 }
