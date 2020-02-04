@@ -126,8 +126,10 @@ $RECYCLE.BIN/
 .vscode/
 
 # ==============================================================================
-# Node modules and env file
+# Node modules, NPM debug log, and env file
 # ==============================================================================
+
 node_modules
+npm-debug.log
 *.env
 *.env.test

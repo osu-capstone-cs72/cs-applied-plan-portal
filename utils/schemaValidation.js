@@ -4,6 +4,97 @@
 const validator = require("validator");
 const {Type} = require("./type");
 
+// Schema of an applied Plan used for the validator and the database.
+const planSchema = {
+  status: {
+    required: false,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 4,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan status\n" +
+        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
+        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
+    }
+  },
+  planName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan name\n" +
+        `The plan name must be a string between ${this.minLength} and ` +
+        `${this.maxLength} characters long.`;
+    }
+  },
+  studentId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user ID\n" +
+        "The user ID associated with this plan must be an integer at least " +
+        `${this.minValue}.`;
+    }
+  },
+  lastUpdated: {
+    required: false,
+    type: Type.timestamp,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid plan timestamp\n" +
+        "The plan timestamp must be in ISO 8601 format.";
+    }
+  }
+};
+exports.planSchema = planSchema;
+
+const userSchema = {
+  firstName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's first name\n" +
+        `The user's first name must be a string between ${this.minLength} ` +
+        `and ${this.maxLength} characters long.`;
+    }
+  },
+  lastName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's last name\n" +
+        `The user's last name must be a string between ${this.minLength} ` +
+        `and ${this.maxLength} characters long.`;
+    }
+  },
+  email: {
+    required: true,
+    type: Type.email,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's email\n" +
+        "The user's email must be a string in a valid email format, e.g. " +
+        "email@example.com.";
+    }
+  },
+  role: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 2,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's role\n" +
+        "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
+    }
+  }
+};
+exports.userSchema = userSchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.
@@ -107,6 +198,10 @@ function getPropertyViolation(obj, property, schema) {
       });
       break;
 
+    case Type.email:
+      isValid = validator.isEmail(obj[property] + "");
+      break;
+
     // if property is not of the allowed types, it's not valid
     default:
       isValid = false;
@@ -138,52 +233,6 @@ function sanitizeUsingSchema(obj, schema) {
   return validObj;
 }
 exports.sanitizeUsingSchema = sanitizeUsingSchema;
-
-// Schema of an applied Plan used for the validator and the database.
-const planSchema = {
-  status: {
-    required: false,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: 4,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan status\n" +
-        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
-        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
-    }
-  },
-  planName: {
-    required: true,
-    type: Type.string,
-    minLength: 5,
-    maxLength: 50,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan name\n" +
-        `The plan name must be a string between ${this.minLength} and ` +
-        `${this.maxLength} characters long.`;
-    }
-  },
-  studentId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid user ID\n" +
-        "The user ID associated with this plan must be an integer at least " +
-        `${this.minValue}.`;
-    }
-  },
-  lastUpdated: {
-    required: false,
-    type: Type.timestamp,
-    getErrorMessage: function() {
-      return "Constraint violated: Invalid plan timestamp\n" +
-        "The plan timestamp must be in ISO 8601 format.";
-    }
-  }
-};
-exports.planSchema = planSchema;
 
 // A shorthand to check whether an object has a property that is
 // neither `null` nor `undefined`.
