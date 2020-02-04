@@ -7,17 +7,20 @@ export default class StudentCreatePlan extends React.Component {
     super(props);
 
     this.state = {
-      courses: []
+      courses: [],
+      totalCredits: 0
     };
 
     this.updateCourses = this.updateCourses.bind(this);
     this.removeCourse = this.removeCourse.bind(this);
+    this.loadCredits = this.loadCredits.bind(this);
   }
 
   updateCourses(newCourses) {
     this.setState({
       courses: newCourses
     });
+    this.loadCredits();
   }
 
   removeCourse(course) {
@@ -30,12 +33,24 @@ export default class StudentCreatePlan extends React.Component {
     this.setState({
       courses: newCourses
     });
+
+    this.loadCredits();
+  }
+
+  loadCredits() {
+    let totalCreds = 0;
+    for (let i = 0; i < this.state.courses.length; i++) {
+      totalCreds += this.state.courses[i].credits;
+    }
+    this.setState({
+      totalCredits: totalCreds
+    });
   }
 
   render() {
     return (
       <div className="student-create-plan">
-        <EditPlan courses={this.state.courses} remove={this.removeCourse}/>
+        <EditPlan courses={this.state.courses} remove={this.removeCourse} totalCredits={this.state.totalCredits}/>
         <CourseContainer updateCourses={this.updateCourses}/>
       </div>
     );

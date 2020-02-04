@@ -6,7 +6,6 @@ import "../public/index.css";
 export default class Course extends React.Component {
   static get propTypes() {
     return {
-      key: PropTypes.any,
       code: PropTypes.any,
       title: PropTypes.any,
       credits: PropTypes.any,

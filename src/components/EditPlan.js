@@ -7,7 +7,8 @@ export default class EditPlan extends React.Component {
   static get propTypes() {
     return {
       remove: PropTypes.func,
-      courses: PropTypes.any
+      courses: PropTypes.any,
+      totalCredits: PropTypes.number
     };
   }
 
@@ -15,17 +16,17 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.submitPlan = this.submitPlan.bind(this);
+    // this.loadCredits = this.loadCredits.bind(this);
+    // this.removeCourse = this.removeCourse.bind(this);
   }
 
   submitPlan() {
-    // const postRequest = new XMLHttpRequest();
-    const postURL = "/api/plan";
-    // postRequest.open("POST", postURL);
     const courses = [];
     for (let i = 0; i < this.props.courses.length; i++) {
       courses.push(this.props.courses[i].code);
     }
 
+    const postURL = "/api/plan";
     const postObj = {
       userId: 1,
       planName: "examplePlan",
@@ -44,9 +45,42 @@ export default class EditPlan extends React.Component {
       .catch((error) => alert("Error: " + error));
   }
 
+  // loadCredits() {
+  //   let totalCreds = 0;
+  //   for (let i = 0; i < this.state.courses.length; i++) {
+  //     totalCreds += this.state.courses[i].credits;
+  //   }
+  //   this.setState({
+  //     totalCredits: totalCreds
+  //   });
+  // }
+
+  // removeCourse(course) {
+  //   const newCourses = this.state.courses;
+  //   for (let i = 0; i < newCourses.length; i++) {
+  //     if (newCourses[i].code === course.code) {
+  //       newCourses.splice(i, 1);
+  //     }
+  //   }
+  //   this.setState({
+  //     courses: newCourses
+  //   });
+  //   this.loadCredits();
+  // }
+
   render() {
     return (
       <div className="edit-plan">
+        <div className="header">
+          <div className="plan-header">
+            <label className="plan-name">Plan name</label>
+            <input type="text" placeholder="Enter plan name"></input>
+          </div>
+          <div className="credits-header">
+            <label className="credits">Total credits</label>
+            <p className="total-credits">{this.props.totalCredits}</p>
+          </div>
+        </div>
         <table className="table">
           <thead>
             <tr>
