@@ -73,7 +73,7 @@ export default class CourseContainer extends React.Component {
       <div className="course-container">
         <div className="top-bar">
           <div className="search-container">
-            <form className="form-inline my-2 my-lg-0">
+            <form className="form form-inline my-2 my-lg-0">
               <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
             </form>
             <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.filterSearch}><i className="fa fa-search"></i></button>
@@ -83,7 +83,7 @@ export default class CourseContainer extends React.Component {
           </form>
         </div>
         <div className="explore-courses">
-          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseId} code={c.courseCode} title={c.courseName} credits={c.credits}
+          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseCode} code={c.courseCode} title={c.courseName} credits={c.credits}
             description={c.description} prereqs={c.prerequisites} addCourse={this.addCourse}/>) :
             <div>Search for courses...</div>}
         </div>
