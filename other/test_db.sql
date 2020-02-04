@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
--- Host: sql3.freesqldatabase.com
--- Generation Time: Jan 29, 2020 at 06:01 PM
--- Server version: 5.5.54-0ubuntu0.12.04.1
--- PHP Version: 7.0.33-0ubuntu0.16.04.3
+-- Host: 127.0.0.1:3306
+-- Generation Time: Feb 04, 2020 at 12:50 PM
+-- Server version: 8.0.19
+-- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Comment` (
-  `commentId` int(11) NOT NULL,
-  `planId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
+  `commentId` int NOT NULL,
+  `planId` int NOT NULL,
+  `userId` int NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -40,9 +40,12 @@ CREATE TABLE `Comment` (
 -- Dumping data for table `Comment`
 --
 
-INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
-(1, 308, 1, '2020-01-27 21:59:27', 'This is my plan.'),
-(2, 308, 9, '2020-01-27 21:59:27', 'This plan looks good.');
+INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
+(1, 308, 1, 'This is my plan.'),
+(2, 308, 9, 'This plan looks good!'),
+(6, 310, 5, 'I sure do love my plan.'),
+(7, 310, 2, 'I don\'t like this plan. Lets get rid of it.'),
+(9, 310, 6, 'Sure, plan rejected.');
 
 -- --------------------------------------------------------
 
@@ -51,11 +54,11 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 --
 
 CREATE TABLE `Course` (
-  `courseId` int(11) NOT NULL,
-  `credits` int(2) NOT NULL,
+  `courseId` int NOT NULL,
+  `credits` int NOT NULL,
   `courseName` varchar(100) NOT NULL,
   `courseCode` varchar(8) NOT NULL,
-  `restriction` int(11) NOT NULL,
+  `restriction` int NOT NULL,
   `description` varchar(1000) NOT NULL,
   `prerequisites` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -82,7 +85,7 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 (15, 4, 'Introductory Biology II', 'BI205', 0, 'Fundamental concepts in molecular and cellular biology, beginning with biomolecules and the origin of life, and ending with genomics. Significant emphasis throughout on applications of biotechnology to solve human problems. Laboratory emphasizes skills in critical thinking, scientific writing, and experimental design. Not intended for pre-health profession students. Lec/lab. (Bacc Core Course)', 'CH 121* or 201* or ((CH 231* or 231H*) and (CH 261*, 261H*, 271* or 271H*)).\r\n* May be taken concurrently.\r\nA minimum grade of D- is required in CH 121, CH 201, CH 231, CH 231H, CH 261, CH 261H, CH 271 and CH 271H.'),
 (16, 4, 'Introductory Biology III', 'BI206', 0, 'Basic plant and animal physiology from an evolutionary perspective. Significant emphasis on topics of importance to human society, including human and plant disease. Laboratory emphasizes skills in critical thinking, scientific writing, and experimental design. Not intended for pre-health professional students. Lec/lab. (Bacc Core Course)', ' CH 121* or 201* or ((CH 231* or 231H*) and (CH 261*, 261H*, 271* or 271H*)).\r\n* May be taken concurrently.\r\nA minimum grade of D- is required in CH 121, CH 201, CH 231, CH 231H, CH 261, CH 261H, CH 271 and CH 271H.'),
 (17, 4, 'Introduction to Plant Biology ', 'BOT220', 0, 'Introduction to plant biology including an overview of major groups of plants, plant cells and cell types, plant anatomy and architecture, physiology and function, and ecology and the roles of plants in the environment. Laboratory exercises build on lecture themes and provide hands-on learning experiences including field trips. Lec/lab. (Bacc Core Course)', ''),
-(18, 3, 'Chemistry for Engineering Majors', 'CH201', 0, 'A sequence of selected chemistry topics for pre-engineering students. Lec.', 'Prerequisites: MTH 111*, 112*, 251*, 251H*, 252*, 252H*, 254*, 254H* or minimum score of 060 in \'Math'),
+(18, 3, 'Chemistry for Engineering Majors', 'CH201', 0, 'A sequence of selected chemistry topics for pre-engineering students. Lec.', 'MTH 111*, 112*, 251*, 251H*, 252*, 252H*, 254*, 254H* or minimum score of 060 in \'Math'),
 (19, 4, 'General Chemistry', 'CH232', 0, 'A general chemistry sequence for students majoring in most sciences, pre-pharmacy, and chemical engineering. CH 232 is a lecture course; CH 262 is the laboratory component. Lec/rec. (Bacc Core Course if taken with CH 262)', '(CH 231 or 231H) or CH 221.\r\nA minimum grade of C- is required in CH 231, CH 231H and CH 221.'),
 (20, 3, 'Interpersonal Communication', 'COMM218', 0, 'Introduction to dyadic and relational communication. Overview of current research in such areas as verbal and nonverbal messages, self-concept and perception, culture and gender stereotypes and styles, relational development and dissolution, deception, compliance gaining and conflict management. (Bacc Core Course)', ''),
 (21, 4, 'Introduction to the Complexity of Oregon Cropping Systems', 'CROP280', 0, 'An introduction to field cropping systems of western Oregon. Provides students with a broad overview of the complexity of cropping systems and the knowledge required to grow and produce a crop--plant physiology, seed biology, plant pathology, soil fertility, entomology, and weed science. Students will observe a crop under different management strategies to enhance understanding of management approaches.', ''),
@@ -98,10 +101,10 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 --
 
 CREATE TABLE `Plan` (
-  `planId` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
+  `planId` int NOT NULL,
+  `status` int NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` int(11) NOT NULL,
+  `studentId` int NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -109,9 +112,9 @@ CREATE TABLE `Plan` (
 -- Dumping data for table `Plan`
 --
 
-INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `lastUpdated`) VALUES
-(308, 2, 'Luke\'s Plan', 1, '2020-01-26 04:57:57'),
-(310, 2, 'Luke made another plan', 1, '2020-01-27 20:38:53');
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`) VALUES
+(308, 3, 'Luke\'s Plan', 1),
+(310, 0, 'Han\'s cool plan', 5);
 
 -- --------------------------------------------------------
 
@@ -120,9 +123,9 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `lastUpdated`) 
 --
 
 CREATE TABLE `PlanReview` (
-  `planId` int(11) NOT NULL,
-  `advisorId` int(11) NOT NULL,
-  `newStatus` int(11) NOT NULL,
+  `planId` int NOT NULL,
+  `advisorId` int NOT NULL,
+  `newStatus` int NOT NULL,
   `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `note` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -131,8 +134,10 @@ CREATE TABLE `PlanReview` (
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`, `timeReviewed`, `note`) VALUES
-(308, 9, 2, '2020-01-29 09:19:21', '');
+INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`, `note`) VALUES
+(308, 9, 3, ''),
+(310, 4, 3, 'Nice plan. Good luck with the rebellion.'),
+(310, 6, 0, 'Rejected rebel scum.');
 
 -- --------------------------------------------------------
 
@@ -141,8 +146,8 @@ INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`, `timeReviewed`, `n
 --
 
 CREATE TABLE `SelectedCourse` (
-  `planId` int(11) NOT NULL,
-  `courseId` int(11) NOT NULL
+  `planId` int NOT NULL,
+  `courseId` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -150,11 +155,24 @@ CREATE TABLE `SelectedCourse` (
 --
 
 INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
+(310, 5),
 (310, 7),
 (310, 9),
+(310, 10),
+(310, 11),
 (308, 14),
 (308, 15),
-(308, 16);
+(308, 16),
+(308, 17),
+(308, 18),
+(310, 18),
+(308, 19),
+(310, 19),
+(310, 20),
+(308, 21),
+(310, 22),
+(308, 23),
+(308, 25);
 
 -- --------------------------------------------------------
 
@@ -163,11 +181,11 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` int(11) NOT NULL,
+  `userId` int NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `role` int(11) NOT NULL
+  `role` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -176,7 +194,7 @@ CREATE TABLE `User` (
 
 INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (1, 'Luke', 'Skywalker', 'usetheforce@gmail.com', 0),
-(2, 'Han', 'Solo', 'shotfirst@yahoo.com', 0),
+(2, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 0),
 (3, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (4, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (5, 'Han', 'Solo', 'kessel_run@aol.com', 0),
@@ -246,22 +264,26 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
 --
 -- AUTO_INCREMENT for table `Course`
 --
 ALTER TABLE `Course`
-  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `courseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=315;
+  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=315;
+
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `userId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
 --
 -- Constraints for dumped tables
 --
@@ -291,8 +313,8 @@ ALTER TABLE `PlanReview`
 -- Constraints for table `SelectedCourse`
 --
 ALTER TABLE `SelectedCourse`
-  ADD CONSTRAINT `fk_planIdCourse` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_courseId` FOREIGN KEY (`courseId`) REFERENCES `Course` (`courseId`);
+  ADD CONSTRAINT `fk_courseId` FOREIGN KEY (`courseId`) REFERENCES `Course` (`courseId`),
+  ADD CONSTRAINT `fk_planIdCourse` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
