@@ -41,7 +41,7 @@ export default class PlanMetadata extends React.Component {
           <p className="field-text">{this.props.studentName}</p>
         </div>
         <div className="metadata-field">
-          <p className="field-type">ONID:</p>
+          <p className="field-type">User ID:</p>
           <p className="field-text">{this.props.onid}</p>
         </div>
         <div className="metadata-field">
