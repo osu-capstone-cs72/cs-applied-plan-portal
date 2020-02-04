@@ -16,16 +16,16 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.submitPlan = this.submitPlan.bind(this);
-    // this.loadCredits = this.loadCredits.bind(this);
-    // this.removeCourse = this.removeCourse.bind(this);
   }
 
   submitPlan() {
+    // create an array of strings containing course codes
     const courses = [];
     for (let i = 0; i < this.props.courses.length; i++) {
       courses.push(this.props.courses[i].code);
     }
 
+    // set up data for new plan to send to backend
     const postURL = "/api/plan";
     const postObj = {
       userId: 1,
@@ -33,40 +33,32 @@ export default class EditPlan extends React.Component {
       courses: courses
     };
 
-    fetch(postURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(postObj),
-    }).then((data) => {
-      alert("Success: " + data.status);
-    })
-      .catch((error) => alert("Error: " + error));
+    try {
+      const response = fetch(postURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postObj),
+      });
+      if (response.ok) {
+        alert("Success: " + JSON.stringify(response));
+      } else {
+        // we got a bad status code
+        try {
+          alert("In throw block");
+          throw response;
+        } catch (err) {
+          err.text().then(errorMessage => {
+            alert(errorMessage);
+          });
+        }
+      }
+    } catch (err) {
+      // this is a server error
+      alert("An internal server error occurred. Please try again later.");
+    }
   }
-
-  // loadCredits() {
-  //   let totalCreds = 0;
-  //   for (let i = 0; i < this.state.courses.length; i++) {
-  //     totalCreds += this.state.courses[i].credits;
-  //   }
-  //   this.setState({
-  //     totalCredits: totalCreds
-  //   });
-  // }
-
-  // removeCourse(course) {
-  //   const newCourses = this.state.courses;
-  //   for (let i = 0; i < newCourses.length; i++) {
-  //     if (newCourses[i].code === course.code) {
-  //       newCourses.splice(i, 1);
-  //     }
-  //   }
-  //   this.setState({
-  //     courses: newCourses
-  //   });
-  //   this.loadCredits();
-  // }
 
   render() {
     return (
