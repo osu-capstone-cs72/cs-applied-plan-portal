@@ -33,39 +33,75 @@ export default class CourseContainer extends React.Component {
 
     try {
       const results = await fetch(url);
-      obj = await results.json();
+      if (results.ok) {
+        obj = await results.json();
+        this.setState({
+          courses: obj
+        });
+      } else {
+        // we got a bad status code
+        try {
+          throw results;
+        } catch (err) {
+          err.text().then(errorMessage => {
+            alert(errorMessage);
+          });
+        }
+      }
     } catch (err) {
       alert(err);
     }
 
-    this.setState({
-      courses: obj
-    });
-
   }
 
-  handleFilterChange(value) {
+  async handleFilterChange(value) {
     this.setState({
       filter: value
     });
-    let courses = this.state.courses;
-    courses = courses.filter(c => {
-      return (
-        c.code.startsWith(value)
-      );
-    });
-    this.setState({
-      courses: courses
-    });
+    const url = `/api/course/courseCode/${value}`;
+    let obj = [];
+
+    try {
+      const results = await fetch(url);
+      if (results.ok) {
+        obj = await results.json();
+        this.setState({
+          courses: obj
+        });
+      } else {
+        // we got a bad status code
+        try {
+          throw results;
+        } catch (err) {
+          err.text().then(errorMessage => {
+            alert(errorMessage);
+          });
+        }
+      }
+    } catch (err) {
+      alert(err);
+    }
   }
 
   addCourse(course) {
-    const newCourses = this.state.addCourses;
-    newCourses.unshift(course);
-    this.setState({
-      addCourses: newCourses
-    });
-    this.props.updateCourses(newCourses);
+    // check that new course isn't already in array
+    let newCourse = true;
+    for (let i = 0; i < this.state.addCourses.length; i++) {
+      if (course.code === this.state.addCourses[i].code) {
+        alert("Course already added to plan.");
+        newCourse = false;
+        return;
+      }
+    }
+
+    if (newCourse) {
+      const newCourses = this.state.addCourses;
+      newCourses.unshift(course);
+      this.setState({
+        addCourses: newCourses
+      });
+      this.props.updateCourses(newCourses);
+    }
   }
 
   render() {
