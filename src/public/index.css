@@ -126,6 +126,16 @@
   width: 100%;
 }
 
+.home-container {
+  margin: 250px auto;
+  text-align: center;
+  width: 100%;
+}
+
+.home-button {
+  margin: 25px;
+}
+
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
