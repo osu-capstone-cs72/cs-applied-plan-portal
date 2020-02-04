@@ -36,6 +36,8 @@ export default class ViewPlan extends React.Component {
 
     try {
       const value = document.getElementById("search-plans-input").value;
+
+      let userId = 0;
       let url = `/api/plan/${value}`;
       let obj = [];
 
@@ -44,11 +46,9 @@ export default class ViewPlan extends React.Component {
       if (response.ok) {
         // get data from the response
         obj = await response.json();
+        userId = obj[0][0].studentId;
         this.setState({
           courses: obj
-        });
-        this.setState({
-          studentName: "Luke Skywalker"
         });
         this.setState({
           planName: obj[0][0].planName
@@ -66,6 +66,26 @@ export default class ViewPlan extends React.Component {
         } catch (err) {
           err.text().then(err => {
             alert(err);
+          });
+        }
+      }
+
+      // get user name
+      url = `/api/user/${userId}`;
+      response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
+        this.setState({
+          studentName: obj.firstName + " " + obj.lastName
+        });
+      } else {
+        // we got a bad status code
+        try {
+          throw response;
+        } catch (err) {
+          err.text().then(errorMessage => {
+            alert(errorMessage);
           });
         }
       }
