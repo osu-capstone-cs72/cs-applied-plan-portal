@@ -5,7 +5,7 @@ export default class PlanMetadata extends React.Component {
   static get propTypes() {
     return {
       studentName: PropTypes.string,
-      onid: PropTypes.string,
+      onid: PropTypes.number,
       planName: PropTypes.string,
       status: PropTypes.number
     };
