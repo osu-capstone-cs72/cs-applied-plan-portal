@@ -12,7 +12,14 @@ export default class ViewPlan extends React.Component {
       onid: 0,
       planName: "",
       status: -1,
-      courses: {}
+
+      courses: [[], [{
+        courseId: 0,
+        credits: 0,
+        courseName: "",
+        courseCode: "",
+        prerequisites: ""
+      }], []]
     };
 
     this.searchPlans = this.searchPlans.bind(this);
