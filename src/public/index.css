@@ -52,3 +52,27 @@
 .edit-plan {
   margin: 15px;
 }
+
+.plan-metadata {
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  height: 75px;
+  background-color: #b3b3b3;
+}
+
+.metadata-field {
+  display: inline-block;
+  width: 20%;
+  height: 200px;
+}
+
+.field-type {
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.field-text {
+  font-weight: normal;
+  vertical-align: middle;
+}
