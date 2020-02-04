@@ -15,12 +15,12 @@ const deletePlan = require("../models/plan").deletePlan;
 // submit a plan
 app.post("/", async (req, res) => {
 
-  console.log("Submit a plan");
-  const userId = req.body.userId;
-  const planName = req.body.planName;
-  const courses = formatStringArray(req.body.courses);
-
   try {
+
+    console.log("Submit a plan");
+    const userId = req.body.userId;
+    const planName = req.body.planName;
+    const courses = formatStringArray(req.body.courses);
 
     // only save a plan if it does not violate any constraints
     const violation = await enforceConstraints(userId, planName, courses);
@@ -49,10 +49,10 @@ app.post("/", async (req, res) => {
 // view a plan
 app.get("/:planId", async (req, res) => {
 
-  const planId = req.params.planId;
-  console.log("View plan", planId);
-
   try {
+
+    const planId = req.params.planId;
+    console.log("View plan", planId);
 
     const results = await getPlan(planId);
     if (results[0].length === 0) {
@@ -73,10 +73,10 @@ app.get("/:planId", async (req, res) => {
 // delete a plan
 app.delete("/:planId", async (req, res) => {
 
-  const planId = req.params.planId;
-  console.log("Delete plan", planId);
-
   try {
+
+    const planId = req.params.planId;
+    console.log("Delete plan", planId);
 
     const results = await deletePlan(planId);
     if (results.affectedRows === 0) {
@@ -97,10 +97,10 @@ app.delete("/:planId", async (req, res) => {
 // get a plans comments
 app.get("/:planId/comment", async (req, res) => {
 
-  console.log("Get a plans comments");
-  const planId = req.params.planId;
-
   try {
+
+    console.log("Get a plans comments");
+    const planId = req.params.planId;
 
     const results = await getPlanComments(planId);
     if (results.length === 0) {

@@ -15,13 +15,12 @@ async function testConnection(pool, callback) {
     console.log("Connected to database");
     callback();
   } catch (err) {
-    console.log("Error connecting to database");
-    throw Error(err);
+    console.log("Error connecting to database \n", err);
   }
 }
 
 // listen for incoming requests
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 testConnection(pool, () => {
   app.listen(port, () => {
     console.log("Server is listening on port", port, "\n");
