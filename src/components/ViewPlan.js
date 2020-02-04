@@ -33,24 +33,30 @@ export default class ViewPlan extends React.Component {
 
     try {
       const results = await fetch(url);
-      obj = await results.json();
-      this.setState({
-        courses: obj
-      });
-      this.setState({
-        studentName: "Luke Skywalker"
-      });
-      this.setState({
-        planName: obj[0][0].planName
-      });
-      this.setState({
-        onid: obj[0][0].studentId
-      });
-      this.setState({
-        status: parseInt(obj[0][0].status)
-      });
+      if (!results.ok) {
+        throw results;
+      } else {
+        obj = await results.json();
+        this.setState({
+          courses: obj
+        });
+        this.setState({
+          studentName: "Luke Skywalker"
+        });
+        this.setState({
+          planName: obj[0][0].planName
+        });
+        this.setState({
+          onid: obj[0][0].studentId
+        });
+        this.setState({
+          status: parseInt(obj[0][0].status)
+        });
+      }
     } catch (err) {
-      alert(err);
+      err.text().then(errorMessage => {
+        alert(errorMessage);
+      });
     }
 
   }
