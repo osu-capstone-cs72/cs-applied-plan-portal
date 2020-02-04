@@ -34,26 +34,18 @@ export default class EditPlan extends React.Component {
     };
 
     try {
-      const response = fetch(postURL, {
+      fetch(postURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(postObj),
-      });
-      if (response.ok) {
-        alert("Success: " + JSON.stringify(response));
-      } else {
-        // we got a bad status code
-        try {
-          alert("In throw block");
-          throw response;
-        } catch (err) {
-          err.text().then(errorMessage => {
-            alert(errorMessage);
-          });
-        }
-      }
+      }).then((data) => {
+        data.text().then(res => {
+          alert(res);
+        });
+      })
+        .catch((error) => alert("Error: " + error));
     } catch (err) {
       // this is a server error
       alert("An internal server error occurred. Please try again later.");
