@@ -50,6 +50,51 @@ const planSchema = {
 };
 exports.planSchema = planSchema;
 
+const userSchema = {
+  firstName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's first name\n" +
+        `The user's first name must be a string between ${this.minLength} ` +
+        `and ${this.maxLength} characters long.`;
+    }
+  },
+  lastName: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's last name\n" +
+        `The user's last name must be a string between ${this.minLength} ` +
+        `and ${this.maxLength} characters long.`;
+    }
+  },
+  email: {
+    required: true,
+    type: Type.email,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's email\n" +
+        "The user's email must be a string in a valid email format, e.g. " +
+        "email@example.com.";
+    }
+  },
+  role: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 2,
+    getErrorMessage: function() {
+      return "Constraint violated: Invalid user's role\n" +
+        "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
+    }
+  }
+};
+exports.userSchema = userSchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.
@@ -151,6 +196,10 @@ function getPropertyViolation(obj, property, schema) {
       isValid = validator.isISO8601(obj[property] + "", {
         strict: true
       });
+      break;
+
+    case Type.email:
+      isValid = validator.isEmail(obj[property] + "");
       break;
 
     // if property is not of the allowed types, it's not valid
