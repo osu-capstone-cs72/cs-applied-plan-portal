@@ -1,7 +1,6 @@
 
 .student-create-plan {
   display: flex;
-
 }
 
 .course-container {
@@ -18,6 +17,7 @@
   flex: 50%;
   height: 100vh;
   position: relative;
+  margin: 15px;
 }
 
 .submit-button {
@@ -58,10 +58,6 @@
   float: right;
   margin: 25px;
   margin-right: 50px;
-}
-
-.edit-plan {
-  margin: 15px;
 }
 
 .plan-metadata {
@@ -176,4 +172,31 @@
 
 .comment-text {
   font-size: large;
+}
+
+.table {
+  width: 95%;
+  margin: 10px;
+}
+
+.plan-header {
+  display: inline;
+}
+
+.plan-name {
+  padding: 5px;
+}
+
+.credits-header {
+  float: right;
+  margin-right: 15px;
+}
+
+.credits {
+  display: block;
+}
+
+.total-credits {
+  position: relative;
+  left: 50%;
 }

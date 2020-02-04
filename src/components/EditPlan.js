@@ -19,6 +19,9 @@ export default class EditPlan extends React.Component {
   }
 
   submitPlan() {
+    // get plan name from input field
+    const planname = document.getElementById("plan-name-input").value;
+
     // create an array of strings containing course codes
     const courses = [];
     for (let i = 0; i < this.props.courses.length; i++) {
@@ -29,7 +32,7 @@ export default class EditPlan extends React.Component {
     const postURL = "/api/plan";
     const postObj = {
       userId: 1,
-      planName: "examplePlan",
+      planName: planname,
       courses: courses
     };
 
@@ -58,7 +61,7 @@ export default class EditPlan extends React.Component {
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>
-            <input type="text" placeholder="Enter plan name"></input>
+            <input id="plan-name-input" type="text" placeholder="Enter plan name"></input>
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>
