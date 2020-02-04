@@ -9,13 +9,13 @@ export default class ViewPlan extends React.Component {
 
     this.state = {
       studentName: "",
-      onid: 0,
+      onid: null,
       planName: "",
       status: -1,
 
       courses: [[], [{
         courseId: 0,
-        credits: 0,
+        credits: null,
         courseName: "",
         courseCode: "",
         prerequisites: ""

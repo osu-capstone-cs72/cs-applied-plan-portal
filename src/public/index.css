@@ -69,7 +69,7 @@
   vertical-align: middle;
   width: 100%;
   height: 75px;
-  background-color: #b3b3b3;
+  background-color: #c0c0c0;
 }
 
 .metadata-field {
@@ -108,7 +108,7 @@
 
 #search-plans-button {
   display: block;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .table-container {
