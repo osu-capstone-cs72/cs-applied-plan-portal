@@ -19,7 +19,14 @@ export default class ViewPlan extends React.Component {
         courseName: "",
         courseCode: "",
         prerequisites: ""
-      }], []]
+      }], []],
+
+      comments: [{
+        commentId: 1,
+        userId: 5,
+        time: Date.now(),
+        text: "This is the comment"
+      }]
     };
 
     this.searchPlans = this.searchPlans.bind(this);
@@ -28,9 +35,10 @@ export default class ViewPlan extends React.Component {
   async searchPlans() {
 
     const value = document.getElementById("search-plans-input").value;
-    const url = `/api/plan/${value}`;
+    let url = `/api/plan/${value}`;
     let obj = [];
 
+    // get plan data
     try {
       const results = await fetch(url);
       if (!results.ok) {
@@ -59,6 +67,23 @@ export default class ViewPlan extends React.Component {
       });
     }
 
+    // get plan comments
+    url = `/api/plan/${value}/comment`;
+    try {
+      const results = await fetch(url);
+      if (!results.ok) {
+        throw results;
+      } else {
+        obj = await results.json();
+        this.setState({
+          courses: obj
+        });
+      }
+    } catch (err) {
+      err.text().then(errorMessage => {
+        alert(errorMessage);
+      });
+    }
   }
 
   render() {
@@ -77,7 +102,7 @@ export default class ViewPlan extends React.Component {
           <button id="search-plans-button" type="submit" onClick={this.searchPlans}>Get Plan</button>
         </div>
 
-        <PlanComments />
+        <PlanComments comments={this.state.comments} />
 
       </div>
     );

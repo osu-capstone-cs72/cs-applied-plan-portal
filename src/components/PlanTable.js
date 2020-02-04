@@ -8,14 +8,6 @@ export default class PlanTable extends React.Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      courseArray: this.props.courses[1]
-    };
-  }
-
   render() {
     return (
       <div className="table-container">
@@ -28,11 +20,11 @@ export default class PlanTable extends React.Component {
               <th>Prerequisites</th>
             </tr>
             {this.props.courses[1].map((course) => (
-              <tr key={course.id}>
-                <td key={course.id}>{course.courseCode}</td>
-                <td key={course.id}>{course.courseName}</td>
-                <td key={course.id}>{course.credits}</td>
-                <td key={course.id}>{course.prerequisites}</td>
+              <tr key={course.courseId}>
+                <td key={course.courseId}>{course.courseCode}</td>
+                <td key={course.courseId}>{course.courseName}</td>
+                <td key={course.courseId}>{course.credits}</td>
+                <td key={course.courseId}>{course.prerequisites}</td>
               </tr>
             ))}
           </tbody>
