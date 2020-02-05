@@ -14,12 +14,16 @@ const {
 
 const app = express();
 
+// Creates a new User in the system.
 app.post("/", async (req, res) => {
+  // validate the request body against the schema and get error message, if any
   const schemaViolations = getSchemaViolations(req.body, userSchema);
   if (!schemaViolations) {
+    // if there were no schema violations, continue to proceed
     try {
-      const sanitizedNewUser = sanitizeUsingSchema(req.body, userSchema);
-      const result = await userModel.createUser(sanitizedNewUser);
+      // sanitize the request body and pass it to the model
+      const newUser = sanitizeUsingSchema(req.body, userSchema);
+      const result = await userModel.createUser(newUser);
 
       console.log("201: User created\n");
       res.status(201).send({userId: result.insertId});
@@ -33,10 +37,13 @@ app.post("/", async (req, res) => {
   }
 });
 
+// Fetches information about a specific User.
 app.get("/:userId", async (req, res) => {
+  // ensure the provided request parameter is a valid integer
   if (validator.isInt(req.params.userId + "")) {
     try {
-      const userId = parseInt(req.params.userId);
+      // sanitize the request parameter and pass it to the model
+      const userId = validator.toInt(req.params.userId);
       const results = await userModel.getUserById(userId);
 
       if (Array.isArray(results) && results.length > 0) {
@@ -56,11 +63,13 @@ app.get("/:userId", async (req, res) => {
   }
 });
 
-// get all of the plans created by user
+// Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", async (req, res) => {
+  // ensure the provided request parameter is a valid integer
   if (validator.isInt(req.params.userId + "")) {
     try {
-      const userId = parseInt(req.params.userId);
+      // sanitize the request parameter and pass it to the model
+      const userId = validator.toInt(req.params.userId);
       const results = await userModel.getUserPlans(userId);
 
       if (Array.isArray(results) && results.length > 0) {
