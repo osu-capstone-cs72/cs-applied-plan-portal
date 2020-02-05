@@ -6,6 +6,8 @@
 .course-container {
   flex: 50%;
   margin: 10px;
+  position: relative;
+  top: 40px;
 }
 
 .form {
@@ -18,6 +20,7 @@
   height: 100vh;
   position: relative;
   margin: 15px;
+  top: 40px;
 }
 
 .submit-button {
@@ -199,4 +202,15 @@
 .total-credits {
   position: relative;
   left: 50%;
+}
+
+.navbar-parent {
+  display: flex;
+  position: absolute;
+  width: 100%;
+  background-color: orange;
+}
+
+#navbar-search {
+  width: 35%;
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
+import Navbar from "./Navbar";
 
 export default class StudentCreatePlan extends React.Component {
   constructor(props) {
@@ -50,6 +51,7 @@ export default class StudentCreatePlan extends React.Component {
   render() {
     return (
       <div className="student-create-plan">
+        <Navbar showSearch={false} searchContent={null}/>
         <EditPlan courses={this.state.courses} remove={this.removeCourse} totalCredits={this.state.totalCredits}/>
         <CourseContainer updateCourses={this.updateCourses}/>
       </div>
