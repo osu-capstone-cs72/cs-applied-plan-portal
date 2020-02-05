@@ -54,7 +54,7 @@ const userSchema = {
   firstName: {
     required: true,
     type: Type.string,
-    minLength: 5,
+    minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
       return "Constraint violated: Invalid user's first name\n" +
@@ -65,7 +65,7 @@ const userSchema = {
   lastName: {
     required: true,
     type: Type.string,
-    minLength: 5,
+    minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
       return "Constraint violated: Invalid user's last name\n" +
