@@ -14,45 +14,77 @@ export default class EditPlan extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      warning: null
+    };
+
     this.submitPlan = this.submitPlan.bind(this);
     this.loadCredits = this.loadCredits.bind(this);
+    this.clearWarning = this.clearWarning.bind(this);
+    this.validatePlan = this.validatePlan.bind(this);
   }
 
   submitPlan() {
     // get plan name from input field
     const planname = document.getElementById("plan-name-input").value;
+    if (this.validatePlan(planname)) {
 
-    // create an array of strings containing course codes
-    const courses = [];
-    for (let i = 0; i < this.props.courses.length; i++) {
-      courses.push(this.props.courses[i].code);
-    }
+      // create an array of strings containing course codes
+      const courses = [];
+      for (let i = 0; i < this.props.courses.length; i++) {
+        courses.push(this.props.courses[i].code);
+      }
 
-    // set up data for new plan to send to backend
-    const postURL = "/api/plan";
-    const postObj = {
-      userId: 1,
-      planName: planname,
-      courses: courses
-    };
+      // set up data for new plan to send to backend
+      const postURL = "/api/plan";
+      const postObj = {
+        userId: 1,
+        planName: planname,
+        courses: courses
+      };
 
-    try {
-      fetch(postURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(postObj),
-      }).then((data) => {
-        data.text().then(res => {
-          alert(res);
-        });
-      })
-        .catch((error) => alert("Error: " + error));
-    } catch (err) {
+      try {
+        fetch(postURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(postObj),
+        }).then((data) => {
+          data.text().then(res => {
+            alert(res);
+          });
+        })
+          .catch((error) => alert("Error: " + error));
+      } catch (err) {
       // this is a server error
-      alert("An internal server error occurred. Please try again later.");
+        alert("An internal server error occurred. Please try again later.");
+      }
     }
+  }
+
+  validatePlan(planname) {
+    const NAME_MIN = 5;
+    const NAME_MAX = 50;
+    const CREDITS_MIN = 32;
+
+    // check that plan name has a valid length
+    if (planname.length < NAME_MIN || planname.length > NAME_MAX) {
+      this.setState({
+        warning: `Plan name must be between ${NAME_MIN} and ${NAME_MAX} characters.`
+      });
+      return false;
+    }
+    // check that the minimum amount of credits are selected
+    const credits = this.loadCredits();
+    if (credits < CREDITS_MIN) {
+      this.setState({
+        warning: `Plan must have at least ${CREDITS_MIN} credits.`
+      });
+      return false;
+    }
+
+    return true;
   }
 
   loadCredits() {
@@ -64,18 +96,27 @@ export default class EditPlan extends React.Component {
     return totalCreds;
   }
 
+  clearWarning() {
+    this.setState({
+      warning: null
+    });
+  }
+
   render() {
     return (
       <div className="edit-plan">
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>
-            <input id="plan-name-input" type="text" placeholder="Enter plan name"></input>
+            <input id="plan-name-input" type="text" placeholder="Enter plan name" onChange={this.clearWarning}></input>
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>
             <p className="total-credits">{this.loadCredits()}</p>
           </div>
+        </div>
+        <div className="warning-box">
+          {this.state.warning ? <p>{this.state.warning}</p> : null}
         </div>
         <table className="table">
           <thead>

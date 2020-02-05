@@ -20,7 +20,6 @@ export default class StudentCreatePlan extends React.Component {
     this.setState({
       courses: newCourses
     });
-    this.loadCredits();
   }
 
   removeCourse(course) {
@@ -33,15 +32,13 @@ export default class StudentCreatePlan extends React.Component {
     this.setState({
       courses: newCourses
     });
-
-    this.loadCredits();
   }
 
   render() {
     return (
       <div className="student-create-plan">
         <Navbar showSearch={false} searchContent={null}/>
-        <EditPlan courses={this.state.courses} remove={this.removeCourse} />
+        <EditPlan courses={this.state.courses} remove={this.removeCourse}/>
         <CourseContainer updateCourses={this.updateCourses}/>
       </div>
     );
