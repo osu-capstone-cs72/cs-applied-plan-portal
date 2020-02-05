@@ -29,7 +29,9 @@ app.post("/", async (req, res) => {
       res.status(201).send({userId: result.insertId});
     } catch (err) {
       console.error("500: Error creating new User:", err);
-      res.status(500).send("Error creating new User. Please try again later.");
+      res.status(500).send({
+        error: "Error creating new User. Please try again later."
+      });
     }
   } else {
     console.error(schemaViolations);
@@ -51,15 +53,17 @@ app.get("/:userId", async (req, res) => {
         res.status(200).send(results[0]);
       } else {
         console.error("404: No User found\n");
-        res.status(404).send("No User found");
+        res.status(404).send({error: "No User found"});
       }
     } catch (err) {
       console.error("500: Error fetching User:", err);
-      res.status(500).send("Unable to fetch User. Please try again later.");
+      res.status(500).send({
+        error: "Unable to fetch User. Please try again later."
+      });
     }
   } else {
     console.error("400: Invalid User Id\n");
-    res.status(400).send("Invalid User Id");
+    res.status(400).send({error: "Invalid User Id"});
   }
 });
 
@@ -77,15 +81,17 @@ app.get("/:userId/plans", async (req, res) => {
         res.status(200).send(results);
       } else {
         console.error("404: No plans found\n");
-        res.status(404).send("No plans found");
+        res.status(404).send({error: "No plans found"});
       }
     } catch (err) {
       console.error("500: Error fetching Plans:", err);
-      res.status(500).send("Unable to fetch Plans. Please try again later.");
+      res.status(500).send({
+        error: "Unable to fetch Plans. Please try again later."
+      });
     }
   } else {
     console.error("400: Invalid User ID\n");
-    res.status(400).send("Invalid User ID");
+    res.status(400).send({error: "Invalid User ID"});
   }
 });
 
