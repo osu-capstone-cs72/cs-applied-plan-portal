@@ -28,17 +28,34 @@ export default class CourseContainer extends React.Component {
   async filterSearch() {
 
     const value = document.getElementById("search-container").value;
-    const url = `/api/course/courseCode/${value}`;
+    const codeUrl = `/api/course/courseCode/${value}`;
+    const nameUrl = `/api/course/courseName/${value}`;
     let obj = [];
 
     try {
-      const results = await fetch(url);
+      const results = await fetch(codeUrl);
       if (results.ok) {
         obj = await results.json();
         this.setState({
           courses: obj
         });
       } else {
+        const results = await fetch(nameUrl);
+        if (results.ok) {
+          obj = await results.json();
+          this.setState({
+            courses: obj
+          });
+        } else {
+        // we got a bad status code
+          try {
+            throw results;
+          } catch (err) {
+            err.text().then(errorMessage => {
+              alert(errorMessage);
+            });
+          }
+        }
         // we got a bad status code
         try {
           throw results;
@@ -51,35 +68,36 @@ export default class CourseContainer extends React.Component {
     } catch (err) {
       alert(err);
     }
-
   }
 
   async handleFilterChange(value) {
     this.setState({
       filter: value
     });
-    const url = `/api/course/courseCode/${value}`;
-    let obj = [];
+    if (value !== "none") {
+      const url = `/api/course/courseCode/${value}`;
+      let obj = [];
 
-    try {
-      const results = await fetch(url);
-      if (results.ok) {
-        obj = await results.json();
-        this.setState({
-          courses: obj
-        });
-      } else {
-        // we got a bad status code
-        try {
-          throw results;
-        } catch (err) {
-          err.text().then(errorMessage => {
-            alert(errorMessage);
+      try {
+        const results = await fetch(url);
+        if (results.ok) {
+          obj = await results.json();
+          this.setState({
+            courses: obj
           });
+        } else {
+        // we got a bad status code
+          try {
+            throw results;
+          } catch (err) {
+            err.text().then(errorMessage => {
+              alert(errorMessage);
+            });
+          }
         }
+      } catch (err) {
+        alert(err);
       }
-    } catch (err) {
-      alert(err);
     }
   }
 

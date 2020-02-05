@@ -7,8 +7,7 @@ export default class EditPlan extends React.Component {
   static get propTypes() {
     return {
       remove: PropTypes.func,
-      courses: PropTypes.any,
-      totalCredits: PropTypes.number
+      courses: PropTypes.any
     };
   }
 
@@ -16,6 +15,7 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.submitPlan = this.submitPlan.bind(this);
+    this.loadCredits = this.loadCredits.bind(this);
   }
 
   submitPlan() {
@@ -55,6 +55,15 @@ export default class EditPlan extends React.Component {
     }
   }
 
+  loadCredits() {
+    // sum all the credits from the courses, return an int
+    let totalCreds = 0;
+    for (let i = 0; i < this.props.courses.length; i++) {
+      totalCreds += this.props.courses[i].credits;
+    }
+    return totalCreds;
+  }
+
   render() {
     return (
       <div className="edit-plan">
@@ -65,7 +74,7 @@ export default class EditPlan extends React.Component {
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>
-            <p className="total-credits">{this.props.totalCredits}</p>
+            <p className="total-credits">{this.loadCredits()}</p>
           </div>
         </div>
         <table className="table">
