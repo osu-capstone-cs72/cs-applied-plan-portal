@@ -1,15 +1,14 @@
 import React from "react";
 
-export default class PageInternalError extends React.Component {
-  render() {
-    return (
+function PageInternalError() {
+  return (
 
-      <div className="status-container">
-        <h1 className="status-code">500 Internal Server Error</h1>
-        <p className="status-text">The server encountered an internal error
+    <div className="status-container">
+    <h1 className="status-code">500 Internal Server Error</h1>
+    <p className="status-text">The server encountered an internal error
           and was unable to complete your request.</p>
-      </div>
+    </div>
 
-    );
-  }
+  );
 }
+export default PageInternalError;

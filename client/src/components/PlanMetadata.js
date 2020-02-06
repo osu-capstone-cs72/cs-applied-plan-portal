@@ -5,7 +5,7 @@ export default class PlanMetadata extends React.Component {
   static get propTypes() {
     return {
       studentName: PropTypes.string,
-      onid: PropTypes.number,
+      userId: PropTypes.number,
       planName: PropTypes.string,
       status: PropTypes.number
     };
@@ -42,7 +42,7 @@ export default class PlanMetadata extends React.Component {
         </div>
         <div className="metadata-field">
           <p className="field-type">User ID:</p>
-          <p className="field-text">{this.props.onid}</p>
+          <p className="field-text">{this.props.userId}</p>
         </div>
         <div className="metadata-field">
           <p className="field-type">Plan Name:</p>
