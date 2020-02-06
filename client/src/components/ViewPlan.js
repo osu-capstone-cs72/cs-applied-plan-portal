@@ -80,15 +80,6 @@ export default class ViewPlan extends React.Component {
         this.setState({
           studentName: obj.firstName + " " + obj.lastName
         });
-      } else {
-        // we got a bad status code
-        try {
-          throw response;
-        } catch (err) {
-          err.text().then(errorMessage => {
-            alert(errorMessage);
-          });
-        }
       }
 
       // get plan comments
@@ -100,15 +91,6 @@ export default class ViewPlan extends React.Component {
         this.setState({
           comments: obj
         });
-      } else {
-        // we got a bad status code
-        try {
-          throw response;
-        } catch (err) {
-          err.text().then(errorMessage => {
-            alert(errorMessage);
-          });
-        }
       }
 
     } catch (err) {
