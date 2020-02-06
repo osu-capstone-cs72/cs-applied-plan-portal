@@ -11,32 +11,49 @@ const savePlan = require("../models/plan").savePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlanComments = require("../models/plan").getPlanComments;
 const deletePlan = require("../models/plan").deletePlan;
+const {
+  planSchema,
+  getSchemaViolations,
+  sanitizeUsingSchema
+} = require("../utils/schemaValidation");
 
 // submit a plan
 app.post("/", async (req, res) => {
-
   try {
 
-    console.log("Submit a plan");
-    const userId = req.body.userId;
-    const planName = req.body.planName;
-    const courses = formatStringArray(req.body.courses);
+    // use schema validation to ensure valid request body
+    const errorMessage = getSchemaViolations(req.body, planSchema);
 
-    // only save a plan if it does not violate any constraints
-    const violation = await enforceConstraints(userId, planName, courses);
-    if (violation === "valid") {
+    if (!errorMessage) {
+      const sanitizedBody = sanitizeUsingSchema(req.body, planSchema);
 
-      // save the plan
-      const results = await savePlan(userId, planName, courses);
-      console.log("Submited plan has been saved - 201\n");
-      res.status(201).send(results);
+      // get request body
+      console.log("Submit a plan");
+      const userId = sanitizedBody.userId;
+      const planName = sanitizedBody.planName;
+      const courses = formatStringArray(req.body.courses);
+
+      // only save a plan if it does not violate any constraints
+      const violation = await enforceConstraints(userId, planName, courses);
+      if (violation === "valid") {
+
+        // save the plan
+        const results = await savePlan(userId, planName, courses);
+        console.log("Submited plan has been saved - 201\n");
+        res.status(201).send(results);
+
+      } else {
+
+        // send an error that explains the violated constraint
+        console.log(violation, "- 400\n");
+        res.status(400).send({error: violation});
+
+      }
 
     } else {
-
-      // send an error that explains the violated constraint
-      console.log(violation, "- 400\n");
-      res.status(400).send({error: violation});
-
+      console.log(errorMessage, "- 400\n");
+      res.status(400).send({error: errorMessage});
+      return;
     }
 
   } catch (err) {

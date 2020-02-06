@@ -3,8 +3,6 @@
 
 const pool = require("./mysqlPool").pool;
 
-const NAME_MIN = 5;
-const NAME_MAX = 50;
 const CREDITS_MIN = 32;
 
 // checks that the submitted form data does not violate any constraints
@@ -15,7 +13,6 @@ async function enforceConstraints(userId, planName, courses) {
 
     await userConstraint(userId);
     await studentConstraint(userId);
-    await planNameConstraint(planName);
     await zeroCourseConstraint(courses);
     await duplicateCourseConstraint(courses);
     await courseConstraint(courses);
@@ -87,18 +84,6 @@ async function studentConstraint(userId) {
     } else {
       throw err;
     }
-  }
-
-}
-
-// checks that the plan name is a valid length
-async function planNameConstraint(planName) {
-
-  if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
-    throw `The plan name must be between ${NAME_MIN} ` +
-    `and ${NAME_MAX} characters long.`;
-  } else {
-    return;
   }
 
 }

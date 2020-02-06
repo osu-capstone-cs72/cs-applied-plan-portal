@@ -12,7 +12,7 @@ const planSchema = {
     minValue: 0,
     maxValue: 4,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid plan status\n" +
+      return "Invalid plan status\n" +
         "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
         "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
     }
@@ -23,18 +23,18 @@ const planSchema = {
     minLength: 5,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid plan name\n" +
+      return "Invalid plan name\n" +
         `The plan name must be a string between ${this.minLength} and ` +
         `${this.maxLength} characters long.`;
     }
   },
-  studentId: {
+  userId: {
     required: true,
     type: Type.integer,
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid user ID\n" +
+      return "Invalid user ID\n" +
         "The user ID associated with this plan must be an integer at least " +
         `${this.minValue}.`;
     }
@@ -43,7 +43,7 @@ const planSchema = {
     required: false,
     type: Type.timestamp,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid plan timestamp\n" +
+      return "Invalid plan timestamp\n" +
         "The plan timestamp must be in ISO 8601 format.";
     }
   }
@@ -57,7 +57,7 @@ const userSchema = {
     minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid user's first name\n" +
+      return "Invalid user's first name\n" +
         `The user's first name must be a string between ${this.minLength} ` +
         `and ${this.maxLength} characters long.`;
     }
@@ -68,7 +68,7 @@ const userSchema = {
     minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid user's last name\n" +
+      return "Invalid user's last name\n" +
         `The user's last name must be a string between ${this.minLength} ` +
         `and ${this.maxLength} characters long.`;
     }
@@ -77,7 +77,7 @@ const userSchema = {
     required: true,
     type: Type.email,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid user's email\n" +
+      return "Invalid user's email\n" +
         "The user's email must be a string in a valid email format, e.g. " +
         "email@example.com.";
     }
@@ -88,7 +88,7 @@ const userSchema = {
     minValue: 0,
     maxValue: 2,
     getErrorMessage: function() {
-      return "Constraint violated: Invalid user's role\n" +
+      return "Invalid user's role\n" +
         "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
     }
   }
@@ -114,12 +114,12 @@ exports.userSchema = userSchema;
 function getSchemaViolations(obj, schema, isPartialObj = false) {
   // return an error string if the input is not an object
   if (obj !== Object(obj)) {
-    return "Constraint violated: Invalid input type\n\n";
+    return "Invalid input type\n\n";
   }
 
   // return an error string if object doesn't have matching keys with schema
   if (Object.keys(obj).every(key => !(key in schema))) {
-    return "Constraint violated: Input has no matching key with schema\n\n";
+    return "Input has no matching key with schema\n\n";
   }
 
   // at this point, it is guaranteed that the object has some matching keys with
@@ -163,12 +163,12 @@ function getPropertyViolation(obj, property, schema) {
   // if property is not in the schema, return an error string
   // (this should never happen)
   if (!hasProperty(schema, property)) {
-    return `Constraint violated: Property "${property}" not in schema\n\n`;
+    return `Property "${property}" not in schema\n\n`;
   }
 
   // if object does not have the property at all, return an error string
   if (!hasProperty(obj, property)) {
-    return `Constraint violated: Property "${property}" not in input\n\n`;
+    return `Property "${property}" not in input\n\n`;
   }
 
   // at this point, it is guaranteed that both object and schema have a matching
