@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-class Home extends React.Component {
+export default class Home extends React.Component {
   render() {
     return (
 
@@ -26,4 +26,3 @@ class Home extends React.Component {
     );
   }
 }
-export default Home;

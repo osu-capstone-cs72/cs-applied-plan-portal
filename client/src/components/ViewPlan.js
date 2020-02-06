@@ -2,8 +2,9 @@ import React from "react";
 import PlanTable from "./PlanTable";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
+import {withRouter} from 'react-router-dom';
 
-export default class ViewPlan extends React.Component {
+class ViewPlan extends React.Component {
   constructor(props) {
     super(props);
 
@@ -42,38 +43,42 @@ export default class ViewPlan extends React.Component {
       let url = `http://${server}/plan/${value}`;
       let obj = [];
 
-      // get plan data
-      let response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        userId = obj[0][0].studentId;
-        this.setState({
-          courses: obj
-        });
-        this.setState({
-          planName: obj[0][0].planName
-        });
-        this.setState({
-          onid: obj[0][0].studentId
-        });
-        this.setState({
-          status: parseInt(obj[0][0].status)
-        });
-      } else {
-        // we got a bad status code
-        try {
-          throw response;
-        } catch (err) {
-          err.text().then(err => {
-            alert(err);
+      try {
+        // get plan data
+        let response = await fetch(url);
+        if (response.ok) {
+          // get data from the response
+          obj = await response.json();
+          userId = obj[0][0].studentId;
+          this.setState({
+            courses: obj
           });
+          this.setState({
+            planName: obj[0][0].planName
+          });
+          this.setState({
+            onid: obj[0][0].studentId
+          });
+          this.setState({
+            status: parseInt(obj[0][0].status)
+          });
+        } else {
+          // we got a bad status code. send to 404 page
+          const { history } = this.props;
+          if(history) history.push('/404');
+          return;
         }
+      } catch (err) {
+        // send to 500 page if a server error happens while fetching plan
+        console.log("An internal server error occurred. Please try again later.");
+        const { history } = this.props;
+        if(history) history.push('/500');
+        return;
       }
 
       // get user name
       url = `http://${server}/user/${userId}`;
-      response = await fetch(url);
+      let response = await fetch(url);
       if (response.ok) {
         // get data from the response
         obj = await response.json();
@@ -95,7 +100,7 @@ export default class ViewPlan extends React.Component {
 
     } catch (err) {
       // this is a server error
-      alert("An internal server error occurred. Please try again later.");
+      console.log("An internal server error occurred. Please try again later.");
     }
 
   }
@@ -122,3 +127,4 @@ export default class ViewPlan extends React.Component {
     );
   }
 }
+export default withRouter(ViewPlan);

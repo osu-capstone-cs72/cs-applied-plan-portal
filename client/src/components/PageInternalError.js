@@ -1,6 +1,6 @@
 import React from "react";
 
-class PageInternalError extends React.Component {
+export default class PageInternalError extends React.Component {
   render() {
     return (
 
@@ -13,4 +13,3 @@ class PageInternalError extends React.Component {
     );
   }
 }
-export default PageInternalError;
