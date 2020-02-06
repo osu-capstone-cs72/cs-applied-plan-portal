@@ -51,14 +51,14 @@ function ViewPlan(props) {
           } else {
             // we got a bad status code. send to 404 page
             const { history } = props;
-            // if(history) history.push('/404');
+            if(history) history.push('/404');
             return;
           }
         } catch (err) {
           // send to 500 page if a server error happens while fetching plan
           console.log("An internal server error occurred. Please try again later.");
           const { history } = props;
-          // if(history) history.push('/500');
+          if(history) history.push('/500');
           return;
         }
 
