@@ -27,7 +27,7 @@ async function createComment(planId, userId, text) {
 
     const sql = "INSERT INTO Comment (planId, userId, text) VALUES (?, ?, ?);;";
     const results = await pool.query(sql, [planId, userId, text]);
-    return results[0];
+    return {insertId: results[0].insertId};
 
   } catch (err) {
     console.log("Error adding comment");
