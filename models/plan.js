@@ -21,7 +21,7 @@ async function savePlan(userId, planName, courses) {
     }
 
     console.log("Plan saved");
-    return;
+    return {insertId: planId};
 
   } catch (err) {
     console.log("Error saving plan");
@@ -124,7 +124,7 @@ async function deletePlan(planId) {
     const sql = "DELETE FROM Plan WHERE planId=?;";
     const results = await pool.query(sql, planId);
     console.log("Plan", planId, "deleted");
-    return results;
+    return results[0].affectedRows;
 
   } catch (err) {
     console.log("Error deleting plan", planId, ":\n", err);

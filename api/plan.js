@@ -27,21 +27,21 @@ app.post("/", async (req, res) => {
     if (violation === "valid") {
 
       // save the plan
-      await savePlan(userId, planName, courses);
+      const results = await savePlan(userId, planName, courses);
       console.log("Submited plan has been saved - 201\n");
-      res.status(201).send("Plan saved.");
+      res.status(201).send(results);
 
     } else {
 
       // send an error that explains the violated constraint
       console.log(violation, "- 400\n");
-      res.status(400).send(violation);
+      res.status(400).send({error: violation});
 
     }
 
   } catch (err) {
     console.log("An internal server error occurred - 500\n Error:", err);
-    res.status(500).send("An internal server error occurred. Please try again later.");
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
 });
@@ -57,7 +57,7 @@ app.get("/:planId", async (req, res) => {
     const results = await getPlan(planId);
     if (results[0].length === 0) {
       console.log("No plan found - 404\n");
-      res.status(404).send("No plan found.");
+      res.status(404).send({error: "No plan found."});
     } else {
       console.log("Plan found - 200\n");
       res.status(200).send(results);
@@ -65,7 +65,7 @@ app.get("/:planId", async (req, res) => {
 
   } catch (err) {
     console.log("An internal server error occurred - 500\n Error:", err);
-    res.status(500).send("An internal server error occurred. Please try again later.");
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
 });
@@ -79,17 +79,17 @@ app.delete("/:planId", async (req, res) => {
     console.log("Delete plan", planId);
 
     const results = await deletePlan(planId);
-    if (results.affectedRows === 0) {
+    if (results === 0) {
       console.log("No plan found - 404\n");
-      res.status(404).send("No plan found.");
+      res.status(404).send({error: "Could not delete plan."});
     } else {
-      console.log("Plan deleted - 204\n");
-      res.status(204).send("Plan deleted");
+      console.log("Plan deleted - 202\n");
+      res.status(202).send({affectedRows: results});
     }
 
   } catch (err) {
     console.log("An internal server error occurred - 500\n Error:", err);
-    res.status(500).send("An internal server error occurred. Please try again later.");
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
 });
@@ -105,7 +105,7 @@ app.get("/:planId/comment", async (req, res) => {
     const results = await getPlanComments(planId);
     if (results.length === 0) {
       console.log("No comments found - 404\n");
-      res.status(404).send("No comments found.");
+      res.status(404).send({error: "No comments found."});
     } else {
       console.log("Comments found - 200\n");
       res.status(200).send(results);
@@ -113,7 +113,7 @@ app.get("/:planId/comment", async (req, res) => {
 
   } catch (err) {
     console.log("An internal server error occurred - 500\n Error:", err);
-    res.status(500).send("An internal server error occurred. Please try again later.");
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
 });
