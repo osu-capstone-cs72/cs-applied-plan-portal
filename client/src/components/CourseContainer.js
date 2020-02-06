@@ -3,7 +3,7 @@ import Course from "./Course";
 import FilterBar from "./FilterBar";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
-import "../public/index.css";
+
 export default class CourseContainer extends React.Component {
   static get propTypes() {
     return {

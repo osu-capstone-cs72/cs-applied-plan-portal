@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 export default class PlanCourse extends React.Component {
   static get propTypes() {
     return {

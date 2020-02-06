@@ -1,7 +1,6 @@
 import React from "react";
 import PlanCourse from "./PlanCourse";
 import PropTypes from "prop-types";
-import "../public/index.css";
 
 export default class EditPlan extends React.Component {
   static get propTypes() {
