@@ -28,7 +28,7 @@ export default class EditPlan extends React.Component {
     }
 
     // set up data for new plan to send to backend
-    const postURL = "/api/plan";
+    const postURL = `http://localhost:${process.env.REACT_APP_API_PORT}/plan`;
     const postObj = {
       userId: 1,
       planName: planname,
