@@ -72,7 +72,7 @@ export default class ViewPlan extends React.Component {
       }
 
       // get user name
-      url = `http:${server}/user/${userId}`;
+      url = `http://${server}/user/${userId}`;
       response = await fetch(url);
       if (response.ok) {
         // get data from the response
@@ -92,7 +92,7 @@ export default class ViewPlan extends React.Component {
       }
 
       // get plan comments
-      url = `http:${server}/plan/${value}/comment`;
+      url = `http://${server}/plan/${value}/comment`;
       response = await fetch(url);
       if (response.ok) {
         // get data from the response
