@@ -107,10 +107,25 @@ export default class CourseContainer extends React.Component {
     // check that new course isn't already in array
     let newCourse = true;
     for (let i = 0; i < this.state.addCourses.length; i++) {
+      // check for duplicate courses
       if (course.code === this.state.addCourses[i].code) {
-        alert("Course already added to plan.");
+        this.setState({
+          warning: "This course is already in your plan."
+        });
         newCourse = false;
         return;
+      }
+      // check for required courses
+      if (course.restriction === 1) {
+        this.setState({
+          warning: "You've selected a required course."
+        });
+      }
+      // check for graduate courses
+      if (course.restriction === 2) {
+        this.setState({
+          warning: "You've selected a graduate course."
+        });
       }
     }
 
@@ -138,9 +153,12 @@ export default class CourseContainer extends React.Component {
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
           </form>
         </div>
+        <div className="warning-box">
+          {this.state.warning ? <p>{this.state.warning}</p> : null}
+        </div>
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseCode} code={c.courseCode} title={c.courseName} credits={c.credits}
-            description={c.description} prereqs={c.prerequisites} addCourse={this.addCourse}/>) :
+            description={c.description} prereqs={c.prerequisites} restriction={c.restriction} addCourse={this.addCourse}/>) :
             <div>Search for courses...</div>}
         </div>
       </div>

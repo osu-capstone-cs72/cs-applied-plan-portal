@@ -38,7 +38,7 @@ export default class StudentCreatePlan extends React.Component {
     return (
       <div className="student-create-plan">
         <Navbar showSearch={false} searchContent={null}/>
-        <EditPlan courses={this.state.courses} remove={this.removeCourse} />
+        <EditPlan courses={this.state.courses} remove={this.removeCourse}/>
         <CourseContainer updateCourses={this.updateCourses}/>
       </div>
     );
