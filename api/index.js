@@ -4,9 +4,10 @@
 require("path");
 const bodyParser = require("body-parser");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
-// parse request bodies as JSON
+app.use(cors());
 app.use(bodyParser.json());
 
 // log incoming requests (Later replace with proper module)
@@ -15,10 +16,10 @@ app.get("*", (req, res, next) => {
   next();
 });
 
-app.use("/api/comment", require("./comment"));
-app.use("/api/course", require("./course"));
-app.use("/api/plan", require("./plan"));
-app.use("/api/user", require("./user"));
+app.use("/comment", require("./comment"));
+app.use("/course", require("./course"));
+app.use("/plan", require("./plan"));
+app.use("/user", require("./user"));
 
 // statically serve files from the public directory
 app.use(express.static("src/public"));
