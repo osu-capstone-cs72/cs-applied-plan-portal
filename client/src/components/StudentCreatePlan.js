@@ -20,7 +20,6 @@ export default class StudentCreatePlan extends React.Component {
     this.setState({
       courses: newCourses
     });
-    this.loadCredits();
   }
 
   removeCourse(course) {
@@ -33,8 +32,6 @@ export default class StudentCreatePlan extends React.Component {
     this.setState({
       courses: newCourses
     });
-
-    this.loadCredits();
   }
 
   render() {
