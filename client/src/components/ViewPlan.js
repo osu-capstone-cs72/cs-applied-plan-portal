@@ -50,15 +50,13 @@ function ViewPlan(props) {
             setStatus(parseInt(obj[0][0].status));
           } else {
             // we got a bad status code. send to 404 page
-            const { history } = props;
-            if(history) history.push('/404');
+            props.history.push('/404');
             return;
           }
         } catch (err) {
           // send to 500 page if a server error happens while fetching plan
           console.log("An internal server error occurred. Please try again later.");
-          const { history } = props;
-          if(history) history.push('/500');
+          props.history.push('/500');
           return;
         }
 
@@ -85,9 +83,8 @@ function ViewPlan(props) {
         console.log("An internal server error occurred. Please try again later.");
       }
     }
-    console.log(planId);
     fetchData(planId);
-  }, [planId]);
+  }, [planId, props.history]);
 
   return (
     <div className="view-plan">
