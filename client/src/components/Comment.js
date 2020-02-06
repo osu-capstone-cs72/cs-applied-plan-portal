@@ -28,7 +28,8 @@ export default class Comment extends React.Component {
 
     try {
       // get user name
-      const url = `/api/user/${this.props.userId}`;
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/user/${this.props.userId}`;
       const response = await fetch(url);
       if (response.ok) {
         // get data from the response

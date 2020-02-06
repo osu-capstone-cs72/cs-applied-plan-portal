@@ -3,7 +3,7 @@ import Course from "./Course";
 import FilterBar from "./FilterBar";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
-import "../public/index.css";
+
 export default class CourseContainer extends React.Component {
   static get propTypes() {
     return {
@@ -28,8 +28,9 @@ export default class CourseContainer extends React.Component {
   async filterSearch() {
 
     const value = document.getElementById("search-container").value;
-    const codeUrl = `/api/course/courseCode/${value}`;
-    const nameUrl = `/api/course/courseName/${value}`;
+    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+    const codeUrl = `http://${server}/course/courseCode/${value}`;
+    const nameUrl = `http://${server}/course/courseName/${value}`;
     let obj = [];
 
     try {
@@ -75,7 +76,8 @@ export default class CourseContainer extends React.Component {
       filter: value
     });
     if (value !== "none") {
-      const url = `/api/course/courseCode/${value}`;
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/course/courseCode/${value}`;
       let obj = [];
 
       try {

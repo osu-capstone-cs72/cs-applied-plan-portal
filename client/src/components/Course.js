@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../public/index.css";
-
 
 export default class Course extends React.Component {
   static get propTypes() {

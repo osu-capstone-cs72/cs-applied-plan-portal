@@ -38,7 +38,8 @@ export default class ViewPlan extends React.Component {
       const value = document.getElementById("search-plans-input").value;
 
       let userId = 0;
-      let url = `/api/plan/${value}`;
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      let url = `http://${server}/plan/${value}`;
       let obj = [];
 
       // get plan data
@@ -71,7 +72,7 @@ export default class ViewPlan extends React.Component {
       }
 
       // get user name
-      url = `/api/user/${userId}`;
+      url = `http://${server}/user/${userId}`;
       response = await fetch(url);
       if (response.ok) {
         // get data from the response
@@ -91,7 +92,7 @@ export default class ViewPlan extends React.Component {
       }
 
       // get plan comments
-      url = `/api/plan/${value}/comment`;
+      url = `http://${server}/plan/${value}/comment`;
       response = await fetch(url);
       if (response.ok) {
         // get data from the response
