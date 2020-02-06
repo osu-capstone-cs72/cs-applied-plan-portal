@@ -28,8 +28,9 @@ export default class CourseContainer extends React.Component {
   async filterSearch() {
 
     const value = document.getElementById("search-container").value;
-    const codeUrl = `http://localhost:${process.env.REACT_APP_API_PORT}/course/courseCode/${value}`;
-    const nameUrl = `http://localhost:${process.env.REACT_APP_API_PORT}/course/courseName/${value}`;
+    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+    const codeUrl = `http://${server}/course/courseCode/${value}`;
+    const nameUrl = `http://${server}/course/courseName/${value}`;
     let obj = [];
 
     try {
@@ -75,7 +76,8 @@ export default class CourseContainer extends React.Component {
       filter: value
     });
     if (value !== "none") {
-      const url = `http://localhost:${process.env.REACT_APP_API_PORT}/course/courseCode/${value}`;
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/course/courseCode/${value}`;
       let obj = [];
 
       try {
