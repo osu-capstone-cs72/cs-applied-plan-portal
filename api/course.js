@@ -26,7 +26,7 @@ app.get("/:mode/:searchText", async (req, res) => {
 
   } catch (err) {
     console.log("An internal server error occurred - 500\n Error:", err);
-    res.status(500).send("An internal server error occurred. Please try again later.");
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
 });
