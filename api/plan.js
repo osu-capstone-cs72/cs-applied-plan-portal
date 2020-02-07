@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 
 const formatStringArray = require("../utils/format").formatStringArray;
-const enforceConstraints = require("../utils/validation").enforceConstraints;
+const enforceConstraints = require("../utils/planValidation").enforceConstraints;
 const savePlan = require("../models/plan").savePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlanComments = require("../models/plan").getPlanComments;
@@ -25,6 +25,7 @@ app.post("/", async (req, res) => {
     const errorMessage = getSchemaViolations(req.body, planSchema);
 
     if (!errorMessage) {
+
       const sanitizedBody = sanitizeUsingSchema(req.body, planSchema);
 
       // get request body

@@ -1,12 +1,11 @@
-// File: validation.js
-// Description: validates a submitted form against a list of constraints
+// File: planValidation.js
+// Description: validates a submitted plan against a list of constraints
 
 const pool = require("./mysqlPool").pool;
 
 const CREDITS_MIN = 32;
 
-// checks that the submitted form data does not violate any constraints
-// returns a value that can be used to identify which constraint was violated
+// checks that the submitted data does not violate any constraints
 async function enforceConstraints(userId, planName, courses) {
 
   try {
@@ -34,12 +33,9 @@ exports.enforceConstraints = enforceConstraints;
 // checks that the user exists
 async function userConstraint(userId) {
 
-  const violation = "Invalid ONID. Unable to submit plan.";
+  const violation = "Invalid user ID. Unable to submit plan.";
 
   try {
-
-    // don't bother checking an empty string
-    if (userId.length === 0) { throw violation; }
 
     const sql = "SELECT * FROM User WHERE userId=?;";
     const results = await pool.query(sql, userId);
@@ -234,7 +230,7 @@ async function creditConstraint(courses) {
 // checks to see if an error is a violation or an internal error
 function internalError (err, violation) {
   if (err !== violation) {
-    console.log("Error checking user constraint\n", err);
+    console.log("Internal server error while checking constraints\n", err);
     return true;
   } else {
     return false;

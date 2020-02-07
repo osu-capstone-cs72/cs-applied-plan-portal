@@ -50,6 +50,7 @@ const planSchema = {
 };
 exports.planSchema = planSchema;
 
+// Schema of a user.
 const userSchema = {
   firstName: {
     required: true,
@@ -94,6 +95,39 @@ const userSchema = {
   }
 };
 exports.userSchema = userSchema;
+
+// Schema of a comment made on a plan.
+const commentSchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Plan ID must be an integer.";
+    }
+  },
+  userId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "User ID must be an integer.";
+    }
+  },
+  text: {
+    required: true,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 500,
+    getErrorMessage: function() {
+      return `Comment must be between ${this.minLength} and ${this.maxLength}` +
+        ` characters long`;
+    }
+  }
+};
+exports.commentSchema = commentSchema;
 
 // Validates an object against a provided schema.
 //
