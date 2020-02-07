@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon server.js",
+    "server": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start"
   },
   "repository": {
