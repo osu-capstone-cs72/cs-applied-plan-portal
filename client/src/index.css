@@ -86,53 +86,10 @@
   margin: 10px auto;
 }
 
-.courses-table {
-  margin: 50px auto;
-  width: 90%;
-}
-
 .plan-comments {
   margin: 50px auto;
   text-align: center;
   width: 100%;
-}
-
-.home-container {
-  margin: 250px auto;
-  text-align: center;
-  width: 100%;
-}
-
-.home-button {
-  margin: 25px;
-}
-
-.table-container {
-  width: 100%;
-}
-
-.table-container table, .table-container th, .table-container td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-
-.table-container th, .table-container td {
-  padding: 5px;
-}
-
-.table-container th {
-  text-align: left;
-}
-
-.plan-comments {
-  margin: 50px auto;
-  text-align: center;
-  width: 100%;
-}
-
-.table {
-  width: 95%;
-  margin: 10px;
 }
 
 .plan-header {
