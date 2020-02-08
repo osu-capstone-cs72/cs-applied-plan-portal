@@ -52,7 +52,8 @@ export default class EditPlan extends React.Component {
           body: JSON.stringify(postObj),
         }).then((data) => {
           data.text().then(res => {
-            alert(res);
+            // redirect to the view plan of newly submitted plan
+            window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
           });
         })
           .catch((error) => alert("Error: " + error));

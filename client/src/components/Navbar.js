@@ -17,7 +17,7 @@ export default class Navbar extends React.Component {
           <p className="osu-logo">Oregon State University</p>
         </Link>
         {this.props.showSearch ? <input id="navbar-search" className="form-control mr-sm-2" type="text" placeholder={this.props.searchContent} name="search"/> : null}
-        <p>Log out</p>
+        <p className="logout">Log out</p>
       </div>
     );
   }
