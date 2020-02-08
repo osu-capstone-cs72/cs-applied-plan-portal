@@ -34,14 +34,14 @@ export default class EditPlan extends React.Component {
         courses.push(this.props.courses[i].code);
       }
 
-    // set up data for new plan to send to backend
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const postURL = `http://${server}/plan`;
-    const postObj = {
-      userId: 1,
-      planName: planname,
-      courses: courses
-    };
+      // set up data for new plan to send to backend
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const postURL = `http://${server}/plan`;
+      const postObj = {
+        userId: 1,
+        planName: planname,
+        courses: courses
+      };
 
       try {
         fetch(postURL, {

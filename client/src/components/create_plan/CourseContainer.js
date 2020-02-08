@@ -23,6 +23,7 @@ export default class CourseContainer extends React.Component {
     this.filterSearch = this.filterSearch.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.addCourse = this.addCourse.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   async filterSearch() {
@@ -139,12 +140,17 @@ export default class CourseContainer extends React.Component {
     }
   }
 
+  submitHandler(e) {
+    e.preventDefault();
+    this.filterSearch();
+  }
+
   render() {
     return (
       <div className="course-container">
         <div className="top-bar">
           <div className="search-container">
-            <form className="form form-inline my-2 my-lg-0">
+            <form className="form form-inline my-2 my-lg-0" onSubmit={this.submitHandler}>
               <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
             </form>
             <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.filterSearch}><i className="fa fa-search"></i></button>

@@ -1,7 +1,7 @@
 import React from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
 
 export default class StudentCreatePlan extends React.Component {
   constructor(props) {

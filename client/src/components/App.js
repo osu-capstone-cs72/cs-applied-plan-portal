@@ -1,6 +1,6 @@
 import React from "react";
 import {Route, Switch, Redirect} from "react-router-dom";
-import StudentCreatePlan from "./StudentCreatePlan";
+import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
