@@ -1,7 +1,42 @@
-import React, {useState} from "react";
+/** @jsx jsx */
+
+import {useState} from "react";
+import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
 
 function CreateComment(props) {
+
+  const styleCreationButton = css`
+  `;
+
+  const styleErrorContainer = css`
+    display: block;
+    width: auto;
+    min-width: 100px;
+  `;
+
+  const styleErrorMessage = css`
+    display:inline-block;
+    min-height:15px;
+  `;
+
+  const styleInputContainer = css`
+    display: inline-block;
+    padding: 25px;
+    background-color: #b3b3b3;
+  `;
+
+  const styleTextInput = css`
+    display: inline;
+    margin: 10px;
+    resize: none;
+  `;
+
+  const styleSubmitCommentButton = css`
+    display: block;
+    margin: auto;
+  `;
+
   const [newComment, setNewComment] = useState(true);
   const [userId] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
@@ -57,22 +92,25 @@ function CreateComment(props) {
 
   if (newComment) {
     return (
-      <button className="toggle-creation-button" onClick={() => { toggle(); }}>
+      <button className="toggle-creation-button"
+        css={styleCreationButton} onClick={() => { toggle(); }}>
         +
       </button>
     );
   } else {
     return (
       <div id="create-comment-container">
-        <button className="toggle-creation-button" onClick={() => { toggle(); }}>
+        <button className="toggle-creation-button"
+          css={styleCreationButton} onClick={() => { toggle(); }}>
         -
         </button>
-        <div id="comment-error-container">
-          <p id="comment-error-message">{errorMessage}</p>
+        <div id="comment-error-container" css={styleErrorContainer}>
+          <p id="comment-error-message" css={styleErrorMessage}>{errorMessage}</p>
         </div>
-        <div id="comment-input-container">
-          <textarea id="comment-text-input" rows="5" cols="50" />
-          <button id="submit-comment-button" onClick={() => { submit(planId); }}>
+        <div id="comment-input-container" css={styleInputContainer}>
+          <textarea id="comment-text-input" rows="5" cols="50" css={styleTextInput}/>
+          <button id="submit-comment-button"
+            css={styleSubmitCommentButton} onClick={() => { submit(planId); }}>
             Submit Comment
           </button>
         </div>
