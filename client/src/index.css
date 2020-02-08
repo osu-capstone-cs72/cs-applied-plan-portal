@@ -156,27 +156,6 @@
   width: 100%;
 }
 
-.comment-container {
-  text-align: center;
-  margin: 25px auto;
-  padding: 25px;
-  width: 250px;
-  background-color: #b3b3b3;
-}
-
-.comment-user {
-  font-weight: bold;
-  font-size: large;
-}
-
-.comment-time {
-  font-style: italic;
-}
-
-.comment-text {
-  font-size: large;
-}
-
 .table {
   width: 95%;
   margin: 10px;

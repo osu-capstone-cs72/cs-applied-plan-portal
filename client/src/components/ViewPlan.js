@@ -54,6 +54,7 @@ function ViewPlan(props) {
   }
 
   useEffect(() => {
+
     async function fetchData(planId) {
       try {
 
@@ -109,6 +110,7 @@ function ViewPlan(props) {
       }
     }
     fetchData(planId);
+
   }, [planId, props.history]);
 
   return (
