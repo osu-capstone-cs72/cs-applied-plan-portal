@@ -1,23 +1,41 @@
-import React from "react";
+/** @jsx jsx */
+
+import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
-export default class PlanMetadata extends React.Component {
-  static get propTypes() {
-    return {
-      studentName: PropTypes.string,
-      userId: PropTypes.number,
-      planName: PropTypes.string,
-      status: PropTypes.number
-    };
-  }
+function PlanMetadata(props) {
 
-  constructor(props) {
-    super(props);
-    this.renderStatus = this.renderStatus.bind(this);
-  }
+  const stylePlanMetadata = css`
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    height: 75px;
+    background-color: #c0c0c0;
+  `;
 
-  renderStatus() {
-    switch (this.props.status) {
+  const styleMetadataField = css`
+    vertical-align: top;
+    display: inline-block;
+    width: 20%;
+    height: 200px;
+  `;
+
+  const styleFieldType = css`
+    font-weight: bold;
+    vertical-align: middle;
+  `;
+
+  const styleFieldText = css`
+    font-weight: normal;
+    vertical-align: middle;
+  `;
+
+  const styleEditPlanButton = css`
+  `;
+
+  function renderStatus() {
+    switch (props.status) {
       case 0:
         return "Rejected";
       case 1:
@@ -33,30 +51,36 @@ export default class PlanMetadata extends React.Component {
     }
   }
 
-  render() {
-    return (
-      <div className="plan-metadata">
-        <div className="metadata-field">
-          <p className="field-type">Student Name:</p>
-          <p className="field-text">{this.props.studentName}</p>
-        </div>
-        <div className="metadata-field">
-          <p className="field-type">User ID:</p>
-          <p className="field-text">{this.props.userId}</p>
-        </div>
-        <div className="metadata-field">
-          <p className="field-type">Plan Name:</p>
-          <p className="field-text">{this.props.planName}</p>
-        </div>
-        <div className="metadata-field">
-          <p className="field-type">Plan Status:</p>
-          <p className="field-text">{this.renderStatus()}</p>
-        </div>
-        <div className="metadata-field">
-          <button>Edit Plan</button>
-        </div>
+  return (
+    <div className="plan-metadata" css={stylePlanMetadata}>
+      <div className="metadata-field" css={styleMetadataField}>
+        <p className="field-type" css={styleFieldType}>Student Name:</p>
+        <p className="field-text" css={styleFieldText}>{props.studentName}</p>
       </div>
-    );
-  }
+      <div className="metadata-field" css={styleMetadataField}>
+        <p className="field-type" css={styleFieldType}>User ID:</p>
+        <p className="field-text" css={styleFieldText}>{props.userId}</p>
+      </div>
+      <div className="metadata-field" css={styleMetadataField}>
+        <p className="field-type" css={styleFieldType}>Plan Name:</p>
+        <p className="field-text" css={styleFieldText}>{props.planName}</p>
+      </div>
+      <div className="metadata-field" css={styleMetadataField}>
+        <p className="field-type" css={styleFieldType}>Plan Status:</p>
+        <p className="field-text" css={styleFieldText}>{renderStatus()}</p>
+      </div>
+      <div className="metadata-field" css={styleMetadataField}>
+        <button id="edit-plan-button" css={styleEditPlanButton}>Edit Plan</button>
+      </div>
+    </div>
+  );
 
 }
+export default PlanMetadata;
+
+PlanMetadata.propTypes = {
+  studentName: PropTypes.string,
+  userId: PropTypes.number,
+  planName: PropTypes.string,
+  status: PropTypes.number
+};
