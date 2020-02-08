@@ -52,6 +52,23 @@ async function getPlan(planId) {
 }
 exports.getPlan = getPlan;
 
+// get all plans for a specific user, including selected courses, and reviews
+async function getPlans(studentId) {
+
+  try {
+
+    const sql = "SELECT * FROM Plan WHERE studentId = ?;";
+    const result = await pool.query(sql, studentId);
+    return result[0];
+
+  } catch (err) {
+    console.log("Error searching for plan");
+    throw Error(err);
+  }
+
+}
+exports.getPlans = getPlans;
+
 // get all comments from a plan
 async function getPlanComments(planId) {
 

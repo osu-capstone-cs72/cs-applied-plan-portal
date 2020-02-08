@@ -24,9 +24,11 @@ export default class CourseContainer extends React.Component {
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.addCourse = this.addCourse.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
+    this.clearWarning = this.clearWarning.bind(this);
   }
 
   async filterSearch() {
+    this.clearWarning();
 
     const value = document.getElementById("search-container").value;
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
@@ -54,7 +56,9 @@ export default class CourseContainer extends React.Component {
             throw results;
           } catch (err) {
             err.text().then(errorMessage => {
-              alert(errorMessage);
+              this.setState({
+                warning: errorMessage
+              });
             });
           }
         }
@@ -73,6 +77,7 @@ export default class CourseContainer extends React.Component {
   }
 
   async handleFilterChange(value) {
+    this.clearWarning();
     this.setState({
       filter: value
     });
@@ -94,7 +99,9 @@ export default class CourseContainer extends React.Component {
             throw results;
           } catch (err) {
             err.text().then(errorMessage => {
-              alert(errorMessage);
+              this.setState({
+                warning: errorMessage
+              });
             });
           }
         }
@@ -143,6 +150,12 @@ export default class CourseContainer extends React.Component {
   submitHandler(e) {
     e.preventDefault();
     this.filterSearch();
+  }
+
+  clearWarning() {
+    this.setState({
+      warning: null
+    });
   }
 
   render() {

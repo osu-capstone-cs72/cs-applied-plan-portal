@@ -122,3 +122,18 @@
 .logout {
   margin-left: auto;
 }
+
+.student-plans-table {
+  position: relative;
+  top: 50px;
+}
+
+.student-plans-data {
+  padding: 10px;
+}
+
+.new-plan-button {
+  position: absolute;
+  bottom: 55px;
+  right: 30px;
+}

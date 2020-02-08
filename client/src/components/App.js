@@ -4,13 +4,14 @@ import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
+import StudentHome from "./StudentHome";
 
 function App() {
   return (
     <div className="App">
       <Switch>
         <Route exact path="/">
-          <Redirect to="/createPlan" />
+          <StudentHome userId={1}/>
         </Route>
         <Route path="/createPlan">
           <StudentCreatePlan />
