@@ -1,16 +1,24 @@
-import React from "react";
+/** @jsx jsx */
+
 import Comment from "./Comment";
 import CreateComment from "./CreateComment";
+import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
 function PlanComments(props) {
+
+  const stylePlanComments = css`
+    margin: 50px auto;
+    text-align: center;
+    width: 100%;
+  `;
 
   function handleAddComment () {
     props.onUpdate();
   }
 
   return (
-    <div className="plan-comments">
+    <div className="plan-comments" css={stylePlanComments}>
       <h2>Comments</h2>
       <CreateComment onUpdate={() => { handleAddComment(); }}/>
       {props.comments.map((comment) => (
