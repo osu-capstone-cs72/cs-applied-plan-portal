@@ -12,7 +12,7 @@ const planSchema = {
     minValue: 0,
     maxValue: 4,
     getErrorMessage: function() {
-      return "Invalid plan status\n" +
+      return "Invalid plan status:\n" +
         "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
         "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
     }
@@ -23,7 +23,7 @@ const planSchema = {
     minLength: 5,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Invalid plan name\n" +
+      return "Invalid plan name:\n" +
         `The plan name must be a string between ${this.minLength} and ` +
         `${this.maxLength} characters long.`;
     }
@@ -34,7 +34,7 @@ const planSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid user ID\n" +
+      return "Invalid user ID:\n" +
         "The user ID associated with this plan must be an integer at least " +
         `${this.minValue}.`;
     }
@@ -43,12 +43,38 @@ const planSchema = {
     required: false,
     type: Type.timestamp,
     getErrorMessage: function() {
-      return "Invalid plan timestamp\n" +
+      return "Invalid plan timestamp:\n" +
         "The plan timestamp must be in ISO 8601 format.";
     }
   }
 };
 exports.planSchema = planSchema;
+
+// Patch schema of an applied Plan used for the validator and the database.
+const patchPlanSchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid plan ID:\n" +
+        "The plan ID associated with this request must be a number.";
+    }
+  },
+  planName: {
+    required: false,
+    type: Type.string,
+    minLength: 5,
+    maxLength: 50,
+    getErrorMessage: function() {
+      return "Invalid plan name:\n" +
+        `The plan name must be a string between ${this.minLength} and ` +
+        `${this.maxLength} characters long.`;
+    }
+  }
+};
+exports.patchPlanSchema = patchPlanSchema;
 
 // Schema of a user.
 const userSchema = {
@@ -58,7 +84,7 @@ const userSchema = {
     minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Invalid user's first name\n" +
+      return "Invalid user's first name:\n" +
         `The user's first name must be a string between ${this.minLength} ` +
         `and ${this.maxLength} characters long.`;
     }
@@ -69,7 +95,7 @@ const userSchema = {
     minLength: 1,
     maxLength: 50,
     getErrorMessage: function() {
-      return "Invalid user's last name\n" +
+      return "Invalid user's last name:\n" +
         `The user's last name must be a string between ${this.minLength} ` +
         `and ${this.maxLength} characters long.`;
     }
@@ -78,7 +104,7 @@ const userSchema = {
     required: true,
     type: Type.email,
     getErrorMessage: function() {
-      return "Invalid user's email\n" +
+      return "Invalid user's email:\n" +
         "The user's email must be a string in a valid email format, e.g. " +
         "email@example.com.";
     }
@@ -89,7 +115,7 @@ const userSchema = {
     minValue: 0,
     maxValue: 2,
     getErrorMessage: function() {
-      return "Invalid user's role\n" +
+      return "Invalid user's role:\n" +
         "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
     }
   }
@@ -104,7 +130,8 @@ const commentSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Plan ID must be an integer.";
+      return "Invalid plan id:\n" +
+        "Plan ID must be an integer.";
     }
   },
   userId: {
@@ -113,7 +140,8 @@ const commentSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "User ID must be an integer.";
+      return "Invalid user id:\n" +
+        "User ID must be an integer.";
     }
   },
   text: {
@@ -122,7 +150,8 @@ const commentSchema = {
     minLength: 5,
     maxLength: 500,
     getErrorMessage: function() {
-      return `Comment must be between ${this.minLength} and ${this.maxLength}` +
+      return `Invalid comment:\n` +
+        `Comment must be between ${this.minLength} and ${this.maxLength}` +
         ` characters long`;
     }
   }

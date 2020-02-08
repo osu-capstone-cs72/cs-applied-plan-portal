@@ -31,6 +31,53 @@ async function savePlan(userId, planName, courses) {
 }
 exports.savePlan = savePlan;
 
+// update a plan with its selected courses
+async function updatePlan(planId, planName, courses) {
+
+  try {
+
+    // keep track of the total rows affected
+    let updatedRows = 0;
+
+    // update the plan name if it has changed
+    if (planName !== 0) {
+
+      const sql = "UPDATE Plan SET planName=? WHERE planId=?;";
+      const results = await pool.query(sql, [planName, planId]);
+      updatedRows += results[0].affectedRows;
+
+    }
+
+    // update the courses list if it has changed
+    if (courses !== 0) {
+
+      // if courses change we need to get a new review from an advisor
+      let sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+      let results = await pool.query(sql, [planId]);
+      updatedRows += results[0].affectedRows;
+
+      // start by deleting all of the current selected courses
+      sql = "DELETE FROM SelectedCourse WHERE planId=?;";
+      results = await pool.query(sql, [planId, planName]);
+      updatedRows += results[0].affectedRows;
+
+      // insert the new selection of courses
+      insertSelectedCourses(planId, courses);
+      updatedRows += courses.length;
+
+    }
+
+    console.log("Plan updated");
+    return updatedRows;
+
+  } catch (err) {
+    console.log("Error updating plan plan");
+    throw Error(err);
+  }
+
+}
+exports.updatePlan = updatePlan;
+
 // get all data for a specific plan, including selected courses, and reviews
 async function getPlan(planId) {
 

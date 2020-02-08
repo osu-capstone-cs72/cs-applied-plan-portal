@@ -25,7 +25,7 @@ exports.enforceConstraints = enforceConstraints;
 // checks that the user exists
 async function userConstraint(userId) {
 
-  const violation = "This user can not submit a comment on this plan.";
+  const violation = "Invalid user ID:\nThis user can not submit a comment on this plan.";
 
   try {
 
@@ -52,7 +52,7 @@ async function userConstraint(userId) {
 // checks that the plan exists
 async function planConstraint(planId) {
 
-  const violation = "The selected plan does not exist.";
+  const violation = "Invalid plan ID:\nThe selected plan does not exist.";
 
   try {
 

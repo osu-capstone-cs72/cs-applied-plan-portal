@@ -7,13 +7,16 @@ const app = express();
 
 const formatStringArray = require("../utils/format").formatStringArray;
 const enforceConstraints = require("../utils/planValidation").enforceConstraints;
+const patchEnforceConstraints = require("../utils/planValidation").patchEnforceConstraints;
 const savePlan = require("../models/plan").savePlan;
+const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlans = require("../models/plan").getPlans;
 const getPlanComments = require("../models/plan").getPlanComments;
 const deletePlan = require("../models/plan").deletePlan;
 const {
   planSchema,
+  patchPlanSchema,
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
@@ -36,13 +39,68 @@ app.post("/", async (req, res) => {
       const courses = formatStringArray(req.body.courses);
 
       // only save a plan if it does not violate any constraints
-      const violation = await enforceConstraints(userId, planName, courses);
+      const violation = await enforceConstraints(userId, courses);
       if (violation === "valid") {
 
         // save the plan
         const results = await savePlan(userId, planName, courses);
         console.log("201: Submited plan has been saved\n");
         res.status(201).send(results);
+
+      } else {
+
+        // send an error that explains the violated constraint
+        console.error("400:", violation, "\n");
+        res.status(400).send({error: violation});
+
+      }
+
+    } else {
+      console.error("400:", errorMessage, "\n");
+      res.status(400).send({error: errorMessage});
+      return;
+    }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// update a plan
+app.patch("/", async (req, res) => {
+  try {
+
+    // use schema validation to ensure valid request body
+    const errorMessage = getSchemaViolations(req.body, patchPlanSchema);
+
+    if (!errorMessage) {
+
+      const sanitizedBody = sanitizeUsingSchema(req.body, patchPlanSchema);
+
+      // get request body
+      console.log("Update a plan");
+      const planId = sanitizedBody.planId;
+
+      let planName = 0;
+      let courses = 0;
+
+      if (req.body.planName !== undefined) {
+        planName = sanitizedBody.planName;
+      }
+      if (req.body.courses !== undefined) {
+        courses = formatStringArray(req.body.courses);
+      }
+
+      // only save a plan if it does not violate any constraints
+      const violation = await patchEnforceConstraints(planId, courses);
+      if (violation === "valid") {
+
+        // save the plan
+        const results = await updatePlan(planId, planName, courses);
+        console.log("200: Plan has been updated\n");
+        res.status(200).send({affectedRows: results});
 
       } else {
 
