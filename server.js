@@ -16,7 +16,7 @@ async function testConnection(pool, attempt, callback) {
     callback();
   } catch (err) {
     if (attempt < 5) {
-      console.log(`Attempt ${attempt}: Error connecting to database ... Restarting ...`);
+      console.log(`Attempt ${attempt}: Error connecting to database...\nRestarting...`);
       testConnection(pool, attempt + 1, callback);
     } else {
       console.log(`Final Attempt: Error connecting to database\n`, err);

@@ -244,7 +244,7 @@ function getPropertyViolation(obj, property, schema) {
 
   // return an empty string if pass the validator or return a non-empty error
   // string otherwise
-  return isValid ? "" : (schema[property].getErrorMessage() + "\n\n");
+  return isValid ? "" : (schema[property].getErrorMessage());
 }
 
 // Sanitizes an object using a provided schema by extracting valid properties to

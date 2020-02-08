@@ -37,25 +37,25 @@ app.post("/", async (req, res) => {
       if (violation === "valid") {
 
         const results = await createComment(planId, userId, text);
-        console.log("Comment created - 201\n");
+        console.log("201: Comment created\n");
         res.status(201).send(results);
 
       } else {
 
         // send an error that explains the violated constraint
-        console.log(violation, "- 400\n");
+        console.error("400:", violation, "\n");
         res.status(400).send({error: violation});
 
       }
 
     } else {
-      console.log(errorMessage, "- 400\n");
+      console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
     }
 
   } catch (err) {
-    console.log("An internal server error occurred - 500\n Error:", err);
+    console.error("500: An internal server error occurred\n Error:", err);
     res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 
@@ -71,15 +71,15 @@ app.get("/:commentId", async (req, res) => {
 
     const results = await getComment(commentId);
     if (results.length === 0) {
-      console.log("No comment found - 404\n");
+      console.error("404: No comment found\n");
       res.status(404).send({error: "No comment found."});
     } else {
-      console.log("Comment found - 200\n");
+      console.log("200: Comment found\n");
       res.status(200).send(results);
     }
 
   } catch (err) {
-    console.log("An internal server error occurred - 500\n Error:", err);
+    console.error("500: An internal server error occurred\n Error:", err);
     res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 

@@ -218,3 +218,31 @@
 .status-container {
   margin: 100px;
 }
+
+#comment-input-container {
+  display: inline-block;
+  padding: 25px;
+  background-color: #b3b3b3;
+}
+
+#comment-text-input {
+  display: inline;
+  margin: 10px;
+  resize: none;
+}
+
+#submit-comment-button {
+  display: block;
+  margin: auto;
+}
+
+#comment-error-container {
+  display: block;
+  width: auto;
+  min-width: 100px;
+}
+
+#comment-error-message {
+  display:inline-block;
+  min-height:15px;
+}

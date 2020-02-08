@@ -2,9 +2,11 @@ import React, {useState, useEffect} from "react";
 import PlanTable from "./PlanTable";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
-import {useParams, withRouter} from 'react-router-dom';
+import {useParams, withRouter} from "react-router-dom";
+import PropTypes from "prop-types";
 
 function ViewPlan(props) {
+
   const [studentName, setStudentName] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
@@ -28,6 +30,29 @@ function ViewPlan(props) {
   );
   const {planId} = useParams();
 
+  async function handleAddComment(planId) {
+
+    try {
+
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/plan/${planId}/comment`;
+      let obj = [];
+
+      // refersh the list of comments
+      const response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
+        setComments(obj);
+      }
+
+    } catch (err) {
+      // this is a server error
+      console.log("An internal server error occurred. Please try again later.");
+    }
+
+  }
+
   useEffect(() => {
     async function fetchData(planId) {
       try {
@@ -39,7 +64,7 @@ function ViewPlan(props) {
 
         try {
           // get plan data
-          let response = await fetch(url);
+          const response = await fetch(url);
           if (response.ok) {
             // get data from the response
             obj = await response.json();
@@ -50,13 +75,13 @@ function ViewPlan(props) {
             setStatus(parseInt(obj[0][0].status));
           } else {
             // we got a bad status code. send to 404 page
-            props.history.push('/404');
+            props.history.push("/404");
             return;
           }
         } catch (err) {
           // send to 500 page if a server error happens while fetching plan
           console.log("An internal server error occurred. Please try again later.");
-          props.history.push('/500');
+          props.history.push("/500");
           return;
         }
 
@@ -91,8 +116,12 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />
-      <PlanComments comments={comments} />
+      <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );
 }
 export default withRouter(ViewPlan);
+
+ViewPlan.propTypes = {
+  history: PropTypes.object
+};

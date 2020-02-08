@@ -26,7 +26,7 @@ app.use(express.static("src/public"));
 
 // everything else gets a 404 error
 app.get("*", (req, res) => {
-  console.log("File not found - 400\n");
+  console.error("404: File not found\n");
   res.status(404).send({error: "Not Found"});
 });
 
