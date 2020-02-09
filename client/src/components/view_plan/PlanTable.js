@@ -5,51 +5,52 @@ import PropTypes from "prop-types";
 
 function PlanTable(props) {
 
-  const styleTextAlign = css`
-    text-align: left;
-  `;
-
-  const styleBorders = css`
-    border: 1px solid black;
-    border-collapse: collapse;
-  `;
-
-  const stylePadding = css`
-    padding: 5px;
-  `;
-
-  const styleTableContainer = css`
+  const style = css`
     width: 100%;
-  `;
 
-  const styleCoursesTable = css`
-    width: 95%;
-    margin: 50px auto;
-    width: 90%;
+    #courses-table {
+      width: 95%;
+      margin: 50px auto;
+      width: 90%;
+    }
+
+    #courses-table, th, tr, td, th {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    td, th {
+      padding: 5px;
+    }
+  
   `;
 
   return (
-    <div className="table-container" css={styleTableContainer}>
-      <table className="courses-table" css={[styleCoursesTable, styleBorders]}>
+    <div id="table-container" css={style}>
+      <table id="courses-table">
         <tbody>
-          <tr css={styleBorders}>
-            <th css={[styleBorders, stylePadding, styleTextAlign]}>Course</th>
-            <th css={[styleBorders, stylePadding, styleTextAlign]}>Name</th>
-            <th css={[styleBorders, stylePadding, styleTextAlign]}>Credit Hours</th>
-            <th css={[styleBorders, stylePadding, styleTextAlign]}>Prerequisites</th>
+          <tr>
+            <th>Course</th>
+            <th>Name</th>
+            <th>Credit Hours</th>
+            <th>Prerequisites</th>
           </tr>
           {props.courses[1].map((course) => (
-            <tr key={course.courseId} css={styleBorders}>
-              <td key={course.courseId + "a"} css={[styleBorders, stylePadding]}>
+            <tr key={course.courseId}>
+              <td key={course.courseId + "a"}>
                 {course.courseCode}
               </td>
-              <td key={course.courseId + "b"} css={[styleBorders, stylePadding]}>
+              <td key={course.courseId + "b"}>
                 {course.courseName}
               </td>
-              <td key={course.courseId + "c"} css={[styleBorders, stylePadding]}>
+              <td key={course.courseId + "c"}>
                 {course.credits}
               </td>
-              <td key={course.courseId + "d"} css={[styleBorders, stylePadding]}>
+              <td key={course.courseId + "d"}>
                 {course.prerequisites}
               </td>
             </tr>

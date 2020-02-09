@@ -6,33 +6,33 @@ import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
 
-  const stylePlanMetadata = css`
+  const style = css`
     padding: 10px;
     text-align: center;
     vertical-align: middle;
     width: 100%;
     height: 75px;
     background-color: #c0c0c0;
-  `;
 
-  const styleMetadataField = css`
-    vertical-align: top;
-    display: inline-block;
-    width: 20%;
-    height: 200px;
-  `;
+    .metadata-field {
+      vertical-align: top;
+      display: inline-block;
+      width: 20%;
+      height: 200px;
+    }
 
-  const styleFieldType = css`
-    font-weight: bold;
-    vertical-align: middle;
-  `;
+    .field-type {
+      font-weight: bold;
+      vertical-align: middle;
+    }
 
-  const styleFieldText = css`
-    font-weight: normal;
-    vertical-align: middle;
-  `;
+    .field-text {
+      font-weight: normal;
+      vertical-align: middle;
+    }
 
-  const styleEditPlanButton = css`
+    #edit-plan-button {
+    }
   `;
 
   const {planId} = useParams();
@@ -59,26 +59,25 @@ function PlanMetadata(props) {
   }
 
   return (
-    <div className="plan-metadata" css={stylePlanMetadata}>
-      <div className="metadata-field" css={styleMetadataField}>
-        <p className="field-type" css={styleFieldType}>Student Name:</p>
-        <p className="field-text" css={styleFieldText}>{props.studentName}</p>
+    <div className="plan-metadata" css={style}>
+      <div className="metadata-field">
+        <p className="field-type">Student Name:</p>
+        <p className="field-text">{props.studentName}</p>
       </div>
-      <div className="metadata-field" css={styleMetadataField}>
-        <p className="field-type" css={styleFieldType}>User ID:</p>
-        <p className="field-text" css={styleFieldText}>{props.userId}</p>
+      <div className="metadata-field">
+        <p className="field-type">User ID:</p>
+        <p className="field-text">{props.userId}</p>
       </div>
-      <div className="metadata-field" css={styleMetadataField}>
-        <p className="field-type" css={styleFieldType}>Plan Name:</p>
-        <p className="field-text" css={styleFieldText}>{props.planName}</p>
+      <div className="metadata-field">
+        <p className="field-type">Plan Name:</p>
+        <p className="field-text">{props.planName}</p>
       </div>
-      <div className="metadata-field" css={styleMetadataField}>
-        <p className="field-type" css={styleFieldType}>Plan Status:</p>
-        <p className="field-text" css={styleFieldText}>{renderStatus()}</p>
+      <div className="metadata-field">
+        <p className="field-type">Plan Status:</p>
+        <p className="field-text">{renderStatus()}</p>
       </div>
-      <div className="metadata-field" css={styleMetadataField}>
-        <button id="edit-plan-button" css={styleEditPlanButton}
-          onClick={() => { goToEditPlan(planId); }}>
+      <div className="metadata-field">
+        <button id="edit-plan-button" onClick={() => { goToEditPlan(planId); }}>
             Edit Plan
         </button>
       </div>

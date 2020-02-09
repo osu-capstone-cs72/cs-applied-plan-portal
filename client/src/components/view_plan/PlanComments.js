@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 function PlanComments(props) {
 
-  const stylePlanComments = css`
+  const style = css`
     margin: 50px auto;
     text-align: center;
     width: 100%;
@@ -18,7 +18,7 @@ function PlanComments(props) {
   }
 
   return (
-    <div className="plan-comments" css={stylePlanComments}>
+    <div className="plan-comments" css={style}>
       <h2>Comments</h2>
       <CreateComment onUpdate={() => { handleAddComment(); }}/>
       {props.comments.map((comment) => (

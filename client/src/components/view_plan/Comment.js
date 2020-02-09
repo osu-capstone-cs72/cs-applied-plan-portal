@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 function Comment(props) {
 
-  const styleCommentContainer = css`
+  const style = css`
     text-align: center;
     margin: 25px auto;
     padding: 25px;
@@ -14,19 +14,19 @@ function Comment(props) {
     background-color: #b3b3b3;
     word-wrap: break-word;
     overflow-wrap: break-word;
-  `;
 
-  const styleCommentUser = css`
-    font-weight: bold;
-    font-size: large;
-  `;
+    .comment-user {
+      font-weight: bold;
+      font-size: large;
+    }
 
-  const styleCommentTime = css`
-    font-style: italic;
-  `;
+    .comment-time {
+      font-style: italic;
+    }
 
-  const styleCommentText = css`
-    font-size: large;
+    comment-text {
+      font-size: large;
+    }
   `;
 
   const [userName, setUserName] = useState("");
@@ -51,7 +51,7 @@ function Comment(props) {
         }
       } catch (err) {
         // this is a server error
-        alert("An internal server error occurred. Please try again later.");
+        console.log("An internal server error occurred. Please try again later.");
       }
     }
     fetchUsername();
@@ -59,10 +59,10 @@ function Comment(props) {
 
   if (props.commentId !== 0) {
     return (
-      <div className="comment-container" css={styleCommentContainer}>
-        <p className="comment-user" css={styleCommentUser}>{userName}</p>
-        <p className="comment-time" css={styleCommentTime}>{props.time}</p>
-        <p className="comment-text" css={styleCommentText}>{props.text}</p>
+      <div className="comment-container" css={style}>
+        <p className="comment-user">{userName}</p>
+        <p className="comment-time">{props.time}</p>
+        <p className="comment-text">{props.text}</p>
       </div>
     );
   } else {
