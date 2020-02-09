@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
+import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
@@ -33,6 +34,12 @@ function PlanMetadata(props) {
 
   const styleEditPlanButton = css`
   `;
+
+  const {planId} = useParams();
+
+  function goToEditPlan(planId) {
+    props.history.push(`/editPlan/${planId}`);
+  }
 
   function renderStatus() {
     switch (props.status) {
@@ -70,17 +77,21 @@ function PlanMetadata(props) {
         <p className="field-text" css={styleFieldText}>{renderStatus()}</p>
       </div>
       <div className="metadata-field" css={styleMetadataField}>
-        <button id="edit-plan-button" css={styleEditPlanButton}>Edit Plan</button>
+        <button id="edit-plan-button" css={styleEditPlanButton}
+          onClick={() => { goToEditPlan(planId); }}>
+            Edit Plan
+        </button>
       </div>
     </div>
   );
 
 }
-export default PlanMetadata;
+export default withRouter(PlanMetadata);
 
 PlanMetadata.propTypes = {
   studentName: PropTypes.string,
   userId: PropTypes.number,
   planName: PropTypes.string,
-  status: PropTypes.number
+  status: PropTypes.number,
+  history: PropTypes.object
 };
