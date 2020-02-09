@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 04, 2020 at 12:50 PM
+-- Generation Time: Feb 09, 2020 at 05:14 AM
 -- Server version: 8.0.19
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
@@ -45,7 +45,13 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
 (2, 308, 9, 'This plan looks good!'),
 (6, 310, 5, 'I sure do love my plan.'),
 (7, 310, 2, 'I don\'t like this plan. Lets get rid of it.'),
-(9, 310, 6, 'Sure, plan rejected.');
+(9, 310, 6, 'Sure, plan rejected.'),
+(33, 308, 1, 'Test Comment.'),
+(34, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
+(35, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
+(36, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
+(37, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message............................................................................................................................................................................'),
+(38, 308, 1, 'testtttttttttttttttttttttttttttttttttttttttttttttttt');
 
 -- --------------------------------------------------------
 
@@ -92,7 +98,22 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 (22, 4, 'The New American Cinema', 'FILM245', 0, 'A formalist, ideological, and commercial investigation into contemporary American cinema. Three hours of lecture and separate screenings each week. Film fee required. Not offered every year. (H) (Bacc Core Course)', ''),
 (23, 3, 'Field Sampling of Fish and Wildlife', 'FW255', 0, 'Introduction to sampling populations and communities of vertebrate animals emphasizing sampling design, collection and management of data, and communication of results.', ''),
 (24, 4, 'Forest Biology', 'FES240', 0, 'Structure, function, development and biology of forest vegetation and their relationships to forestry and natural resource applications. Field trips required. Lec/lab/rec. (Bacc Core Course)', ''),
-(25, 4, 'Environmental Geology', 'GEO221', 0, 'Introductory geology emphasizing geologic hazards (volcanoes, earthquakes, landslides, flooding), geologic resources (water, soil, air, mineral, energy), and associated environmental problems and mitigation strategies. Lec/lab. (Bacc Core Course)', '');
+(25, 4, 'Environmental Geology', 'GEO221', 0, 'Introductory geology emphasizing geologic hazards (volcanoes, earthquakes, landslides, flooding), geologic resources (water, soil, air, mineral, energy), and associated environmental problems and mitigation strategies. Lec/lab. (Bacc Core Course)', ''),
+(26, 3, 'Digital Logic Design', 'ECE271', 0, 'A first course in digital logic design. Data types and representations, Boolean algebra, state machines, simplification of switching expressions, and introductory computer arithmetic. Lec/rec.', 'MTH 251*, 251H* or 231*.\r\n* May be taken concurrently.\r\nA minimum grade of C is required in MTH 251, MTH 251H and MTH 231.'),
+(27, 1, 'Digital Logic Design Laboratory', 'ECE272', 0, 'This laboratory course accompanies ECE 271, Digital Logic Design. This also illustrates topics covered in the lectures of ECE 271 using computer-aided design, verification tools, and prototyping hardware.', ''),
+(28, 3, 'Electronics 1', 'ECE322', 0, 'Fundamental device characteristics including diodes, MOSFETs and bipolar transistors; small- and large-signal characteristics and design of linear circuits.', 'ENGR 203.\r\nA minimum grade of C is required in ENGR 203.\r\nEnrollment limited to students in the College of Engineering college.'),
+(29, 3, 'Electronics 2', 'ECE323', 0, 'Transient operation of MOSFETs and bipolar transistors; multistage amplifiers; frequency response; feedback and stability.', 'ECE 322.\r\nA minimum grade of C is required in ECE 322.\r\nEnrollment limited to students in the College of Engineering college.'),
+(30, 4, 'Electromechanical Energy Conversion', 'ECE331', 0, 'Energy conversion principles for electric machines. Steady state characteristics of direct current, induction, and synchronous machines. Application of stepper and servo motors and synchronous generators.', '(ENGR 202 or 202H) and MTH 256 and PH 213.\r\nA minimum grade of C is required in ENGR 202, ENGR 202H, MTH 256 and PH 213.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(31, 1, 'Laboratory Electromechanical Energy Conversion', 'ECE332', 0, 'DC, PMAC, and induction machine testing, operation, and control.', 'ENGR 202 or 202H. A minimum grade of C is required in ENGR 202 and ENGR 202H.'),
+(32, 3, 'Junior Design 1', 'ECE341', 0, 'Introduction to system design and group projects. Design and fabrication of an electrical engineering project in a small group.', 'CS 261* and ENGR 203.\r\n* May be taken concurrently.\r\nA minimum grade of C is required in CS 261 and ENGR 203.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(33, 3, 'Junior Design 2', 'ECE342', 0, 'Introduction to system design and group projects. Design and fabrication of an electrical engineering project in a small group.', 'ECE 341.\r\nA minimum grade of C is required in ECE 341.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(34, 3, 'Signals and Systems 1', 'ECE351', 0, 'Analytical techniques for continuous-time and discrete-time signal, system, and circuit analysis. Lec.', 'ENGR 203 and (MTH 256 or 256H).\r\nA minimum grade of C is required in ENGR 203, MTH 256 and MTH 256H.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(35, 3, 'Signals and Systems 2', 'ECE352', 0, 'Analytical techniques for continuous-time and discrete-time signal, system, and circuit analysis.', 'ECE 351 and (MTH 306 or 306H).\r\nA minimum grade of C is required in ECE 351, MTH 306 and MTH 306H.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(36, 3, 'Introduction to Probability and Random Signals', 'ECE353', 0, 'Introductory discrete and continuous probability concepts, single and multiple random variable distributions, expectation, introductory stochastic processes, correlation and power spectral density properties of random signals, random signals through linear filters. Lec.', 'ECE 351 and (MTH 254 or 254H).\r\nA minimum grade of C is required in ECE 351, MTH 254 and MTH 254H.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(37, 4, 'Introduction to Computer Networks', 'ECE372', 0, 'Computer network principles, fundamental networking concepts, packet-switching and circuit-switching, TCP/IP protocol layers, reliable data transfer, congestion control, flow control, packet forwarding and routing, MAC addressing, multiple access techniques. Lec. CROSSLISTED as CS 372.', 'CS 261 and (ECE 271 or CS 271).\r\nA minimum grade of C is required in CS 261, ECE 271 and CS 271.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(38, 4, 'Computer Organization and Assembly Language Programming', 'ECE375', 0, 'Introduction to computer organization, how major components in a computer system function together in executing a program, and assembly language programming. Lec/lab.', ''),
+(39, 4, 'Electric and Magnetic Fields', 'ECE390', 0, 'Static and quasi-static electric and magnetic fields.', '(MTH 255 or 255H) and ENGR 203* and PH 213.\r\n* May be taken concurrently.\r\nA minimum grade of C is required in MTH 255, MTH 255H, ENGR 203 and PH 213.\r\n\r\nEnrollment limited to students in the College of Engineering college.'),
+(40, 3, 'Transmission Lines', 'ECE391', 0, 'Transient and steady-state analysis of transmission line circuits with application to engineering problems.', 'ECE 322* and ENGR 203 and (MTH 254 or 254H) and (MTH 256 or 256H).\r\n* May be taken concurrently.\r\nA minimum grade of C is required in ECE 322, ENGR 203, MTH 254, MTH 254H, MTH 256 and MTH 256H.\r\n\r\nEnrollment limited to students in the College of Engineering college.');
 
 -- --------------------------------------------------------
 
@@ -114,7 +135,10 @@ CREATE TABLE `Plan` (
 
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`) VALUES
 (308, 3, 'Luke\'s Plan', 1),
-(310, 0, 'Han\'s cool plan', 5);
+(310, 0, 'Han\'s cool plan', 5),
+(358, 2, 'Another Plan by Luke', 1),
+(359, 2, 'Luke\'s ECE plan', 1),
+(360, 2, 'Han\'s ECE plan', 5);
 
 -- --------------------------------------------------------
 
@@ -156,23 +180,57 @@ CREATE TABLE `SelectedCourse` (
 
 INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 (310, 5),
+(358, 5),
 (310, 7),
+(358, 7),
 (310, 9),
+(358, 9),
 (310, 10),
+(358, 10),
 (310, 11),
+(358, 11),
 (308, 14),
+(358, 14),
 (308, 15),
+(358, 15),
 (308, 16),
+(358, 16),
 (308, 17),
+(358, 17),
 (308, 18),
 (310, 18),
+(358, 18),
 (308, 19),
 (310, 19),
 (310, 20),
 (308, 21),
 (310, 22),
 (308, 23),
-(308, 25);
+(308, 25),
+(359, 26),
+(360, 26),
+(359, 27),
+(360, 27),
+(359, 28),
+(360, 28),
+(359, 29),
+(360, 29),
+(359, 30),
+(360, 30),
+(359, 31),
+(360, 31),
+(359, 32),
+(360, 32),
+(359, 33),
+(360, 33),
+(359, 34),
+(360, 34),
+(359, 35),
+(360, 35),
+(359, 36),
+(360, 36),
+(359, 37),
+(360, 37);
 
 -- --------------------------------------------------------
 
@@ -264,25 +322,25 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `Course`
 --
 ALTER TABLE `Course`
-  MODIFY `courseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `courseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=315;
+  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=361;
 
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `userId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `userId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
