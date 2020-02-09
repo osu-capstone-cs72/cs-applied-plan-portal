@@ -1,5 +1,6 @@
 import React from "react";
-import {Route, Switch, Redirect} from "react-router-dom";
+import {Global, css} from '@emotion/core';
+import {Route, Switch} from "react-router-dom";
 import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import EditPlan from "./create_plan/EditPlan";
 import ViewPlan from "./view_plan/ViewPlan";
@@ -7,9 +8,18 @@ import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
 import StudentHome from "./StudentHome";
 
+const globalStyles = css`
+  @import url('https://fonts.googleapis.com/css?family=Muli');
+  body {
+    font-family: 'Muli', sans-serif;
+    margin: 0;
+  }
+`;
+
 function App() {
   return (
     <div className="App">
+      <Global styles={globalStyles} />
       <Switch>
         <Route exact path="/">
           <StudentHome userId={1}/>
