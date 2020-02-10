@@ -55,7 +55,7 @@ function Comment(props) {
       }
     }
     fetchUsername();
-  }, []);
+  }, [props.userId]);
 
   if (props.commentId !== 0) {
     return (

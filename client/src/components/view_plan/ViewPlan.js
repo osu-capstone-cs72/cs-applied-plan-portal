@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 
 function ViewPlan(props) {
 
+  const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
@@ -103,6 +104,7 @@ function ViewPlan(props) {
           // get data from the response
           obj = await response.json();
           setComments(obj);
+          setLoading(false);
         }
 
       } catch (err) {
@@ -119,7 +121,7 @@ function ViewPlan(props) {
       <NavBar showSearch={false} />
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
-      <PlanTable courses={courses} />
+      <PlanTable loading={loading} courses={courses} />
       <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );
