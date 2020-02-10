@@ -1,10 +1,14 @@
-import React, {useState, useEffect} from "react";
+/** @jsx jsx */
+
+import {useState, useEffect} from "react";
+import {css, jsx} from "@emotion/core";
 import NavBar from "../Navbar";
 import PlanTable from "./PlanTable";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
+import BounceLoader  from "react-spinners/BounceLoader";
 
 function ViewPlan(props) {
 
@@ -31,6 +35,20 @@ function ViewPlan(props) {
     }]
   );
   const {planId} = useParams();
+
+  const style = css`
+    .loader-container {
+      visibility: ${loading ? "visible" : "hidden"};
+      position: fixed;
+      margin-left: -75px;
+      margin-bottom: 75px;
+      left: 50%;
+      bottom: 50%;
+      width: 0;
+      height: 0;
+      z-index: 99;
+    }
+  }`;
 
   async function handleAddComment(planId) {
 
@@ -100,11 +118,11 @@ function ViewPlan(props) {
         // get plan comments
         url = `http://${server}/plan/${planId}/comment`;
         response = await fetch(url);
+        setLoading(false);
         if (response.ok) {
           // get data from the response
           obj = await response.json();
           setComments(obj);
-          setLoading(false);
         }
 
       } catch (err) {
@@ -117,11 +135,17 @@ function ViewPlan(props) {
   }, [planId, props.history]);
 
   return (
-    <div className="view-plan">
+    <div className="view-plan" css={style}>
+      <div className="loader-container">
+        <BounceLoader
+          size={150}
+          color={"orange"}
+        />
+      </div>
       <NavBar showSearch={false} />
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
-      <PlanTable loading={loading} courses={courses} />
+      <PlanTable courses={courses} />
       <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );

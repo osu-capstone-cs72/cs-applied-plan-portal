@@ -2,9 +2,13 @@
 
 import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
+import BeatLoader  from "react-spinners/BeatLoader";
 import PropTypes from "prop-types";
 
 function Comment(props) {
+
+  const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const style = css`
     text-align: center;
@@ -14,6 +18,13 @@ function Comment(props) {
     background-color: #b3b3b3;
     word-wrap: break-word;
     overflow-wrap: break-word;
+
+    .comment-loader-container {
+      display: ${loading ? "block" : "none"};
+      margin: auto;
+      width: 250px;
+      height: 25px;
+    }
 
     .comment-user {
       font-weight: bold;
@@ -28,8 +39,6 @@ function Comment(props) {
       font-size: large;
     }
   `;
-
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
 
@@ -48,6 +57,7 @@ function Comment(props) {
           // get data from the response
           const obj = await response.json();
           setUserName(obj.firstName + " " + obj.lastName);
+          setLoading(false);
         }
       } catch (err) {
         // this is a server error
@@ -60,6 +70,13 @@ function Comment(props) {
   if (props.commentId !== 0) {
     return (
       <div className="comment-container" css={style}>
+        <div className="comment-loader-container">
+          <BeatLoader>
+            size={150}
+            color={"black"}
+            rotate={90}
+          </BeatLoader>
+        </div>
         <p className="comment-user">{userName}</p>
         <p className="comment-time">{props.time}</p>
         <p className="comment-text">{props.text}</p>

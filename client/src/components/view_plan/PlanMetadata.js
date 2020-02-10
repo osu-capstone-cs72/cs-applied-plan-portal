@@ -6,6 +6,8 @@ import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
 
+  const {planId} = useParams();
+
   const style = css`
     display: flex;
     justify-content: flex-end;
@@ -42,8 +44,6 @@ function PlanMetadata(props) {
       padding: 10px;
     }
   `;
-
-  const {planId} = useParams();
 
   function goToEditPlan(planId) {
     props.history.push(`/editPlan/${planId}`);

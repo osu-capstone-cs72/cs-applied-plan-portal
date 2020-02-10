@@ -6,6 +6,11 @@ import {useParams} from "react-router-dom";
 
 function CreateComment(props) {
 
+  const [newComment, setNewComment] = useState(true);
+  const [userId] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
+  const {planId} = useParams();
+
   const style = css`
     #comment-error-container {
       display: block;
@@ -35,11 +40,6 @@ function CreateComment(props) {
       margin: auto;
     }
   `;
-
-  const [newComment, setNewComment] = useState(true);
-  const [userId] = useState(1);
-  const [errorMessage, setErrorMessage] = useState("");
-  const {planId} = useParams();
 
   function toggle() {
     setErrorMessage("");
