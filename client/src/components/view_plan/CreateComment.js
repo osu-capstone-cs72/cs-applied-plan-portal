@@ -6,9 +6,6 @@ import {useParams} from "react-router-dom";
 
 function CreateComment(props) {
 
-  const styleCreationButton = css`
-  `;
-
   const style = css`
     #comment-error-container {
       display: block;
@@ -94,16 +91,16 @@ function CreateComment(props) {
 
   if (newComment) {
     return (
-      <button className="toggle-creation-button"
-        css={styleCreationButton} onClick={() => { toggle(); }}>
-        +
-      </button>
+      <div id="create-comment-container" css={style}>
+        <button className="toggle-creation-button" onClick={() => { toggle(); }}>
+          +
+        </button>
+      </div>
     );
   } else {
     return (
       <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button"
-          css={styleCreationButton} onClick={() => { toggle(); }}>
+        <button className="toggle-creation-button" onClick={() => { toggle(); }}>
         -
         </button>
         <div id="comment-error-container">
