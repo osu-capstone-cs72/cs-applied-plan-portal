@@ -6,6 +6,7 @@ import NavBar from "../Navbar";
 import PlanTable from "./PlanTable";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
+import PlanReviews from "./PlanReviews";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import BounceLoader  from "react-spinners/BounceLoader";
@@ -32,6 +33,14 @@ function ViewPlan(props) {
       userId: 0,
       time: null,
       text: ""
+    }]
+  );
+  const [reviews] = useState(
+    [{
+      planId: 0,
+      userId: 0,
+      time: null,
+      status: -1
     }]
   );
   const {planId} = useParams();
@@ -146,6 +155,7 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />
+      <PlanReviews reviews={reviews}/>
       <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );
