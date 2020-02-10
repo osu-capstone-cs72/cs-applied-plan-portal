@@ -13,6 +13,7 @@ const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlans = require("../models/plan").getPlans;
 const getPlanComments = require("../models/plan").getPlanComments;
+const getPlanReviews = require("../models/plan").getPlanReviews;
 const deletePlan = require("../models/plan").deletePlan;
 const {
   planSchema,
@@ -209,6 +210,30 @@ app.get("/:planId/comment", async (req, res) => {
       res.status(404).send({error: "No comments found."});
     } else {
       console.log("200: Comments found\n");
+      res.status(200).send(results);
+    }
+
+  } catch (err) {
+    console.log("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// get a plans reviews
+app.get("/:planId/review", async (req, res) => {
+
+  try {
+
+    console.log("Get a plans reviews");
+    const planId = req.params.planId;
+
+    const results = await getPlanReviews(planId);
+    if (results.length === 0) {
+      console.error("404: No reviews found\n");
+      res.status(404).send({error: "No reviews found."});
+    } else {
+      console.log("200: Reviews found\n");
       res.status(200).send(results);
     }
 

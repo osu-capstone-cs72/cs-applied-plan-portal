@@ -133,6 +133,23 @@ async function getPlanComments(planId) {
 }
 exports.getPlanComments = getPlanComments;
 
+// get all reviews from a plan
+async function getPlanReviews(planId) {
+
+  try {
+
+    const sql = "SELECT * FROM PlanReview WHERE planId = ? ORDER BY timeReviewed ASC;";
+    const results = await pool.query(sql, planId);
+    return results[0];
+
+  } catch (err) {
+    console.log("Error searching for reviews");
+    throw Error(err);
+  }
+
+}
+exports.getPlanReviews = getPlanReviews;
+
 // save basic plan information such as the student id and the plan name
 async function insertPlan(userId, planName) {
 
