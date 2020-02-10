@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 09, 2020 at 05:14 AM
+-- Generation Time: Feb 10, 2020 at 08:38 PM
 -- Server version: 8.0.19
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
@@ -126,6 +126,7 @@ CREATE TABLE `Plan` (
   `status` int NOT NULL,
   `planName` varchar(50) NOT NULL,
   `studentId` int NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -133,12 +134,12 @@ CREATE TABLE `Plan` (
 -- Dumping data for table `Plan`
 --
 
-INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`) VALUES
-(308, 3, 'Luke\'s Plan', 1),
-(310, 0, 'Han\'s cool plan', 5),
-(358, 2, 'Another Plan by Luke', 1),
-(359, 2, 'Luke\'s ECE plan', 1),
-(360, 2, 'Han\'s ECE plan', 5);
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALUES
+(308, 3, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
+(310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42'),
+(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42'),
+(359, 2, 'Luke\'s ECE plan', 1, '2020-01-17 11:35:42'),
+(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42');
 
 -- --------------------------------------------------------
 
@@ -150,18 +151,17 @@ CREATE TABLE `PlanReview` (
   `planId` int NOT NULL,
   `advisorId` int NOT NULL,
   `newStatus` int NOT NULL,
-  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `note` varchar(1000) NOT NULL
+  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`, `note`) VALUES
-(308, 9, 3, ''),
-(310, 4, 3, 'Nice plan. Good luck with the rebellion.'),
-(310, 6, 0, 'Rejected rebel scum.');
+INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`) VALUES
+(308, 9, 3),
+(310, 4, 3),
+(310, 6, 0);
 
 -- --------------------------------------------------------
 
