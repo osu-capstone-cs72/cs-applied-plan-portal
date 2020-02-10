@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import NavBar from "../Navbar";
 import PlanTable from "./PlanTable";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
@@ -115,6 +116,7 @@ function ViewPlan(props) {
 
   return (
     <div className="view-plan">
+      <NavBar showSearch={false} />
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />

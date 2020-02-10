@@ -7,18 +7,25 @@ import PropTypes from "prop-types";
 function PlanMetadata(props) {
 
   const style = css`
-    padding: 10px;
-    text-align: center;
-    vertical-align: middle;
-    width: 100%;
-    height: 75px;
-    background-color: #c0c0c0;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    height: 110px;
+
+    .plan-metadata {
+      padding: 10px;
+      text-align: center;
+      vertical-align: middle;
+      width: 100%;
+      height: 75px;
+      background-color: #c0c0c0;
+    }
 
     .metadata-field {
       vertical-align: top;
       display: inline-block;
       width: 20%;
-      height: 200px;
+      height: 55px;
     }
 
     .field-type {
@@ -32,6 +39,7 @@ function PlanMetadata(props) {
     }
 
     #edit-plan-button {
+      padding: 10px;
     }
   `;
 
@@ -59,27 +67,29 @@ function PlanMetadata(props) {
   }
 
   return (
-    <div className="plan-metadata" css={style}>
-      <div className="metadata-field">
-        <p className="field-type">Student Name:</p>
-        <p className="field-text">{props.studentName}</p>
-      </div>
-      <div className="metadata-field">
-        <p className="field-type">User ID:</p>
-        <p className="field-text">{props.userId}</p>
-      </div>
-      <div className="metadata-field">
-        <p className="field-type">Plan Name:</p>
-        <p className="field-text">{props.planName}</p>
-      </div>
-      <div className="metadata-field">
-        <p className="field-type">Plan Status:</p>
-        <p className="field-text">{renderStatus()}</p>
-      </div>
-      <div className="metadata-field">
-        <button id="edit-plan-button" onClick={() => { goToEditPlan(planId); }}>
-            Edit Plan
-        </button>
+    <div className="metadata-container" css={style}>
+      <div className="plan-metadata">
+        <div className="metadata-field">
+          <p className="field-type">Student Name:</p>
+          <p className="field-text">{props.studentName}</p>
+        </div>
+        <div className="metadata-field">
+          <p className="field-type">User ID:</p>
+          <p className="field-text">{props.userId}</p>
+        </div>
+        <div className="metadata-field">
+          <p className="field-type">Plan Name:</p>
+          <p className="field-text">{props.planName}</p>
+        </div>
+        <div className="metadata-field">
+          <p className="field-type">Plan Status:</p>
+          <p className="field-text">{renderStatus()}</p>
+        </div>
+        <div className="metadata-field">
+          <button id="edit-plan-button" onClick={() => { goToEditPlan(planId); }}>
+              Edit Plan
+          </button>
+        </div>
       </div>
     </div>
   );
