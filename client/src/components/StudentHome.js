@@ -27,7 +27,7 @@ export default class StudentHome extends React.Component {
 
   async getAllPlans() {
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/plan/getAllPlans/${this.props.userId}`;
+    const getUrl = `http://${server}/user/${this.props.userId}/plans`;
     let obj = [];
 
     try {

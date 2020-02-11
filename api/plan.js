@@ -175,30 +175,6 @@ app.get("/status/:status/:created/:ascend", async (req, res) => {
 
 });
 
-// get all plans for a user
-app.get("/getAllPlans/:studentId", async (req, res) => {
-
-  try {
-
-    const studentId = req.params.studentId;
-    console.log("View all plans", studentId);
-
-    const results = await getPlans(studentId);
-    if (results[0].length === 0) {
-      console.error("404: No plans found\n");
-      res.status(404).send({error: "No plans found."});
-    } else {
-      console.log("200: Plans found\n");
-      res.status(200).send(results);
-    }
-
-  } catch (err) {
-    console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
 // delete a plan
 app.delete("/:planId", async (req, res) => {
 
