@@ -157,10 +157,10 @@ app.get("/status/:status/:created/:ascend", async (req, res) => {
     const status = req.params.status;
     const created = req.params.created;
     const ascend = req.params.ascend;
-    console.log("View plans by status and time type");
+    console.log("Search plans by status");
 
     const results = await getPlansStatus(status, created, ascend);
-    if (results[0].length === 0) {
+    if (results.length === 0) {
       console.error("404: No plans found\n");
       res.status(404).send({error: "No plans found."});
     } else {

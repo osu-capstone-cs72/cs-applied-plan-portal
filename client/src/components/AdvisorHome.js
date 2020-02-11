@@ -15,45 +15,64 @@ function AdvisorHome(props) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const style = css`
-  .loader-container {
-      visibility: ${loading ? "visible" : "hidden"};
-      position: fixed;
-      margin-left: -75px;
-      margin-bottom: 75px;
-      left: 50%;
-      bottom: 50%;
-      width: 0;
-      height: 0;
-      z-index: 99;
+    .loader-container {
+        visibility: ${loading ? "visible" : "hidden"};
+        position: fixed;
+        margin-left: -75px;
+        margin-bottom: 75px;
+        left: 50%;
+        bottom: 50%;
+        width: 0;
+        height: 0;
+        z-index: 99;
+      }
+
+    #plan-selection-container {
+      position: relative;
+      top: 75px;
     }
-  }`;
+
+    .home-error-message-container {
+      position: relative;
+      top: 100px;
+    }
+    
+    .advisor-plans-table {
+      position: relative;
+      top: 100px;
+    }
+
+  `;
 
   useEffect(() => {
-    async function fetchPlans() {
-      try {
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}/user/1/plans`;
-        let obj = [];
-
-        const results = await fetch(getUrl);
-        setLoading(false);
-        if (results.ok) {
-          obj = await results.json();
-          setPlans(obj);
-        } else {
-          // we got a bad status code. Show the error
-          obj = await results.json();
-          setErrorMessage(obj.error);
-        }
-      } catch (err) {
-        // send to 500 page if a server error happens while fetching plan
-        console.log("An internal server error occurred. Please try again later.");
-        props.history.push("/500");
-        return;
-      }
-    }
     fetchPlans();
   }, [props.history]);
+
+  async function fetchPlans() {
+    try {
+      setErrorMessage("");
+      setLoading(true);
+      const selectStatus = document.getElementById("select-status");
+      const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const getUrl = `http://${server}/plan/status/${statusValue}/1/1`;
+      let obj = {};
+
+      const results = await fetch(getUrl);
+      setLoading(false);
+      if (results.ok) {
+        obj = await results.json();
+        setPlans(obj.data);
+      } else {
+        // we got a bad status code. Show the error
+        obj = await results.json();
+        setErrorMessage(obj.error);
+      }
+    } catch (err) {
+      // send to 500 page if a server error happens while fetching plan
+      setErrorMessage("An internal server error occurred. Please try again later.");
+    }
+  }
 
   function renderStatus(status) {
     switch (status) {
@@ -85,20 +104,43 @@ function AdvisorHome(props) {
         />
       </div>
       <NavBar showSearch={true} searchContent={"Search for plans"}/>
+      <div id="plan-selection-container">
+        <select id="select-status" className="advisor-plan-select">
+          <option value="5">Any</option>
+          <option value="2">Awaiting Review</option>
+          <option value="3">Awaiting final review</option>
+          <option value="1">Awaiting student changes</option>
+          <option value="4">Accepted</option>
+          <option value="0">Rejected</option>
+        </select>
+        <select id="select-time" className="advisor-plan-select">
+          <option value="true">Time Created</option>
+          <option value="false">Time Updated</option>
+        </select>
+        <select id="select-order" className="advisor-plan-select">
+          <option value="true">Ascending</option>
+          <option value="false">Decending</option>
+        </select>
+        <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
+          Search
+        </button>
+      </div>
       <div className="home-error-message-container">{errorMessage}</div>
-      <table className="student-plans-table">
+      <table className="advisor-plans-table">
         <tbody>
           <tr>
             <th className="student-plans-data">Name</th>
             <th className="student-plans-data">Status</th>
+            <th className="student-plans-data">Created</th>
             <th className="student-plans-data">Updated</th>
-            <th className="student-plans-data">Reviewers</th>
           </tr>
           {plans ? plans.map(plan =>
             <tr key={plan.planId} onClick={() => goToPlan(plan)}>
               <td className="student-plans-data" key={plan.planId + "a"}>{plan.planName}</td>
               <td className="student-plans-data" key={plan.planId + "b"}>{renderStatus(plan.status)}</td>
-              <td className="student-plans-data" key={plan.planId + "c"}>{plan.lastUpdated}</td>
+              <td className="student-plans-data" key={plan.planId + "c"}>{plan.created}</td>
+              <td className="student-plans-data" key={plan.planId + "d"}>{plan.lastUpdated}</td>
+
             </tr>) : null}
         </tbody>
       </table>

@@ -82,7 +82,12 @@ exports.updatePlan = updatePlan;
 async function getPlansStatus(status, created, ascend) {
   try {
 
-    let sql = "SELECT * FROM Plan WHERE status=? ";
+    let sql = "SELECT * FROM Plan ";
+
+    // a status code of 5 means "any" status
+    if (status !== "5") {
+      sql += "WHERE status=? ";
+    }
 
     // sort by the created or last updated time
     if (created) {
@@ -98,7 +103,12 @@ async function getPlansStatus(status, created, ascend) {
       sql += "DESC;";
     }
 
-    const results = await pool.query(sql, [status]);
+    let results;
+    if (status !== 5) {
+      results = await pool.query(sql, [status]);
+    } else {
+      results = await pool.query(sql);
+    }
     return results[0];
 
   } catch (err) {
