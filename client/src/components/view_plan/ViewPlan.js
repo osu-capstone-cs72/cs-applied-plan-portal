@@ -152,7 +152,8 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />
-      <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}/>
+      <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}
+        studentName={studentName} loading={loading}/>
       <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );

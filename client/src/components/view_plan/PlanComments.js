@@ -24,7 +24,8 @@ function PlanComments(props) {
         <CreateComment onUpdate={() => { handleAddComment(); }}/>
         {props.comments.map((comment) => (
           <Comment key={comment.commentId} commentId={comment.commentId}
-            userId={comment.userId} time={comment.time} text={comment.text} />
+            userId={comment.userId} time={comment.time} text={comment.text}
+            firstName={comment.firstName} lastName={comment.lastName}/>
         ))}
       </div>
     );
