@@ -23,11 +23,11 @@ function PlanReviews(props) {
         <Review key={0} userId={props.userId} status={2} time={props.planCreated}
           userName={props.studentName}/>
 
-        { props.reviews.length && props.reviews.map((review) => (
+        {props.reviews.length ? props.reviews.map((review) => (
           <Review key={review.planId + "-" + review.advisorId} userId={review.advisorId}
             status={review.newStatus} time={review.timeReviewed}
             userName={review.firstName + " " + review.lastName} />
-        ))}
+        )) : null}
       </div>
     );
   }

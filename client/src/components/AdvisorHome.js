@@ -52,10 +52,19 @@ function AdvisorHome(props) {
     try {
       setErrorMessage("");
       setLoading(true);
+      setPlans([]);
+
       const selectStatus = document.getElementById("select-status");
       const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
+
+      const selectTime = document.getElementById("select-time");
+      const timeValue = selectTime.options[selectTime.selectedIndex].value;
+
+      const selectOrder = document.getElementById("select-order");
+      const orderValue = selectOrder.options[selectOrder.selectedIndex].value;
+
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/status/${statusValue}/1/1`;
+      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}`;
       let obj = {};
 
       const results = await fetch(getUrl);
@@ -114,12 +123,12 @@ function AdvisorHome(props) {
           <option value="0">Rejected</option>
         </select>
         <select id="select-time" className="advisor-plan-select">
-          <option value="true">Time Created</option>
-          <option value="false">Time Updated</option>
+          <option value="1">Time Created</option>
+          <option value="0">Time Updated</option>
         </select>
         <select id="select-order" className="advisor-plan-select">
-          <option value="true">Ascending</option>
-          <option value="false">Decending</option>
+          <option value="1">Ascending</option>
+          <option value="0">Decending</option>
         </select>
         <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
           Search

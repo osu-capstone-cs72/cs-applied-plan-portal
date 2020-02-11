@@ -90,14 +90,14 @@ async function getPlansStatus(status, created, ascend) {
     }
 
     // sort by the created or last updated time
-    if (created) {
+    if (created === "1") {
       sql += "ORDER BY created ";
     } else {
       sql += "ORDER BY lastUpdated ";
     }
 
     // sort by ascending or descending
-    if (ascend) {
+    if (ascend === "1") {
       sql += "ASC;";
     } else {
       sql += "DESC;";
