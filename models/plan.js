@@ -78,6 +78,37 @@ async function updatePlan(planId, planName, courses) {
 }
 exports.updatePlan = updatePlan;
 
+// get all plans that match the requested status
+async function getPlansStatus(status, created, ascend) {
+  try {
+
+    let sql = "SELECT * FROM Plan WHERE status=? ";
+
+    // sort by the created or last updated time
+    if (created) {
+      sql += "ORDER BY created ";
+    } else {
+      sql += "ORDER BY lastUpdated ";
+    }
+
+    // sort by ascending or descending
+    if (ascend) {
+      sql += "ASC;";
+    } else {
+      sql += "DESC;";
+    }
+
+    const results = await pool.query(sql, [status]);
+    return results[0];
+
+  } catch (err) {
+    console.log("Error searching for plans");
+    throw Error(err);
+  }
+
+}
+exports.getPlansStatus = getPlansStatus;
+
 // get all data for a specific plan, including selected courses, and reviews
 async function getPlan(planId) {
 

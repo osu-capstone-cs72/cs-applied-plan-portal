@@ -11,6 +11,7 @@ const patchEnforceConstraints = require("../utils/planValidation").patchEnforceC
 const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
+const getPlansStatus = require("../models/plan").getPlansStatus;
 const getPlans = require("../models/plan").getPlans;
 const getPlanComments = require("../models/plan").getPlanComments;
 const getPlanReviews = require("../models/plan").getPlanReviews;
@@ -139,6 +140,32 @@ app.get("/:planId", async (req, res) => {
     } else {
       console.log("200: Plan found\n");
       res.status(200).send(results);
+    }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// get plans based on status and time
+app.get("/status/:status/:created/:ascend", async (req, res) => {
+
+  try {
+
+    const status = req.params.status;
+    const created = req.params.created;
+    const ascend = req.params.ascend;
+    console.log("View plans by status and time type");
+
+    const results = await getPlansStatus(status, created, ascend);
+    if (results[0].length === 0) {
+      console.error("404: No plans found\n");
+      res.status(404).send({error: "No plans found."});
+    } else {
+      console.log("200: Plan found\n");
+      res.status(200).send({data: results});
     }
 
   } catch (err) {
