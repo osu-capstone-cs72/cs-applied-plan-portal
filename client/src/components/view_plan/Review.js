@@ -12,40 +12,44 @@ function Reviews(props) {
 
   const style = css`
     display: inline-block;
-    text-align: bottom;
     margin: 25px;
     padding: 5px;
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
     border-radius: 50%;
     background-color: #b3b3b3;
+
+    .review-text-container {
+      position: relative;
+      top: 30px;
+    }
 
     .review-loader-container {
       display: ${loading ? "block" : "none"};
       margin: auto;
-      width: 250px;
+      width: 125px;
       height: 25px;
     }
 
-    .review-user {
+    .review-status-text {
       font-weight: bold;
-      font-size: large;
+      font-size: medium;
     }
 
     .review-time {
       font-style: italic;
     }
 
-    review-status-text {
-      font-size: large;
+    .review-user {
+      font-size: medium;
     }
   `;
 
   useEffect(() => {
 
     async function fetchUsername() {
-      // don't try searching for user name if ID is zero
-      if (props.userId === 0) {
+      // don't try searching for user name if ID is null
+      if (props.userId === null) {
         return;
       }
 
@@ -80,8 +84,6 @@ function Reviews(props) {
         return "Awaiting final review";
       case 4:
         return "Accepted";
-      case 5:
-        return "Plan Created";
       default:
         return "Undefined status";
     }
@@ -90,16 +92,18 @@ function Reviews(props) {
   if (props.commentId !== 0) {
     return (
       <div className="review-container" css={style}>
-        <div className="review-loader-container">
-          <BeatLoader>
-            size={150}
-            color={"black"}
-            rotate={90}
-          </BeatLoader>
+        <div className="review-text-container">
+          <p className="review-status-text">{renderStatus(props.status)}</p>
+          <p className="review-user">{userName}</p>
+          <div className="review-loader-container">
+            <BeatLoader>
+              size={150}
+              color={"black"}
+              rotate={90}
+            </BeatLoader>
+          </div>
+          <p className="review-time">{props.time}</p>
         </div>
-        <p className="review-user">{userName}</p>
-        <p className="review-time">{props.time}</p>
-        <p className="review-status-text">{renderStatus(props.status)}</p>
       </div>
     );
   } else {
@@ -114,5 +118,5 @@ export default Reviews;
 Reviews.propTypes = {
   userId: PropTypes.number,
   status: PropTypes.number,
-  time: PropTypes.any
+  time: PropTypes.string
 };

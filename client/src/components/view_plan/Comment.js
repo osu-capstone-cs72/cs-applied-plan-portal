@@ -89,6 +89,6 @@ export default Comment;
 Comment.propTypes = {
   commentId: PropTypes.number,
   userId: PropTypes.number,
-  time: PropTypes.any,
+  time: PropTypes.string,
   text: PropTypes.string
 };
