@@ -43,11 +43,6 @@ function Comment(props) {
   useEffect(() => {
 
     async function fetchUsername() {
-      // don't try searching for user name if ID is zero
-      if (props.userId === 0) {
-        return;
-      }
-
       try {
         // get user name
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;

@@ -12,20 +12,32 @@ function PlanReviews(props) {
     width: 100%;
   `;
 
-  return (
-    <div className="plan-reviews" css={style}>
-      <h2>History</h2>
-      {props.reviews.map((review) => (
-        <Review key={review.planId + " " + review.userId} status={review.status}
-          time={review.time} />
-      ))}
-    </div>
-  );
+  if (props.reviews.length > 0) {
+    return (
+      <div className="plan-reviews" css={style}>
+        <h2>History</h2>
+        <Review key={0} userId={props.userId} status={5} time={props.planCreated} />
+        {props.reviews.map((review) => (
+          <Review key={review.planId + "-" + review.advisorId} userId={review.advisorId}
+            status={review.newStatus} time={review.timeReviewed} />
+        ))}
+      </div>
+    );
+  } else {
+    return (
+      <div className="plan-reviews" css={style}>
+        <h2>History</h2>
+        <Review key={0} userId={props.userId} status={5} time={props.planCreated} />
+      </div>
+    );
+  }
 
 }
 export default PlanReviews;
 
 PlanReviews.propTypes = {
-  onUpdate: PropTypes.any,
-  reviews: PropTypes.array
+  reviews: PropTypes.array,
+  userId: PropTypes.number,
+  status: PropTypes.number,
+  planCreated: PropTypes.any
 };

@@ -14,10 +14,13 @@ import BounceLoader  from "react-spinners/BounceLoader";
 function ViewPlan(props) {
 
   const [loading, setLoading] = useState(true);
+  const [planCreated, setPlanCreated] = useState(null);
   const [studentName, setStudentName] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
+  const [comments, setComments] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [courses, setCourses] = useState(
     [[], [{
       courseId: 0,
@@ -26,22 +29,6 @@ function ViewPlan(props) {
       courseCode: "",
       prerequisites: ""
     }], []]
-  );
-  const [comments, setComments] = useState(
-    [{
-      commentId: 0,
-      userId: 0,
-      time: null,
-      text: ""
-    }]
-  );
-  const [reviews] = useState(
-    [{
-      planId: 0,
-      userId: 0,
-      time: null,
-      status: -1
-    }]
   );
   const {planId} = useParams();
 
@@ -101,6 +88,7 @@ function ViewPlan(props) {
             userId = obj[0][0].studentId;
             setCourses(obj);
             setPlanName(obj[0][0].planName);
+            setPlanCreated(obj[0][0].created);
             setUserId(obj[0][0].studentId);
             setStatus(parseInt(obj[0][0].status));
           } else {
@@ -122,6 +110,15 @@ function ViewPlan(props) {
           // get data from the response
           obj = await response.json();
           setStudentName(obj.firstName + " " + obj.lastName);
+        }
+
+        // get plan history
+        url = `http://${server}/plan/${planId}/review`;
+        response = await fetch(url);
+        if (response.ok) {
+          // get data from the response
+          obj = await response.json();
+          setReviews(obj);
         }
 
         // get plan comments
@@ -155,7 +152,7 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />
-      <PlanReviews reviews={reviews}/>
+      <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}/>
       <PlanComments comments={comments} onUpdate={() => { handleAddComment(planId); }}/>
     </div>
   );

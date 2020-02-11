@@ -11,31 +11,32 @@ function Reviews(props) {
   const [loading, setLoading] = useState(true);
 
   const style = css`
-    text-align: center;
-    margin: 25px auto;
-    padding: 25px;
-    width: 350px;
+    display: inline-block;
+    text-align: bottom;
+    margin: 25px;
+    padding: 5px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
     background-color: #b3b3b3;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 
-    .comment-loader-container {
+    .review-loader-container {
       display: ${loading ? "block" : "none"};
       margin: auto;
       width: 250px;
       height: 25px;
     }
 
-    .comment-user {
+    .review-user {
       font-weight: bold;
       font-size: large;
     }
 
-    .comment-time {
+    .review-time {
       font-style: italic;
     }
 
-    comment-text {
+    review-status-text {
       font-size: large;
     }
   `;
@@ -67,19 +68,38 @@ function Reviews(props) {
     fetchUsername();
   }, [props.userId]);
 
+  function renderStatus() {
+    switch (props.status) {
+      case 0:
+        return "Rejected";
+      case 1:
+        return "Awaiting student changes";
+      case 2:
+        return "Awaiting review";
+      case 3:
+        return "Awaiting final review";
+      case 4:
+        return "Accepted";
+      case 5:
+        return "Plan Created";
+      default:
+        return "Undefined status";
+    }
+  }
+
   if (props.commentId !== 0) {
     return (
-      <div className="comment-container" css={style}>
-        <div className="comment-loader-container">
+      <div className="review-container" css={style}>
+        <div className="review-loader-container">
           <BeatLoader>
             size={150}
             color={"black"}
             rotate={90}
           </BeatLoader>
         </div>
-        <p className="comment-user">{userName}</p>
-        <p className="comment-time">{props.time}</p>
-        <p className="comment-text">{props.text}</p>
+        <p className="review-user">{userName}</p>
+        <p className="review-time">{props.time}</p>
+        <p className="review-status-text">{renderStatus(props.status)}</p>
       </div>
     );
   } else {
@@ -92,8 +112,7 @@ function Reviews(props) {
 export default Reviews;
 
 Reviews.propTypes = {
-  commentId: PropTypes.number,
   userId: PropTypes.number,
-  time: PropTypes.any,
-  text: PropTypes.string
+  status: PropTypes.number,
+  time: PropTypes.any
 };

@@ -17,16 +17,25 @@ function PlanComments(props) {
     props.onUpdate();
   }
 
-  return (
-    <div className="plan-comments" css={style}>
-      <h2>Comments</h2>
-      <CreateComment onUpdate={() => { handleAddComment(); }}/>
-      {props.comments.map((comment) => (
-        <Comment key={comment.commentId} commentId={comment.commentId}
-          userId={comment.userId} time={comment.time} text={comment.text} />
-      ))}
-    </div>
-  );
+  if (props.comments.length > 0) {
+    return (
+      <div className="plan-comments" css={style}>
+        <h2>Comments</h2>
+        <CreateComment onUpdate={() => { handleAddComment(); }}/>
+        {props.comments.map((comment) => (
+          <Comment key={comment.commentId} commentId={comment.commentId}
+            userId={comment.userId} time={comment.time} text={comment.text} />
+        ))}
+      </div>
+    );
+  } else {
+    return (
+      <div className="plan-comments" css={style}>
+        <h2>Comments</h2>
+        <CreateComment onUpdate={() => { handleAddComment(); }}/>
+      </div>
+    );
+  }
 
 }
 export default PlanComments;
