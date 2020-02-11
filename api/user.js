@@ -95,4 +95,9 @@ app.get("/:userId/plans", async (req, res) => {
   }
 });
 
+// Logs a User in.
+app.post("/login", async (req, res) => {
+
+});
+
 module.exports = app;

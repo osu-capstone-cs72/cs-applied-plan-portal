@@ -3,6 +3,7 @@
 
 const pool = require("../utils/mysqlPool").pool;
 
+// Creates a new User in the database with the provided User object.
 async function createUser(newUser) {
   try {
     const sql = "INSERT INTO User SET ?";
@@ -16,6 +17,7 @@ async function createUser(newUser) {
 }
 exports.createUser = createUser;
 
+// Fetches information about a User from the database using the provided ID.
 async function getUserById(userId) {
   try {
     const sql = "SELECT * FROM User WHERE userId = ?";
@@ -29,7 +31,8 @@ async function getUserById(userId) {
 }
 exports.getUserById = getUserById;
 
-// search for a list of the plans that a user has created
+// Fetches a list of Plans associated with a User from the database using the
+// provided ID.
 async function getUserPlans(userId) {
   try {
     const sql = "SELECT * FROM Plan WHERE studentId = ?";
@@ -42,3 +45,11 @@ async function getUserPlans(userId) {
   }
 }
 exports.getUserPlans = getUserPlans;
+
+// Authenticates a User with the provided credential. Used when logging in a
+// User.
+// Returns true if the provided credential is valid. Returns false otherwise.
+async function authenticateUser() {
+  return true;  // TODO: placeholder, for now
+}
+exports.authenticateUser = authenticateUser;
