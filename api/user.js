@@ -46,9 +46,7 @@ app.get("/login", (req, res) => {
   // TODO: Get the server to send the serviceValidate request with this ticket
   // back to CAS to get back a valid XML object specifying the logged in user's
   // `NetID`.
-  res.status(200).send({
-    ticket: req.query.ticket
-  });
+  res.status(200).send(req.query.ticket);
 });
 
 // Logs a User in.
