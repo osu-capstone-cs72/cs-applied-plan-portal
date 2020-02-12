@@ -11,6 +11,7 @@ const {
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
+const {generateAuthToken} = require("../utils/auth");
 
 const app = express();
 
@@ -97,7 +98,35 @@ app.get("/:userId/plans", async (req, res) => {
 
 // Logs a User in.
 app.post("/login", async (req, res) => {
+  // ensure the provided request body is valid
+  if (req.body.email && validator.isLength(req.body.email + "", {min: 1})) {
+    try {
+      const authenticated = await userModel.authenticateUser();
 
+      if (authenticated) {
+        const user = await userModel.getUserByEmail(req.body.email);
+        const token = generateAuthToken(user.userId, user.role);
+
+        console.log("200: User authenticated\n");
+        res.status(200).send({
+          token: token
+        });
+      } else {
+        console.error("401: Invalid credential\n");
+        res.status(401).send({
+          error: "Invalid credential"
+        });
+      }
+    } catch (err) {
+      console.error("500: Error authenticating User:", err);
+      res.status(500).send({
+        error: "Unable to authenticate User. Please try again later."
+      });
+    }
+  } else {
+    console.error("400: Invalid request body\n");
+    res.status(400).send({error: "Invalid request body"});
+  }
 });
 
 module.exports = app;
