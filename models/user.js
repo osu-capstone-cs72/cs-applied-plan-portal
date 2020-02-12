@@ -66,7 +66,6 @@ exports.getUserPlans = getUserPlans;
 async function authenticateUser(email) {
   try {
     const user = (await getUserByEmail(email))[0];
-    console.log(user);
     // for now, authenticate if the resulting `user` is a valid JS object
     // TODO: Change this accordingly once CAS is integrated into the app
     const authenticated = user === Object(user);

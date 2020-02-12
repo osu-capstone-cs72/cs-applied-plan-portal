@@ -15,6 +15,17 @@ const {generateAuthToken} = require("../utils/auth");
 
 const app = express();
 
+// Retrieves the CAS ticket once a User successfully logs in via ONID.
+app.get("/login", (req, res) => {
+  // show the ticket as a JSON object for now
+  // TODO: Get the server to send the serviceValidate request with this ticket
+  // back to CAS to get back a valid XML object specifying the logged in user's
+  // `NetID`.
+  res.status(200).send({
+    ticket: req.query.ticket
+  });
+});
+
 // Creates a new User in the system.
 app.post("/", async (req, res) => {
   // validate the request body against the schema and get error message, if any
@@ -101,7 +112,7 @@ app.post("/login", async (req, res) => {
   // ensure the provided request body is valid
   if (req.body.email && validator.isLength(req.body.email + "", {min: 1})) {
     try {
-      const authenticated = await userModel.authenticateUser();
+      const authenticated = await userModel.authenticateUser(req.body.email);
 
       if (authenticated) {
         const user = await userModel.getUserByEmail(req.body.email);
