@@ -15,17 +15,6 @@ const {generateAuthToken} = require("../utils/auth");
 
 const app = express();
 
-// Retrieves the CAS ticket once a User successfully logs in via ONID.
-app.get("/login", (req, res) => {
-  // show the ticket as a JSON object for now
-  // TODO: Get the server to send the serviceValidate request with this ticket
-  // back to CAS to get back a valid XML object specifying the logged in user's
-  // `NetID`.
-  res.status(200).send({
-    ticket: req.query.ticket
-  });
-});
-
 // Creates a new User in the system.
 app.post("/", async (req, res) => {
   // validate the request body against the schema and get error message, if any
@@ -51,60 +40,15 @@ app.post("/", async (req, res) => {
   }
 });
 
-// Fetches information about a specific User.
-app.get("/:userId", async (req, res) => {
-  // ensure the provided request parameter is a valid integer
-  if (validator.isInt(req.params.userId + "")) {
-    try {
-      // sanitize the request parameter and pass it to the model
-      const userId = validator.toInt(req.params.userId);
-      const results = await userModel.getUserById(userId);
-
-      if (Array.isArray(results) && results.length > 0) {
-        console.log("200: User found\n");
-        res.status(200).send(results[0]);
-      } else {
-        console.error("404: No User found\n");
-        res.status(404).send({error: "No User found"});
-      }
-    } catch (err) {
-      console.error("500: Error fetching User:", err);
-      res.status(500).send({
-        error: "Unable to fetch User. Please try again later."
-      });
-    }
-  } else {
-    console.error("400: Invalid User Id\n");
-    res.status(400).send({error: "Invalid User Id"});
-  }
-});
-
-// Fetches a list of plans related to a specific User.
-app.get("/:userId/plans", async (req, res) => {
-  // ensure the provided request parameter is a valid integer
-  if (validator.isInt(req.params.userId + "")) {
-    try {
-      // sanitize the request parameter and pass it to the model
-      const userId = validator.toInt(req.params.userId);
-      const results = await userModel.getUserPlans(userId);
-
-      if (Array.isArray(results) && results.length > 0) {
-        console.log("200: Plans found\n");
-        res.status(200).send(results);
-      } else {
-        console.error("404: No plans found\n");
-        res.status(404).send({error: "No plans found"});
-      }
-    } catch (err) {
-      console.error("500: Error fetching Plans:", err);
-      res.status(500).send({
-        error: "Unable to fetch Plans. Please try again later."
-      });
-    }
-  } else {
-    console.error("400: Invalid User ID\n");
-    res.status(400).send({error: "Invalid User ID"});
-  }
+// Retrieves the CAS ticket once a User successfully logs in via ONID.
+app.get("/login", (req, res) => {
+  // show the ticket as a JSON object for now
+  // TODO: Get the server to send the serviceValidate request with this ticket
+  // back to CAS to get back a valid XML object specifying the logged in user's
+  // `NetID`.
+  res.status(200).send({
+    ticket: req.query.ticket
+  });
 });
 
 // Logs a User in.
@@ -137,6 +81,62 @@ app.post("/login", async (req, res) => {
   } else {
     console.error("400: Invalid request body\n");
     res.status(400).send({error: "Invalid request body"});
+  }
+});
+
+// Fetches a list of plans related to a specific User.
+app.get("/:userId/plans", async (req, res) => {
+  // ensure the provided request parameter is a valid integer
+  if (validator.isInt(req.params.userId + "")) {
+    try {
+      // sanitize the request parameter and pass it to the model
+      const userId = validator.toInt(req.params.userId);
+      const results = await userModel.getUserPlans(userId);
+
+      if (Array.isArray(results) && results.length > 0) {
+        console.log("200: Plans found\n");
+        res.status(200).send(results);
+      } else {
+        console.error("404: No plans found\n");
+        res.status(404).send({error: "No plans found"});
+      }
+    } catch (err) {
+      console.error("500: Error fetching Plans:", err);
+      res.status(500).send({
+        error: "Unable to fetch Plans. Please try again later."
+      });
+    }
+  } else {
+    console.error("400: Invalid User ID\n");
+    res.status(400).send({error: "Invalid User ID"});
+  }
+});
+
+// Fetches information about a specific User.
+app.get("/:userId", async (req, res) => {
+  // ensure the provided request parameter is a valid integer
+  if (validator.isInt(req.params.userId + "")) {
+    try {
+      // sanitize the request parameter and pass it to the model
+      const userId = validator.toInt(req.params.userId);
+      const results = await userModel.getUserById(userId);
+
+      if (Array.isArray(results) && results.length > 0) {
+        console.log("200: User found\n");
+        res.status(200).send(results[0]);
+      } else {
+        console.error("404: No User found\n");
+        res.status(404).send({error: "No User found"});
+      }
+    } catch (err) {
+      console.error("500: Error fetching User:", err);
+      res.status(500).send({
+        error: "Unable to fetch User. Please try again later."
+      });
+    }
+  } else {
+    console.error("400: Invalid User Id\n");
+    res.status(400).send({error: "Invalid User Id"});
   }
 });
 
