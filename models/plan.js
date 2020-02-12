@@ -82,7 +82,7 @@ exports.updatePlan = updatePlan;
 async function getPlansStatus(status, created, ascend) {
   try {
 
-    let sql = "SELECT * FROM Plan ";
+    let sql = "SELECT * FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
     // a status code of 5 means "any" status
     if (status !== "5") {
@@ -139,23 +139,6 @@ async function getPlan(planId) {
 
 }
 exports.getPlan = getPlan;
-
-// get all plans for a specific user, including selected courses, and reviews
-async function getPlans(studentId) {
-
-  try {
-
-    const sql = "SELECT * FROM Plan WHERE studentId = ?;";
-    const result = await pool.query(sql, studentId);
-    return result[0];
-
-  } catch (err) {
-    console.log("Error searching for plan");
-    throw Error(err);
-  }
-
-}
-exports.getPlans = getPlans;
 
 // get all comments from a plan
 async function getPlanComments(planId) {

@@ -12,7 +12,6 @@ const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlansStatus = require("../models/plan").getPlansStatus;
-const getPlans = require("../models/plan").getPlans;
 const getPlanComments = require("../models/plan").getPlanComments;
 const getPlanReviews = require("../models/plan").getPlanReviews;
 const deletePlan = require("../models/plan").deletePlan;

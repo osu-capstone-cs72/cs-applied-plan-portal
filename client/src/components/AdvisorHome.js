@@ -138,17 +138,23 @@ function AdvisorHome(props) {
       <table className="advisor-plans-table">
         <tbody>
           <tr>
-            <th className="student-plans-data">Name</th>
+            <th className="student-plans-data">User Name</th>
+            <th className="student-plans-data">User ID</th>
+            <th className="student-plans-data">Plan Name</th>
             <th className="student-plans-data">Status</th>
             <th className="student-plans-data">Created</th>
             <th className="student-plans-data">Updated</th>
           </tr>
           {plans ? plans.map(plan =>
             <tr key={plan.planId} onClick={() => goToPlan(plan)}>
-              <td className="student-plans-data" key={plan.planId + "a"}>{plan.planName}</td>
-              <td className="student-plans-data" key={plan.planId + "b"}>{renderStatus(plan.status)}</td>
-              <td className="student-plans-data" key={plan.planId + "c"}>{plan.created}</td>
-              <td className="student-plans-data" key={plan.planId + "d"}>{plan.lastUpdated}</td>
+              <td className="student-plans-data" key={plan.planId + "a"}>
+                {plan.firstName + " " + plan.lastName}
+              </td>
+              <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
+              <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
+              <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
+              <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
+              <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
 
             </tr>) : null}
         </tbody>
