@@ -144,7 +144,7 @@ exports.getPlan = getPlan;
 async function getPlanComments(planId) {
 
   try {
-    const sql = "SELECT * FROM Comment NATURAL JOIN User WHERE planId = ? ORDER BY time ASC;";
+    const sql = "SELECT * FROM Comment NATURAL JOIN User WHERE planId = ? ORDER BY time DESC;";
     const results = await pool.query(sql, planId);
     return results[0];
 
