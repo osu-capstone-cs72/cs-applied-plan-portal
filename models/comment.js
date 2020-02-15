@@ -20,12 +20,12 @@ async function getComment(commentId) {
 }
 exports.getComment = getComment;
 
-// create a new comment by its ID
+// create a new comment
 async function createComment(planId, userId, text) {
 
   try {
 
-    const sql = "INSERT INTO Comment (planId, userId, text) VALUES (?, ?, ?);;";
+    const sql = "INSERT INTO Comment (planId, userId, text) VALUES (?, ?, ?);";
     const results = await pool.query(sql, [planId, userId, text]);
     return {insertId: results[0].insertId};
 
