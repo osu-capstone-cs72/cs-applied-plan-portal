@@ -199,9 +199,8 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.courses.map(c => <PlanCourse key={c.courseId} id={c.courseId}
-              courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
-              remove={this.removeCourse}/>)}
+            {this.state.courses.map(c => <PlanCourse key={c.courseId} courseCode={c.courseCode}
+              courseName={c.courseName} credits={c.credits} remove={this.removeCourse}/>)}
           </tbody>
         </table>
         <button className="submit-button" onClick={this.submitPlan}>Submit</button>
