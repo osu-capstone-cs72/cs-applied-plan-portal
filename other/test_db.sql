@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 10, 2020 at 08:38 PM
+-- Generation Time: Feb 14, 2020 at 10:44 PM
 -- Server version: 8.0.19
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
@@ -45,13 +45,7 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
 (2, 308, 9, 'This plan looks good!'),
 (6, 310, 5, 'I sure do love my plan.'),
 (7, 310, 2, 'I don\'t like this plan. Lets get rid of it.'),
-(9, 310, 6, 'Sure, plan rejected.'),
-(33, 308, 1, 'Test Comment.'),
-(34, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(35, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(36, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(37, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message............................................................................................................................................................................'),
-(38, 308, 1, 'testtttttttttttttttttttttttttttttttttttttttttttttttt');
+(9, 310, 6, 'Sure, plan rejected.');
 
 -- --------------------------------------------------------
 
@@ -135,11 +129,13 @@ CREATE TABLE `Plan` (
 --
 
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALUES
-(308, 3, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
+(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
 (310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42'),
 (358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42'),
-(359, 2, 'Luke\'s ECE plan', 1, '2020-01-17 11:35:42'),
-(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42');
+(359, 2, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42'),
+(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42'),
+(361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22'),
+(362, 2, 'some plan', 1, '2020-02-12 00:36:38');
 
 -- --------------------------------------------------------
 
@@ -148,6 +144,7 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALU
 --
 
 CREATE TABLE `PlanReview` (
+  `reviewId` int NOT NULL,
   `planId` int NOT NULL,
   `advisorId` int NOT NULL,
   `newStatus` int NOT NULL,
@@ -158,10 +155,14 @@ CREATE TABLE `PlanReview` (
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`) VALUES
-(308, 9, 3),
-(310, 4, 3),
-(310, 6, 0);
+INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`) VALUES
+(1, 308, 6, 4),
+(2, 308, 9, 3),
+(3, 310, 4, 3),
+(4, 310, 6, 0),
+(5, 361, 9, 1),
+(6, 361, 11, 1),
+(7, 361, 12, 2);
 
 -- --------------------------------------------------------
 
@@ -209,28 +210,52 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 (308, 25),
 (359, 26),
 (360, 26),
+(361, 26),
+(362, 26),
 (359, 27),
 (360, 27),
+(361, 27),
+(362, 27),
 (359, 28),
 (360, 28),
+(361, 28),
+(362, 28),
 (359, 29),
 (360, 29),
+(361, 29),
+(362, 29),
 (359, 30),
 (360, 30),
+(361, 30),
+(362, 30),
 (359, 31),
 (360, 31),
+(361, 31),
+(362, 31),
 (359, 32),
 (360, 32),
-(359, 33),
+(361, 32),
+(362, 32),
 (360, 33),
+(361, 33),
+(362, 33),
 (359, 34),
 (360, 34),
+(361, 34),
+(362, 34),
 (359, 35),
 (360, 35),
+(361, 35),
+(362, 35),
 (359, 36),
 (360, 36),
+(361, 36),
+(362, 36),
 (359, 37),
-(360, 37);
+(360, 37),
+(361, 37),
+(362, 37),
+(359, 38);
 
 -- --------------------------------------------------------
 
@@ -297,8 +322,9 @@ ALTER TABLE `Plan`
 -- Indexes for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD PRIMARY KEY (`planId`,`advisorId`),
-  ADD KEY `fk_advisorId` (`advisorId`);
+  ADD PRIMARY KEY (`reviewId`),
+  ADD KEY `fk_advisorId` (`advisorId`),
+  ADD KEY `fk_planId` (`planId`);
 
 --
 -- Indexes for table `SelectedCourse`
@@ -322,7 +348,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -334,7 +360,13 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=361;
+  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=364;
+
+--
+-- AUTO_INCREMENT for table `PlanReview`
+--
+ALTER TABLE `PlanReview`
+  MODIFY `reviewId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `User`
@@ -363,9 +395,8 @@ ALTER TABLE `Plan`
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`),
-  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`),
-  ADD CONSTRAINT `fk_planId_Review` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `SelectedCourse`
