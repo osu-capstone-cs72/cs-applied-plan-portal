@@ -7,7 +7,8 @@ import PropTypes from "prop-types";
 export default class CourseContainer extends React.Component {
   static get propTypes() {
     return {
-      updateCourses: PropTypes.func
+      updateCourses: PropTypes.func,
+      addCourses: PropTypes.any
     };
   }
 
@@ -16,7 +17,7 @@ export default class CourseContainer extends React.Component {
 
     this.state = {
       courses: [],
-      addCourses: [],
+      addCourses: this.props.addCourses,
       filter: ""
     };
 
@@ -25,6 +26,13 @@ export default class CourseContainer extends React.Component {
     this.addCourse = this.addCourse.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    alert("course container - component will receive props");
+    this.setState({
+      addCourses: nextProps.addCourses
+    });
   }
 
   async filterSearch() {
@@ -116,7 +124,7 @@ export default class CourseContainer extends React.Component {
     let newCourse = true;
     for (let i = 0; i < this.state.addCourses.length; i++) {
       // check for duplicate courses
-      if (course.code === this.state.addCourses[i].code) {
+      if (course.courseCode === this.state.addCourses[i].courseCode) {
         this.setState({
           warning: "This course is already in your plan."
         });
@@ -176,8 +184,8 @@ export default class CourseContainer extends React.Component {
           {this.state.warning ? <p>{this.state.warning}</p> : null}
         </div>
         <div className="explore-courses">
-          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseCode} code={c.courseCode} title={c.courseName} credits={c.credits}
-            description={c.description} prereqs={c.prerequisites} restriction={c.restriction} addCourse={this.addCourse}/>) :
+          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseCode} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+            description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} addCourse={this.addCourse}/>) :
             <div>Search for courses...</div>}
         </div>
       </div>
