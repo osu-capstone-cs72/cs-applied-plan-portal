@@ -6,7 +6,8 @@ export default class EditPlan extends React.Component {
   static get propTypes() {
     return {
       remove: PropTypes.func,
-      courses: PropTypes.any
+      courses: PropTypes.array,
+      edit: PropTypes.bool
     };
   }
 
@@ -14,13 +15,22 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.state = {
-      warning: null
+      warning: null,
+      courses: this.props.courses
     };
 
     this.submitPlan = this.submitPlan.bind(this);
+    this.editPlan = this.editPlan.bind(this);
     this.loadCredits = this.loadCredits.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
     this.validatePlan = this.validatePlan.bind(this);
+    this.removeCourse = this.removeCourse.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      courses: nextProps.courses
+    });
   }
 
   submitPlan() {
@@ -34,39 +44,81 @@ export default class EditPlan extends React.Component {
         courses.push(this.props.courses[i].code);
       }
 
-      // set up data for new plan to send to backend
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const postURL = `http://${server}/plan`;
-      const postObj = {
-        userId: 1,
-        planName: planname,
-        courses: courses
-      };
+      // check to see if the user if we should perform a POST request or a PATCH request
+      if (this.props.edit) {
+        this.editPlan(courses, planname);
+      } else {
 
-      try {
-        fetch(postURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(postObj),
-        }).then((data) => {
-          data.text().then(res => {
-            if (data.status === 201) {
+        // set up data for new plan to send to backend
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        const postURL = `http://${server}/plan`;
+        const postObj = {
+          userId: 1,
+          planName: planname,
+          courses: courses
+        };
+
+        try {
+          fetch(postURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(postObj),
+          }).then((data) => {
+            data.text().then(res => {
+              if (data.status === 201) {
               // redirect to the view plan of newly submitted plan,else give the user a warning with backend error message
-              window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
-            } else {
-              this.setState({
-                warning: JSON.parse(res).error
-              });
-            }
-          });
-        })
-          .catch((error) => alert("Error: " + error));
-      } catch (err) {
-      // this is a server error
-        alert("An internal server error occurred. Please try again later.");
+                window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
+              } else {
+                this.setState({
+                  warning: JSON.parse(res).error
+                });
+              }
+            });
+          })
+            .catch((error) => alert("Error: " + error));
+        } catch (err) {
+          // this is a server error
+          alert("An internal server error occurred. Please try again later.");
+        }
       }
+    }
+  }
+
+  editPlan(courses, planname) {
+    // set up data for new plan to send to backend
+    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+    const patchURL = `http://${server}/plan`;
+    const patchObj = {
+      userId: 1,
+      planName: planname,
+      courses: courses
+    };
+
+    try {
+      fetch(patchURL, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(patchObj),
+      }).then((data) => {
+        data.text().then(res => {
+          if (data.status === 201) {
+          // redirect to the view plan of newly submitted plan,else give the user a warning with backend error message
+            window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
+          } else {
+            this.setState({
+              warning: JSON.parse(res).error
+            });
+          }
+        });
+      })
+        .catch((error) => alert("Error: " + error));
+    } catch (err) {
+      // this is a server error
+      alert("An internal server error occurred. Please try again later.");
     }
   }
 
@@ -109,6 +161,18 @@ export default class EditPlan extends React.Component {
     });
   }
 
+  removeCourse(course) {
+    const newCourses = this.state.courses;
+    for (let i = 0; i < newCourses.length; i++) {
+      if (newCourses[i].courseCode === course.courseCode) {
+        newCourses.splice(i, 1);
+      }
+    }
+    this.setState({
+      courses: newCourses
+    });
+  }
+
   render() {
     return (
       <div className="edit-plan">
@@ -135,8 +199,8 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.courses.map(c => <PlanCourse key={c.code} code={c.code} title={c.title}
-              credits={c.credits} remove={this.props.remove}/>)}
+            {this.state.courses.map(c => <PlanCourse key={c.courseCode} courseCode={c.courseCode} courseName={c.courseName}
+              credits={c.credits} remove={this.removeCourse}/>)}
           </tbody>
         </table>
         <button className="submit-button" onClick={this.submitPlan}>Submit</button>

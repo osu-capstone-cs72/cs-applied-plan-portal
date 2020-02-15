@@ -35,7 +35,7 @@ function App() {
           <ViewPlan />
         </Route>
         <Route path="/editPlan/:planId">
-          <EditPlan />
+          <StudentCreatePlan />
         </Route>
         <Route path="/500">
           <PageInternalError />
