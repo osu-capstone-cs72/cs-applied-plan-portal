@@ -29,7 +29,7 @@ export default class CourseContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    alert("course container - component will receive props");
+    // alert("course container - component will receive props");
     this.setState({
       addCourses: nextProps.addCourses
     });
