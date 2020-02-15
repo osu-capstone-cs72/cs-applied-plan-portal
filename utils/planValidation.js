@@ -314,7 +314,6 @@ async function creditConstraint(courses) {
 // checks to see if an error is a violation or an internal error
 function internalError (err, violation) {
   if (err !== violation) {
-    console.log("Internal server error while checking constraints\n", err);
     return true;
   } else {
     return false;

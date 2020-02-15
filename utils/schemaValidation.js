@@ -158,6 +158,41 @@ const commentSchema = {
 };
 exports.commentSchema = commentSchema;
 
+// Schema of a reivew made on a plan.
+const reviewSchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid plan id:\n" +
+        "Plan ID must be an integer.";
+    }
+  },
+  userId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid user id:\n" +
+        "User ID must be an integer.";
+    }
+  },
+  status: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid status:\n" +
+        "Status must be an integer.";
+    }
+  }
+};
+exports.reviewSchema = reviewSchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.
