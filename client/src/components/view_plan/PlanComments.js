@@ -21,7 +21,8 @@ function PlanComments(props) {
     return (
       <div className="plan-comments" css={style}>
         <h2>Comments</h2>
-        <CreateComment onUpdate={() => { handleAddComment(); }}/>
+        <CreateComment currentUser={props.currentUser}
+          onUpdate={() => { handleAddComment(); }}/>
         {props.comments.map((comment) => (
           <Comment key={comment.commentId} commentId={comment.commentId}
             userId={comment.userId} time={comment.time} text={comment.text}
@@ -33,7 +34,8 @@ function PlanComments(props) {
     return (
       <div className="plan-comments" css={style}>
         <h2>Comments</h2>
-        <CreateComment onUpdate={() => { handleAddComment(); }}/>
+        <CreateComment currentUser={props.currentUser}
+          onUpdate={() => { handleAddComment(); }}/>
       </div>
     );
   }
@@ -43,5 +45,6 @@ export default PlanComments;
 
 PlanComments.propTypes = {
   onUpdate: PropTypes.any,
-  comments: PropTypes.array
+  comments: PropTypes.array,
+  currentUser: PropTypes.object
 };

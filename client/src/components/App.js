@@ -2,7 +2,6 @@ import React from "react";
 import {Global, css} from "@emotion/core";
 import {Route, Switch} from "react-router-dom";
 import StudentCreatePlan from "./create_plan/StudentCreatePlan";
-import EditPlan from "./create_plan/EditPlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";

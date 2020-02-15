@@ -7,7 +7,6 @@ import {useParams} from "react-router-dom";
 function CreateComment(props) {
 
   const [newComment, setNewComment] = useState(true);
-  const [userId] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const {planId} = useParams();
 
@@ -58,7 +57,7 @@ function CreateComment(props) {
 
       const postObj = {
         planId: planId,
-        userId: userId,
+        userId: props.currentUser.userId,
         text: text
       };
 

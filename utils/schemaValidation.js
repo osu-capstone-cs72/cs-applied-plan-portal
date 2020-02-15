@@ -59,7 +59,7 @@ const patchPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid plan ID:\n" +
-        "The plan ID associated with this request must be a number.";
+        "The plan ID associated with this request must be a number greater than zero.";
     }
   },
   planName: {
@@ -131,7 +131,7 @@ const commentSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid plan id:\n" +
-        "Plan ID must be an integer.";
+        "Plan ID must be a number greater than zero.";
     }
   },
   userId: {
@@ -141,7 +141,7 @@ const commentSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid user id:\n" +
-        "User ID must be an integer.";
+        "User ID must be a number greater than zero.";
     }
   },
   text: {
@@ -177,17 +177,17 @@ const reviewSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid user id:\n" +
-        "User ID must be an integer.";
+        "User ID must be a number greater than zero.";
     }
   },
   status: {
     required: true,
     type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
+    minValue: 0,
+    maxValue: 4,
     getErrorMessage: function() {
       return "Invalid status:\n" +
-        "Status must be an integer.";
+        "Status must be a number between 0 and 4";
     }
   }
 };
