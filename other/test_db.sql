@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Feb 16, 2020 at 08:47 PM
--- Server version: 8.0.19
--- PHP Version: 7.2.24-0ubuntu0.18.04.2
+-- Host: classmysql.engr.oregonstate.edu:3306
+-- Generation Time: Feb 16, 2020 at 02:54 PM
+-- Server version: 10.4.11-MariaDB-log
+-- PHP Version: 7.0.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `testdatabase_osu`
+-- Database: `capstone_2019_thomasza`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Comment` (
-  `commentId` int NOT NULL,
-  `planId` int NOT NULL,
-  `userId` int NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `commentId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -55,11 +55,11 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 --
 
 CREATE TABLE `Course` (
-  `courseId` int NOT NULL,
-  `credits` int NOT NULL,
+  `courseId` int(11) NOT NULL,
+  `credits` int(11) NOT NULL,
   `courseName` varchar(100) NOT NULL,
   `courseCode` varchar(8) NOT NULL,
-  `restriction` int NOT NULL,
+  `restriction` int(11) NOT NULL,
   `description` varchar(1000) NOT NULL,
   `prerequisites` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -117,27 +117,27 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 --
 
 CREATE TABLE `Plan` (
-  `planId` int NOT NULL,
-  `status` int NOT NULL,
+  `planId` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` int NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `studentId` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Plan`
 --
 
-INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALUES
-(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
-(310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42'),
-(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42'),
-(359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42'),
-(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42'),
-(361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22'),
-(362, 2, 'some plan', 1, '2020-02-12 00:36:38'),
-(364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30');
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
+(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42', '2020-02-16 22:50:14'),
+(310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42', '2020-02-16 19:54:53'),
+(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42', '2020-02-16 19:54:53'),
+(359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42', '2020-02-16 19:54:53'),
+(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42', '2020-02-16 19:54:53'),
+(361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22', '2020-02-16 19:54:53'),
+(362, 2, 'some plan', 1, '2020-02-12 00:36:38', '2020-02-16 19:54:53'),
+(364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30', '2020-02-16 19:54:53');
 
 -- --------------------------------------------------------
 
@@ -146,18 +146,18 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALU
 --
 
 CREATE TABLE `PlanReview` (
-  `reviewId` int NOT NULL,
-  `planId` int NOT NULL,
-  `advisorId` int NOT NULL,
-  `newStatus` int NOT NULL,
-  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `reviewId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `advisorId` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`, `timeReviewed`) VALUES
+INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `status`, `time`) VALUES
 (2, 308, 9, 3, '2020-02-14 21:12:07'),
 (3, 310, 4, 3, '2020-02-14 21:12:07'),
 (4, 310, 6, 0, '2020-02-14 21:12:08'),
@@ -168,9 +168,7 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`, `timeR
 (30, 359, 6, 1, '2020-02-16 00:25:09'),
 (31, 359, 1, 2, '2020-02-16 00:25:26'),
 (34, 359, 4, 3, '2020-02-16 04:33:41'),
-(35, 359, 4, 2, '2020-02-16 04:46:00'),
-(42, 364, 4, 3, '2020-02-16 18:58:48'),
-(43, 359, 4, 3, '2020-02-16 19:03:44');
+(42, 364, 4, 3, '2020-02-16 18:58:48');
 
 -- --------------------------------------------------------
 
@@ -179,8 +177,8 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`, `timeR
 --
 
 CREATE TABLE `SelectedCourse` (
-  `planId` int NOT NULL,
-  `courseId` int NOT NULL
+  `planId` int(11) NOT NULL,
+  `courseId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -188,90 +186,90 @@ CREATE TABLE `SelectedCourse` (
 --
 
 INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
-(310, 5),
-(358, 5),
-(359, 5),
-(364, 5),
-(310, 7),
-(358, 7),
-(359, 7),
-(364, 7),
-(310, 9),
-(358, 9),
-(359, 9),
-(364, 9),
-(310, 10),
-(358, 10),
-(359, 10),
-(364, 10),
-(310, 11),
-(358, 11),
-(359, 11),
-(364, 11),
 (308, 14),
-(358, 14),
-(364, 14),
 (308, 15),
-(358, 15),
-(364, 15),
 (308, 16),
-(358, 16),
-(364, 16),
 (308, 17),
-(358, 17),
-(359, 17),
-(364, 17),
 (308, 18),
-(310, 18),
-(358, 18),
-(359, 18),
 (308, 19),
+(308, 21),
+(308, 23),
+(308, 25),
+(310, 5),
+(310, 7),
+(310, 9),
+(310, 10),
+(310, 11),
+(310, 18),
 (310, 19),
 (310, 20),
-(308, 21),
 (310, 22),
-(308, 23),
+(358, 5),
+(358, 7),
+(358, 9),
+(358, 10),
+(358, 11),
+(358, 14),
+(358, 15),
+(358, 16),
+(358, 17),
+(358, 18),
+(359, 5),
+(359, 7),
+(359, 9),
+(359, 10),
+(359, 11),
+(359, 17),
+(359, 18),
 (359, 23),
 (359, 24),
-(308, 25),
 (359, 25),
 (360, 26),
-(361, 26),
-(362, 26),
-(364, 26),
 (360, 27),
-(361, 27),
-(362, 27),
 (360, 28),
-(361, 28),
-(362, 28),
 (360, 29),
-(361, 29),
-(362, 29),
 (360, 30),
-(361, 30),
-(362, 30),
 (360, 31),
-(361, 31),
-(362, 31),
 (360, 32),
-(361, 32),
-(362, 32),
 (360, 33),
-(361, 33),
-(362, 33),
 (360, 34),
-(361, 34),
-(362, 34),
 (360, 35),
-(361, 35),
-(362, 35),
 (360, 36),
-(361, 36),
-(362, 36),
 (360, 37),
+(361, 26),
+(361, 27),
+(361, 28),
+(361, 29),
+(361, 30),
+(361, 31),
+(361, 32),
+(361, 33),
+(361, 34),
+(361, 35),
+(361, 36),
 (361, 37),
-(362, 37);
+(362, 26),
+(362, 27),
+(362, 28),
+(362, 29),
+(362, 30),
+(362, 31),
+(362, 32),
+(362, 33),
+(362, 34),
+(362, 35),
+(362, 36),
+(362, 37),
+(364, 5),
+(364, 7),
+(364, 9),
+(364, 10),
+(364, 11),
+(364, 14),
+(364, 15),
+(364, 16),
+(364, 17),
+(364, 26);
 
 -- --------------------------------------------------------
 
@@ -280,11 +278,11 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` int NOT NULL,
+  `userId` int(11) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `role` int NOT NULL
+  `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -364,31 +362,31 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `Course`
 --
 ALTER TABLE `Course`
-  MODIFY `courseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `userId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
@@ -411,8 +409,8 @@ ALTER TABLE `Plan`
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE RESTRICT;
+  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`),
+  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `SelectedCourse`
