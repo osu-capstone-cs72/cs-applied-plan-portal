@@ -74,7 +74,15 @@ function CreateComment(props) {
         obj = await response.json();
         setErrorMessage("");
         setNewComment(!newComment);
-        props.onUpdate(); // lift state up
+        props.onNewComment({
+          firstName: props.currentUser.userFirstName,
+          lastName: props.currentUser.userLastName,
+          commentId: obj.insertId,
+          time: obj.time,
+          planId: planId,
+          userId: props.currentUser.userId,
+          text: text
+        }); // lift state up
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();

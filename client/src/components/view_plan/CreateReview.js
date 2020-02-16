@@ -71,7 +71,15 @@ function CreateReview(props) {
         // show the new review
         obj = await response.json();
         setErrorMessage("");
-        props.onNewStatus(statusValue); // lift state up
+        props.onNewStatus({
+          firstName: props.currentUser.userFirstName,
+          lastName: props.currentUser.userLastName,
+          reviewId: obj.insertId,
+          time: obj.time,
+          planId: planId,
+          userId: props.currentUser.userId,
+          status: parseInt(statusValue)
+        }); // lift state up
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();

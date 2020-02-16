@@ -60,7 +60,7 @@ async function updatePlan(planId, planName, courses) {
       // If the status is not "awaiting review" we will need to update it
       if (currentStatus !== 2) {
         sql = "BEGIN;" +
-        "INSERT INTO PlanReview (planId, advisorId, newStatus) VALUES (?, ?, 2); " +
+        "INSERT INTO PlanReview (planId, advisorId, status) VALUES (?, ?, 2); " +
         "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?; " +
         "COMMIT;";
         results = await pool.query(sql, [planId, ownerId, planId]);
@@ -177,7 +177,7 @@ async function getPlanReviews(planId) {
   try {
 
     const sql = "SELECT * FROM PlanReview INNER JOIN User ON " +
-      "PlanReview.advisorId = User.userId WHERE planId = ? ORDER BY timeReviewed ASC;";
+      "PlanReview.advisorId=User.userId WHERE planId=? ORDER BY time ASC;";
     const results = await pool.query(sql, planId);
     return results[0];
 

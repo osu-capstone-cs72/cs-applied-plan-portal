@@ -36,9 +36,8 @@ async function createComment(planId, userId, text) {
       insertId: commentId,
       time: results[0][0].time
     };
-    console.log(results);
-    return obj;
 
+    return obj;
 
   } catch (err) {
     console.log("Error adding comment");

@@ -6,7 +6,7 @@ import NavBar from "../Navbar";
 import PlanTable from "./PlanTable";
 import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
-import PlanComments from "./PlanComments";
+import ActivityFeed from "./ActivityFeed";
 import PlanReviews from "./PlanReviews";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -14,11 +14,12 @@ import BounceLoader  from "react-spinners/BounceLoader";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(1); // Development: Selecting the current user
+  const [currentUserDev] = useState(4); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       userId: 0,
-      userRole: 0
+      userRole: 0,
+      userName: ""
     }
   );
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,7 @@ function ViewPlan(props) {
     }], []]
   );
   const {planId} = useParams();
+  console.log(reviews);
 
   const style = css`
     .loader-container {
@@ -98,7 +100,9 @@ function ViewPlan(props) {
           setCurrentUser(
             {
               userId: obj.userId,
-              userRole: obj.role
+              userRole: obj.role,
+              userFirstName: obj.firstName,
+              userLastName: obj.lastName
             }
           );
         }
@@ -140,52 +144,13 @@ function ViewPlan(props) {
 
   }, [planId, props.history, currentUserDev]);
 
-  async function handleAddComment(planId) {
-
-    try {
-
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}/comment`;
-      let obj = [];
-
-      // refersh the list of comments
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setComments(obj);
-      }
-
-    } catch (err) {
-      // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
-    }
-
+  async function handleAddComment(e) {
+    setComments(prev => [e, ...prev]);
   }
 
-  async function handleChangeStatus(planId, e) {
-
-    try {
-
-      setStatus(parseInt(e));
-
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}/review`;
-      let obj = [];
-
-      // refersh the list of reviews
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setReviews(obj);
-      }
-
-    } catch (err) {
-      // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
-    }
-
+  async function handleChangeStatus(e) {
+    setReviews(prev => [...prev, e]);
+    setStatus(parseInt(e.status));
   }
 
   return (
@@ -202,14 +167,14 @@ function ViewPlan(props) {
       <PlanTable courses={courses} />
       {currentUser.userRole ? (
         <CreateReview currentUser={currentUser}
-          onNewStatus={(e) => { handleChangeStatus(planId, e); }} />
+          onNewStatus={e => handleChangeStatus(e)} />
       ) : (
         null
       )}
       <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}
         studentName={studentName} loading={loading} />
-      <PlanComments comments={comments} currentUser={currentUser}
-        onUpdate={() => { handleAddComment(planId); }} />
+      <ActivityFeed comments={comments} currentUser={currentUser}
+        onNewComment={e => handleAddComment(e)} />
     </div>
   );
 }

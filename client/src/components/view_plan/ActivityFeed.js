@@ -5,7 +5,7 @@ import CreateComment from "./CreateComment";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
-function PlanComments(props) {
+function ActivityFeed(props) {
 
   const style = css`
     margin: 50px auto;
@@ -13,16 +13,12 @@ function PlanComments(props) {
     width: 100%;
   `;
 
-  function handleAddComment () {
-    props.onUpdate();
-  }
-
   if (props.comments.length > 0) {
     return (
       <div className="plan-comments" css={style}>
-        <h2>Comments</h2>
+        <h2>Activity Feed</h2>
         <CreateComment currentUser={props.currentUser}
-          onUpdate={() => { handleAddComment(); }}/>
+          onNewComment={e => props.onNewComment(e)}/>
         {props.comments.map((comment) => (
           <Comment key={comment.commentId} commentId={comment.commentId}
             userId={comment.userId} time={comment.time} text={comment.text}
@@ -33,17 +29,17 @@ function PlanComments(props) {
   } else {
     return (
       <div className="plan-comments" css={style}>
-        <h2>Comments</h2>
+        <h2>Activity Feed</h2>
         <CreateComment currentUser={props.currentUser}
-          onUpdate={() => { handleAddComment(); }}/>
+          onNewComment={e => props.onNewComment(e)}/>
       </div>
     );
   }
 
 }
-export default PlanComments;
+export default ActivityFeed;
 
-PlanComments.propTypes = {
+ActivityFeed.propTypes = {
   onUpdate: PropTypes.any,
   comments: PropTypes.array,
   currentUser: PropTypes.object
