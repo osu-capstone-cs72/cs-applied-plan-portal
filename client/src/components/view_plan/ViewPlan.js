@@ -14,7 +14,7 @@ import BounceLoader  from "react-spinners/BounceLoader";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(4); // Development: Selecting the current user
+  const [currentUserDev] = useState(1); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       userId: 0,

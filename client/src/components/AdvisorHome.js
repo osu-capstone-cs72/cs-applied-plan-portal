@@ -27,6 +27,11 @@ function AdvisorHome(props) {
         z-index: 99;
       }
 
+    #plan-data-container {
+      margin: 0 auto;
+      width: 50%;
+    }
+
     #plan-selection-container {
       position: relative;
       top: 75px;
@@ -113,52 +118,54 @@ function AdvisorHome(props) {
         />
       </div>
       <NavBar showSearch={true} searchContent={"Search for plans"}/>
-      <div id="plan-selection-container">
-        <select id="select-status" className="advisor-plan-select">
-          <option value="5">Any</option>
-          <option value="2">Awaiting Review</option>
-          <option value="3">Awaiting final review</option>
-          <option value="1">Awaiting student changes</option>
-          <option value="4">Accepted</option>
-          <option value="0">Rejected</option>
-        </select>
-        <select id="select-time" className="advisor-plan-select">
-          <option value="1">Time Created</option>
-          <option value="0">Time Updated</option>
-        </select>
-        <select id="select-order" className="advisor-plan-select">
-          <option value="1">Ascending</option>
-          <option value="0">Decending</option>
-        </select>
-        <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
-          Search
-        </button>
-      </div>
-      <div className="home-error-message-container">{errorMessage}</div>
-      <table className="advisor-plans-table">
-        <tbody>
-          <tr>
-            <th className="student-plans-data">User Name</th>
-            <th className="student-plans-data">User ID</th>
-            <th className="student-plans-data">Plan Name</th>
-            <th className="student-plans-data">Status</th>
-            <th className="student-plans-data">Created</th>
-            <th className="student-plans-data">Updated</th>
-          </tr>
-          {plans ? plans.map(plan =>
-            <tr key={plan.planId} onClick={() => goToPlan(plan)}>
-              <td className="student-plans-data" key={plan.planId + "a"}>
-                {plan.firstName + " " + plan.lastName}
-              </td>
-              <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
-              <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
-              <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
-              <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
-              <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
+      <div id="plan-data-container">
+        <div id="plan-selection-container">
+          <select id="select-status" className="advisor-plan-select">
+            <option value="5">Any</option>
+            <option value="2">Awaiting Review</option>
+            <option value="3">Awaiting final review</option>
+            <option value="1">Awaiting student changes</option>
+            <option value="4">Accepted</option>
+            <option value="0">Rejected</option>
+          </select>
+          <select id="select-time" className="advisor-plan-select">
+            <option value="1">Time Created</option>
+            <option value="0">Time Updated</option>
+          </select>
+          <select id="select-order" className="advisor-plan-select">
+            <option value="1">Ascending</option>
+            <option value="0">Decending</option>
+          </select>
+          <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
+            Search
+          </button>
+        </div>
+        <div className="home-error-message-container">{errorMessage}</div>
+        <table className="advisor-plans-table">
+          <tbody>
+            <tr>
+              <th className="student-plans-data">User Name</th>
+              <th className="student-plans-data">User ID</th>
+              <th className="student-plans-data">Plan Name</th>
+              <th className="student-plans-data">Status</th>
+              <th className="student-plans-data">Created</th>
+              <th className="student-plans-data">Updated</th>
+            </tr>
+            {plans ? plans.map(plan =>
+              <tr key={plan.planId} onClick={() => goToPlan(plan)}>
+                <td className="student-plans-data" key={plan.planId + "a"}>
+                  {plan.firstName + " " + plan.lastName}
+                </td>
+                <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
+                <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
+                <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
+                <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
+                <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
 
-            </tr>) : null}
-        </tbody>
-      </table>
+              </tr>) : null}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

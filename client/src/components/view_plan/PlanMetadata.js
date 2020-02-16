@@ -58,7 +58,7 @@ function PlanMetadata(props) {
       case 4:
         return "Accepted";
       default:
-        return "Undefined status";
+        return "";
     }
   }
 

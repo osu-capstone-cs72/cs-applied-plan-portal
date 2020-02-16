@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 14, 2020 at 10:44 PM
+-- Generation Time: Feb 16, 2020 at 08:47 PM
 -- Server version: 8.0.19
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
@@ -32,7 +32,7 @@ CREATE TABLE `Comment` (
   `commentId` int NOT NULL,
   `planId` int NOT NULL,
   `userId` int NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -40,12 +40,13 @@ CREATE TABLE `Comment` (
 -- Dumping data for table `Comment`
 --
 
-INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
-(1, 308, 1, 'This is my plan.'),
-(2, 308, 9, 'This plan looks good!'),
-(6, 310, 5, 'I sure do love my plan.'),
-(7, 310, 2, 'I don\'t like this plan. Lets get rid of it.'),
-(9, 310, 6, 'Sure, plan rejected.');
+INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
+(1, 308, 1, '2020-01-27 21:59:27', 'This is my plan.'),
+(2, 308, 9, '2020-02-04 11:36:44', 'This plan looks good!'),
+(6, 310, 5, '2020-02-04 09:48:25', 'I sure do love my plan.'),
+(7, 310, 2, '2020-02-04 11:37:33', 'I don\'t like this plan. Let\'s get rid of it.'),
+(9, 310, 6, '2020-02-14 11:46:27', 'Sure, plan rejected.'),
+(46, 364, 4, '2020-02-16 18:58:37', 'I think this is a great plan. I will go ahead and let the Head Advisor finalize this.');
 
 -- --------------------------------------------------------
 
@@ -132,10 +133,11 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALU
 (308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
 (310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42'),
 (358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42'),
-(359, 2, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42'),
+(359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42'),
 (360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42'),
 (361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22'),
-(362, 2, 'some plan', 1, '2020-02-12 00:36:38');
+(362, 2, 'some plan', 1, '2020-02-12 00:36:38'),
+(364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30');
 
 -- --------------------------------------------------------
 
@@ -148,21 +150,27 @@ CREATE TABLE `PlanReview` (
   `planId` int NOT NULL,
   `advisorId` int NOT NULL,
   `newStatus` int NOT NULL,
-  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`) VALUES
-(1, 308, 6, 4),
-(2, 308, 9, 3),
-(3, 310, 4, 3),
-(4, 310, 6, 0),
-(5, 361, 9, 1),
-(6, 361, 11, 1),
-(7, 361, 12, 2);
+INSERT INTO `PlanReview` (`reviewId`, `planId`, `advisorId`, `newStatus`, `timeReviewed`) VALUES
+(2, 308, 9, 3, '2020-02-14 21:12:07'),
+(3, 310, 4, 3, '2020-02-14 21:12:07'),
+(4, 310, 6, 0, '2020-02-14 21:12:08'),
+(5, 361, 9, 1, '2020-02-14 21:12:08'),
+(6, 361, 11, 1, '2020-02-16 21:12:09'),
+(7, 361, 12, 2, '2020-02-15 21:12:09'),
+(9, 308, 6, 4, '2020-02-14 23:35:25'),
+(30, 359, 6, 1, '2020-02-16 00:25:09'),
+(31, 359, 1, 2, '2020-02-16 00:25:26'),
+(34, 359, 4, 3, '2020-02-16 04:33:41'),
+(35, 359, 4, 2, '2020-02-16 04:46:00'),
+(42, 364, 4, 3, '2020-02-16 18:58:48'),
+(43, 359, 4, 3, '2020-02-16 19:03:44');
 
 -- --------------------------------------------------------
 
@@ -182,80 +190,88 @@ CREATE TABLE `SelectedCourse` (
 INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 (310, 5),
 (358, 5),
+(359, 5),
+(364, 5),
 (310, 7),
 (358, 7),
+(359, 7),
+(364, 7),
 (310, 9),
 (358, 9),
+(359, 9),
+(364, 9),
 (310, 10),
 (358, 10),
+(359, 10),
+(364, 10),
 (310, 11),
 (358, 11),
+(359, 11),
+(364, 11),
 (308, 14),
 (358, 14),
+(364, 14),
 (308, 15),
 (358, 15),
+(364, 15),
 (308, 16),
 (358, 16),
+(364, 16),
 (308, 17),
 (358, 17),
+(359, 17),
+(364, 17),
 (308, 18),
 (310, 18),
 (358, 18),
+(359, 18),
 (308, 19),
 (310, 19),
 (310, 20),
 (308, 21),
 (310, 22),
 (308, 23),
+(359, 23),
+(359, 24),
 (308, 25),
-(359, 26),
+(359, 25),
 (360, 26),
 (361, 26),
 (362, 26),
-(359, 27),
+(364, 26),
 (360, 27),
 (361, 27),
 (362, 27),
-(359, 28),
 (360, 28),
 (361, 28),
 (362, 28),
-(359, 29),
 (360, 29),
 (361, 29),
 (362, 29),
-(359, 30),
 (360, 30),
 (361, 30),
 (362, 30),
-(359, 31),
 (360, 31),
 (361, 31),
 (362, 31),
-(359, 32),
 (360, 32),
 (361, 32),
 (362, 32),
 (360, 33),
 (361, 33),
 (362, 33),
-(359, 34),
 (360, 34),
 (361, 34),
 (362, 34),
-(359, 35),
 (360, 35),
 (361, 35),
 (362, 35),
-(359, 36),
 (360, 36),
 (361, 36),
 (362, 36),
-(359, 37),
 (360, 37),
 (361, 37),
-(362, 37),
-(359, 38);
+(362, 37);
 
 -- --------------------------------------------------------
 
@@ -277,7 +293,7 @@ CREATE TABLE `User` (
 
 INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (1, 'Luke', 'Skywalker', 'usetheforce@gmail.com', 0),
-(2, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 0),
+(2, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 1),
 (3, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (4, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (5, 'Han', 'Solo', 'kessel_run@aol.com', 0),
@@ -348,7 +364,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -360,13 +376,13 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=364;
+  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `reviewId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `User`
