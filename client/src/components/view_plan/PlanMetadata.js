@@ -81,13 +81,17 @@ function PlanMetadata(props) {
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{renderStatus()}</p>
         </div>
-        <div className="metadata-field">
-          <Link to={`/editPlan/${planId}`}>
-            <button id="edit-plan-button">
-                Edit Plan
-            </button>
-          </Link>
-        </div>
+        {props.currentUser.userRole ? (
+          <div className="metadata-field" />
+        ) : (
+          <div className="metadata-field">
+            <Link to={`/editPlan/${planId}`}>
+              <button id="edit-plan-button">
+                  Edit Plan
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -100,5 +104,6 @@ PlanMetadata.propTypes = {
   userId: PropTypes.number,
   planName: PropTypes.string,
   status: PropTypes.number,
-  history: PropTypes.object
+  history: PropTypes.object,
+  currentUser: PropTypes.object
 };

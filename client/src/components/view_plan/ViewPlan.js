@@ -198,10 +198,14 @@ function ViewPlan(props) {
       </div>
       <NavBar showSearch={false} />
       <PlanMetadata studentName={studentName} userId={userId}
-        planName={planName} status={status} />
+        planName={planName} status={status} currentUser={currentUser} />
       <PlanTable courses={courses} />
-      <CreateReview currentUser={currentUser}
-        onNewStatus={(e) => { handleChangeStatus(planId, e); }} />
+      {currentUser.userRole ? (
+        <CreateReview currentUser={currentUser}
+          onNewStatus={(e) => { handleChangeStatus(planId, e); }} />
+      ) : (
+        null
+      )}
       <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}
         studentName={studentName} loading={loading} />
       <PlanComments comments={comments} currentUser={currentUser}
