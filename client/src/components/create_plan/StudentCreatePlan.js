@@ -10,30 +10,32 @@ export default function StudentCreatePlan() {
   const {planId} = useParams();
 
   const [courses, setCourses] = useState(
-    [[], [{
+    [{
       courseId: 0,
       credits: null,
       courseName: "",
       courseCode: "",
       prerequisites: ""
-    }], []]
+    }]
   );
   // const [totalCredits, setTotalCredits] = useState(0);
   const [edit, setEdit] = useState(false);
 
   // call checkUrl once on mount to see if the user is creating a new plan or editing an existing one
   useEffect(() => {
-    checkUrl();
-  }, []);
 
-  // check the URL to see if the user is editing an existing plan or not
-  // if yes, get all the courses from an API call
-  function checkUrl() {
-    if (window.location.href.includes("/editPlan")) {
-      setEdit(true);
-      getCourses(planId);
+    // check the URL to see if the user is editing an existing plan or not
+    // if yes, get all the courses from an API call
+    function checkUrl() {
+      if (window.location.href.includes("/editPlan")) {
+        setEdit(true);
+        getCourses(planId);
+      }
     }
-  }
+
+    checkUrl();
+
+  }, [planId]);
 
   async function getCourses(planId) {
 
