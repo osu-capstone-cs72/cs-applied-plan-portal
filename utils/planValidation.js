@@ -86,15 +86,16 @@ async function planConstraint(planId) {
 
 }
 
-// checks that the plan has not been accepted or rejected
+// checks that the plan has not been accepted, rejected, or is awaiting final review
 async function lockedConstraint(planId) {
 
   const violation = "Plan cannot be modifed:\n" +
-    "This plan has either been rejected or accepted and is no longer modifiable.";
+    "This plan is either awaiting final review, has been accepted, or has been rejected. " +
+    "It is no longer modifiable.";
 
   try {
 
-    const sql = "SELECT * FROM Plan WHERE planId=? AND (status=0 OR status=4);";
+    const sql = "SELECT * FROM Plan WHERE planId=? AND (status=3 OR status=0 OR status=4);";
     const results = await pool.query(sql, planId);
 
     if (results[0].length > 0) {

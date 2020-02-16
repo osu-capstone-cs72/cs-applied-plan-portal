@@ -51,7 +51,7 @@ async function updatePlan(planId, planName, courses) {
     // update the courses list if it has changed
     if (courses !== 0) {
 
-      // get the id of the owner of the plan
+      // get the id of the owner of the plan and the current status
       let sql = "SELECT * FROM Plan WHERE planId=?;";
       let results = await pool.query(sql, [planId]);
       const ownerId = results[0][0].studentId;
@@ -66,7 +66,7 @@ async function updatePlan(planId, planName, courses) {
         results = await pool.query(sql, [planId, ownerId, planId]);
         updatedRows += 2;
       } else {
-        sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;"
+        sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
         results = await pool.query(sql, [planId]);
         updatedRows += 1;
       }
