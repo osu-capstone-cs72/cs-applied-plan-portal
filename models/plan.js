@@ -51,10 +51,25 @@ async function updatePlan(planId, planName, courses) {
     // update the courses list if it has changed
     if (courses !== 0) {
 
-      // if courses change we need to get a new review from an advisor
-      let sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+      // get the id of the owner of the plan
+      let sql = "SELECT * FROM Plan WHERE planId=?;";
       let results = await pool.query(sql, [planId]);
-      updatedRows += results[0].affectedRows;
+      const ownerId = results[0][0].studentId;
+      const currentStatus = results[0][0].status;
+
+      // If the status is not "awaiting review" we will need to update it
+      if (currentStatus !== 2) {
+        sql = "BEGIN;" +
+        "INSERT INTO PlanReview (planId, advisorId, newStatus) VALUES (?, ?, 2); " +
+        "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?; " +
+        "COMMIT;";
+        results = await pool.query(sql, [planId, ownerId, planId]);
+        updatedRows += 2;
+      } else {
+        sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;"
+        results = await pool.query(sql, [planId]);
+        updatedRows += 1;
+      }
 
       // start by deleting all of the current selected courses
       sql = "DELETE FROM SelectedCourse WHERE planId=?;";

@@ -35,6 +35,8 @@ async function userConstraint(userId) {
 
     if (results[0].length === 0) {
       throw violation;
+    } else if (results[0][0].role === 0) {
+      throw violation;
     } else {
       return results[0][0].role.toString(10);
     }
@@ -103,11 +105,7 @@ async function roleConstraint(role, status, planStatus) {
         throw violationChange;
       }
     } else {
-      if (status !== "2") {
-        throw violationSet;
-      } else if (planStatus === "0" || planStatus === "4") {
-        throw violationChange;
-      }
+      throw violationSet;
     }
 
   } catch (err) {
