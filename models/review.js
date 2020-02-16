@@ -12,7 +12,6 @@ async function createReview(planId, advisorId, newStatus) {
     "INSERT INTO PlanReview (planId, advisorId, newStatus) VALUES (?, ?, ?); " +
     "UPDATE Plan SET status=? WHERE planId=?; COMMIT;";
     const results = await pool.query(sql, [planId, advisorId, newStatus, newStatus, planId]);
-    console.log(results);
     return {insertId: results[0][1].insertId};
 
   } catch (err) {

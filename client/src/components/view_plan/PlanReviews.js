@@ -24,7 +24,7 @@ function PlanReviews(props) {
           userName={props.studentName}/>
 
         {props.reviews.length ? props.reviews.map((review) => (
-          <Review key={review.planId + "-" + review.advisorId} userId={review.advisorId}
+          <Review key={review.reviewId} userId={review.advisorId}
             status={review.newStatus} time={review.timeReviewed}
             userName={review.firstName + " " + review.lastName} />
         )) : null}

@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import NavBar from "../Navbar";
 import PlanTable from "./PlanTable";
-
+import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import PlanComments from "./PlanComments";
 import PlanReviews from "./PlanReviews";
@@ -163,6 +163,31 @@ function ViewPlan(props) {
 
   }
 
+  async function handleChangeStatus(planId, e) {
+
+    try {
+
+      setStatus(parseInt(e));
+
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/plan/${planId}/review`;
+      let obj = [];
+
+      // refersh the list of reviews
+      const response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
+        setReviews(obj);
+      }
+
+    } catch (err) {
+      // this is a server error
+      console.log("An internal server error occurred. Please try again later.");
+    }
+
+  }
+
   return (
     <div className="view-plan" css={style}>
       <div className="loader-container">
@@ -175,11 +200,12 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} />
       <PlanTable courses={courses} />
-
+      <CreateReview currentUser={currentUser}
+        onNewStatus={(e) => { handleChangeStatus(planId, e); }} />
       <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}
-        studentName={studentName} loading={loading}/>
+        studentName={studentName} loading={loading} />
       <PlanComments comments={comments} currentUser={currentUser}
-        onUpdate={() => { handleAddComment(planId); }}/>
+        onUpdate={() => { handleAddComment(planId); }} />
     </div>
   );
 }
