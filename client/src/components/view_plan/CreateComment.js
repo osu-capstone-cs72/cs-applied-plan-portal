@@ -57,7 +57,7 @@ function CreateComment(props) {
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.userId,
+        userId: props.currentUser.id,
         text: text
       };
 
@@ -75,12 +75,12 @@ function CreateComment(props) {
         setErrorMessage("");
         setNewComment(!newComment);
         props.onNewComment({
-          firstName: props.currentUser.userFirstName,
-          lastName: props.currentUser.userLastName,
+          firstName: props.currentUser.firstName,
+          lastName: props.currentUser.lastName,
           commentId: obj.insertId,
           time: obj.time,
           planId: planId,
-          userId: props.currentUser.userId,
+          userId: props.currentUser.id,
           text: text
         }); // lift state up
       } else {

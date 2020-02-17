@@ -60,7 +60,7 @@ async function updatePlan(planId, planName, courses) {
       // If the status is not "awaiting review" we will need to update it
       if (currentStatus !== 2) {
         sql = "BEGIN;" +
-        "INSERT INTO PlanReview (planId, advisorId, status) VALUES (?, ?, 2); " +
+        "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, 2); " +
         "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?; " +
         "COMMIT;";
         results = await pool.query(sql, [planId, ownerId, planId]);
@@ -160,11 +160,17 @@ async function getPlanActivity(planId) {
 
   try {
 
-    const sql = "SELECT 0 AS reviewId, commentId, planId, userId, text, " +
-      "-1 AS status, time FROM Comment WHERE planId=? UNION " +
-      "SELECT reviewId, 0 AS commentId, planId, advisorId AS userId, " +
-      "'' AS text, status, time FROM PlanReview WHERE planId=? ORDER BY time DESC;";
-    const results = await pool.query(sql, [planId, planId]);
+    const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
+      "-1 AS status, time, firstName, lastName FROM Comment " +
+      "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
+
+    const sqlReviews = "SELECT reviewId, 0 AS commentId, planId, PlanReview.userId, " +
+      "'' AS text, status, time, firstName, lastName FROM PlanReview " +
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC;";
+
+    const sql = sqlComments + " UNION " + sqlReviews;
+
+    const results = await pool.query(sql, [planId, planId, planId]);
     return results[0];
 
   } catch (err) {
@@ -197,7 +203,7 @@ async function getPlanReviews(planId) {
   try {
 
     const sql = "SELECT * FROM PlanReview INNER JOIN User ON " +
-      "PlanReview.advisorId=User.userId WHERE planId=? ORDER BY time ASC;";
+      "PlanReview.userId=User.userId WHERE planId=? ORDER BY time ASC;";
     const results = await pool.query(sql, planId);
     return results[0];
 

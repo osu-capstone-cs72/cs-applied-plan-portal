@@ -55,7 +55,7 @@ function CreateReview(props) {
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.userId,
+        userId: props.currentUser.id,
         status: statusValue
       };
 
@@ -72,12 +72,12 @@ function CreateReview(props) {
         obj = await response.json();
         setErrorMessage("");
         props.onNewStatus({
-          firstName: props.currentUser.userFirstName,
-          lastName: props.currentUser.userLastName,
+          firstName: props.currentUser.firstName,
+          lastName: props.currentUser.lastName,
           reviewId: obj.insertId,
           time: obj.time,
           planId: planId,
-          userId: props.currentUser.userId,
+          userId: props.currentUser.id,
           status: parseInt(statusValue)
         }); // lift state up
       } else {

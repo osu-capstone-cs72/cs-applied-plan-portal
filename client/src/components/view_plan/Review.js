@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 function Reviews(props) {
 
   const style = css`
-    display: inline-block;
-    margin: 25px;
+    text-align: center;
+    margin: 25px auto;
     padding: 5px;
     width: 175px;
     height: 175px;

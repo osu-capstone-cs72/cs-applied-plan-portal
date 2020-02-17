@@ -7,7 +7,6 @@ import PlanTable from "./PlanTable";
 import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
-import PlanReviews from "./PlanReviews";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import BounceLoader  from "react-spinners/BounceLoader";
@@ -17,9 +16,10 @@ function ViewPlan(props) {
   const [currentUserDev] = useState(4); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
-      userId: 0,
-      userRole: 0,
-      userName: ""
+      id: 0,
+      role: 0,
+      firstName: "",
+      lastName: ""
     }
   );
   const [loading, setLoading] = useState(true);
@@ -28,6 +28,7 @@ function ViewPlan(props) {
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
+  const [activity, setActivity] = useState([]);
   const [comments, setComments] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [courses, setCourses] = useState(
@@ -99,10 +100,10 @@ function ViewPlan(props) {
           obj = await response.json();
           setCurrentUser(
             {
-              userId: obj.userId,
-              userRole: obj.role,
-              userFirstName: obj.firstName,
-              userLastName: obj.lastName
+              id: obj.userId,
+              role: obj.role,
+              firstName: obj.firstName,
+              lastName: obj.lastName
             }
           );
         }
@@ -116,23 +117,14 @@ function ViewPlan(props) {
           setStudentName(obj.firstName + " " + obj.lastName);
         }
 
-        // get plan history
-        url = `http://${server}/plan/${planId}/review`;
-        response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setReviews(obj);
-        }
-
-        // get plan comments
-        url = `http://${server}/plan/${planId}/comment`;
+        // get plan activity
+        url = `http://${server}/plan/${planId}/activity`;
         response = await fetch(url);
         setLoading(false);
         if (response.ok) {
           // get data from the response
           obj = await response.json();
-          setComments(obj);
+          setActivity(obj);
         }
 
       } catch (err) {
@@ -171,9 +163,7 @@ function ViewPlan(props) {
       ) : (
         null
       )}
-      <PlanReviews reviews={reviews} planCreated={planCreated} userId={userId}
-        studentName={studentName} loading={loading} />
-      <ActivityFeed comments={comments} currentUser={currentUser}
+      <ActivityFeed activity={activity} currentUser={currentUser}
         onNewComment={e => handleAddComment(e)} />
     </div>
   );

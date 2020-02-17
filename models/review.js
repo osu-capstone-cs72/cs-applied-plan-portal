@@ -4,14 +4,14 @@
 const pool = require("../utils/mysqlPool").pool;
 
 // create a new review
-async function createReview(planId, advisorId, status) {
+async function createReview(planId, userId, status) {
 
   try {
 
     let sql = "BEGIN;" +
-    "INSERT INTO PlanReview (planId, advisorId, status) VALUES (?, ?, ?); " +
+    "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, ?); " +
     "UPDATE Plan SET status=? WHERE planId=?; COMMIT;";
-    let results = await pool.query(sql, [planId, advisorId, status, status, planId]);
+    let results = await pool.query(sql, [planId, userId, status, status, planId]);
     const reviewId = results[0][1].insertId;
 
     sql = "SELECT time FROM PlanReview WHERE reviewId=?;";
