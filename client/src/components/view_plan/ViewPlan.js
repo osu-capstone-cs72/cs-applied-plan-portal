@@ -13,7 +13,7 @@ import BounceLoader  from "react-spinners/BounceLoader";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(4); // Development: Selecting the current user
+  const [currentUserDev] = useState(6); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -23,14 +23,11 @@ function ViewPlan(props) {
     }
   );
   const [loading, setLoading] = useState(true);
-  const [planCreated, setPlanCreated] = useState(null);
   const [studentName, setStudentName] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
   const [activity, setActivity] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [courses, setCourses] = useState(
     [[], [{
       courseId: 0,
@@ -78,7 +75,6 @@ function ViewPlan(props) {
             created = obj[0][0].created;
             setCourses(obj);
             setPlanName(obj[0][0].planName);
-            setPlanCreated(obj[0][0].created);
             setUserId(obj[0][0].studentId);
             setStatus(parseInt(obj[0][0].status));
           } else {
@@ -150,11 +146,11 @@ function ViewPlan(props) {
   }, [planId, props.history, currentUserDev]);
 
   async function handleAddComment(e) {
-    setComments(prev => [e, ...prev]);
+    setActivity(prev => [e, ...prev]);
   }
 
   async function handleChangeStatus(e) {
-    setReviews(prev => [...prev, e]);
+    setActivity(prev => [e, ...prev]);
     setStatus(parseInt(e.status));
   }
 
@@ -170,7 +166,7 @@ function ViewPlan(props) {
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} currentUser={currentUser} />
       <PlanTable courses={courses} />
-      {currentUser.userRole ? (
+      {currentUser.role ? (
         <CreateReview currentUser={currentUser}
           onNewStatus={e => handleChangeStatus(e)} />
       ) : (

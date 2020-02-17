@@ -81,7 +81,7 @@ function PlanMetadata(props) {
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{renderStatus()}</p>
         </div>
-        {props.currentUser.userRole ? (
+        {props.currentUser.role ? (
           <div className="metadata-field" />
         ) : (
           <div className="metadata-field">

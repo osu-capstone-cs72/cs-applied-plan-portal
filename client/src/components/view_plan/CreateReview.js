@@ -72,9 +72,10 @@ function CreateReview(props) {
         obj = await response.json();
         setErrorMessage("");
         props.onNewStatus({
+          reviewId: obj.insertId,
+          commentId: 0,
           firstName: props.currentUser.firstName,
           lastName: props.currentUser.lastName,
-          reviewId: obj.insertId,
           time: obj.time,
           planId: planId,
           userId: props.currentUser.id,
