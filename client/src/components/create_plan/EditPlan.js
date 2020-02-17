@@ -8,7 +8,9 @@ export default class EditPlan extends React.Component {
     return {
       onRemoveCourse: PropTypes.func,
       courses: PropTypes.array,
-      edit: PropTypes.bool
+      edit: PropTypes.number,
+      planName: PropTypes.string,
+      onChangePlanName: PropTypes.func
     };
   }
 
@@ -24,6 +26,7 @@ export default class EditPlan extends React.Component {
     this.loadCredits = this.loadCredits.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
     this.validatePlan = this.validatePlan.bind(this);
+    this.updatePlanName = this.updatePlanName.bind(this);
   }
 
   submitPlan() {
@@ -34,12 +37,12 @@ export default class EditPlan extends React.Component {
       // create an array of strings containing course codes
       const courses = [];
       for (let i = 0; i < this.props.courses.length; i++) {
-        courses.push(this.props.courses[i].code);
+        courses.push(this.props.courses[i].courseCode);
       }
 
       // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
-        this.editPlan(courses, planname);
+        this.editPlan(courses, planname, this.props.edit);
       } else {
 
         // set up data for new plan to send to backend
@@ -79,12 +82,12 @@ export default class EditPlan extends React.Component {
     }
   }
 
-  editPlan(courses, planname) {
+  editPlan(courses, planname, planId) {
     // set up data for new plan to send to backend
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const patchURL = `http://${server}/plan`;
     const patchObj = {
-      userId: 1,
+      planId: planId,
       planName: planname,
       courses: courses
     };
@@ -98,9 +101,9 @@ export default class EditPlan extends React.Component {
         body: JSON.stringify(patchObj),
       }).then((data) => {
         data.text().then(res => {
-          if (data.status === 201) {
-          // redirect to the view plan of newly submitted plan,else give the user a warning with backend error message
-            window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
+          if (data.status === 200) {
+            // redirect to the view plan of updated plan
+            window.location.href = `/viewPlan/${planId}`;
           } else {
             this.setState({
               warning: JSON.parse(res).error
@@ -154,13 +157,18 @@ export default class EditPlan extends React.Component {
     });
   }
 
+  updatePlanName(e) {
+    this.clearWarning();
+    this.props.onChangePlanName(e.target.value);
+  }
+
   render() {
     return (
       <div className="edit-plan">
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>
-            <input id="plan-name-input" type="text" placeholder="Enter plan name" onChange={this.clearWarning}></input>
+            <input id="plan-name-input" type="text" value={this.props.planName} onChange={this.updatePlanName}></input>
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>
@@ -184,7 +192,9 @@ export default class EditPlan extends React.Component {
               courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
           </tbody>
         </table>
-        <button className="submit-button" onClick={this.submitPlan}>Submit</button>
+        <button className="submit-button" onClick={this.submitPlan}>
+          {this.props.edit ? "Update" : "Submit"}
+        </button>
       </div>
     );
   }
