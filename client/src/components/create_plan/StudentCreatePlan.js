@@ -6,7 +6,7 @@ import Navbar from "../Navbar";
 export default function StudentCreatePlan() {
 
   const [courses, setCourses] = useState([]);
-  console.log("COURSES:", courses);
+  const [warning, setWarning] = useState("");
 
   function removeCourse(course) {
     const newCourses = courses;
@@ -19,41 +19,38 @@ export default function StudentCreatePlan() {
   }
 
   function handleAddCourse(course) {
+
     // check that new course isn't already in array
-    let newCourse = true;
     for (let i = 0; i < courses.length; i++) {
       // check for duplicate courses
       if (course.courseId === courses[i].courseId) {
-        // this.setState({
-        //   warning: "This course is already in your plan."
-        // });
-        newCourse = false;
+        setWarning("This course is already in your plan.");
         return;
       }
       // check for required courses
       if (course.restriction === 1) {
-        // this.setState({
-        //   warning: "You've selected a required course."
-        // });
+        setWarning("You've selected a required course.");
+        return;
       }
       // check for graduate courses
       if (course.restriction === 2) {
-        // this.setState({
-        // warning: "You've selected a graduate course."
-        // });
+        setWarning("You've selected a graduate course.");
+        return;
       }
     }
 
-    if (newCourse) {
-      setCourses(prev => [...prev, course]);
-    }
+    // add the new course
+    setCourses(prev => [...prev, course]);
+    setWarning("");
+
   }
 
   return (
     <div className="student-create-plan">
       <Navbar showSearch={false} searchContent={null}/>
       <EditPlan courses={courses} remove={removeCourse} edit={false} />
-      <CourseContainer onAddCourse={e => handleAddCourse(e)} />
+      <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)} 
+        onNewWarning={e => setWarning(e)}/>
     </div>
   );
 }

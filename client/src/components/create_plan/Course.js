@@ -4,11 +4,13 @@ import PropTypes from "prop-types";
 export default class Course extends React.Component {
   static get propTypes() {
     return {
-      courseCode: PropTypes.any,
-      courseName: PropTypes.any,
-      credits: PropTypes.any,
-      description: PropTypes.any,
-      prerequisites: PropTypes.any,
+      courseId: PropTypes.number,
+      courseCode: PropTypes.string,
+      courseName: PropTypes.string,
+      credits: PropTypes.number,
+      description: PropTypes.string,
+      prerequisites: PropTypes.string,
+      restriction: PropTypes.number,
       onAddCourse: PropTypes.func
     };
   }
@@ -31,7 +33,16 @@ export default class Course extends React.Component {
   }
 
   addButton() {
-    this.props.onAddCourse(this.props); // lift up the state
+    // lift up the state
+    this.props.onAddCourse({
+      courseId: this.props.courseId,
+      courseCode: this.props.courseCode,
+      courseName: this.props.courseName,
+      credits: this.props.credits,
+      description: this.props.description,
+      prerequisites: this.props.prerequisites,
+      restriction: this.props.restriction
+    });
   }
 
   render() {
