@@ -43,7 +43,6 @@ function ViewPlan(props) {
   `;
 
   useEffect(() => {
-
     async function fetchData(planId) {
       try {
 

@@ -3,11 +3,15 @@ import PlanCourse from "./PlanCourse";
 import PropTypes from "prop-types";
 
 export default class EditPlan extends React.Component {
+
   static get propTypes() {
     return {
-      remove: PropTypes.func,
+      onRemoveCourse: PropTypes.func,
       courses: PropTypes.array,
-      edit: PropTypes.bool
+      edit: PropTypes.number,
+      planName: PropTypes.string,
+      onChangePlanName: PropTypes.func,
+      onLoading: PropTypes.func
     };
   }
 
@@ -16,7 +20,6 @@ export default class EditPlan extends React.Component {
 
     this.state = {
       warning: null,
-      courses: this.props.courses
     };
 
     this.submitPlan = this.submitPlan.bind(this);
@@ -24,13 +27,7 @@ export default class EditPlan extends React.Component {
     this.loadCredits = this.loadCredits.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
     this.validatePlan = this.validatePlan.bind(this);
-    this.removeCourse = this.removeCourse.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      courses: nextProps.courses
-    });
+    this.updatePlanName = this.updatePlanName.bind(this);
   }
 
   submitPlan() {
@@ -41,12 +38,12 @@ export default class EditPlan extends React.Component {
       // create an array of strings containing course codes
       const courses = [];
       for (let i = 0; i < this.props.courses.length; i++) {
-        courses.push(this.props.courses[i].code);
+        courses.push(this.props.courses[i].courseCode);
       }
 
-      // check to see if the user if we should perform a POST request or a PATCH request
+      // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
-        this.editPlan(courses, planname);
+        this.editPlan(courses, planname, this.props.edit);
       } else {
 
         // set up data for new plan to send to backend
@@ -59,6 +56,7 @@ export default class EditPlan extends React.Component {
         };
 
         try {
+          this.props.onLoading(true);
           fetch(postURL, {
             method: "POST",
             headers: {
@@ -82,21 +80,23 @@ export default class EditPlan extends React.Component {
           // this is a server error
           alert("An internal server error occurred. Please try again later.");
         }
+        this.props.onLoading(false);
       }
     }
   }
 
-  editPlan(courses, planname) {
+  editPlan(courses, planname, planId) {
     // set up data for new plan to send to backend
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const patchURL = `http://${server}/plan`;
     const patchObj = {
-      userId: 1,
+      planId: planId,
       planName: planname,
       courses: courses
     };
 
     try {
+      this.props.onLoading(true);
       fetch(patchURL, {
         method: "PATCH",
         headers: {
@@ -105,9 +105,9 @@ export default class EditPlan extends React.Component {
         body: JSON.stringify(patchObj),
       }).then((data) => {
         data.text().then(res => {
-          if (data.status === 201) {
-          // redirect to the view plan of newly submitted plan,else give the user a warning with backend error message
-            window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
+          if (data.status === 200) {
+            // redirect to the view plan of updated plan
+            window.location.href = `/viewPlan/${planId}`;
           } else {
             this.setState({
               warning: JSON.parse(res).error
@@ -120,6 +120,7 @@ export default class EditPlan extends React.Component {
       // this is a server error
       alert("An internal server error occurred. Please try again later.");
     }
+    this.props.onLoading(false);
   }
 
   validatePlan(planname) {
@@ -161,16 +162,9 @@ export default class EditPlan extends React.Component {
     });
   }
 
-  removeCourse(course) {
-    const newCourses = this.state.courses;
-    for (let i = 0; i < newCourses.length; i++) {
-      if (newCourses[i].courseCode === course.courseCode) {
-        newCourses.splice(i, 1);
-      }
-    }
-    this.setState({
-      courses: newCourses
-    });
+  updatePlanName(e) {
+    this.clearWarning();
+    this.props.onChangePlanName(e.target.value);
   }
 
   render() {
@@ -179,7 +173,8 @@ export default class EditPlan extends React.Component {
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>
-            <input id="plan-name-input" type="text" placeholder="Enter plan name" onChange={this.clearWarning}></input>
+            <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
+              value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>
@@ -199,11 +194,13 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.courses.map(c => <PlanCourse key={c.courseId} courseCode={c.courseCode}
-              courseName={c.courseName} credits={c.credits} remove={this.removeCourse}/>)}
+            {this.props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
+              courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
           </tbody>
         </table>
-        <button className="submit-button" onClick={this.submitPlan}>Submit</button>
+        <button className="submit-button" onClick={this.submitPlan}>
+          {this.props.edit ? "Update" : "Submit"}
+        </button>
       </div>
     );
   }

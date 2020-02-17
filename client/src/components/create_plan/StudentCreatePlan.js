@@ -2,86 +2,85 @@ import React, {useState, useEffect} from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
 import Navbar from "../Navbar";
+import PageSpinner from "../general/PageSpinner";
 import {useParams} from "react-router-dom";
-
 
 export default function StudentCreatePlan() {
 
+  const [loading, setLoading] = useState(false);
+  const [planName, setPlanName] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [warning, setWarning] = useState("");
+  const [edit, setEdit] = useState(0);
   const {planId} = useParams();
 
-  const [courses, setCourses] = useState(
-    [{
-      courseId: 0,
-      credits: null,
-      courseName: "",
-      courseCode: "",
-      prerequisites: ""
-    }]
-  );
-  // const [totalCredits, setTotalCredits] = useState(0);
-  const [edit, setEdit] = useState(false);
-
-  // call checkUrl once on mount to see if the user is creating a new plan or editing an existing one
   useEffect(() => {
+    async function fetchPlan(planId) {
+      setLoading(true);
+      try {
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        const url = `http://${server}/plan/${planId}/`;
+        let obj = [];
 
-    // check the URL to see if the user is editing an existing plan or not
-    // if yes, get all the courses from an API call
-    function checkUrl() {
-      if (window.location.href.includes("/editPlan")) {
-        setEdit(true);
-        getCourses(planId);
+        const response = await fetch(url);
+        if (response.ok) {
+        // get data from the response
+          obj = await response.json();
+          // get the courses array from the plan object
+          setCourses(obj[1]);
+          setPlanName(obj[0][0].planName);
+          setLoading(false);
+        }
+      } catch (err) {
+      // this is a server error
+        console.log("An internal server error occurred. Please try again later.");
       }
     }
 
-    checkUrl();
+    // only fetch a plan if we are on the edit plan page
+    if (planId) {
+      setEdit(parseInt(planId));
+      fetchPlan(planId);
+    }
 
   }, [planId]);
 
-  async function getCourses(planId) {
-
-    try {
-
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}/`;
-      let obj = [];
-
-      const response = await fetch(url);
-      if (response.ok) {
-      // get data from the response
-        obj = await response.json();
-        // courses are placed in the second array of the response object (3 arrays total)
-        setCourses(obj[1]);
+  function handleAddCourse(course) {
+    // check that new course isn't already in array
+    for (let i = 0; i < courses.length; i++) {
+      // check for duplicate courses
+      if (course.courseId === courses[i].courseId) {
+        setWarning("This course is already in your plan.");
+        return;
       }
-
-    } catch (err) {
-    // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
-    }
-
-  }
-
-  function updateCourses(newCourses) {
-    setTimeout(() => null);
-    setCourses(newCourses);
-    // document.getElementById("plan-name-input").value += "u";
-    // document.getElementById("plan-name-input").blur();
-  }
-
-  function removeCourse(course) {
-    const newCourses = courses;
-    for (let i = 0; i < newCourses.length; i++) {
-      if (newCourses[i].courseCode === course.courseCode) {
-        newCourses.splice(i, 1);
+      // check for required courses
+      if (course.restriction === 1) {
+        setWarning("You've selected a required course.");
+        return;
+      }
+      // check for graduate courses
+      if (course.restriction === 2) {
+        setWarning("You've selected a graduate course.");
+        return;
       }
     }
-    setCourses(newCourses);
+    // add the new course
+    setCourses(prev => [...prev, course]);
+    setWarning("");
+  }
+
+  function handleRemoveCourse(course) {
+    setCourses(courses.filter(prev => prev.courseId !== course.courseId));
   }
 
   return (
     <div className="student-create-plan">
+      <PageSpinner loading={loading} />
       <Navbar showSearch={false} searchContent={null}/>
-      <EditPlan courses={courses} remove={removeCourse} edit={edit} />
-      <CourseContainer addCourses={courses} updateCourses={updateCourses} />
+      <EditPlan courses={courses} edit={edit} planName={planName} onLoading={e => setLoading(e)}
+        onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
+      <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
+        onNewWarning={e => setWarning(e)}/>
     </div>
   );
 }
