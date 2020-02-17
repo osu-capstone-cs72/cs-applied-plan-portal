@@ -3,10 +3,8 @@
 
 require("path");
 const express = require("express");
-const needle = require("needle");
 const url = require("url");
 const validator = require("validator");
-const xml2js = require("xml2js");
 
 const userModel = require("../models/user");
 const {
@@ -14,7 +12,7 @@ const {
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
-const {generateAuthToken} = require("../utils/auth");
+const {casValidateUser, generateAuthToken} = require("../utils/auth");
 
 const app = express();
 
@@ -44,7 +42,7 @@ app.post("/", async (req, res) => {
 });
 
 // Retrieves the CAS ticket after a User has successfully logged in via ONID.
-app.get("/login", (req, res) => {
+app.get("/login", async (req, res) => {
   const callbackUrl = `${req.protocol}://` +   // protocol
     `${req.get("host")}` +                     // host:port
     `${url.parse(req.originalUrl).pathname}`;  // /request/path/no/query
@@ -52,23 +50,14 @@ app.get("/login", (req, res) => {
   const casValidationUrl = `https://login.oregonstate.edu/idp-dev/profile/cas` +
     `/serviceValidate?ticket=${req.query.ticket}&service=${callbackUrl}`;
 
-  // send a GET request to ONID's CAS validator and get back results
-  needle("get", casValidationUrl)
-    .then(response => xml2js.parseStringPromise(response.body)
-      .then(result => {
-        // note: getting results back from CAS doesn't mean successful login
-        console.log("200: CAS results retrieved\n");
-        res.status(200).send({result});
-      })
-      .catch(error => {
-        console.error("500: Error parsing XML response\n");
-        res.status(500).send({error});
-      })
-    )
-    .catch(error => {
-      console.error("500: Error sending request to validator\n");
-      res.status(500).send({error});
-    });
+  try {
+    const user = await casValidateUser(casValidationUrl);
+    console.log("200: User authenticated\n");
+    res.status(200).send({user});
+  } catch (err) {
+    console.error(`${err.code}: ${err.error}\n`);
+    res.status(err.code).send({error: err.error});
+  }
 });
 
 // Logs a User in.

@@ -1,7 +1,10 @@
 // File: auth.js
 // Description: Provides functions that handle the authentication process.
 
+const needle = require("needle");
 const jwt = require("jsonwebtoken");
+const xml2js = require("xml2js");
+
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 // Generates an auth token for a specific User with the provided ID and role.
@@ -54,3 +57,64 @@ function requireAuth(req, res, next) {
   }
 }
 exports.requireAuth = requireAuth;
+
+// Performs a validation via ONID's CAS to validate a User's credential.
+// Returns a Promise that either
+//   - Resolves to an object containing the logged in user's information on
+//     success.
+//   - Rejects with an error on failure, where error contains a code and the
+//     error object.
+function casValidateUser(casValidationUrl) {
+  return new Promise((resolve, reject) => needle("get", casValidationUrl)
+    .then(res => xml2js.parseStringPromise(res.body)
+      .then(result => {
+        const serviceResponse = result["cas:serviceResponse"];
+
+        // resolve on successful authentication and reject otherwise
+        if (serviceResponse &&
+            Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
+            serviceResponse["cas:authenticationSuccess"].length === 1 &&
+            !serviceResponse["cas:authenticationFailure"]) {
+          // when authenticated to a single user
+          resolve(serviceResponse["cas:authenticationSuccess"][0]);
+        } else {
+          if (serviceResponse &&
+              Array.isArray(serviceResponse["cas:authenticationFailure"]) &&
+              serviceResponse["cas:authenticationFailure"].length > 0) {
+            // when authentication fails due to invalid credential
+            console.error("CAS authentication rejected\n");
+            reject({
+              code: 401,
+              error: serviceResponse["cas:authenticationFailure"]  // array
+            });
+          } else {
+            // fail-safe case, when failed to authenticate via CAS but CAS
+            // doesn't return a proper failure object
+            console.error("Unspecified error returned from CAS\n");
+            reject({
+              code: 500,
+              error: null
+            });
+          }
+        }
+      })
+      .catch(err => {
+        // when parsing the response from CAS via XML2JS fails
+        console.error("Error parsing CAS result\n");
+        reject({
+          code: 500,
+          error: err
+        });
+      })
+    )
+    .catch(err => {
+      // when sending request to CAS via Needle fails
+      console.error("Error sending request to CAS\n");
+      reject({
+        code: 500,
+        error: err
+      });
+    })
+  );
+}
+exports.casValidateUser = casValidateUser;
