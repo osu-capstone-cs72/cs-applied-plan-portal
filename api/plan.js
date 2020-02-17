@@ -14,6 +14,7 @@ const getPlan = require("../models/plan").getPlan;
 const getPlansStatus = require("../models/plan").getPlansStatus;
 const getPlanComments = require("../models/plan").getPlanComments;
 const getPlanReviews = require("../models/plan").getPlanReviews;
+const getPlanActivity = require("../models/plan").getPlanActivity;
 const deletePlan = require("../models/plan").deletePlan;
 const {
   planSchema,
@@ -198,7 +199,31 @@ app.delete("/:planId", async (req, res) => {
 
 });
 
-// get a plans comments
+// get a plan's activity (comments and reviews)
+app.get("/:planId/activity", async (req, res) => {
+
+  try {
+
+    console.log("Get a plans activity");
+    const planId = req.params.planId;
+
+    const results = await getPlanActivity(planId);
+    if (results.length === 0) {
+      console.error("404: No plan activity found\n");
+      res.status(404).send({error: "No plan activity found."});
+    } else {
+      console.log("200: Plan activity found\n");
+      res.status(200).send(results);
+    }
+
+  } catch (err) {
+    console.log("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// get a plan's comments
 app.get("/:planId/comment", async (req, res) => {
 
   try {
@@ -222,7 +247,7 @@ app.get("/:planId/comment", async (req, res) => {
 
 });
 
-// get a plans reviews
+// get a plan's reviews
 app.get("/:planId/review", async (req, res) => {
 
   try {

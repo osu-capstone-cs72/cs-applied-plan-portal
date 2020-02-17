@@ -155,6 +155,26 @@ async function getPlan(planId) {
 }
 exports.getPlan = getPlan;
 
+// get all activity from a plan (comments and reviews)
+async function getPlanActivity(planId) {
+
+  try {
+
+    const sql = "SELECT 0 AS reviewId, commentId, planId, userId, text, " +
+      "-1 AS status, time FROM Comment WHERE planId=? UNION " +
+      "SELECT reviewId, 0 AS commentId, planId, advisorId AS userId, " +
+      "'' AS text, status, time FROM PlanReview WHERE planId=? ORDER BY time DESC;";
+    const results = await pool.query(sql, [planId, planId]);
+    return results[0];
+
+  } catch (err) {
+    console.log("Error searching for plan activity");
+    throw Error(err);
+  }
+
+}
+exports.getPlanActivity = getPlanActivity;
+
 // get all comments from a plan
 async function getPlanComments(planId) {
 
