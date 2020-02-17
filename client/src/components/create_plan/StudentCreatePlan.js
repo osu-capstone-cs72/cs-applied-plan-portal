@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
 import Navbar from "../Navbar";
 
 export default function StudentCreatePlan() {
 
+  const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [warning, setWarning] = useState("");
 

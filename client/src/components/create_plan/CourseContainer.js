@@ -38,7 +38,6 @@ export default class CourseContainer extends React.Component {
     const codeUrl = `http://${server}/course/courseCode/${value}`;
     const nameUrl = `http://${server}/course/courseName/${value}`;
     let obj = [];
-
     try {
       const results = await fetch(codeUrl);
       if (results.ok) {
@@ -48,13 +47,14 @@ export default class CourseContainer extends React.Component {
         });
       } else {
         const results = await fetch(nameUrl);
-        obj = await results.json();
         if (results.ok) {
+          obj = await results.json();
           this.setState({
             courses: obj
           });
         } else {
           // we got a bad status code
+          obj = await results.json();
           this.changeWarning(obj.error);
         }
       }
@@ -75,13 +75,14 @@ export default class CourseContainer extends React.Component {
 
       try {
         const results = await fetch(url);
-        obj = await results.json();
         if (results.ok) {
+          obj = await results.json();
           this.setState({
             courses: obj
           });
         } else {
           // we got a bad status code
+          obj = await results.json();
           this.changeWarning(obj.error);
         }
       } catch (err) {
