@@ -10,7 +10,8 @@ export default class EditPlan extends React.Component {
       courses: PropTypes.array,
       edit: PropTypes.number,
       planName: PropTypes.string,
-      onChangePlanName: PropTypes.func
+      onChangePlanName: PropTypes.func,
+      onLoading: PropTypes.func
     };
   }
 
@@ -55,6 +56,7 @@ export default class EditPlan extends React.Component {
         };
 
         try {
+          this.props.onLoading(true);
           fetch(postURL, {
             method: "POST",
             headers: {
@@ -78,6 +80,7 @@ export default class EditPlan extends React.Component {
           // this is a server error
           alert("An internal server error occurred. Please try again later.");
         }
+        this.props.onLoading(false);
       }
     }
   }
@@ -93,6 +96,7 @@ export default class EditPlan extends React.Component {
     };
 
     try {
+      this.props.onLoading(true);
       fetch(patchURL, {
         method: "PATCH",
         headers: {
@@ -116,6 +120,7 @@ export default class EditPlan extends React.Component {
       // this is a server error
       alert("An internal server error occurred. Please try again later.");
     }
+    this.props.onLoading(false);
   }
 
   validatePlan(planname) {
@@ -168,7 +173,8 @@ export default class EditPlan extends React.Component {
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>
-            <input id="plan-name-input" type="text" value={this.props.planName} onChange={this.updatePlanName}></input>
+            <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
+              value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
             <label className="credits">Total credits</label>

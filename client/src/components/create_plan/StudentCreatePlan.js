@@ -8,7 +8,7 @@ import {useParams} from "react-router-dom";
 export default function StudentCreatePlan() {
 
   const [loading, setLoading] = useState(false);
-  const [planName, setPlanName] = useState("Enter plan name");
+  const [planName, setPlanName] = useState("");
   const [courses, setCourses] = useState([]);
   const [warning, setWarning] = useState("");
   const [edit, setEdit] = useState(0);
@@ -77,7 +77,7 @@ export default function StudentCreatePlan() {
     <div className="student-create-plan">
       <PageSpinner loading={loading} />
       <Navbar showSearch={false} searchContent={null}/>
-      <EditPlan courses={courses} edit={edit} planName={planName}
+      <EditPlan courses={courses} edit={edit} planName={planName} onLoading={e => setLoading(e)}
         onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
       <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
         onNewWarning={e => setWarning(e)}/>
