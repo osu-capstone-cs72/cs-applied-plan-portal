@@ -3,7 +3,10 @@
 
 require("path");
 const express = require("express");
+const needle = require("needle");
+const url = require("url");
 const validator = require("validator");
+const xml2js = require("xml2js");
 
 const userModel = require("../models/user");
 const {
@@ -40,13 +43,32 @@ app.post("/", async (req, res) => {
   }
 });
 
-// Retrieves the CAS ticket once a User successfully logs in via ONID.
+// Retrieves the CAS ticket after a User has successfully logged in via ONID.
 app.get("/login", (req, res) => {
-  // show the ticket as a JSON object for now
-  // TODO: Get the server to send the serviceValidate request with this ticket
-  // back to CAS to get back a valid XML object specifying the logged in user's
-  // `NetID`.
-  res.status(200).send(req.query.ticket);
+  const callbackUrl = `${req.protocol}://` +   // protocol
+    `${req.get("host")}` +                     // host:port
+    `${url.parse(req.originalUrl).pathname}`;  // /request/path/no/query
+
+  const casValidationUrl = `https://login.oregonstate.edu/idp-dev/profile/cas` +
+    `/serviceValidate?ticket=${req.query.ticket}&service=${callbackUrl}`;
+
+  // send a GET request to ONID's CAS validator and get back results
+  needle("get", casValidationUrl)
+    .then(response => xml2js.parseStringPromise(response.body)
+      .then(result => {
+        // note: getting results back from CAS doesn't mean successful login
+        console.log("200: CAS results retrieved\n");
+        res.status(200).send({result});
+      })
+      .catch(error => {
+        console.error("500: Error parsing XML response\n");
+        res.status(500).send({error});
+      })
+    )
+    .catch(error => {
+      console.error("500: Error sending request to validator\n");
+      res.status(500).send({error});
+    });
 });
 
 // Logs a User in.
