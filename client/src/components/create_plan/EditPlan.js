@@ -6,7 +6,7 @@ export default class EditPlan extends React.Component {
 
   static get propTypes() {
     return {
-      remove: PropTypes.func,
+      onRemoveCourse: PropTypes.func,
       courses: PropTypes.array,
       edit: PropTypes.bool
     };
@@ -24,7 +24,6 @@ export default class EditPlan extends React.Component {
     this.loadCredits = this.loadCredits.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
     this.validatePlan = this.validatePlan.bind(this);
-    this.removeCourse = this.removeCourse.bind(this);
   }
 
   submitPlan() {
@@ -155,10 +154,6 @@ export default class EditPlan extends React.Component {
     });
   }
 
-  removeCourse(course) {
-    console.log("We want to remove", course);
-  }
-
   render() {
     return (
       <div className="edit-plan">
@@ -185,8 +180,8 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.courses.map(c => <PlanCourse key={c.courseId} courseCode={c.courseCode}
-              courseName={c.courseName} credits={c.credits} remove={this.removeCourse}/>)}
+            {this.props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
+              courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
           </tbody>
         </table>
         <button className="submit-button" onClick={this.submitPlan}>Submit</button>

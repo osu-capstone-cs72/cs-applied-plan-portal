@@ -8,18 +8,7 @@ export default function StudentCreatePlan() {
   const [courses, setCourses] = useState([]);
   const [warning, setWarning] = useState("");
 
-  function removeCourse(course) {
-    const newCourses = courses;
-    for (let i = 0; i < newCourses.length; i++) {
-      if (newCourses[i].courseId === course.courseId) {
-        newCourses.splice(i, 1);
-      }
-    }
-    setCourses(newCourses);
-  }
-
   function handleAddCourse(course) {
-
     // check that new course isn't already in array
     for (let i = 0; i < courses.length; i++) {
       // check for duplicate courses
@@ -38,18 +27,20 @@ export default function StudentCreatePlan() {
         return;
       }
     }
-
     // add the new course
     setCourses(prev => [...prev, course]);
     setWarning("");
+  }
 
+  function handleRemoveCourse(course) {
+    setCourses(courses.filter(prev => prev.courseId !== course.courseId));
   }
 
   return (
     <div className="student-create-plan">
       <Navbar showSearch={false} searchContent={null}/>
-      <EditPlan courses={courses} remove={removeCourse} edit={false} />
-      <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)} 
+      <EditPlan courses={courses} onRemoveCourse={e => handleRemoveCourse(e)} edit={false} />
+      <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
         onNewWarning={e => setWarning(e)}/>
     </div>
   );
