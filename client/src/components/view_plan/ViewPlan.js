@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(6); // Development: Selecting the current user
+  const [currentUserDev] = useState(1); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
