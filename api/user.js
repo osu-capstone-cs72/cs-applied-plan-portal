@@ -6,6 +6,7 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
+const role = require("../utils/role");
 const userModel = require("../models/user");
 const {
   userSchema,
@@ -51,9 +52,36 @@ app.get("/login", async (req, res) => {
     `/serviceValidate?ticket=${req.query.ticket}&service=${callbackUrl}`;
 
   try {
-    const user = await casValidateUser(casValidationUrl);
+    // validate the user via ONID's CAS and get back object containing
+    // information about the user
+    const casUser = await casValidateUser(casValidationUrl);
+    const userAttr = casUser["cas:attributes"][0];
+
+    // try fetching the User from the database by ID
+    try {
+      const osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
+      const results = await userModel.getUserById(osuuid);
+
+      // if the User is not already in the database, create one for them
+      if (Array.isArray(results) && results.length === 0) {
+        const newUser = {
+          userId: osuuid,
+          firstName: userAttr["cas:givenName"][0],
+          lastName: userAttr["cas:lastname"][0],
+          email: userAttr["cas:osuprimarymail"][0],
+          role: userAtrtri
+        };
+
+      }
+
+
+
+    } catch (err) {
+
+    }
+
     console.log("200: User authenticated\n");
-    res.status(200).send({user});
+    res.status(200).send({user: casUser});
   } catch (err) {
     console.error(`${err.code}: ${err.error}\n`);
     res.status(err.code).send({error: err.error});

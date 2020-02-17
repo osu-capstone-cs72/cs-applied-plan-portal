@@ -63,6 +63,8 @@ exports.getUserPlans = getUserPlans;
 // Authenticates a User with the provided credential. Used when logging in a
 // User.
 // Returns true if the provided credential is valid. Returns false otherwise.
+//
+// This function assumes that the
 async function authenticateUser(email) {
   try {
     const user = (await getUserByEmail(email))[0];
