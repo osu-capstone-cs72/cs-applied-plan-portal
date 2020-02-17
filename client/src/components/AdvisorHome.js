@@ -1,12 +1,11 @@
 /** @jsx jsx */
 
 import NavBar from "./Navbar";
+import PageSpinner from "./general/PageSpinner";
 import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import BounceLoader  from "react-spinners/BounceLoader";
-
 
 function AdvisorHome(props) {
 
@@ -15,17 +14,6 @@ function AdvisorHome(props) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const style = css`
-    .loader-container {
-        visibility: ${loading ? "visible" : "hidden"};
-        position: fixed;
-        margin-left: -75px;
-        margin-bottom: 75px;
-        left: 50%;
-        bottom: 50%;
-        width: 0;
-        height: 0;
-        z-index: 99;
-      }
 
     #plan-data-container {
       margin: 0 auto;
@@ -111,12 +99,7 @@ function AdvisorHome(props) {
 
   return (
     <div css={style}>
-      <div className="loader-container">
-        <BounceLoader
-          size={150}
-          color={"orange"}
-        />
-      </div>
+      <PageSpinner loading={loading} />
       <NavBar showSearch={true} searchContent={"Search for plans"}/>
       <div id="plan-data-container">
         <div id="plan-selection-container">

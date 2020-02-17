@@ -3,13 +3,13 @@
 import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import NavBar from "../Navbar";
+import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
 import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import BounceLoader  from "react-spinners/BounceLoader";
 
 function ViewPlan(props) {
 
@@ -40,17 +40,6 @@ function ViewPlan(props) {
   const {planId} = useParams();
 
   const style = css`
-    .loader-container {
-      visibility: ${loading ? "visible" : "hidden"};
-      position: fixed;
-      margin-left: -75px;
-      margin-bottom: 75px;
-      left: 50%;
-      bottom: 50%;
-      width: 0;
-      height: 0;
-      z-index: 99;
-    }
   `;
 
   useEffect(() => {
@@ -156,12 +145,7 @@ function ViewPlan(props) {
 
   return (
     <div className="view-plan" css={style}>
-      <div className="loader-container">
-        <BounceLoader
-          size={150}
-          color={"orange"}
-        />
-      </div>
+      <PageSpinner loading={loading} />
       <NavBar showSearch={false} />
       <PlanMetadata studentName={studentName} userId={userId}
         planName={planName} status={status} currentUser={currentUser} />
