@@ -5,10 +5,11 @@ import filters from "./FilterList";
 import PropTypes from "prop-types";
 
 export default class CourseContainer extends React.Component {
+
   static get propTypes() {
     return {
       updateCourses: PropTypes.func,
-      addCourses: PropTypes.any
+      onAddCourse: PropTypes.func
     };
   }
 
@@ -17,22 +18,14 @@ export default class CourseContainer extends React.Component {
 
     this.state = {
       courses: [],
-      addCourses: this.props.addCourses,
+      addCourses: [],
       filter: ""
     };
 
     this.filterSearch = this.filterSearch.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
-    this.addCourse = this.addCourse.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.clearWarning = this.clearWarning.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    alert("course container - component will receive props");
-    this.setState({
-      addCourses: nextProps.addCourses
-    });
   }
 
   async filterSearch() {
@@ -96,62 +89,20 @@ export default class CourseContainer extends React.Component {
 
       try {
         const results = await fetch(url);
+        obj = await results.json();
         if (results.ok) {
-          obj = await results.json();
           this.setState({
             courses: obj
           });
         } else {
-        // we got a bad status code
-          try {
-            throw results;
-          } catch (err) {
-            err.text().then(errorMessage => {
-              this.setState({
-                warning: errorMessage
-              });
-            });
-          }
+          // we got a bad status code
+          this.setState({
+            warning: obj.error
+          });
         }
       } catch (err) {
-        alert(err);
+        alert("An internal server error occurred. Please try again later.");
       }
-    }
-  }
-
-  addCourse(course) {
-    // check that new course isn't already in array
-    let newCourse = true;
-    for (let i = 0; i < this.state.addCourses.length; i++) {
-      // check for duplicate courses
-      if (course.courseCode === this.state.addCourses[i].courseCode) {
-        this.setState({
-          warning: "This course is already in your plan."
-        });
-        newCourse = false;
-        return;
-      }
-      // check for required courses
-      if (course.restriction === 1) {
-        this.setState({
-          warning: "You've selected a required course."
-        });
-      }
-      // check for graduate courses
-      if (course.restriction === 2) {
-        this.setState({
-          warning: "You've selected a graduate course."
-        });
-      }
-    }
-
-    if (newCourse) {
-      const newCourses = this.state.addCourses;
-      newCourses.unshift(course);
-      this.setState({
-        addCourses: newCourses
-      });
-      this.props.updateCourses(newCourses);
     }
   }
 
@@ -184,9 +135,12 @@ export default class CourseContainer extends React.Component {
           {this.state.warning ? <p>{this.state.warning}</p> : null}
         </div>
         <div className="explore-courses">
-          {this.state.courses.length > 0 ? this.state.courses.map(c => <Course key={c.courseCode} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
-            description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} addCourse={this.addCourse}/>) :
-            <div>Search for courses...</div>}
+          {this.state.courses.length > 0 ? this.state.courses.map(c =>
+            <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+              description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => this.props.onAddCourse(e)}/>
+          ) : (
+            <div>Search for courses...</div>
+          )}
         </div>
       </div>
     );

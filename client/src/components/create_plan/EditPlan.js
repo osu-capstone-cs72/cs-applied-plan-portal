@@ -3,6 +3,7 @@ import PlanCourse from "./PlanCourse";
 import PropTypes from "prop-types";
 
 export default class EditPlan extends React.Component {
+
   static get propTypes() {
     return {
       remove: PropTypes.func,
@@ -16,7 +17,6 @@ export default class EditPlan extends React.Component {
 
     this.state = {
       warning: null,
-      courses: this.props.courses
     };
 
     this.submitPlan = this.submitPlan.bind(this);
@@ -25,12 +25,6 @@ export default class EditPlan extends React.Component {
     this.clearWarning = this.clearWarning.bind(this);
     this.validatePlan = this.validatePlan.bind(this);
     this.removeCourse = this.removeCourse.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      courses: nextProps.courses
-    });
   }
 
   submitPlan() {
@@ -44,7 +38,7 @@ export default class EditPlan extends React.Component {
         courses.push(this.props.courses[i].code);
       }
 
-      // check to see if the user if we should perform a POST request or a PATCH request
+      // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
         this.editPlan(courses, planname);
       } else {
@@ -162,15 +156,7 @@ export default class EditPlan extends React.Component {
   }
 
   removeCourse(course) {
-    const newCourses = this.state.courses;
-    for (let i = 0; i < newCourses.length; i++) {
-      if (newCourses[i].courseCode === course.courseCode) {
-        newCourses.splice(i, 1);
-      }
-    }
-    this.setState({
-      courses: newCourses
-    });
+    console.log("We want to remove", course);
   }
 
   render() {
@@ -199,7 +185,7 @@ export default class EditPlan extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.courses.map(c => <PlanCourse key={c.courseId} courseCode={c.courseCode}
+            {this.props.courses.map(c => <PlanCourse key={c.courseId} courseCode={c.courseCode}
               courseName={c.courseName} credits={c.credits} remove={this.removeCourse}/>)}
           </tbody>
         </table>

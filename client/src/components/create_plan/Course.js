@@ -9,7 +9,7 @@ export default class Course extends React.Component {
       credits: PropTypes.any,
       description: PropTypes.any,
       prerequisites: PropTypes.any,
-      addCourse: PropTypes.func
+      onAddCourse: PropTypes.func
     };
   }
 
@@ -31,7 +31,7 @@ export default class Course extends React.Component {
   }
 
   addButton() {
-    this.props.addCourse(this.props);
+    this.props.onAddCourse(this.props); // lift up the state
   }
 
   render() {
