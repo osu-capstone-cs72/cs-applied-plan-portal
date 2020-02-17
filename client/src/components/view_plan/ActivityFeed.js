@@ -22,13 +22,13 @@ function ActivityFeed(props) {
         onNewComment={e => props.onNewComment(e)}/>
       {props.activity.map((obj) => {
         if (obj.commentId > 0) {
-          return <Comment key={obj.commentId} commentId={obj.commentId}
+          return <Comment key={obj.commentId + "c"} commentId={obj.commentId}
             userId={obj.userId} time={obj.time} text={obj.text}
             firstName={obj.firstName} lastName={obj.lastName}/>;
         } else {
-          return <Review key={obj.reviewId} userId={obj.advisorId}
+          return <Review key={obj.reviewId + "r"} userId={obj.advisorId}
             status={obj.status} time={obj.time}
-            userName={obj.firstName + obj.lastName} />;
+            userName={obj.firstName + " " + obj.lastName} />;
         }
       })}
     </div>

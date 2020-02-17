@@ -41,7 +41,6 @@ function ViewPlan(props) {
     }], []]
   );
   const {planId} = useParams();
-  console.log(reviews);
 
   const style = css`
     .loader-container {
@@ -62,6 +61,7 @@ function ViewPlan(props) {
     async function fetchData(planId) {
       try {
 
+        let created = "";
         let userId = 0;
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         let url = `http://${server}/plan/${planId}`;
@@ -75,6 +75,7 @@ function ViewPlan(props) {
             // get data from the response
             obj = await response.json();
             userId = obj[0][0].studentId;
+            created = obj[0][0].created;
             setCourses(obj);
             setPlanName(obj[0][0].planName);
             setPlanCreated(obj[0][0].created);
@@ -85,6 +86,7 @@ function ViewPlan(props) {
             props.history.push("/404");
             return;
           }
+
         } catch (err) {
           // send to 500 page if a server error happens while fetching plan
           console.log("An internal server error occurred. Please try again later.");
@@ -115,6 +117,17 @@ function ViewPlan(props) {
           // get data from the response
           obj = await response.json();
           setStudentName(obj.firstName + " " + obj.lastName);
+          // add the intial review
+          setActivity([{
+            reviewId: 0,
+            commentId: 0,
+            status: 2,
+            planId: planId,
+            userId: userId,
+            time: created,
+            firstName: obj.firstName,
+            lastName: obj.lastName
+          }]);
         }
 
         // get plan activity
@@ -124,7 +137,7 @@ function ViewPlan(props) {
         if (response.ok) {
           // get data from the response
           obj = await response.json();
-          setActivity(obj);
+          setActivity(prev => [...obj, ...prev]);
         }
 
       } catch (err) {
