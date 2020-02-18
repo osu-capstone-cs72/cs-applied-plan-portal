@@ -12,14 +12,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 
-app.get("/", (req, res) => {
-  const token = req.signedCookies.accessToken;
-  res.send({
-    message: "You have successfully logged in!",
-    token: token
-  });
-});
-
 // log incoming requests (Later replace with proper module)
 app.get("*", (req, res, next) => {
   console.log("Request:", req.url);
