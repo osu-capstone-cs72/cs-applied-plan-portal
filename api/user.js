@@ -16,33 +16,44 @@ const {
 const {
   casValidateUser,
   generateAuthToken,
-  getTokenExpirationTime
+  getTokenExpirationTime,
+  requireAuth
 } = require("../utils/auth");
 
 const app = express();
 
 // Creates a new User in the system.
-app.post("/", async (req, res) => {
-  // validate the request body against the schema and get error message, if any
-  const schemaViolations = getSchemaViolations(req.body, userSchema);
-  if (!schemaViolations) {
-    // if there were no schema violations, continue to proceed
-    try {
-      // sanitize the request body and pass it to the model
-      const newUser = sanitizeUsingSchema(req.body, userSchema);
-      const result = await userModel.createUser(newUser);
+app.post("/", requireAuth, async (req, res) => {
+  // limit auth payload's info to this function's scope
+  const auth = req.auth;
+  req.auth = {};
 
-      console.log("201: User created\n");
-      res.status(201).send({userId: result.insertId});
-    } catch (err) {
-      console.error("500: Error creating new User:", err);
-      res.status(500).send({
-        error: "Error creating new User. Please try again later."
-      });
+  // only permit HeadAdvisor (aka Admin) to create new Users
+  if (auth.userRole === Role.headAdvisor) {
+    // validate the request body against the schema and get error message,
+    // if any
+    const schemaViolations = getSchemaViolations(req.body, userSchema);
+    if (!schemaViolations) {
+      try {
+        // sanitize the request body and pass it to the model
+        const newUser = sanitizeUsingSchema(req.body, userSchema);
+        const result = await userModel.createUser(newUser);
+
+        console.log("201: User created\n");
+        res.status(201).send({userId: result.insertId});
+      } catch (err) {
+        console.error("500: Error creating new User:", err);
+        res.status(500).send({
+          error: "Error creating new User. Please try again later."
+        });
+      }
+    } else {
+      console.error(schemaViolations);
+      res.status(400).send({error: schemaViolations});
     }
   } else {
-    console.error(schemaViolations);
-    res.status(400).send({error: schemaViolations});
+    console.error(`403: User ${} not authorized to perform this action\n`);
+    res.status(403).send({error: "Forbidden"});
   }
 });
 
@@ -83,8 +94,9 @@ app.get("/login", async (req, res) => {
     const casUser = await casValidateUser(casValidationUrl);
     const userAttributes = casUser["cas:attributes"][0];
 
-    // try fetching the User from the database by ID
+    // make this nested try to catch potential error when parsing
     try {
+      // try fetching the User from the database by ID
       let osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
 
@@ -130,28 +142,40 @@ app.get("/login", async (req, res) => {
 });
 
 // Fetches a list of plans related to a specific User.
-app.get("/:userId/plans", async (req, res) => {
+app.get("/:userId/plans", requireAuth, async (req, res) => {
+  // limit auth payload's info to this function's scope
+  const auth = req.auth;
+  req.auth = {};
+
   // attempt to convert `userId` param in route to an integer
   // return NaN if it's not an integer
   const userId = validator.toInt(req.params.userId + "");
 
   // ensure the provided request parameter is a valid integer
   if (Number.isInteger(userId)) {
-    try {
-      const results = await userModel.getUserPlans(userId);
+    // only permit the User with this ID or an Advisor or a Head Advisor
+    if (auth.userId === userId ||
+        auth.userRole === Role.advisor ||
+        auth.userRole === Role.headAdvisor) {
+      try {
+        const results = await userModel.getUserPlans(userId);
 
-      if (Array.isArray(results) && results.length > 0) {
-        console.log("200: Plans found\n");
-        res.status(200).send(results);
-      } else {
-        console.error("404: No plans found\n");
-        res.status(404).send({error: "No plans found"});
+        if (Array.isArray(results) && results.length > 0) {
+          console.log("200: Plans found\n");
+          res.status(200).send(results);
+        } else {
+          console.error("404: No plans found\n");
+          res.status(404).send({error: "No plans found"});
+        }
+      } catch (err) {
+        console.error("500: Error fetching Plans:", err);
+        res.status(500).send({
+          error: "Unable to fetch Plans. Please try again later."
+        });
       }
-    } catch (err) {
-      console.error("500: Error fetching Plans:", err);
-      res.status(500).send({
-        error: "Unable to fetch Plans. Please try again later."
-      });
+    } else {
+      console.error(`403: User ${userId} not authorized to perform this action\n`);
+      res.status(403).send({error: "Forbidden"});
     }
   } else {
     console.error("400: Invalid User ID\n");
@@ -160,27 +184,41 @@ app.get("/:userId/plans", async (req, res) => {
 });
 
 // Fetches information about a specific User.
-app.get("/:userId", async (req, res) => {
+app.get("/:userId", requireAuth, async (req, res) => {
+  // limit auth payload's info to this function's scope
+  const auth = req.auth;
+  req.auth = {};
+
   // attempt to convert `userId` param in route to an integer
   // return NaN if it's not an integer
   const userId = validator.toInt(req.params.userId + "");
 
   // ensure the provided request parameter is a valid integer
   if (Number.isInteger(userId)) {
-    try {
-      const results = await userModel.getUserById(userId);
+    // only permit the User with this ID or an Advisor or a Head Advisor
+    if (auth.userId === userId ||
+        auth.userRole === Role.advisor ||
+        auth.userRole === Role.headAdvisor) {
+      try {
+        const results = await userModel.getUserById(userId);
 
-      if (Array.isArray(results) && results.length > 0) {
-        console.log("200: User found\n");
-        res.status(200).send(results[0]);
-      } else {
-        console.error("404: No User found\n");
-        res.status(404).send({error: "No User found"});
+        if (Array.isArray(results) && results.length > 0) {
+          console.log("200: User found\n");
+          res.status(200).send(results[0]);
+        } else {
+          console.error("404: No User found\n");
+          res.status(404).send({error: "No User found"});
+        }
+      } catch (err) {
+        console.error("500: Error fetching User:", err);
+        res.status(500).send({
+          error: "Unable to fetch User. Please try again later."
+        });
       }
-    } catch (err) {
-      console.error("500: Error fetching User:", err);
-      res.status(500).send({
-        error: "Unable to fetch User. Please try again later."
+    } else {
+      console.error(`403: User ${userId} not authorized to perform this action\n`);
+      res.status(403).send({
+        error: "Forbidden"
       });
     }
   } else {

@@ -1,9 +1,12 @@
 // File: auth.js
 // Description: Provides functions that handle the authentication process.
 
+const assert = require("assert");
 const needle = require("needle");
 const jwt = require("jsonwebtoken");
 const xml2js = require("xml2js");
+
+const {Role} = require("./role");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -42,14 +45,38 @@ exports.getTokenExpirationTime = getTokenExpirationTime;
 //
 // This function assumes the use of a Bearer token in the Cookie of the incoming
 // request.
+//
+// USAGE: FOLLOW THESE STEPS:
+//   1. Assign a constant to `req.auth` by `const auth = req.auth;`.
+//   2. Clear `req.auth` immediately afterwards by `req.auth = {};`. This action
+//      makes the payload info available to the local scope of the middleware
+//      handler function only (i.e. not hanging around in a field of `req`).
+//   3. Check `auth.userId` and `auth.userRole` in the middleware.
+//      They are either `undefined` or equal to the expected value that the
+//      verified payload provides.
+//
+//   - No need to check `req` and `req.auth` in the if statements because they
+//     are always null-safe.
+//   - No need to check the types and value ranges of `userId` and `userRole`
+//     because the assertions in this function already does that job.
 function requireAuth(req, res, next) {
+  // first of all, clear the field that will be used for holding the payload
+  req.auth = {};
+
   try {
+    // get token from the cookies
     const tokenParts = req.signedCookies.accessToken.split(" ");
     const token = tokenParts[0] === "Bearer" ? tokenParts[1] : null;
 
     // use the jwt service to verify the token
     // this function call throws an error if token is invalid
     const payload = jwt.verify(token, JWT_SECRET_KEY);
+
+    // ensure the retrieved `userId` is an integer, throw an error otherwise
+    assert(Number.isInteger(payload.sub), "User's ID in token not an integer");
+    // ensure the retrieved `userRole` is within the Role's permitted values,
+    // throw and error otherwise
+    assert(Object.values(Role).includes(payload.userRole, "User's role in token not a permitted value"));
 
     // if verified, add an extra property to the request object
     req.auth = {
