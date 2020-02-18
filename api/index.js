@@ -15,7 +15,7 @@ app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 app.get("/", (req, res) => {
   const token = req.signedCookies.accessToken;
   res.send({
-    success: "Yay! Inspect Network to see the Cookies",
+    message: "You have successfully logged in!",
     token: token
   });
 });

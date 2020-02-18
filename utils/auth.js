@@ -40,22 +40,18 @@ exports.getTokenExpirationTime = getTokenExpirationTime;
 // Put this function before the middleware handler of any API route that
 // requires authorization.
 //
-// This function assumes the use of a Bearer token for the incoming request.
+// This function assumes the use of a Bearer token in the Cookie of the incoming
+// request.
 function requireAuth(req, res, next) {
-  // get the `Authorization` request header if any, otherwise default to an
-  // empty string
-  const authHeader = req.get("Authorization") || "";
-  // split the auth header to list by a space
-  const authHeaderParts = authHeader.split(" ");
-  // get the token if it's a Bearer, otherwise default to null
-  const token = authHeaderParts[0] === "Bearer" ? authHeaderParts[1] : null;
-
   try {
+    const tokenParts = req.signedCookies.accessToken.split(" ");
+    const token = tokenParts[0] === "Bearer" ? tokenParts[1] : null;
+
     // use the jwt service to verify the token
-    // this function call will throw if token is invalid
+    // this function call throws an error if token is invalid
     const payload = jwt.verify(token, JWT_SECRET_KEY);
 
-    // if verified, add extra properties to the request object
+    // if verified, add an extra property to the request object
     req.auth = {
       userId: payload.sub,
       userRole: payload.role

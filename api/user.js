@@ -59,12 +59,11 @@ app.get("/login", async (req, res) => {
     // validate the user via ONID's CAS and get back object containing
     // information about the user
     const casUser = await casValidateUser(casValidationUrl);
-    const userAttr = casUser["cas:attributes"][0];
+    const userAttributes = casUser["cas:attributes"][0];
 
     // try fetching the User from the database by ID
     try {
-
-      let osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
+      let osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
@@ -72,10 +71,10 @@ app.get("/login", async (req, res) => {
         // construct a new User object
         const newUser = {
           userId: osuuid,
-          firstName: userAttr["cas:givenName"][0],
-          lastName: userAttr["cas:lastname"][0],
-          email: userAttr["cas:osuprimarymail"][0],
-          role: Role[userAttr["cas:eduPersonPrimaryAffiliation"][0]]
+          firstName: userAttributes["cas:givenName"][0],
+          lastName: userAttributes["cas:lastname"][0],
+          email: userAttributes["cas:osuprimarymail"][0],
+          role: Role[userAttributes["cas:eduPersonPrimaryAffiliation"][0]]
         };
 
         // insert the new User to the database, change `osuuid` if has to
@@ -109,46 +108,15 @@ app.get("/login", async (req, res) => {
   }
 });
 
-// Logs a User in.
-app.post("/login", async (req, res) => {
-  // ensure the provided request body is valid
-  if (req.body.email && validator.isLength(req.body.email + "", {min: 1})) {
-    try {
-      const authenticated = await userModel.authenticateUser(req.body.email);
-
-      if (authenticated) {
-        const user = await userModel.getUserByEmail(req.body.email);
-        const token = generateAuthToken(user.userId, user.role);
-
-        console.log("200: User authenticated\n");
-        res.status(200).send({
-          token: token
-        });
-      } else {
-        console.error("401: Invalid credential\n");
-        res.status(401).send({
-          error: "Invalid credential"
-        });
-      }
-    } catch (err) {
-      console.error("500: Error authenticating User:", err);
-      res.status(500).send({
-        error: "Unable to authenticate User. Please try again later."
-      });
-    }
-  } else {
-    console.error("400: Invalid request body\n");
-    res.status(400).send({error: "Invalid request body"});
-  }
-});
-
 // Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", async (req, res) => {
+  // attempt to convert `userId` param in route to an integer
+  // return NaN if it's not an integer
+  const userId = validator.toInt(req.params.userId + "");
+
   // ensure the provided request parameter is a valid integer
-  if (validator.isInt(req.params.userId + "")) {
+  if (Number.isInteger(userId)) {
     try {
-      // sanitize the request parameter and pass it to the model
-      const userId = validator.toInt(req.params.userId);
       const results = await userModel.getUserPlans(userId);
 
       if (Array.isArray(results) && results.length > 0) {
@@ -172,11 +140,13 @@ app.get("/:userId/plans", async (req, res) => {
 
 // Fetches information about a specific User.
 app.get("/:userId", async (req, res) => {
+  // attempt to convert `userId` param in route to an integer
+  // return NaN if it's not an integer
+  const userId = validator.toInt(req.params.userId + "");
+
   // ensure the provided request parameter is a valid integer
-  if (validator.isInt(req.params.userId + "")) {
+  if (Number.isInteger(userId)) {
     try {
-      // sanitize the request parameter and pass it to the model
-      const userId = validator.toInt(req.params.userId);
       const results = await userModel.getUserById(userId);
 
       if (Array.isArray(results) && results.length > 0) {
