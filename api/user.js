@@ -87,7 +87,7 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId, user.role);
 
-      console.log(`200: User ${osuuid} (${user.lastName}, ${user.firstName}) authenticated\n`);
+      console.log(`200: User authenticated: ${user.userId} (${user.email})\n`);
       // set token in a cookie in the Bearer format and then redirect to root
       res.status(200)
         .cookie("accessToken", `Bearer ${token}`, {
