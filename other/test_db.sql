@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `Comment` (
   `commentId` int NOT NULL,
   `planId` int NOT NULL,
-  `userId` int NOT NULL,
+  `userId` bigint NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -125,7 +125,7 @@ CREATE TABLE `Plan` (
   `planId` int NOT NULL,
   `status` int NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` int NOT NULL,
+  `studentId` bigint NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -149,7 +149,7 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALU
 
 CREATE TABLE `PlanReview` (
   `planId` int NOT NULL,
-  `advisorId` int NOT NULL,
+  `advisorId` bigint NOT NULL,
   `newStatus` int NOT NULL,
   `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -239,7 +239,7 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` int NOT NULL,
+  `userId` bigint NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -340,7 +340,7 @@ ALTER TABLE `Plan`
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `userId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `userId` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables

@@ -6,7 +6,7 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
-const role = require("../utils/role");
+const {Role} = require("../utils/role");
 const userModel = require("../models/user");
 const {
   userSchema,
@@ -59,31 +59,38 @@ app.get("/login", async (req, res) => {
 
     // try fetching the User from the database by ID
     try {
+      console.log("200: User authenticated");
+
       const osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
       if (Array.isArray(results) && results.length === 0) {
+        // construct a new User object
         const newUser = {
           userId: osuuid,
           firstName: userAttr["cas:givenName"][0],
           lastName: userAttr["cas:lastname"][0],
           email: userAttr["cas:osuprimarymail"][0],
-          role: userAtrtri
+          role: Role[userAttr["cas:eduPersonPrimaryAffiliation"]]
         };
 
+        // insert the new User to the database
+        const insertResult = await userModel.createUser(newUser);
+        console.log(`Inserted User ${insertResult.insertId} to the database\n`);
+        res.status(200).send({user: newUser});
+      } else if (Array.isArray(results) && results.length === 1) {
+        // if the User is already in the database, use the fetched User object
+        const user = results[0];
+        console.log(`Found User ${user.userId} in the database\n`);
+        res.status(200).send({user});
       }
-
-
-
     } catch (err) {
-
+      console.error("Error fetching or inserting User:", err);
+      res.status(500).send({error: err});
     }
-
-    console.log("200: User authenticated\n");
-    res.status(200).send({user: casUser});
   } catch (err) {
-    console.error(`${err.code}: ${err.error}\n`);
+    console.error(`${err.code}:`, err.error);
     res.status(err.code).send({error: err.error});
   }
 });
