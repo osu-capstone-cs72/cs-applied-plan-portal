@@ -10,6 +10,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  res.status(200).send({
+    token: req.query.token
+  });
+});
+
 // log incoming requests (Later replace with proper module)
 app.get("*", (req, res, next) => {
   console.log("Request:", req.url);

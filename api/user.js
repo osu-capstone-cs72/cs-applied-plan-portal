@@ -61,30 +61,43 @@ app.get("/login", async (req, res) => {
     try {
       console.log("200: User authenticated");
 
-      const osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
+      let osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
-      if (Array.isArray(results) && results.length === 0) {
+      if (results.length === 0) {
         // construct a new User object
         const newUser = {
           userId: osuuid,
           firstName: userAttr["cas:givenName"][0],
           lastName: userAttr["cas:lastname"][0],
           email: userAttr["cas:osuprimarymail"][0],
-          role: Role[userAttr["cas:eduPersonPrimaryAffiliation"]]
+          role: Role[userAttr["cas:eduPersonPrimaryAffiliation"][0]]
         };
 
-        // insert the new User to the database
-        const insertResult = await userModel.createUser(newUser);
-        console.log(`Inserted User ${insertResult.insertId} to the database\n`);
-        res.status(200).send({user: newUser});
-      } else if (Array.isArray(results) && results.length === 1) {
-        // if the User is already in the database, use the fetched User object
-        const user = results[0];
-        console.log(`Found User ${user.userId} in the database\n`);
-        res.status(200).send({user});
+        // insert the new User to the database, change `osuuid` if has to
+        osuuid = (await userModel.createUser(newUser)).insertId;
       }
+
+      // fetch this User from the database to ensure getting correct info
+      const user = (await userModel.getUserById(osuuid))[0];
+      // sign this User with a JWT
+      const token = generateAuthToken(user.userId, user.role);
+
+      // TODO: Make this work
+      // // set token as Bearer in a cookie and then redirect to root
+      // res.status(200)
+      //   .cookie("access_token", "Bearer " + token, {
+      //     expires: new Date(Date.now() + 24 * 3600000)
+      //   })
+      //   .redirect(302, "/");
+
+      res.redirect(url.format({
+        pathname: "/",
+        query: {
+          token: token
+        }
+      }));
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});
