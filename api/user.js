@@ -13,7 +13,11 @@ const {
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
-const {casValidateUser, generateAuthToken} = require("../utils/auth");
+const {
+  casValidateUser,
+  generateAuthToken,
+  getTokenExpirationTime
+} = require("../utils/auth");
 
 const app = express();
 
@@ -59,7 +63,6 @@ app.get("/login", async (req, res) => {
 
     // try fetching the User from the database by ID
     try {
-      console.log("200: User authenticated");
 
       let osuuid = validator.toInt(userAttr["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
@@ -84,20 +87,18 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId, user.role);
 
-      // TODO: Make this work
-      // // set token as Bearer in a cookie and then redirect to root
-      // res.status(200)
-      //   .cookie("access_token", "Bearer " + token, {
-      //     expires: new Date(Date.now() + 24 * 3600000)
-      //   })
-      //   .redirect(302, "/");
+      console.log(`200: User ${osuuid} (${user.lastName}, ${user.firstName}) authenticated\n`);
+      // set token in a cookie in the Bearer format and then redirect to root
+      res.status(200)
+        .cookie("accessToken", `Bearer ${token}`, {
+          expires: getTokenExpirationTime(token),  // expiration time
+          httpOnly: true,  // accessible via web server only
+          signed: true     // this cookie shall be signed
 
-      res.redirect(url.format({
-        pathname: "/",
-        query: {
-          token: token
-        }
-      }));
+          // TODO: Enable this option in production
+          // secure: true     // allow https only
+        })
+        .redirect("/");
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});
