@@ -7,35 +7,27 @@
     "doc": "docs"
   },
   "dependencies": {
+    "concurrently": "^5.1.0",
+    "cors": "^2.8.5",
     "css-loader": "^3.4.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "mysql": "^2.17.1",
-    "path": "^0.12.7",
+    "morgan": "^1.9.1",
+    "mysql2": "^2.1.0",
     "prop-types": "^15.7.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "style-loader": "^1.1.3"
+    "style-loader": "^1.1.3",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
-    "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.12.1",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
+    "nodemon": "^2.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node_modules/.bin/webpack-dev-server --mode development --open --hot",
-    "build": "node_modules/.bin/webpack --config webpack.config.js --mode production",
-    "serve": "node_modules/.bin/http-server ./dist"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js --ignore client/*",
+    "client": "cd client && npm start"
   },
   "repository": {
     "type": "git",
@@ -46,5 +38,17 @@
   "bugs": {
     "url": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal/issues"
   },
-  "homepage": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal#readme"
+  "homepage": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal#readme",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
