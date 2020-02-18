@@ -19,6 +19,20 @@ function generateAuthToken(userId, userRole) {
 }
 exports.generateAuthToken = generateAuthToken;
 
+function getTokenExpirationTime(token) {
+  try {
+    const payload = jwt.verify(token, JWT_SECRET_KEY);
+
+    // JWT's expiration time is in seconds and in UNIX time format, thus
+    // convert the expiration time to milliseconds before constructing the Date
+    return new Date(payload.exp * 1000);
+  } catch (err) {
+    // if there was any error, return null
+    return null;
+  }
+}
+exports.getTokenExpirationTime = getTokenExpirationTime;
+
 // This middleware function routes to the next middleware if and only if the
 // provided credential is valid. Otherwise, respond with the 401 error and an
 // error message.
