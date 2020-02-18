@@ -70,8 +70,7 @@ exports.requireAuth = requireAuth;
 
 // Performs a validation via ONID's CAS to validate a User's credential.
 // Returns a Promise that either
-//   - Resolves to an object containing the logged in user's information on
-//     success.
+//   - Resolves to an object containing the logged in user's information, or
 //   - Rejects with an error on failure, where error contains a code and the
 //     error object.
 function casValidateUser(casValidationUrl) {
@@ -85,7 +84,7 @@ function casValidateUser(casValidationUrl) {
             Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
             serviceResponse["cas:authenticationSuccess"].length === 1 &&
             !serviceResponse["cas:authenticationFailure"]) {
-          // when authenticated to a single user
+          // resolve with the logged in User's information
           resolve(serviceResponse["cas:authenticationSuccess"][0]);
         } else {
           if (serviceResponse &&

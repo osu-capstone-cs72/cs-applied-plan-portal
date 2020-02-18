@@ -48,12 +48,34 @@ app.post("/", async (req, res) => {
 
 // Retrieves the CAS ticket after a User has successfully logged in via ONID.
 app.get("/login", async (req, res) => {
-  const callbackUrl = `${req.protocol}://` +   // protocol
-    `${req.get("host")}` +                     // host:port
-    `${url.parse(req.originalUrl).pathname}`;  // /request/path/no/query
+  // the ticket retrieved from CAS after successful login
+  const ticket = req.query.ticket;
 
-  const casValidationUrl = `https://login.oregonstate.edu/idp-dev/profile/cas` +
-    `/serviceValidate?ticket=${req.query.ticket}&service=${callbackUrl}`;
+  // redirect to the following path on successful login
+  const redirectToPath = url.format({
+    pathname: req.query.redirectToPath || "/"  // default to root
+  });
+
+  // callback URL must be the full address of this route for the service to work
+  const callbackUrl = url.format({
+    protocol: req.protocol,
+    host: req.get("host"),
+    pathname: url.parse(req.originalUrl).pathname,
+    query: {
+      redirectToPath: redirectToPath
+    }
+  });
+
+  // send the ticket to this URL to validate the it against CAS
+  const casValidationUrl = url.format({
+    protocol: "https",
+    hostname: "login.oregonstate.edu",
+    pathname: "/idp-dev/profile/cas/serviceValidate",
+    query: {
+      ticket: ticket,
+      service: callbackUrl
+    }
+  });
 
   try {
     // validate the user via ONID's CAS and get back object containing
@@ -93,11 +115,10 @@ app.get("/login", async (req, res) => {
           expires: getTokenExpirationTime(token),  // expiration time
           httpOnly: true,  // accessible via web server only
           signed: true     // this cookie shall be signed
-
           // TODO: Enable this option in production
           // secure: true     // allow https only
         })
-        .redirect("/");
+        .redirect(redirectToPath);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});
