@@ -52,7 +52,7 @@ app.post("/", requireAuth, async (req, res) => {
       res.status(400).send({error: schemaViolations});
     }
   } else {
-    console.error(`403: User ${} not authorized to perform this action\n`);
+    console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
     res.status(403).send({error: "Forbidden"});
   }
 });
