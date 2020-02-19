@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Feb 16, 2020 at 06:05 PM
+-- Generation Time: Feb 18, 2020 at 06:14 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `Comment` (
   `commentId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -121,7 +121,7 @@ CREATE TABLE `Plan` (
   `planId` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` int(11) NOT NULL,
+  `studentId` bigint(11) UNSIGNED NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -149,7 +149,7 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 CREATE TABLE `PlanReview` (
   `reviewId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
   `status` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -279,7 +279,7 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -317,7 +317,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 ALTER TABLE `Comment`
   ADD PRIMARY KEY (`commentId`),
   ADD KEY `fk_planIdComment` (`planId`),
-  ADD KEY `fk_userId` (`userId`);
+  ADD KEY `fk_userId_comment` (`userId`);
 
 --
 -- Indexes for table `Course`
@@ -331,15 +331,15 @@ ALTER TABLE `Course`
 --
 ALTER TABLE `Plan`
   ADD PRIMARY KEY (`planId`),
-  ADD KEY `fk_studentId` (`studentId`);
+  ADD KEY `fk_userId_plan` (`studentId`);
 
 --
 -- Indexes for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
   ADD PRIMARY KEY (`reviewId`),
-  ADD KEY `fk_advisorId` (`userId`),
-  ADD KEY `fk_planId` (`planId`);
+  ADD KEY `fk_planId` (`planId`),
+  ADD KEY `fk_userId_review` (`userId`);
 
 --
 -- Indexes for table `SelectedCourse`
@@ -384,12 +384,6 @@ ALTER TABLE `PlanReview`
   MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
--- AUTO_INCREMENT for table `User`
---
-ALTER TABLE `User`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
 -- Constraints for dumped tables
 --
 
@@ -398,20 +392,20 @@ ALTER TABLE `User`
 --
 ALTER TABLE `Comment`
   ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
+  ADD CONSTRAINT `fk_userId_comment` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `Plan`
 --
 ALTER TABLE `Plan`
-  ADD CONSTRAINT `fk_studentId` FOREIGN KEY (`studentId`) REFERENCES `User` (`userId`);
+  ADD CONSTRAINT `fk_userId_plan` FOREIGN KEY (`studentId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`),
-  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_userId_review` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `SelectedCourse`
