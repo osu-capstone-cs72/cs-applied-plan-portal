@@ -98,10 +98,10 @@ app.get("/login", async (req, res) => {
     try {
       // try fetching the User from the database by ID
       const osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
-      const results = await userModel.getUserById(osuuid);
+      const existingUser = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
-      if (results.length === 0) {
+      if (!existingUser) {
         // construct a new User object
         const newUser = {
           userId: osuuid,
@@ -115,8 +115,9 @@ app.get("/login", async (req, res) => {
         await userModel.createUser(newUser);
       }
 
-      // fetch this User from the database to ensure getting correct info
-      const user = (await userModel.getUserById(osuuid))[0];
+      // fetch this User from the database again to ensure getting correct info
+      const user = await userModel.getUserById(osuuid);  // guaranteed to have 1
+
       // sign this User with a JWT
       const token = generateAuthToken(user.userId, user.role);
 
@@ -158,11 +159,11 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
         auth.userRole === Role.advisor ||
         auth.userRole === Role.headAdvisor) {
       try {
-        const results = await userModel.getUserPlans(userId);
+        const plans = await userModel.getUserPlans(userId);
 
-        if (Array.isArray(results) && results.length > 0) {
+        if (plans.length > 0) {
           console.log("200: Plans found\n");
-          res.status(200).send(results);
+          res.status(200).send(plans);
         } else {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found"});
@@ -200,11 +201,11 @@ app.get("/:userId", requireAuth, async (req, res) => {
         auth.userRole === Role.advisor ||
         auth.userRole === Role.headAdvisor) {
       try {
-        const results = await userModel.getUserById(userId);
+        const user = await userModel.getUserById(userId);
 
-        if (Array.isArray(results) && results.length > 0) {
+        if (user) {
           console.log("200: User found\n");
-          res.status(200).send(results[0]);
+          res.status(200).send(user);
         } else {
           console.error("404: No User found\n");
           res.status(404).send({error: "No User found"});
