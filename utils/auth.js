@@ -64,6 +64,9 @@ function requireAuth(req, res, next) {
   req.auth = {};
 
   try {
+    // ensure that the cookie has the JWT field
+    assert(req.signedCookies.accessToken, "No access token in cookie");
+
     // get token from the cookies
     const tokenParts = req.signedCookies.accessToken.split(" ");
     const token = tokenParts[0] === "Bearer" ? tokenParts[1] : null;
