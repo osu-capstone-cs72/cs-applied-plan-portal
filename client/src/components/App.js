@@ -2,11 +2,11 @@ import React from "react";
 import {Global, css} from "@emotion/core";
 import {Route, Switch} from "react-router-dom";
 import StudentCreatePlan from "./create_plan/StudentCreatePlan";
-import EditPlan from "./create_plan/EditPlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
 import StudentHome from "./StudentHome";
+import AdvisorHome from "./AdvisorHome";
 
 const globalStyles = css`
   @import url('https://fonts.googleapis.com/css?family=Muli');
@@ -24,6 +24,9 @@ function App() {
         <Route exact path="/">
           <StudentHome userId={1}/>
         </Route>
+        <Route path="/advisorHome">
+          <AdvisorHome />
+        </Route>
         <Route path="/createPlan">
           <StudentCreatePlan />
         </Route>
@@ -31,7 +34,7 @@ function App() {
           <ViewPlan />
         </Route>
         <Route path="/editPlan/:planId">
-          <EditPlan />
+          <StudentCreatePlan />
         </Route>
         <Route path="/500">
           <PageInternalError />

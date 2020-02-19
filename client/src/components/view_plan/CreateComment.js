@@ -7,7 +7,6 @@ import {useParams} from "react-router-dom";
 function CreateComment(props) {
 
   const [newComment, setNewComment] = useState(true);
-  const [userId] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const {planId} = useParams();
 
@@ -58,7 +57,7 @@ function CreateComment(props) {
 
       const postObj = {
         planId: planId,
-        userId: userId,
+        userId: props.currentUser.id,
         text: text
       };
 
@@ -75,7 +74,16 @@ function CreateComment(props) {
         obj = await response.json();
         setErrorMessage("");
         setNewComment(!newComment);
-        props.onUpdate(); // lift state up
+        props.onNewComment({
+          commentId: obj.insertId,
+          reviewId: 0,
+          firstName: props.currentUser.firstName,
+          lastName: props.currentUser.lastName,
+          time: obj.time,
+          planId: planId,
+          userId: props.currentUser.id,
+          text: text
+        }); // lift state up
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();

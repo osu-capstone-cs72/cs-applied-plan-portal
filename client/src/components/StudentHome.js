@@ -19,15 +19,13 @@ export default class StudentHome extends React.Component {
 
     this.getAllPlans = this.getAllPlans.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
-  }
 
-  componentWillMount() {
     this.getAllPlans();
   }
 
   async getAllPlans() {
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/plan/getAllPlans/${this.props.userId}`;
+    const getUrl = `http://${server}/user/${this.props.userId}/plans`;
     let obj = [];
 
     try {
@@ -85,10 +83,10 @@ export default class StudentHome extends React.Component {
             <th className="student-plans-data">Reviewers</th>
           </tr>
           {this.state.plans ? this.state.plans.map(p =>
-            <tr key={this.props.userId} onClick={() => this.goToPlan(p)}>
-              <td className="student-plans-data" key={this.props.userId}>{p.planName}</td>
-              <td className="student-plans-data" key={this.props.userId}>{this.renderStatus(p.status)}</td>
-              <td className="student-plans-data" key={this.props.userId}>{p.lastUpdated}</td>
+            <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
+              <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
+              <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
+              <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
             </tr>) : null}
         </table>
         <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}>+</button>

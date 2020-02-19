@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
-import {useParams, withRouter} from "react-router-dom";
+import {Link, useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
@@ -45,10 +45,6 @@ function PlanMetadata(props) {
     }
   `;
 
-  function goToEditPlan(planId) {
-    props.history.push(`/editPlan/${planId}`);
-  }
-
   function renderStatus() {
     switch (props.status) {
       case 0:
@@ -62,7 +58,7 @@ function PlanMetadata(props) {
       case 4:
         return "Accepted";
       default:
-        return "Undefined status";
+        return "";
     }
   }
 
@@ -85,11 +81,17 @@ function PlanMetadata(props) {
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{renderStatus()}</p>
         </div>
-        <div className="metadata-field">
-          <button id="edit-plan-button" onClick={() => { goToEditPlan(planId); }}>
-              Edit Plan
-          </button>
-        </div>
+        {props.currentUser.role ? (
+          <div className="metadata-field" />
+        ) : (
+          <div className="metadata-field">
+            <Link to={`/editPlan/${planId}`}>
+              <button id="edit-plan-button">
+                  Edit Plan
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -102,5 +104,6 @@ PlanMetadata.propTypes = {
   userId: PropTypes.number,
   planName: PropTypes.string,
   status: PropTypes.number,
-  history: PropTypes.object
+  history: PropTypes.object,
+  currentUser: PropTypes.object
 };
