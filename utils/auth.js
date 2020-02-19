@@ -72,11 +72,13 @@ function requireAuth(req, res, next) {
     // this function call throws an error if token is invalid
     const payload = jwt.verify(token, JWT_SECRET_KEY);
 
-    // ensure the retrieved `userId` is an integer, throw an error otherwise
+    // ensure the retrieved `sub` (i.e. User's ID) is an integer,
+    // or throw an error otherwise
     assert(Number.isInteger(payload.sub), "User's ID in token not an integer");
-    // ensure the retrieved `userRole` is within the Role's permitted values,
-    // throw and error otherwise
-    assert(Object.values(Role).includes(payload.userRole, "User's role in token not a permitted value"));
+    // ensure the retrieved `role` (i.e. User's role) is within the Role's
+    // permitted values, or throw and error otherwise
+    assert(Object.values(Role).includes(payload.role),
+      "User's role in token not a permitted value");
 
     // if verified, add an extra property to the request object
     req.auth = {

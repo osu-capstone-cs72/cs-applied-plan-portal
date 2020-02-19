@@ -97,7 +97,7 @@ app.get("/login", async (req, res) => {
     // make this nested try to catch potential error when parsing
     try {
       // try fetching the User from the database by ID
-      let osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
+      const osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
       const results = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
@@ -111,8 +111,8 @@ app.get("/login", async (req, res) => {
           role: Role[userAttributes["cas:eduPersonPrimaryAffiliation"][0]]
         };
 
-        // insert the new User to the database, change `osuuid` if has to
-        osuuid = (await userModel.createUser(newUser)).insertId;
+        // insert the new User to the database
+        await userModel.createUser(newUser);
       }
 
       // fetch this User from the database to ensure getting correct info
