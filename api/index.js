@@ -8,9 +8,17 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const {requireAuth} = require("../utils/auth");
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
+
+app.get("/login", requireAuth, (req, res)  => {
+  res.status(200).send({
+    authenticated: true
+  });
+});
 
 // log incoming requests (Later replace with proper module)
 app.get("*", (req, res, next) => {

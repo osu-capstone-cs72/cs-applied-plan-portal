@@ -64,6 +64,8 @@ app.get("/login", async (req, res) => {
 
   // redirect to the following path on successful login
   const redirectToPath = url.format({
+    hostname: req.hostname,
+    port: process.env.CLIENT_PORT,
     pathname: req.query.redirectToPath || "/"  // default to root
   });
 
