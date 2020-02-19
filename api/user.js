@@ -113,6 +113,7 @@ app.get("/login", async (req, res) => {
 
         // insert the new User to the database
         await userModel.createUser(newUser);
+        console.log(`201: User created: ${newUser.userId} (${newUser.email})\n`);
       }
 
       // fetch this User from the database again to ensure getting correct info
