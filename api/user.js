@@ -175,7 +175,7 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
         });
       }
     } else {
-      console.error(`403: User ${userId} not authorized to perform this action\n`);
+      console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
       res.status(403).send({error: "Forbidden"});
     }
   } else {
@@ -217,7 +217,7 @@ app.get("/:userId", requireAuth, async (req, res) => {
         });
       }
     } else {
-      console.error(`403: User ${userId} not authorized to perform this action\n`);
+      console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
       res.status(403).send({
         error: "Forbidden"
       });
