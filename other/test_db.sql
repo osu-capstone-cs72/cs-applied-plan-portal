@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Feb 17, 2020 at 05:28 PM
+-- Generation Time: Feb 16, 2020 at 06:05 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `Comment` (
   `commentId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
-  `userId` int(11) UNSIGNED NOT NULL,
+  `userId` bigint(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -47,8 +47,7 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (7, 310, 2, '2020-02-14 11:37:33', 'I don\'t like this plan. Let\'s get rid of it.'),
 (9, 310, 6, '2020-02-15 11:46:27', 'Sure, plan rejected.'),
 (46, 364, 4, '2020-02-16 18:58:37', 'I think this is a great plan. I will go ahead and let the Head Advisor finalize this.'),
-(73, 359, 6, '2020-02-15 02:00:52', 'I think you should take GEO 221.\nI won\'t accept this plan otherwise.\nFix it.'),
-(77, 362, 1, '2020-02-18 00:17:39', 'This is a plan that I have.');
+(73, 359, 6, '2020-02-15 02:00:52', 'I think you should take GEO 221.\nI won\'t accept this plan otherwise.\nFix it.');
 
 -- --------------------------------------------------------
 
@@ -122,7 +121,7 @@ CREATE TABLE `Plan` (
   `planId` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` int(11) UNSIGNED NOT NULL,
+  `studentId` bigint(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -134,11 +133,11 @@ CREATE TABLE `Plan` (
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
 (308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42', '2020-02-17 01:57:19'),
 (310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42', '2020-02-16 19:54:53'),
-(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42', '2020-02-18 00:47:37'),
+(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42', '2020-02-16 19:54:53'),
 (359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42', '2020-02-16 19:54:53'),
 (360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42', '2020-02-16 19:54:53'),
 (361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22', '2020-02-16 19:54:53'),
-(362, 2, 'Luke\'s pure ECE plan', 1, '2020-02-12 00:36:38', '2020-02-17 18:07:03'),
+(362, 2, 'some plan', 1, '2020-02-12 00:36:38', '2020-02-16 19:54:53'),
 (364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30', '2020-02-16 19:54:53');
 
 -- --------------------------------------------------------
@@ -150,7 +149,7 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 CREATE TABLE `PlanReview` (
   `reviewId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
-  `userId` int(11) UNSIGNED NOT NULL,
+  `userId` bigint(11) NOT NULL,
   `status` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -280,7 +279,7 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` int(11) UNSIGNED NOT NULL,
+  `userId` bigint(11) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -318,7 +317,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 ALTER TABLE `Comment`
   ADD PRIMARY KEY (`commentId`),
   ADD KEY `fk_planIdComment` (`planId`),
-  ADD KEY `fk_commenterId` (`userId`);
+  ADD KEY `fk_userId` (`userId`);
 
 --
 -- Indexes for table `Course`
@@ -364,7 +363,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -376,19 +375,19 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=368;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `userId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `userId` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
@@ -398,8 +397,8 @@ ALTER TABLE `User`
 -- Constraints for table `Comment`
 --
 ALTER TABLE `Comment`
-  ADD CONSTRAINT `fk_commenterId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`),
-  ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `Plan`
@@ -411,8 +410,8 @@ ALTER TABLE `Plan`
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
+  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`),
+  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `SelectedCourse`
