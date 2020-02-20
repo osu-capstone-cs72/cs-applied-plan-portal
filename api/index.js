@@ -8,7 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// const {requireAuth} = require("../utils/auth");
+const {requireAuth} = require("../utils/auth");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -20,12 +20,12 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-// app.get("/login", requireAuth, (req, res)  => {
-//   console.log("200: Returned good authentication status\n");
-//   res.status(200).send({
-//     authenticated: true
-//   });
-// });
+app.get("/login", requireAuth, (req, res)  => {
+  console.log("200: Returned good authentication status\n");
+  res.status(200).send({
+    authenticated: true
+  });
+});
 
 app.use("/comment", require("./comment"));
 app.use("/course", require("./course"));
