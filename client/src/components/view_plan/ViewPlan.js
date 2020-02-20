@@ -10,11 +10,14 @@ import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
+import PageInternalError from "../general/PageInternalError";
+import PageNotFound from "../general/PageNotFound";
 const PHE = require("print-html-element");
 
 function ViewPlan(props) {
 
   const [currentUserDev] = useState(2); // Development: Selecting the current user
+  const [pageError, setPageError] = useState(0);
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -68,14 +71,13 @@ function ViewPlan(props) {
             setStatus(parseInt(obj[0][0].status));
           } else {
             // we got a bad status code. send to 404 page
-            props.history.push("/404");
+            setPageError(404);
             return;
           }
 
         } catch (err) {
           // send to 500 page if a server error happens while fetching plan
-          console.log("An internal server error occurred. Please try again later.");
-          props.history.push("/500");
+          setPageError(500);
           return;
         }
 
@@ -144,34 +146,35 @@ function ViewPlan(props) {
   }
 
   function handlePrint() {
-
     const opts = {
       pageTitle: `OSU CS Applied Plan Portal: Plan ${planId}`,
     };
-
     PHE.printElement(document.getElementById("printable-content"), opts);
   }
 
-  return (
-    <div className="view-plan" css={style}>
-      <PageSpinner loading={loading} />
-      <NavBar showSearch={false} />
-      <div id={"printable-content"}>
-        <PlanMetadata studentName={studentName} userId={userId}
-          planName={planName} status={status} currentUser={currentUser}
-          onPrint={() => handlePrint()}/>
-        <PlanTable courses={courses} />
-      </div>
-      {currentUser.role ? (
+  if (!pageError) {
+    return (
+      <div className="view-plan" css={style}>
+        <PageSpinner loading={loading} />
+        <NavBar showSearch={false} />
+        <div id={"printable-content"}>
+          <PlanMetadata studentName={studentName} userId={userId}
+            planName={planName} status={status} currentUser={currentUser}
+            onPrint={() => handlePrint()}/>
+          <PlanTable courses={courses} />
+        </div>
         <CreateReview currentUser={currentUser}
           onNewStatus={e => handleChangeStatus(e)} />
-      ) : (
-        null
-      )}
-      <ActivityFeed activity={activity} currentUser={currentUser}
-        onNewComment={e => handleAddComment(e)} />
-    </div>
-  );
+        <ActivityFeed activity={activity} currentUser={currentUser}
+          onNewComment={e => handleAddComment(e)} />
+      </div>
+    );
+  } else if (pageError === 404) {
+    return <PageNotFound />;
+  } else {
+    return <PageInternalError />;
+  }
+
 }
 export default withRouter(ViewPlan);
 

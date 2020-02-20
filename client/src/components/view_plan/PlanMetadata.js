@@ -51,11 +51,8 @@ function PlanMetadata(props) {
       }
 
       .metadata-field {
-      vertical-align: top;
-      display: inline-block;
-      width: 25%;
-      height: 55px;
-    }
+        width: 25%;
+      }
 
     }
 
