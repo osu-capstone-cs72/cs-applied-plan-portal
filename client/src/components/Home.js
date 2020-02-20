@@ -58,7 +58,8 @@ function Home(props) {
         obj = await results.json();
         console.log(obj);
         if (!obj.authenticated) {
-          window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
+          window.location.href = "https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:3000/";
+          // window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
           console.log("go to url");
         } else {
           console.log("already logged in");
