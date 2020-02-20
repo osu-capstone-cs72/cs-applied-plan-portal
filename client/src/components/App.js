@@ -7,6 +7,7 @@ import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
 import StudentHome from "./StudentHome";
 import AdvisorHome from "./AdvisorHome";
+import Home from "./Home";
 
 const globalStyles = css`
   @import url('https://fonts.googleapis.com/css?family=Muli');
@@ -22,10 +23,7 @@ function App() {
       <Global styles={globalStyles} />
       <Switch>
         <Route exact path="/">
-          <StudentHome userId={1}/>
-        </Route>
-        <Route path="/advisorHome">
-          <AdvisorHome />
+          <Home />
         </Route>
         <Route path="/createPlan">
           <StudentCreatePlan />

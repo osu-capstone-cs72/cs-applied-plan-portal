@@ -4,7 +4,6 @@
 const assert = require("assert");
 const needle = require("needle");
 const jwt = require("jsonwebtoken");
-const url = require("url");
 const xml2js = require("xml2js");
 
 const {Role} = require("./role");
@@ -94,25 +93,8 @@ function requireAuth(req, res, next) {
     next();
   } catch (err) {
     console.error("Authentication error:", err);
-    // console.log("Redirecting the user to ONID's login page\n");
-    // const callbackUrl = url.format({
-    //   protocol: req.protocol,
-    //   host: req.get("host"),
-    //   pathname: "/user/login",
-    //   query: {
-    //     redirectToPath: "/"
-    //   }
-    // });
-    // res.status(401).redirect(url.format({
-    //   protocol: "https",
-    //   hostname: "login.oregonstate.edu",
-    //   pathname: "/idp-dev/profile/cas/login",
-    //   query: {
-    //     service: callbackUrl
-    //   }
-    // }));
     res.status(401).send({
-      authenticated: false
+      error: "Invalid credentials"
     });
   }
 }
