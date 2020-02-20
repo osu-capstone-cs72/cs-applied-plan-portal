@@ -10,10 +10,11 @@ import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
+const PHE = require("print-html-element");
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(1); // Development: Selecting the current user
+  const [currentUserDev] = useState(2); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -133,22 +134,34 @@ function ViewPlan(props) {
 
   }, [planId, props.history, currentUserDev]);
 
-  async function handleAddComment(e) {
+  function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);
   }
 
-  async function handleChangeStatus(e) {
+  function handleChangeStatus(e) {
     setActivity(prev => [e, ...prev]);
     setStatus(parseInt(e.status));
+  }
+
+  function handlePrint() {
+
+    const opts = {
+      pageTitle: `OSU CS Applied Plan Portal: Plan ${planId}`,
+    };
+
+    PHE.printElement(document.getElementById("printable-content"), opts);
   }
 
   return (
     <div className="view-plan" css={style}>
       <PageSpinner loading={loading} />
       <NavBar showSearch={false} />
-      <PlanMetadata studentName={studentName} userId={userId}
-        planName={planName} status={status} currentUser={currentUser} />
-      <PlanTable courses={courses} />
+      <div id={"printable-content"}>
+        <PlanMetadata studentName={studentName} userId={userId}
+          planName={planName} status={status} currentUser={currentUser}
+          onPrint={() => handlePrint()}/>
+        <PlanTable courses={courses} />
+      </div>
       {currentUser.role ? (
         <CreateReview currentUser={currentUser}
           onNewStatus={e => handleChangeStatus(e)} />

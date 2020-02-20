@@ -100,7 +100,7 @@ function CreateComment(props) {
   if (newComment) {
     return (
       <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => { toggle(); }}>
+        <button className="toggle-creation-button" onClick={() => toggle()}>
           +
         </button>
       </div>
@@ -108,7 +108,7 @@ function CreateComment(props) {
   } else {
     return (
       <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => { toggle(); }}>
+        <button className="toggle-creation-button" onClick={() => toggle()}>
         -
         </button>
         <div id="comment-error-container">
@@ -116,7 +116,7 @@ function CreateComment(props) {
         </div>
         <div id="comment-input-container">
           <textarea id="comment-text-input" rows="5" cols="50"/>
-          <button id="submit-comment-button" onClick={() => { submit(planId); }}>
+          <button id="submit-comment-button" onClick={() => submit(planId)}>
             Submit Comment
           </button>
         </div>

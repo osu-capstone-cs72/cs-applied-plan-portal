@@ -101,7 +101,7 @@ function CreateReview(props) {
         <p id="review-error-message">{errorMessage}</p>
       </div>
       <div id="review-input-container">
-        <select id="review-select">
+        <select id="review-select" defaultValue={"2"}>
           <option value="0">Rejected</option>
           <option value="1">Awaiting student changes</option>
           <option value="2">Awaiting review</option>
