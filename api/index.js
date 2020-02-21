@@ -16,7 +16,7 @@ app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 
 // log incoming requests (no routes allowed above this)
 app.all("*", (req, res, next) => {
-  console.log("Request:", req.url);
+  console.log(`Request: ${req.method} ${req.url}`);
   next();
 });
 
