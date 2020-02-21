@@ -4,6 +4,7 @@
 const assert = require("assert");
 const needle = require("needle");
 const jwt = require("jsonwebtoken");
+const url = require("url");
 const xml2js = require("xml2js");
 
 const {Role} = require("./role");
@@ -93,9 +94,40 @@ function requireAuth(req, res, next) {
     next();
   } catch (err) {
     console.error("Authentication error:", err);
-    res.status(401).send({
-      error: "Invalid credentials"
+
+    // the URL of the final redirection, used as a query of the service URL
+    const targetUrl = url.format({
+      protocol: req.protocol,
+      hostname: req.hostname,
+      port: process.env.PORT,
+      pathname: req.originalUrl
     });
+
+    // the URL of the service that requests the ticket via CAS, used as a query
+    // of the URL of the initial request sent to CAS to retrieve a ticket
+    const serviceUrl = url.format({
+      protocol: req.protocol,
+      hostname: req.hostname,
+      port: process.env.PORT,
+      pathname: "/user/login",
+      query: {
+        target: targetUrl
+      }
+    });
+
+    // the URL of the initial request sent to CAS to retrieve a ticket
+    const onidLoginUrl = url.format({
+      protocol: "https",
+      hostname: "login.oregonstate.edu",
+      pathname: "/idp-dev/profile/cas/login",
+      query: {
+        service: serviceUrl
+      }
+    });
+
+    console.log("Redirecting the user to the ONID login page");
+    console.log(`Redirecting to ${onidLoginUrl}\n`);
+    res.status(401).redirect(onidLoginUrl);
   }
 }
 exports.requireAuth = requireAuth;

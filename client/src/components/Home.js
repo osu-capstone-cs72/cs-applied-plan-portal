@@ -32,7 +32,7 @@ function Home(props) {
       setLoading(true);
       try {
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}/user/login?redirectToPath=/&${ticket}`;
+        const getUrl = `http://${server}/user/login?target=/&${ticket}`;
         console.log(getUrl);
 
         const results = await fetch(getUrl);
@@ -60,7 +60,7 @@ function Home(props) {
         console.log(obj);
         if (!obj.authenticated) {
           const newUserId = 82757579527;
-          // window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:5000/user/login?redirectToPath=/user/${newUserId}/plans`;
+          // window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:5000/user/login?target=/user/${newUserId}/plans`;
           window.location.href = "https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:3000/";
           // window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
           console.log("go to url");

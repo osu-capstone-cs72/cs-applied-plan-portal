@@ -58,22 +58,23 @@ app.post("/", requireAuth, async (req, res) => {
 });
 
 // Retrieves the CAS ticket after a User has successfully logged in via ONID.
+// Sends the second request to CAS with the ticket to validate it.
 app.get("/login", async (req, res) => {
   // the ticket retrieved from CAS after successful login
   const ticket = req.query.ticket;
 
-  // redirect to the following path on successful login
-  const redirectToPath = url.format({
-    pathname: req.query.redirectToPath || "/"  // default to root
-  });
+  // the final URL to redirect to on successful login, used as a query of the
+  // callback URL
+  const targetUrl = req.query.target;
 
-  // callback URL must be the full address of this route for the service to work
+  // the callback URL, used as a query of the URL of the second request sent to
+  // CAS to validate the ticket received from the first request
   const callbackUrl = url.format({
     protocol: req.protocol,
     host: req.get("host"),
-    pathname: url.parse(req.originalUrl).pathname,
+    pathname: url.parse(req.originalUrl).pathname,  // this route
     query: {
-      redirectToPath: redirectToPath
+      target: targetUrl
     }
   });
 
@@ -122,7 +123,8 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId, user.role);
 
-      console.log(`200: User authenticated: ${user.userId} (${user.email})\n`);
+      console.log(`200: User authenticated: ${user.userId} (${user.email})`);
+      console.log(`Redirecting to ${targetUrl}\n`);
       // set token in a cookie in the Bearer format and then redirect to root
       res.status(200)
         .cookie("accessToken", `Bearer ${token}`, {
@@ -132,7 +134,7 @@ app.get("/login", async (req, res) => {
           // TODO: Enable this option in production
           // secure: true     // allow https only
         })
-        .redirect(redirectToPath);
+        .redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});

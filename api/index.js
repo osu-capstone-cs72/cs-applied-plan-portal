@@ -20,10 +20,10 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-app.get("/login", requireAuth, (req, res)  => {
-  console.log("200: Returned good authentication status\n");
+app.get("/", requireAuth, (req, res)  => {
+  console.log("200: Test auth with React server - authenticated\n");
   res.status(200).send({
-    authenticated: true
+    message: "authenticated"
   });
 });
 
