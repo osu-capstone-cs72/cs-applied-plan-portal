@@ -1,7 +1,7 @@
 import React from "react";
 import NavBar from "./Navbar";
+import PageSpinner from "./general/PageSpinner";
 import PropTypes from "prop-types";
-
 
 export default class StudentHome extends React.Component {
   static get propTypes() {
@@ -14,7 +14,8 @@ export default class StudentHome extends React.Component {
     super(props);
 
     this.state = {
-      plans: null
+      plans: null,
+      loading: true
     };
 
     this.getAllPlans = this.getAllPlans.bind(this);
@@ -24,6 +25,9 @@ export default class StudentHome extends React.Component {
   }
 
   async getAllPlans() {
+    this.setState({
+      loading: true
+    });
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const getUrl = `http://${server}/user/${this.props.userId}/plans`;
     let obj = [];
@@ -48,6 +52,9 @@ export default class StudentHome extends React.Component {
     } catch (err) {
       alert(err);
     }
+    this.setState({
+      loading: false
+    });
   }
 
   renderStatus(status) {
@@ -74,6 +81,7 @@ export default class StudentHome extends React.Component {
   render() {
     return (
       <div>
+        <PageSpinner loading={this.state.loading} />
         <NavBar showSearch={true} searchContent={"Search for plans"}/>
         <table className="student-plans-table">
           <tr>
