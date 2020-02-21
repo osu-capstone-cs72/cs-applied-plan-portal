@@ -145,6 +145,48 @@ app.get("/login", async (req, res) => {
   }
 });
 
+app.post("/login", (req, res) => {
+  if (req.body && validator.isLength(req.body.target + "", {min: 1})) {
+    // the URL of the final redirection, used as a query of the service URL
+    const targetUrl = url.format({
+      protocol: req.protocol,
+      hostname: req.hostname,
+      port: process.env.PORT,
+      pathname: req.originalUrl
+    });
+
+    // // the URL of the service that requests the ticket via CAS, used as a query
+    // // of the URL of the initial request sent to CAS to retrieve a ticket
+    // const serviceUrl = url.format({
+    //   protocol: req.protocol,
+    //   hostname: req.hostname,
+    //   port: process.env.PORT,
+    //   pathname: "/user/login",
+    //   query: {
+    //     target: targetUrl
+    //   }
+    // });
+
+    // // the URL of the initial request sent to CAS to retrieve a ticket
+    // const onidLoginUrl = url.format({
+    //   protocol: "https",
+    //   hostname: "login.oregonstate.edu",
+    //   pathname: "/idp-dev/profile/cas/login",
+    //   query: {
+    //     service: serviceUrl
+    //   }
+    // });
+
+    // console.log("Redirecting the user to the ONID login page");
+    // console.log(`Redirecting to ${onidLoginUrl}\n`);
+    // res.status(401).redirect(onidLoginUrl);
+  } else {
+    res.status(400).send({
+      error: "Invalid request body"
+    });
+  }
+});
+
 // Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", requireAuth, async (req, res) => {
   // limit auth payload's info to this function's scope

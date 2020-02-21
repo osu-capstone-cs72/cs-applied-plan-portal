@@ -52,21 +52,31 @@ function Home(props) {
       setLoading(true);
       try {
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}/login`;
-        let obj = {};
+        const getUrl = `http://${server}`;
 
         const results = await fetch(getUrl);
-        obj = await results.json();
-        console.log(obj);
-        if (!obj.authenticated) {
-          const newUserId = 82757579527;
-          // window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:5000/user/login?target=/user/${newUserId}/plans`;
-          window.location.href = "https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:3000/";
-          // window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
-          console.log("go to url");
+        const obj = await results.json();
+
+        if (results.ok) {
+          console.log("OK! results =", results);
+          console.log("OK! obj =", obj);
+        } else if (results.status === 401) {
+          console.log("Not authenticated! results =", results);
+          console.log("Not authenticated! obj =", obj);
+
+          window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://${server}/user/login?target=http://localhost:5000/`;
         } else {
-          console.log("already logged in");
+          throw Error("Unspecified error: results =", results);
         }
+        // if (!obj.authenticated) {
+        //   const newUserId = 82757579527;
+        //   // window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:5000/user/login?target=/user/${newUserId}/plans`;
+        //   window.location.href = "https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:3000/";
+        //   // window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
+        //   console.log("go to url");
+        // } else {
+        //   console.log("already logged in");
+        // }
 
       } catch (err) {
         // send to 500 page if we have a server error while trying to login
