@@ -32,15 +32,7 @@ function ViewPlan(props) {
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
   const [activity, setActivity] = useState([]);
-  const [courses, setCourses] = useState(
-    [[], [{
-      courseId: 0,
-      credits: null,
-      courseName: "",
-      courseCode: "",
-      prerequisites: ""
-    }], []]
-  );
+  const [courses, setCourses] = useState([]);
   const {planId} = useParams();
 
   const style = css`
@@ -63,12 +55,12 @@ function ViewPlan(props) {
           if (response.ok) {
             // get data from the response
             obj = await response.json();
-            userId = obj[0][0].studentId;
-            created = obj[0][0].created;
-            setCourses(obj);
-            setPlanName(obj[0][0].planName);
-            setUserId(obj[0][0].studentId);
-            setStatus(parseInt(obj[0][0].status));
+            userId = obj.studentId;
+            created = obj.created;
+            setCourses(obj.courses);
+            setPlanName(obj.planName);
+            setUserId(obj.studentId);
+            setStatus(parseInt(obj.status));
           } else {
             // we got a bad status code. send to 404 page
             setPageError(404);
