@@ -9,11 +9,12 @@ import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
+import jwtDecode from "jwt-decode";
 import PropTypes from "prop-types";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(1); // Development: Selecting the current user
+  const [currentUserDev] = useState(jwtDecode(props.token).sub); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -163,5 +164,6 @@ function ViewPlan(props) {
 export default withRouter(ViewPlan);
 
 ViewPlan.propTypes = {
-  history: PropTypes.object
+  history: PropTypes.object,
+  token: PropTypes.object
 };

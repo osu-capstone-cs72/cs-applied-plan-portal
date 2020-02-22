@@ -7,13 +7,17 @@ import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
 import StudentHome from "./StudentHome";
 import AdvisorHome from "./AdvisorHome";
+import {Route, Switch} from "react-router-dom";
+import StudentCreatePlan from "./create_plan/StudentCreatePlan";
+import ViewPlan from "./view_plan/ViewPlan";
+import PageNotFound from "./general/PageNotFound";
 import PropTypes from "prop-types";
 import jwtDecode from "jwt-decode";
 import url from "url";
 
 function Verifier(props) {
 
-  // const [token, setToken] = useState({});
+  const [token, setToken] = useState({});
   const [homeState, setHomeState] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
@@ -30,7 +34,6 @@ function Verifier(props) {
         // retrieve the query string from the address bar and parse the queries
         // in the string to an object
         const queryObj = url.parse(props.location.search, true).query;
-        console.log(queryObj);
 
         // retrieve access token from the query
         const accessToken = queryObj.accessToken;
@@ -47,8 +50,6 @@ function Verifier(props) {
 
         // get the final URL used in the request
         getUrl = url.format(parsedGetUrl);
-        console.log("getUrl =", getUrl);
-
 
         const results = await fetch(getUrl);
         const obj = await results.json();
@@ -57,6 +58,8 @@ function Verifier(props) {
 
           // render the correct homepage
           const payloadObj = jwtDecode(accessToken);
+          console.log(payloadObj);
+          setToken(accessToken);
           if (payloadObj.role) {
             setHomeState(2);
           } else {
@@ -72,8 +75,6 @@ function Verifier(props) {
             // TODO: Put this in a global function that receives on the `target`
             // param that defines the final URL that the API should redirect to
             // on a successful login.
-            // Note: When dealing with URLs, it's best to use the `url` module
-            // to format and parse them.
             protocol: "https",
             hostname: "login.oregonstate.edu",
             pathname: "/idp-dev/profile/cas/login",
@@ -110,15 +111,36 @@ function Verifier(props) {
 
   if (pageError) {
     return <PageInternalError />;
-  } else if (homeState === 1) {
-    return <StudentHome />;
-  } else if (homeState === 2) {
-    return <AdvisorHome />;
-  } else {
+  } else if (!homeState) {
     return (
       <div id={"page-container"} css={style}>
         <PageSpinner loading={loading} />
       </div>
+    );
+  } else {
+    return (
+      <Switch>
+        <Route exact path="/">
+          {homeState === 2 ?
+            <AdvisorHome token={token} /> : <StudentHome token={token} />
+          }
+        </Route>
+        <Route path="/createPlan">
+          <StudentCreatePlan token={token} />
+        </Route>
+        <Route path="/viewPlan/:planId">
+          <ViewPlan token={token} />
+        </Route>
+        <Route path="/editPlan/:planId">
+          <StudentCreatePlan token={token} />
+        </Route>
+        <Route path="/500">
+          <PageInternalError token={token} />
+        </Route>
+        <Route path="*">
+          <PageNotFound />
+        </Route>
+      </Switch>
     );
   }
 
