@@ -165,7 +165,7 @@ app.get("/status/:status/:created/:ascend", async (req, res) => {
       res.status(404).send({error: "No plans found."});
     } else {
       console.log("200: Plan found\n");
-      res.status(200).send({data: results});
+      res.status(200).send({plans: results});
     }
 
   } catch (err) {

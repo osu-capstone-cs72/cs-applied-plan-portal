@@ -66,7 +66,7 @@ function AdvisorHome(props) {
       setLoading(false);
       if (results.ok) {
         obj = await results.json();
-        setPlans(obj.data);
+        setPlans(obj.plans);
       } else {
         // we got a bad status code. Show the error
         obj = await results.json();
