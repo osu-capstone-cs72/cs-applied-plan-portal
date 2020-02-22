@@ -1,6 +1,7 @@
 import React from "react";
 import PlanCourse from "./PlanCourse";
 import PropTypes from "prop-types";
+import {getToken, getProfile} from "../../utils/authService";
 
 export default class EditPlan extends React.Component {
 
@@ -47,10 +48,12 @@ export default class EditPlan extends React.Component {
       } else {
 
         // set up data for new plan to send to backend
+        const token = getToken();
+        const profile = getProfile();
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const postURL = `http://${server}/plan`;
+        const postURL = `http://${server}/plan/?accessToken=${token}`;
         const postObj = {
-          userId: 1,
+          userId: profile.sub,
           planName: planname,
           courses: courses
         };
@@ -87,8 +90,9 @@ export default class EditPlan extends React.Component {
 
   editPlan(courses, planname, planId) {
     // set up data for new plan to send to backend
+    const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const patchURL = `http://${server}/plan`;
+    const patchURL = `http://${server}/plan/?accessToken=${token}`;
     const patchObj = {
       planId: planId,
       planName: planname,
