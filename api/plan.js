@@ -11,10 +11,9 @@ const patchEnforceConstraints = require("../utils/planValidation").patchEnforceC
 const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
-const getPlans = require("../models/plan").getPlans;
-const getPlanComments = require("../models/plan").getPlanComments;
-const getPlanReviews = require("../models/plan").getPlanReviews;
+const getPlansStatus = require("../models/plan").getPlansStatus;
 const deletePlan = require("../models/plan").deletePlan;
+const {requireAuth} = require("../utils/auth");
 const {
   planSchema,
   patchPlanSchema,
@@ -22,8 +21,9 @@ const {
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
 
+
 // submit a plan
-app.post("/", async (req, res) => {
+app.post("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
@@ -70,7 +70,7 @@ app.post("/", async (req, res) => {
 });
 
 // update a plan
-app.patch("/", async (req, res) => {
+app.patch("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
@@ -125,7 +125,7 @@ app.patch("/", async (req, res) => {
 });
 
 // view a plan
-app.get("/:planId", async (req, res) => {
+app.get("/:planId", requireAuth, async (req, res) => {
 
   try {
 
@@ -148,21 +148,23 @@ app.get("/:planId", async (req, res) => {
 
 });
 
-// get all plans for a user
-app.get("/getAllPlans/:studentId", async (req, res) => {
+// get plans based on status and time
+app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
 
   try {
 
-    const studentId = req.params.studentId;
-    console.log("View all plans", studentId);
+    const status = req.params.status;
+    const created = req.params.created;
+    const ascend = req.params.ascend;
+    console.log("Search plans by status");
 
-    const results = await getPlans(studentId);
-    if (results[0].length === 0) {
+    const results = await getPlansStatus(status, created, ascend);
+    if (results.length === 0) {
       console.error("404: No plans found\n");
       res.status(404).send({error: "No plans found."});
     } else {
-      console.log("200: Plans found\n");
-      res.status(200).send(results);
+      console.log("200: Plan found\n");
+      res.status(200).send({data: results});
     }
 
   } catch (err) {
@@ -173,7 +175,7 @@ app.get("/getAllPlans/:studentId", async (req, res) => {
 });
 
 // delete a plan
-app.delete("/:planId", async (req, res) => {
+app.delete("/:planId", requireAuth, async (req, res) => {
 
   try {
 
@@ -191,54 +193,6 @@ app.delete("/:planId", async (req, res) => {
 
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get a plans comments
-app.get("/:planId/comment", async (req, res) => {
-
-  try {
-
-    console.log("Get a plans comments");
-    const planId = req.params.planId;
-
-    const results = await getPlanComments(planId);
-    if (results.length === 0) {
-      console.error("404: No comments found\n");
-      res.status(404).send({error: "No comments found."});
-    } else {
-      console.log("200: Comments found\n");
-      res.status(200).send(results);
-    }
-
-  } catch (err) {
-    console.log("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get a plans reviews
-app.get("/:planId/review", async (req, res) => {
-
-  try {
-
-    console.log("Get a plans reviews");
-    const planId = req.params.planId;
-
-    const results = await getPlanReviews(planId);
-    if (results.length === 0) {
-      console.error("404: No reviews found\n");
-      res.status(404).send({error: "No reviews found."});
-    } else {
-      console.log("200: Reviews found\n");
-      res.status(200).send(results);
-    }
-
-  } catch (err) {
-    console.log("500: An internal server error occurred\n Error:", err);
     res.status(500).send({error: "An internal server error occurred. Please try again later."});
   }
 

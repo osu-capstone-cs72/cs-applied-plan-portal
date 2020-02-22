@@ -4,7 +4,7 @@
 require("path");
 const express = require("express");
 const app = express();
-
+const {requireAuth} = require("../utils/auth");
 const enforceConstraints = require("../utils/commentValidation").enforceConstraints;
 const getComment = require("../models/comment").getComment;
 const createComment = require("../models/comment").createComment;
@@ -15,7 +15,7 @@ const {
 } = require("../utils/schemaValidation");
 
 // create a new comment
-app.post("/", async (req, res) => {
+app.post("/", requireAuth, async (req, res) => {
 
   try {
 
@@ -62,7 +62,7 @@ app.post("/", async (req, res) => {
 });
 
 // get comment by id
-app.get("/:commentId", async (req, res) => {
+app.get("/:commentId", requireAuth, async (req, res) => {
 
   const commentId = req.params.commentId;
   console.log("Get comment", commentId);

@@ -78,6 +78,47 @@ async function updatePlan(planId, planName, courses) {
 }
 exports.updatePlan = updatePlan;
 
+// get all plans that match the requested status
+async function getPlansStatus(status, created, ascend) {
+  try {
+
+    let sql = "SELECT * FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
+
+    // a status code of 5 means "any" status
+    if (status !== "5") {
+      sql += "WHERE status=? ";
+    }
+
+    // sort by the created or last updated time
+    if (created === "1") {
+      sql += "ORDER BY created ";
+    } else {
+      sql += "ORDER BY lastUpdated ";
+    }
+
+    // sort by ascending or descending
+    if (ascend === "1") {
+      sql += "ASC;";
+    } else {
+      sql += "DESC;";
+    }
+
+    let results;
+    if (status !== 5) {
+      results = await pool.query(sql, [status]);
+    } else {
+      results = await pool.query(sql);
+    }
+    return results[0];
+
+  } catch (err) {
+    console.log("Error searching for plans");
+    throw Error(err);
+  }
+
+}
+exports.getPlansStatus = getPlansStatus;
+
 // get all data for a specific plan, including selected courses, and reviews
 async function getPlan(planId) {
 
@@ -98,57 +139,6 @@ async function getPlan(planId) {
 
 }
 exports.getPlan = getPlan;
-
-// get all plans for a specific user, including selected courses, and reviews
-async function getPlans(studentId) {
-
-  try {
-
-    const sql = "SELECT * FROM Plan WHERE studentId = ?;";
-    const result = await pool.query(sql, studentId);
-    return result[0];
-
-  } catch (err) {
-    console.log("Error searching for plan");
-    throw Error(err);
-  }
-
-}
-exports.getPlans = getPlans;
-
-// get all comments from a plan
-async function getPlanComments(planId) {
-
-  try {
-
-    const sql = "SELECT * FROM Comment WHERE planId = ? ORDER BY time ASC;";
-    const results = await pool.query(sql, planId);
-    return results[0];
-
-  } catch (err) {
-    console.log("Error searching for comments");
-    throw Error(err);
-  }
-
-}
-exports.getPlanComments = getPlanComments;
-
-// get all reviews from a plan
-async function getPlanReviews(planId) {
-
-  try {
-
-    const sql = "SELECT * FROM PlanReview WHERE planId = ? ORDER BY timeReviewed ASC;";
-    const results = await pool.query(sql, planId);
-    return results[0];
-
-  } catch (err) {
-    console.log("Error searching for reviews");
-    throw Error(err);
-  }
-
-}
-exports.getPlanReviews = getPlanReviews;
 
 // save basic plan information such as the student id and the plan name
 async function insertPlan(userId, planName) {
