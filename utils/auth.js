@@ -66,15 +66,11 @@ function requireAuth(req, res, next) {
 
   try {
     // ensure that the cookie has the JWT field
-    assert(req.signedCookies.accessToken, "No access token in cookie");
-
-    // get token from the cookies
-    const tokenParts = req.signedCookies.accessToken.split(" ");
-    const token = tokenParts[0] === "Bearer" ? tokenParts[1] : null;
+    assert(req.query.accessToken, "No access token in request");
 
     // use the jwt service to verify the token
     // this function call throws an error if token is invalid
-    const payload = jwt.verify(token, JWT_SECRET_KEY);
+    const payload = jwt.verify(req.query.accessToken, JWT_SECRET_KEY);
 
     // ensure the retrieved `sub` (i.e. User's ID) is an integer,
     // or throw an error otherwise

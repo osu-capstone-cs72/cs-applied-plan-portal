@@ -123,18 +123,17 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId, user.role);
 
+      // include this token in the redirect URL
+      const parsedTargetUrl = url.parse(targetUrl, true);
+      parsedTargetUrl.query.accessToken = token;
+
+      // finalize the redirect URL
+      const targetUrlWithToken = url.format(parsedTargetUrl);
+
       console.log(`200: User authenticated: ${user.userId} (${user.email})`);
-      console.log(`Redirecting to ${targetUrl}\n`);
-      // set token in a cookie in the Bearer format and then redirect to root
-      res.status(200)
-        .cookie("accessToken", `Bearer ${token}`, {
-          expires: getTokenExpirationTime(token),  // expiration time
-          httpOnly: true,  // accessible via web server only
-          signed: true     // this cookie shall be signed
-          // TODO: Enable this option in production
-          // secure: true     // allow https only
-        })
-        .redirect(targetUrl);
+      console.log(`Redirecting to ${targetUrlWithToken}\n`);
+      // redirect to the target URL with the token
+      res.status(200).redirect(targetUrlWithToken);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});

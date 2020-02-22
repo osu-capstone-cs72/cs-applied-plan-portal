@@ -51,8 +51,11 @@ function Home(props) {
     async function fetchLogin() {
       setLoading(true);
       try {
+        const accessToken = props.location.search.substring(1) || "";
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}`;
+        const getUrl = `http://${server}?accessToken=${accessToken}`;
+
+        console.log("getUrl =", getUrl);
 
         const results = await fetch(getUrl);
         const obj = await results.json();
@@ -64,7 +67,7 @@ function Home(props) {
           console.log("Not authenticated! results =", results);
           console.log("Not authenticated! obj =", obj);
 
-          window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://${server}/user/login?target=http://localhost:5000/`;
+          window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://${server}/user/login?target=http://localhost:3000/`;
         } else {
           throw Error("Unspecified error: results =", results);
         }
@@ -85,7 +88,7 @@ function Home(props) {
       setLoading(false);
     }
 
-    checkTicket();
+    // checkTicket();
 
   }, [props.history]);
 
