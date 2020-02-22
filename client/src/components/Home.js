@@ -6,6 +6,7 @@ import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
 import PropTypes from "prop-types";
+import Url from "url";
 
 function Home(props) {
 
@@ -17,44 +18,33 @@ function Home(props) {
   `;
 
   useEffect(() => {
-
-    async function checkTicket() {
-      // attempt to login if we don't already have a ticket
-      if (props.location.search === "") {
-        fetchLogin();
-      } else {
-        // since we have a ticket we should send it to the API server
-        sendTicket(props.location.search.substring(1));
-      }
-    }
-
-    async function sendTicket(ticket) {
-      setLoading(true);
-      try {
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}/user/login?target=/&${ticket}`;
-        console.log(getUrl);
-
-        const results = await fetch(getUrl);
-        const obj = await results.json();
-
-        // do something based on the response from the API server
-        console.log("TICKET RESPONSE FROM API\n", obj);
-
-      } catch (err) {
-        // send to 500 page if we have a server error while trying to send ticket
-        setPageError(500);
-      }
-      setLoading(false);
-    }
-
     async function fetchLogin() {
       setLoading(true);
-      try {
-        const accessToken = props.location.search.substring(1) || "";
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const getUrl = `http://${server}?accessToken=${accessToken}`;
 
+      // TODO: We should use the `url` module to parse the query string instead
+      // of geting substrings of `props.location.search`. This method is safer
+      // in case there are existing (or future) API routes that takes in queries.
+      try {
+        // retrieve the query string from the address bar and parse the queries
+        // in the string to an object
+        const queryObj = Url.parse(props.location.search, true).query;
+        // retrieve access token from the query
+        const accessToken = queryObj.accessToken;
+
+        // TODO (maybe): Rename it to something shorter, probably "REACT" for
+        // React Server and "API" for API server?
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        let getUrl = `http://${server}`;
+
+        // safely parse the request URL into object and add access token to the
+        // query string (in case URL has existing queries)
+        const parsedGetUrl = Url.parse(getUrl, true);
+        if (accessToken) {
+          parsedGetUrl.query.accessToken = accessToken;
+        }
+
+        // get the final URL used in the request
+        getUrl = Url.format(parsedGetUrl);
         console.log("getUrl =", getUrl);
 
         const results = await fetch(getUrl);
@@ -63,33 +53,46 @@ function Home(props) {
         if (results.ok) {
           console.log("OK! results =", results);
           console.log("OK! obj =", obj);
+          alert("WWTSLWWFWDT?");
         } else if (results.status === 401) {
           console.log("Not authenticated! results =", results);
           console.log("Not authenticated! obj =", obj);
 
-          window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://${server}/user/login?target=http://localhost:3000/`;
+          // redirect to ONID login
+          window.location.href = Url.format({
+            // TODO: Put this in a global function that receives on the `target`
+            // param that defines the final URL that the API should redirect to
+            // on a successful login.
+            // Note: When dealing with URLs, it's best to use the `url` module
+            // to format and parse them.
+            protocol: "https",
+            hostname: "login.oregonstate.edu",
+            pathname: "/idp-dev/profile/cas/login",
+            // callback URL for CAS
+            query: {
+              service: Url.format({
+                protocol: "http",
+                host: server,
+                pathname: "/user/login",
+                // callback URL has its own query string
+                query: {
+                  target: "http://localhost:3000"
+                }
+              })
+            }
+          });
         } else {
           throw Error("Unspecified error: results =", results);
         }
-        // if (!obj.authenticated) {
-        //   const newUserId = 82757579527;
-        //   // window.location.href = `https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:5000/user/login?target=/user/${newUserId}/plans`;
-        //   window.location.href = "https://login.oregonstate.edu/idp-dev/profile/cas/login?service=http://localhost:3000/";
-        //   // window.location.href = `${process.env.REACT_APP_AUTHENTICATION_URL}`;
-        //   console.log("go to url");
-        // } else {
-        //   console.log("already logged in");
-        // }
-
       } catch (err) {
         // send to 500 page if we have a server error while trying to login
         setPageError(500);
       }
+
       setLoading(false);
     }
 
-    // checkTicket();
-
+    fetchLogin();
   }, [props.history]);
 
   if (!pageError) {
