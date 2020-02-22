@@ -170,7 +170,9 @@ async function getPlanActivity(planId) {
     const sql = sqlComments + " UNION " + sqlReviews;
 
     const results = await pool.query(sql, [planId, planId, planId]);
-    return results[0];
+    return {
+      activities: results[0]
+    };
 
   } catch (err) {
     console.log("Error searching for plan activity");

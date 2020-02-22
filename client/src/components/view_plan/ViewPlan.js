@@ -116,7 +116,7 @@ function ViewPlan(props) {
         if (response.ok) {
           // get data from the response
           obj = await response.json();
-          setActivity(prev => [...obj, ...prev]);
+          setActivity(prev => [...obj.activities, ...prev]);
         }
 
       } catch (err) {
