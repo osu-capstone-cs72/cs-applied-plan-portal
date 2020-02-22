@@ -17,7 +17,7 @@ import url from "url";
 
 function Verifier(props) {
 
-  const [token, setToken] = useState({});
+  const [token, setToken] = useState("");
   const [homeState, setHomeState] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
@@ -58,7 +58,6 @@ function Verifier(props) {
 
           // render the correct homepage
           const payloadObj = jwtDecode(accessToken);
-          console.log(payloadObj);
           setToken(accessToken);
           if (payloadObj.role) {
             setHomeState(2);

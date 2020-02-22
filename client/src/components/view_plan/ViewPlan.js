@@ -165,5 +165,5 @@ export default withRouter(ViewPlan);
 
 ViewPlan.propTypes = {
   history: PropTypes.object,
-  token: PropTypes.object
+  token: PropTypes.string
 };
