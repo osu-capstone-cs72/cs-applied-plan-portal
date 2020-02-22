@@ -145,7 +145,11 @@ async function getPlan(planId) {
     const result2 = await pool.query(sql, planId);
     sql = "SELECT * FROM PlanReview WHERE planId = ?;";
     const result3 = await pool.query(sql, planId);
-    return [result1[0], result2[0], result3[0]];
+    return {
+      data: result1[0][0],
+      courses: result2[0],
+      reviews: result3[0]
+    };
 
   } catch (err) {
     console.log("Error searching for plan");
