@@ -76,18 +76,20 @@ export default class StudentHome extends React.Component {
       <div>
         <NavBar showSearch={true} searchContent={"Search for plans"}/>
         <table className="student-plans-table">
-          <tr>
-            <th className="student-plans-data">Name</th>
-            <th className="student-plans-data">Status</th>
-            <th className="student-plans-data">Updated</th>
-            <th className="student-plans-data">Reviewers</th>
-          </tr>
-          {this.state.plans ? this.state.plans.map(p =>
-            <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
-              <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
-              <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
-              <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
-            </tr>) : null}
+          <thead>
+            <tr>
+              <th className="student-plans-data">Name</th>
+              <th className="student-plans-data">Status</th>
+              <th className="student-plans-data">Updated</th>
+              <th className="student-plans-data">Reviewers</th>
+            </tr>
+            {this.state.plans ? this.state.plans.map(p =>
+              <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
+                <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
+                <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
+                <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
+              </tr>) : null}
+          </thead>
         </table>
         <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}>+</button>
       </div>

@@ -5,11 +5,16 @@ import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
+import StudentHome from "./StudentHome";
+import AdvisorHome from "./AdvisorHome";
 import PropTypes from "prop-types";
-import Url from "url";
+import jwtDecode from "jwt-decode";
+import url from "url";
 
-function Home(props) {
+function Verifier(props) {
 
+  // const [token, setToken] = useState({});
+  const [homeState, setHomeState] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
 
@@ -21,45 +26,49 @@ function Home(props) {
     async function fetchLogin() {
       setLoading(true);
 
-      // TODO: We should use the `url` module to parse the query string instead
-      // of geting substrings of `props.location.search`. This method is safer
-      // in case there are existing (or future) API routes that takes in queries.
       try {
         // retrieve the query string from the address bar and parse the queries
         // in the string to an object
-        const queryObj = Url.parse(props.location.search, true).query;
+        const queryObj = url.parse(props.location.search, true).query;
+        console.log(queryObj);
+
         // retrieve access token from the query
         const accessToken = queryObj.accessToken;
 
-        // TODO (maybe): Rename it to something shorter, probably "REACT" for
-        // React Server and "API" for API server?
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         let getUrl = `http://${server}`;
 
         // safely parse the request URL into object and add access token to the
         // query string (in case URL has existing queries)
-        const parsedGetUrl = Url.parse(getUrl, true);
+        const parsedGetUrl = url.parse(getUrl, true);
         if (accessToken) {
           parsedGetUrl.query.accessToken = accessToken;
         }
 
         // get the final URL used in the request
-        getUrl = Url.format(parsedGetUrl);
+        getUrl = url.format(parsedGetUrl);
         console.log("getUrl =", getUrl);
+
 
         const results = await fetch(getUrl);
         const obj = await results.json();
 
         if (results.ok) {
-          console.log("OK! results =", results);
-          console.log("OK! obj =", obj);
-          alert("WWTSLWWFWDT?");
+
+          // render the correct homepage
+          const payloadObj = jwtDecode(accessToken);
+          if (payloadObj.role) {
+            setHomeState(2);
+          } else {
+            setHomeState(1);
+          }
+
         } else if (results.status === 401) {
           console.log("Not authenticated! results =", results);
           console.log("Not authenticated! obj =", obj);
 
           // redirect to ONID login
-          window.location.href = Url.format({
+          window.location.href = url.format({
             // TODO: Put this in a global function that receives on the `target`
             // param that defines the final URL that the API should redirect to
             // on a successful login.
@@ -70,7 +79,7 @@ function Home(props) {
             pathname: "/idp-dev/profile/cas/login",
             // callback URL for CAS
             query: {
-              service: Url.format({
+              service: url.format({
                 protocol: "http",
                 host: server,
                 pathname: "/user/login",
@@ -86,28 +95,36 @@ function Home(props) {
         }
       } catch (err) {
         // send to 500 page if we have a server error while trying to login
+        console.log(err);
         setPageError(500);
       }
 
       setLoading(false);
     }
 
-    fetchLogin();
-  }, [props.history]);
+    if (!homeState) {
+      fetchLogin();
+    }
 
-  if (!pageError) {
+  }, [props.history, props.location.search, props.location.accessToken, homeState]);
+
+  if (pageError) {
+    return <PageInternalError />;
+  } else if (homeState === 1) {
+    return <StudentHome />;
+  } else if (homeState === 2) {
+    return <AdvisorHome />;
+  } else {
     return (
       <div id={"page-container"} css={style}>
         <PageSpinner loading={loading} />
       </div>
     );
-  } else {
-    return <PageInternalError />;
   }
 
 }
-export default withRouter(Home);
+export default withRouter(Verifier);
 
-Home.propTypes = {
+Verifier.propTypes = {
   history: PropTypes.object
 };

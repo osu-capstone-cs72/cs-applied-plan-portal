@@ -5,9 +5,7 @@ import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
-import StudentHome from "./StudentHome";
-import AdvisorHome from "./AdvisorHome";
-import Home from "./Home";
+import Verifier from "./Verifier";
 
 const globalStyles = css`
   @import url('https://fonts.googleapis.com/css?family=Muli');
@@ -23,7 +21,7 @@ function App() {
       <Global styles={globalStyles} />
       <Switch>
         <Route exact path="/">
-          <Home />
+          <Verifier />
         </Route>
         <Route path="/createPlan">
           <StudentCreatePlan />
