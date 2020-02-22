@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
+import {getToken} from "../../utils/authService";
 
 function CreateComment(props) {
 
@@ -51,8 +52,9 @@ function CreateComment(props) {
 
       const text = document.getElementById("comment-text-input").value;
 
+      const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/comment/?accessToken=${props.token}`;
+      const url = `http://${server}/comment/?accessToken=${token}`;
       let obj = [];
 
       const postObj = {
@@ -83,7 +85,7 @@ function CreateComment(props) {
           planId: planId,
           userId: props.currentUser.id,
           text: text
-        }); // lift state up
+        });
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();
