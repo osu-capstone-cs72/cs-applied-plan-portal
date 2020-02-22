@@ -11,8 +11,7 @@ import {loggedIn, getProfile} from "../utils/authService";
 
 function Home(props) {
 
-  const [loading, setLoading] = useState(true);
-  const [plans, setPlans] = useState([]);
+  const [loading] = useState(true);
   const [pageState, setPageState] = useState(0);
 
   const style = css`

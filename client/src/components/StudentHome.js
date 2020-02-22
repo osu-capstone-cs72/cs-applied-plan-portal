@@ -19,7 +19,6 @@ export default class StudentHome extends React.Component {
 
   async getAllPlans() {
     const profile = getProfile();
-    console.log(profile);
     const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const getUrl = `http://${server}/user/${profile.sub}/plans/` +
@@ -73,7 +72,7 @@ export default class StudentHome extends React.Component {
   render() {
     return (
       <div>
-        <NavBar showSearch={true} searchContent={"Search for plans"}/>
+        <NavBar />
         <table className="student-plans-table">
           <thead>
             <tr>

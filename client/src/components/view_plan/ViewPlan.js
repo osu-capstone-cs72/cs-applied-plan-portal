@@ -9,12 +9,11 @@ import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
-import jwtDecode from "jwt-decode";
+import {getToken, getProfile} from "../../utils/authService";
 import PropTypes from "prop-types";
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(jwtDecode(props.token).sub); // Development: Selecting the current user
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -47,11 +46,12 @@ function ViewPlan(props) {
     async function fetchData(planId) {
       try {
 
+        const token = getToken();
         let created = "";
         let userId = 0;
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let url = `http://${server}/plan/${planId}/` +
-          `?accessToken=${props.token}`;
+        let url = `http://${server}/plan/${planId}` +
+          `?accessToken=${token}`;
         let obj = [];
 
         try {
@@ -81,8 +81,9 @@ function ViewPlan(props) {
         }
 
         // get active user information
-        url = `http://${server}/user/${currentUserDev}/` +
-          `?accessToken=${props.token}`;
+        const profile = getProfile();
+        url = `http://${server}/user/${profile.sub}/` +
+          `?accessToken=${token}`;
         let response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -99,7 +100,7 @@ function ViewPlan(props) {
 
         // get plan user name
         url = `http://${server}/user/${userId}/` +
-          `?accessToken=${props.token}`;
+          `?accessToken=${token}`;
         response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -120,7 +121,7 @@ function ViewPlan(props) {
 
         // get plan activity
         url = `http://${server}/plan/${planId}/activity/` +
-          `?accessToken=${props.token}`;
+          `?accessToken=${token}`;
         response = await fetch(url);
         setLoading(false);
         if (response.ok) {
@@ -136,7 +137,7 @@ function ViewPlan(props) {
     }
     fetchData(planId);
 
-  }, [planId, props.history, props.token, currentUserDev]);
+  }, [planId, props.history]);
 
   async function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);
@@ -168,6 +169,5 @@ function ViewPlan(props) {
 export default withRouter(ViewPlan);
 
 ViewPlan.propTypes = {
-  history: PropTypes.object,
-  token: PropTypes.string
+  history: PropTypes.object
 };

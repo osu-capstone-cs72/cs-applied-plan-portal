@@ -140,6 +140,32 @@ async function getPlan(planId) {
 }
 exports.getPlan = getPlan;
 
+// get all activity from a plan (comments and reviews)
+async function getPlanActivity(planId) {
+
+  try {
+
+    const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
+      "-1 AS status, time, firstName, lastName FROM Comment " +
+      "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
+
+    const sqlReviews = "SELECT reviewId, 0 AS commentId, planId, PlanReview.userId, " +
+      "'' AS text, status, time, firstName, lastName FROM PlanReview " +
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC;";
+
+    const sql = sqlComments + " UNION " + sqlReviews;
+
+    const results = await pool.query(sql, [planId, planId, planId]);
+    return results[0];
+
+  } catch (err) {
+    console.log("Error searching for plan activity");
+    throw Error(err);
+  }
+
+}
+exports.getPlanActivity = getPlanActivity;
+
 // save basic plan information such as the student id and the plan name
 async function insertPlan(userId, planName) {
 

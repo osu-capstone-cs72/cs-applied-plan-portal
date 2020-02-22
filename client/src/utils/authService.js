@@ -1,10 +1,5 @@
 import jwtDecode from "jwt-decode";
 
-// get token from the api server
-export function login() {
-  //
-}
-
 // check if there is a valid saved token
 export function loggedIn() {
   const token = getToken();
@@ -43,32 +38,4 @@ export function logout() {
 // get payload data from token
 export function getProfile() {
   return jwtDecode(getToken());
-}
-
-async function fetchAuth(url) {
-
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json"
-  };
-
-  // set the authorization header
-  if (loggedIn()) {
-    headers.Authorization = "Bearer " + getToken();
-  }
-
-  const results = await fetch(url, {headers});
-  checkStatus(results);
-  return results.json();
-}
-
-// check if the response status is ok
-function checkStatus(response) {
-  if (response.ok) {
-    return response;
-  } else {
-    const error = new Error(response.statusText);
-    error.response = response;
-    throw error;
-  }
 }
