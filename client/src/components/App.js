@@ -5,7 +5,7 @@ import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
-import StudentHome from "./StudentHome";
+import Home from "./Home";
 import Login from "./Login";
 
 const globalStyles = css`
@@ -23,7 +23,7 @@ function App() {
       <Global styles={globalStyles} />
       <Switch>
         <Route exact path="/">
-          <StudentHome />
+          <Home />
         </Route>
         <Route path="/login">
           <Login />

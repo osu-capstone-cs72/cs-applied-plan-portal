@@ -1,6 +1,6 @@
 import React from "react";
 import NavBar from "./Navbar";
-import {getToken, getProfile} from "../models/authService";
+import {getToken, getProfile} from "../utils/authService";
 
 export default class StudentHome extends React.Component {
 
