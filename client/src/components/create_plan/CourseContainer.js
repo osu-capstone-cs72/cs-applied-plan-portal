@@ -56,6 +56,9 @@ export default class CourseContainer extends React.Component {
           // we got a bad status code
           obj = await results.json();
           this.changeWarning(obj.error);
+          this.setState({
+            courses: []
+          });
         }
       }
     } catch (err) {
@@ -88,6 +91,10 @@ export default class CourseContainer extends React.Component {
       } catch (err) {
         alert("An internal server error occurred. Please try again later.");
       }
+    } else {
+      this.setState({
+        courses: []
+      });
     }
   }
 
