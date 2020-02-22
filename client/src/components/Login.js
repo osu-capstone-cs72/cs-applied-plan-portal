@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
+import AuthService from "./AuthService";
 import PropTypes from "prop-types";
 import url from "url";
 
@@ -18,25 +19,32 @@ function Login(props) {
   `;
 
   useEffect(() => {
+
+    async function useTicket() {
+
+    };
+
+    async function getAccessToken() {
+
+    }
+
     async function fetchLogin() {
       setLoading(true);
 
       try {
+
         // retrieve the query string from the address bar and parse the queries
         // in the string to an object
         const queryObj = url.parse(props.location.search, true).query;
 
-        // retrieve access token from the query or from the state
-        let accessToken = queryObj.accessToken;
-        if (props.token !== "") {
-          accessToken = props.token;
-        }
+        // retrieve access token from the query
+        const accessToken = queryObj.accessToken;
 
+        // set the base url for our request
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         let getUrl = `http://${server}`;
 
-        // safely parse the request URL into object and add access token to the
-        // query string (in case URL has existing queries)
+        // Add access token to url
         const parsedGetUrl = url.parse(getUrl, true);
         if (accessToken) {
           parsedGetUrl.query.accessToken = accessToken;
@@ -45,6 +53,7 @@ function Login(props) {
         // get the final URL used in the request
         getUrl = url.format(parsedGetUrl);
 
+        // check if access token is valid
         const results = await fetch(getUrl);
         const obj = await results.json();
 
@@ -52,11 +61,14 @@ function Login(props) {
 
           // save the token and return to the homepage
           // save token
-          props.history.push("/");
+          alert("IT WORKS");
+          // props.history.push("/");
 
         } else if (results.status === 401) {
           console.log("Not authenticated! results =", results);
           console.log("Not authenticated! obj =", obj);
+
+          alert("BAD TOKEN", results);
 
           // redirect to ONID login
           window.location.href = url.format({
@@ -71,7 +83,7 @@ function Login(props) {
                 pathname: "/user/login",
                 // callback URL has its own query string
                 query: {
-                  target: "http://localhost:3000"
+                  target: "http://localhost:3000/login"
                 }
               })
             }

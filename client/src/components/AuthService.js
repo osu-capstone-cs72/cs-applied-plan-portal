@@ -18,12 +18,13 @@ function AuthService(props) {
   // check if token is expired
   function isTokenExpired(token) {
     try {
-      const decoded = jwtDecode(token);
-      if (decoded.exp < Date.now() / 1000) {
-        return true;
-      } else {
-        return false;
-      }
+      // const decoded = jwtDecode(token);
+      // if (decoded.exp < Date.now() / 1000) {
+      //   return true;
+      // } else {
+      console.log("isTokenExpired:", token);
+      return false;
+      // }
     } catch (err) {
       return false;
     }
@@ -47,6 +48,34 @@ function AuthService(props) {
   // get payload data from token
   function getProfile() {
     return jwtDecode(getToken());
+  }
+
+  async function fetchAuth(url) {
+
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    };
+
+    // set the authorization header
+    if (loggedIn()) {
+      headers.Authorization = "Bearer " + getToken();
+    }
+
+    const results = await fetch(url, {headers});
+    checkStatus(results);
+    return results.json();
+  }
+
+  // check if the response status is ok
+  function checkStatus(response) {
+    if (response.ok) {
+      return response;
+    } else {
+      const error = new Error(response.statusText);
+      error.response = response;
+      throw error;
+    }
   }
 
 }
