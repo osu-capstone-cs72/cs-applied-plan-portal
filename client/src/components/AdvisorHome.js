@@ -58,7 +58,7 @@ function AdvisorHome(props) {
       const orderValue = selectOrder.options[selectOrder.selectedIndex].value;
 
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}` +
+      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}/` +
         `?accessToken=${props.token}`;
       let obj = {};
 

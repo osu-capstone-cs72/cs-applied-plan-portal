@@ -50,7 +50,8 @@ function ViewPlan(props) {
         let created = "";
         let userId = 0;
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let url = `http://${server}/plan/${planId}`;
+        let url = `http://${server}/plan/${planId}/` +
+          `?accessToken=${props.token}`;
         let obj = [];
 
         try {
@@ -80,7 +81,8 @@ function ViewPlan(props) {
         }
 
         // get active user information
-        url = `http://${server}/user/${currentUserDev}`;
+        url = `http://${server}/user/${currentUserDev}/` +
+          `?accessToken=${props.token}`;
         let response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -96,7 +98,8 @@ function ViewPlan(props) {
         }
 
         // get plan user name
-        url = `http://${server}/user/${userId}`;
+        url = `http://${server}/user/${userId}/` +
+          `?accessToken=${props.token}`;
         response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -116,7 +119,8 @@ function ViewPlan(props) {
         }
 
         // get plan activity
-        url = `http://${server}/plan/${planId}/activity`;
+        url = `http://${server}/plan/${planId}/activity/` +
+          `?accessToken=${props.token}`;
         response = await fetch(url);
         setLoading(false);
         if (response.ok) {
@@ -132,7 +136,7 @@ function ViewPlan(props) {
     }
     fetchData(planId);
 
-  }, [planId, props.history, currentUserDev]);
+  }, [planId, props.history, props.token, currentUserDev]);
 
   async function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);

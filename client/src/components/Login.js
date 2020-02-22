@@ -5,20 +5,11 @@ import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
-import StudentHome from "./StudentHome";
-import AdvisorHome from "./AdvisorHome";
-import {Route, Switch} from "react-router-dom";
-import StudentCreatePlan from "./create_plan/StudentCreatePlan";
-import ViewPlan from "./view_plan/ViewPlan";
-import PageNotFound from "./general/PageNotFound";
 import PropTypes from "prop-types";
-import jwtDecode from "jwt-decode";
 import url from "url";
 
-function Verifier(props) {
+function Login(props) {
 
-  const [token, setToken] = useState("");
-  const [homeState, setHomeState] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
 
@@ -35,8 +26,11 @@ function Verifier(props) {
         // in the string to an object
         const queryObj = url.parse(props.location.search, true).query;
 
-        // retrieve access token from the query
-        const accessToken = queryObj.accessToken;
+        // retrieve access token from the query or from the state
+        let accessToken = queryObj.accessToken;
+        if (props.token !== "") {
+          accessToken = props.token;
+        }
 
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         let getUrl = `http://${server}`;
@@ -56,14 +50,9 @@ function Verifier(props) {
 
         if (results.ok) {
 
-          // render the correct homepage
-          const payloadObj = jwtDecode(accessToken);
-          setToken(accessToken);
-          if (payloadObj.role) {
-            setHomeState(2);
-          } else {
-            setHomeState(1);
-          }
+          // save the token and return to the homepage
+          // save token
+          props.history.push("/");
 
         } else if (results.status === 401) {
           console.log("Not authenticated! results =", results);
@@ -71,9 +60,6 @@ function Verifier(props) {
 
           // redirect to ONID login
           window.location.href = url.format({
-            // TODO: Put this in a global function that receives on the `target`
-            // param that defines the final URL that the API should redirect to
-            // on a successful login.
             protocol: "https",
             hostname: "login.oregonstate.edu",
             pathname: "/idp-dev/profile/cas/login",
@@ -102,50 +88,23 @@ function Verifier(props) {
       setLoading(false);
     }
 
-    if (!homeState) {
-      fetchLogin();
-    }
+    fetchLogin();
 
-  }, [props.history, props.location.search, props.location.accessToken, homeState]);
+  }, []);
 
-  if (pageError) {
-    return <PageInternalError />;
-  } else if (!homeState) {
+  if (!pageError) {
     return (
       <div id={"page-container"} css={style}>
         <PageSpinner loading={loading} />
       </div>
     );
   } else {
-    return (
-      <Switch>
-        <Route exact path="/">
-          {homeState === 2 ?
-            <AdvisorHome token={token} /> : <StudentHome token={token} />
-          }
-        </Route>
-        <Route path="/createPlan">
-          <StudentCreatePlan token={token} />
-        </Route>
-        <Route path="/viewPlan/:planId">
-          <ViewPlan token={token} />
-        </Route>
-        <Route path="/editPlan/:planId">
-          <StudentCreatePlan token={token} />
-        </Route>
-        <Route path="/500">
-          <PageInternalError token={token} />
-        </Route>
-        <Route path="*">
-          <PageNotFound />
-        </Route>
-      </Switch>
-    );
+    return <PageInternalError />;
   }
 
 }
-export default withRouter(Verifier);
+export default withRouter(Login);
 
-Verifier.propTypes = {
+Login.propTypes = {
   history: PropTypes.object
 };

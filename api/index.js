@@ -20,6 +20,7 @@ app.all("*", (req, res, next) => {
   next();
 });
 
+// check if a user is already authenticated
 app.get("/", requireAuth, (req, res)  => {
   console.log("200: Test auth with React server - authenticated\n");
   res.status(200).send({
