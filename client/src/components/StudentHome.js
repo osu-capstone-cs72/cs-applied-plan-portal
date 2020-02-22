@@ -1,15 +1,8 @@
 import React from "react";
 import NavBar from "./Navbar";
-import jwtDecode from "jwt-decode";
-import PropTypes from "prop-types";
-
+import {getToken, getProfile} from "../models/authService";
 
 export default class StudentHome extends React.Component {
-  static get propTypes() {
-    return {
-      token: PropTypes.string
-    };
-  }
 
   constructor(props) {
     super(props);
@@ -25,9 +18,13 @@ export default class StudentHome extends React.Component {
   }
 
   async getAllPlans() {
+    const profile = getProfile();
+    console.log(profile);
+    const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/${this.props.token}/plans/` +
-      `?accessToken=${this.props.token}`;
+    const getUrl = `http://${server}/user/${profile.sub}/plans/` +
+      `?accessToken=${token}`;
+    console.log(getUrl);
     let obj = [];
 
     try {

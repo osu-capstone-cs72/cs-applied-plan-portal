@@ -5,9 +5,9 @@ import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
-import AuthService from "./AuthService";
 import PropTypes from "prop-types";
 import url from "url";
+import {setToken} from "../models/authService";
 
 function Login(props) {
 
@@ -19,14 +19,6 @@ function Login(props) {
   `;
 
   useEffect(() => {
-
-    async function useTicket() {
-
-    };
-
-    async function getAccessToken() {
-
-    }
 
     async function fetchLogin() {
       setLoading(true);
@@ -61,14 +53,13 @@ function Login(props) {
 
           // save the token and return to the homepage
           // save token
-          alert("IT WORKS");
-          // props.history.push("/");
+
+          setToken(accessToken);
+          props.history.push("/");
 
         } else if (results.status === 401) {
           console.log("Not authenticated! results =", results);
           console.log("Not authenticated! obj =", obj);
-
-          alert("BAD TOKEN", results);
 
           // redirect to ONID login
           window.location.href = url.format({
