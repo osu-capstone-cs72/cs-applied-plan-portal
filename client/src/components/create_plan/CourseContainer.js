@@ -45,14 +45,14 @@ export default class CourseContainer extends React.Component {
       if (results.ok) {
         obj = await results.json();
         this.setState({
-          courses: obj
+          courses: obj.courses
         });
       } else {
         const results = await fetch(nameUrl);
         if (results.ok) {
           obj = await results.json();
           this.setState({
-            courses: obj
+            courses: obj.courses
           });
         } else {
           // we got a bad status code
@@ -81,7 +81,7 @@ export default class CourseContainer extends React.Component {
         if (results.ok) {
           obj = await results.json();
           this.setState({
-            courses: obj
+            courses: obj.courses
           });
         } else {
           // we got a bad status code

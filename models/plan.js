@@ -51,10 +51,25 @@ async function updatePlan(planId, planName, courses) {
     // update the courses list if it has changed
     if (courses !== 0) {
 
-      // if courses change we need to get a new review from an advisor
-      let sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+      // get the id of the owner of the plan and the current status
+      let sql = "SELECT * FROM Plan WHERE planId=?;";
       let results = await pool.query(sql, [planId]);
-      updatedRows += results[0].affectedRows;
+      const ownerId = results[0][0].studentId;
+      const currentStatus = results[0][0].status;
+
+      // If the status is not "awaiting review" we will need to update it
+      if (currentStatus !== 2) {
+        sql = "BEGIN;" +
+        "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, 2); " +
+        "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?; " +
+        "COMMIT;";
+        results = await pool.query(sql, [planId, ownerId, planId]);
+        updatedRows += 2;
+      } else {
+        sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+        results = await pool.query(sql, [planId]);
+        updatedRows += 1;
+      }
 
       // start by deleting all of the current selected courses
       sql = "DELETE FROM SelectedCourse WHERE planId=?;";
@@ -128,9 +143,8 @@ async function getPlan(planId) {
     const result1 = await pool.query(sql, planId);
     sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ?;";
     const result2 = await pool.query(sql, planId);
-    sql = "SELECT * FROM PlanReview WHERE planId = ?;";
-    const result3 = await pool.query(sql, planId);
-    return [result1[0], result2[0], result3[0]];
+    result1[0][0].courses = result2[0];
+    return result1[0][0];
 
   } catch (err) {
     console.log("Error searching for plan");
@@ -156,7 +170,9 @@ async function getPlanActivity(planId) {
     const sql = sqlComments + " UNION " + sqlReviews;
 
     const results = await pool.query(sql, [planId, planId, planId]);
-    return results[0];
+    return {
+      activities: results[0]
+    };
 
   } catch (err) {
     console.log("Error searching for plan activity");

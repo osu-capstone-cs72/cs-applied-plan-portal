@@ -3,14 +3,16 @@
 import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import {useEffect, useState} from "react";
+import {getToken} from "../utils/authService";
+import PageInternalError from "./general/PageInternalError";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
-import {getToken} from "../utils/authService";
 import PropTypes from "prop-types";
 
 function AdvisorHome(props) {
 
   const [loading, setLoading] = useState(true);
+  const [pageError, setPageError] = useState(0);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -40,7 +42,6 @@ function AdvisorHome(props) {
 
   useEffect(() => {
     fetchPlans();
-
   }, [props.history]);
 
   async function fetchPlans() {
@@ -68,7 +69,7 @@ function AdvisorHome(props) {
       setLoading(false);
       if (results.ok) {
         obj = await results.json();
-        setPlans(obj.data);
+        setPlans(obj.plans);
       } else {
         // we got a bad status code. Show the error
         obj = await results.json();
@@ -76,7 +77,7 @@ function AdvisorHome(props) {
       }
     } catch (err) {
       // send to 500 page if a server error happens while fetching plan
-      setErrorMessage("An internal server error occurred. Please try again later.");
+      setPageError(500);
     }
   }
 
@@ -101,63 +102,67 @@ function AdvisorHome(props) {
     window.location.href = `/viewPlan/${plan.planId}`;
   }
 
-  return (
-    <div css={style}>
-      <PageSpinner loading={loading} />
-      <NavBar />
-      <div id="plan-data-container">
-        <div id="plan-selection-container">
-          <select id="select-status" className="advisor-plan-select">
-            <option value="5">Any</option>
-            <option value="2">Awaiting Review</option>
-            <option value="3">Awaiting final review</option>
-            <option value="1">Awaiting student changes</option>
-            <option value="4">Accepted</option>
-            <option value="0">Rejected</option>
-          </select>
-          <select id="select-time" className="advisor-plan-select">
-            <option value="1">Time Created</option>
-            <option value="0">Time Updated</option>
-          </select>
-          <select id="select-order" className="advisor-plan-select">
-            <option value="1">Ascending</option>
-            <option value="0">Decending</option>
-          </select>
-          <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
-            Search
-          </button>
-        </div>
-        <div className="home-error-message-container">{errorMessage}</div>
-        <table className="advisor-plans-table">
-          <tbody>
-            <tr>
-              <th className="student-plans-data">User Name</th>
-              <th className="student-plans-data">User ID</th>
-              <th className="student-plans-data">Plan Name</th>
-              <th className="student-plans-data">Status</th>
-              <th className="student-plans-data">Created</th>
-              <th className="student-plans-data">Updated</th>
-            </tr>
-            {plans ? plans.map(plan =>
-              <tr key={plan.planId} onClick={() => goToPlan(plan)}>
-                <td className="student-plans-data" key={plan.planId + "a"}>
-                  {plan.firstName + " " + plan.lastName}
-                </td>
-                <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
-                <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
-                <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
-                <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
-                <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
+  if (!pageError) {
+    return (
+      <div css={style}>
+        <PageSpinner loading={loading} />
+        <NavBar showSearch={true} searchContent={"Search for plans"}/>
+        <div id="plan-data-container">
+          <div id="plan-selection-container">
+            <select id="select-status" className="advisor-plan-select">
+              <option value="5">Any</option>
+              <option value="2">Awaiting Review</option>
+              <option value="3">Awaiting final review</option>
+              <option value="1">Awaiting student changes</option>
+              <option value="4">Accepted</option>
+              <option value="0">Rejected</option>
+            </select>
+            <select id="select-time" className="advisor-plan-select">
+              <option value="1">Time Created</option>
+              <option value="0">Time Updated</option>
+            </select>
+            <select id="select-order" className="advisor-plan-select">
+              <option value="1">Ascending</option>
+              <option value="0">Decending</option>
+            </select>
+            <button id="search-plan-status-button" onClick={() => { fetchPlans(); }}>
+              Search
+            </button>
+          </div>
+          <div className="home-error-message-container">{errorMessage}</div>
+          <table className="advisor-plans-table">
+            <tbody>
+              <tr>
+                <th className="student-plans-data">User Name</th>
+                <th className="student-plans-data">User ID</th>
+                <th className="student-plans-data">Plan Name</th>
+                <th className="student-plans-data">Status</th>
+                <th className="student-plans-data">Created</th>
+                <th className="student-plans-data">Updated</th>
+              </tr>
+              {plans ? plans.map(plan =>
+                <tr key={plan.planId} onClick={() => goToPlan(plan)}>
+                  <td className="student-plans-data" key={plan.planId + "a"}>
+                    {plan.firstName + " " + plan.lastName}
+                  </td>
+                  <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
+                  <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
+                  <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
+                  <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
+                  <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
 
-              </tr>) : null}
-          </tbody>
-        </table>
+                </tr>) : null}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <PageInternalError />;
+  }
 }
 export default withRouter(AdvisorHome);
 
 AdvisorHome.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.object
 };

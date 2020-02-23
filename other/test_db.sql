@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Feb 10, 2020 at 08:38 PM
--- Server version: 8.0.19
--- PHP Version: 7.2.24-0ubuntu0.18.04.2
+-- Host: classmysql.engr.oregonstate.edu:3306
+-- Generation Time: Feb 18, 2020 at 06:14 PM
+-- Server version: 10.4.11-MariaDB-log
+-- PHP Version: 7.0.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `testdatabase_osu`
+-- Database: `capstone_2019_thomasza`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Comment` (
-  `commentId` int NOT NULL,
-  `planId` int NOT NULL,
-  `userId` bigint NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `commentId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -40,18 +40,14 @@ CREATE TABLE `Comment` (
 -- Dumping data for table `Comment`
 --
 
-INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
-(1, 308, 1, 'This is my plan.'),
-(2, 308, 9, 'This plan looks good!'),
-(6, 310, 5, 'I sure do love my plan.'),
-(7, 310, 2, 'I don\'t like this plan. Lets get rid of it.'),
-(9, 310, 6, 'Sure, plan rejected.'),
-(33, 308, 1, 'Test Comment.'),
-(34, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(35, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(36, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...'),
-(37, 308, 1, 'This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message...This is a really long message............................................................................................................................................................................'),
-(38, 308, 1, 'testtttttttttttttttttttttttttttttttttttttttttttttttt');
+INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
+(1, 308, 1, '2020-01-27 21:59:27', 'This is my plan.'),
+(2, 308, 9, '2020-02-04 11:36:44', 'This plan looks good!'),
+(6, 310, 5, '2020-02-04 09:48:25', 'I sure do love my plan.'),
+(7, 310, 2, '2020-02-14 11:37:33', 'I don\'t like this plan. Let\'s get rid of it.'),
+(9, 310, 6, '2020-02-15 11:46:27', 'Sure, plan rejected.'),
+(46, 364, 4, '2020-02-16 18:58:37', 'I think this is a great plan. I will go ahead and let the Head Advisor finalize this.'),
+(73, 359, 6, '2020-02-15 02:00:52', 'I think you should take GEO 221.\nI won\'t accept this plan otherwise.\nFix it.');
 
 -- --------------------------------------------------------
 
@@ -60,11 +56,11 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `text`) VALUES
 --
 
 CREATE TABLE `Course` (
-  `courseId` int NOT NULL,
-  `credits` int NOT NULL,
+  `courseId` int(11) NOT NULL,
+  `credits` int(11) NOT NULL,
   `courseName` varchar(100) NOT NULL,
   `courseCode` varchar(8) NOT NULL,
-  `restriction` int NOT NULL,
+  `restriction` int(11) NOT NULL,
   `description` varchar(1000) NOT NULL,
   `prerequisites` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -122,24 +118,27 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 --
 
 CREATE TABLE `Plan` (
-  `planId` int NOT NULL,
-  `status` int NOT NULL,
+  `planId` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
   `planName` varchar(50) NOT NULL,
-  `studentId` bigint NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `studentId` bigint(11) UNSIGNED NOT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Plan`
 --
 
-INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALUES
-(308, 3, 'Luke\'s Plan', 1, '2020-01-01 11:35:42'),
-(310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42'),
-(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42'),
-(359, 2, 'Luke\'s ECE plan', 1, '2020-01-17 11:35:42'),
-(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42');
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
+(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42', '2020-02-17 01:57:19'),
+(310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42', '2020-02-16 19:54:53'),
+(358, 2, 'Another Plan by Luke', 1, '2020-01-06 11:35:42', '2020-02-16 19:54:53'),
+(359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42', '2020-02-16 19:54:53'),
+(360, 2, 'Han\'s ECE plan', 5, '2020-01-18 11:35:42', '2020-02-16 19:54:53'),
+(361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22', '2020-02-16 19:54:53'),
+(362, 2, 'some plan', 1, '2020-02-12 00:36:38', '2020-02-16 19:54:53'),
+(364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30', '2020-02-16 19:54:53');
 
 -- --------------------------------------------------------
 
@@ -148,20 +147,29 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`) VALU
 --
 
 CREATE TABLE `PlanReview` (
-  `planId` int NOT NULL,
-  `advisorId` bigint NOT NULL,
-  `newStatus` int NOT NULL,
-  `timeReviewed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `reviewId` int(11) NOT NULL,
+  `planId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
+  `status` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `PlanReview`
 --
 
-INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`) VALUES
-(308, 9, 3),
-(310, 4, 3),
-(310, 6, 0);
+INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALUES
+(2, 308, 9, 3, '2020-02-14 21:12:07'),
+(3, 310, 4, 3, '2020-02-13 21:12:07'),
+(4, 310, 6, 0, '2020-02-15 21:12:08'),
+(5, 361, 9, 1, '2020-02-14 21:12:08'),
+(6, 361, 11, 1, '2020-02-16 21:12:09'),
+(7, 361, 12, 2, '2020-02-15 21:12:09'),
+(9, 308, 6, 4, '2020-02-14 23:35:25'),
+(30, 359, 6, 1, '2020-02-16 00:25:09'),
+(31, 359, 1, 2, '2020-02-16 00:25:26'),
+(34, 359, 4, 3, '2020-02-16 04:33:41'),
+(42, 364, 4, 3, '2020-02-16 18:58:48');
 
 -- --------------------------------------------------------
 
@@ -170,8 +178,8 @@ INSERT INTO `PlanReview` (`planId`, `advisorId`, `newStatus`) VALUES
 --
 
 CREATE TABLE `SelectedCourse` (
-  `planId` int NOT NULL,
-  `courseId` int NOT NULL
+  `planId` int(11) NOT NULL,
+  `courseId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -179,58 +187,90 @@ CREATE TABLE `SelectedCourse` (
 --
 
 INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
-(310, 5),
-(358, 5),
-(310, 7),
-(358, 7),
-(310, 9),
-(358, 9),
-(310, 10),
-(358, 10),
-(310, 11),
-(358, 11),
 (308, 14),
-(358, 14),
 (308, 15),
-(358, 15),
 (308, 16),
-(358, 16),
 (308, 17),
-(358, 17),
 (308, 18),
-(310, 18),
-(358, 18),
 (308, 19),
-(310, 19),
-(310, 20),
 (308, 21),
-(310, 22),
 (308, 23),
 (308, 25),
-(359, 26),
+(310, 5),
+(310, 7),
+(310, 9),
+(310, 10),
+(310, 11),
+(310, 18),
+(310, 19),
+(310, 20),
+(310, 22),
+(358, 5),
+(358, 7),
+(358, 9),
+(358, 10),
+(358, 11),
+(358, 14),
+(358, 15),
+(358, 16),
+(358, 17),
+(358, 18),
+(359, 5),
+(359, 7),
+(359, 9),
+(359, 10),
+(359, 11),
+(359, 17),
+(359, 18),
+(359, 23),
+(359, 24),
+(359, 25),
 (360, 26),
-(359, 27),
 (360, 27),
-(359, 28),
 (360, 28),
-(359, 29),
 (360, 29),
-(359, 30),
 (360, 30),
-(359, 31),
 (360, 31),
-(359, 32),
 (360, 32),
-(359, 33),
 (360, 33),
-(359, 34),
 (360, 34),
-(359, 35),
 (360, 35),
-(359, 36),
 (360, 36),
-(359, 37),
-(360, 37);
+(360, 37),
+(361, 26),
+(361, 27),
+(361, 28),
+(361, 29),
+(361, 30),
+(361, 31),
+(361, 32),
+(361, 33),
+(361, 34),
+(361, 35),
+(361, 36),
+(361, 37),
+(362, 26),
+(362, 27),
+(362, 28),
+(362, 29),
+(362, 30),
+(362, 31),
+(362, 32),
+(362, 33),
+(362, 34),
+(362, 35),
+(362, 36),
+(362, 37),
+(364, 5),
+(364, 7),
+(364, 9),
+(364, 10),
+(364, 11),
+(364, 14),
+(364, 15),
+(364, 16),
+(364, 17),
+(364, 26);
 
 -- --------------------------------------------------------
 
@@ -239,11 +279,11 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 --
 
 CREATE TABLE `User` (
-  `userId` bigint NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `role` int NOT NULL
+  `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -252,7 +292,7 @@ CREATE TABLE `User` (
 
 INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (1, 'Luke', 'Skywalker', 'usetheforce@gmail.com', 0),
-(2, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 0),
+(2, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 1),
 (3, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (4, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (5, 'Han', 'Solo', 'kessel_run@aol.com', 0),
@@ -277,7 +317,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 ALTER TABLE `Comment`
   ADD PRIMARY KEY (`commentId`),
   ADD KEY `fk_planIdComment` (`planId`),
-  ADD KEY `fk_userId` (`userId`);
+  ADD KEY `fk_userId_comment` (`userId`);
 
 --
 -- Indexes for table `Course`
@@ -291,14 +331,15 @@ ALTER TABLE `Course`
 --
 ALTER TABLE `Plan`
   ADD PRIMARY KEY (`planId`),
-  ADD KEY `fk_studentId` (`studentId`);
+  ADD KEY `fk_userId_plan` (`studentId`);
 
 --
 -- Indexes for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD PRIMARY KEY (`planId`,`advisorId`),
-  ADD KEY `fk_advisorId` (`advisorId`);
+  ADD PRIMARY KEY (`reviewId`),
+  ADD KEY `fk_planId` (`planId`),
+  ADD KEY `fk_userId_review` (`userId`);
 
 --
 -- Indexes for table `SelectedCourse`
@@ -322,25 +363,25 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `Course`
 --
 ALTER TABLE `Course`
-  MODIFY `courseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=361;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
 
 --
--- AUTO_INCREMENT for table `User`
+-- AUTO_INCREMENT for table `PlanReview`
 --
-ALTER TABLE `User`
-  MODIFY `userId` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+ALTER TABLE `PlanReview`
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- Constraints for dumped tables
@@ -351,21 +392,20 @@ ALTER TABLE `User`
 --
 ALTER TABLE `Comment`
   ADD CONSTRAINT `fk_planIdComment` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
+  ADD CONSTRAINT `fk_userId_comment` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `Plan`
 --
 ALTER TABLE `Plan`
-  ADD CONSTRAINT `fk_studentId` FOREIGN KEY (`studentId`) REFERENCES `User` (`userId`);
+  ADD CONSTRAINT `fk_userId_plan` FOREIGN KEY (`studentId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  ADD CONSTRAINT `fk_advisorId` FOREIGN KEY (`advisorId`) REFERENCES `User` (`userId`),
-  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`),
-  ADD CONSTRAINT `fk_planId_Review` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_userId_review` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
 
 --
 -- Constraints for table `SelectedCourse`

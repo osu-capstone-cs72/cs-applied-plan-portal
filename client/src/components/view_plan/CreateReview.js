@@ -49,7 +49,7 @@ function CreateReview(props) {
 
       const selectStatus = document.getElementById("review-select");
       const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
-
+      
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const url = `http://${server}/review/?accessToken=${token}`;
@@ -96,26 +96,30 @@ function CreateReview(props) {
 
   }
 
-  return (
-    <div id="create-review-container" css={style}>
-      <h2>Set Plan Status</h2>
-      <div id="review-error-container">
-        <p id="review-error-message">{errorMessage}</p>
+  if (props.currentUser.role) {
+    return (
+      <div id="create-review-container" css={style}>
+        <h2>Set Plan Status</h2>
+        <div id="review-error-container">
+          <p id="review-error-message">{errorMessage}</p>
+        </div>
+        <div id="review-input-container">
+          <select id="review-select" defaultValue={"2"}>
+            <option value="0">Rejected</option>
+            <option value="1">Awaiting student changes</option>
+            <option value="2">Awaiting review</option>
+            <option value="3">Awaiting final review</option>
+            <option value="4">Accepted</option>
+          </select>
+          <button id="submit-review-button" onClick={() => { submit(planId); }}>
+            Change Status
+          </button>
+        </div>
       </div>
-      <div id="review-input-container">
-        <select id="review-select">
-          <option value="0">Rejected</option>
-          <option value="1">Awaiting student changes</option>
-          <option value="2">Awaiting review</option>
-          <option value="3">Awaiting final review</option>
-          <option value="4">Accepted</option>
-        </select>
-        <button id="submit-review-button" onClick={() => { submit(planId); }}>
-          Change Status
-        </button>
-      </div>
-    </div>
-  );
+    );
+  } else {
+    return null;
+  }
 
 }
 export default CreateReview;

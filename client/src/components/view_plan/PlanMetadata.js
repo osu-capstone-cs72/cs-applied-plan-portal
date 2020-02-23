@@ -26,7 +26,7 @@ function PlanMetadata(props) {
     .metadata-field {
       vertical-align: top;
       display: inline-block;
-      width: 20%;
+      width: 16%;
       height: 55px;
     }
 
@@ -40,8 +40,20 @@ function PlanMetadata(props) {
       vertical-align: middle;
     }
 
-    #edit-plan-button {
+    #edit-plan-button, #print-plan-button {
       padding: 10px;
+    }
+
+    @media print {
+
+      .button-field, #edit-plan-link, #edit-plan-button, #print-plan-button {
+        display: none;
+      }
+
+      .metadata-field {
+        width: 25%;
+      }
+
     }
   `;
 
@@ -63,7 +75,7 @@ function PlanMetadata(props) {
   }
 
   return (
-    <div className="metadata-container" css={style}>
+    <div id="metadata-container" css={style}>
       <div className="plan-metadata">
         <div className="metadata-field">
           <p className="field-type">Student Name:</p>
@@ -81,17 +93,18 @@ function PlanMetadata(props) {
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{renderStatus()}</p>
         </div>
-        {props.currentUser.role ? (
-          <div className="metadata-field" />
-        ) : (
-          <div className="metadata-field">
-            <Link to={`/editPlan/${planId}`}>
-              <button id="edit-plan-button">
-                  Edit Plan
-              </button>
-            </Link>
-          </div>
-        )}
+        <div className="metadata-field button-field">
+          <button id="print-plan-button" onClick={() => props.onPrint()}>
+            Print Plan
+          </button>
+        </div>
+        <div className="metadata-field button-field">
+          <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+            <button id="edit-plan-button">
+                Edit Plan
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -105,5 +118,6 @@ PlanMetadata.propTypes = {
   planName: PropTypes.string,
   status: PropTypes.number,
   history: PropTypes.object,
-  currentUser: PropTypes.object
+  currentUser: PropTypes.object,
+  onPrint: PropTypes.func
 };

@@ -134,7 +134,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
     console.log("View plan", planId);
 
     const results = await getPlan(planId);
-    if (results[0].length === 0) {
+    if (results.courses.length === 0) {
       console.error("404: No plan found\n");
       res.status(404).send({error: "No plan found."});
     } else {
@@ -165,7 +165,7 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
       res.status(404).send({error: "No plans found."});
     } else {
       console.log("200: Plan found\n");
-      res.status(200).send({data: results});
+      res.status(200).send({plans: results});
     }
 
   } catch (err) {

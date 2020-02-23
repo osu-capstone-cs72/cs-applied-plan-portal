@@ -17,9 +17,9 @@ app.get("/:mode/:searchText", requireAuth, async (req, res) => {
   try {
 
     const results = await getCourse(searchText, mode);
-    if (results.length === 0) {
+    if (results.courses.length === 0) {
       console.error("404: No courses found\n");
-      res.status(404).send("No courses found.");
+      res.status(404).send({error: "No courses found."});
     } else {
       console.log("200: Courses found\n");
       res.status(200).send(results);
