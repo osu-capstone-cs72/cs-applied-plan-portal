@@ -47,7 +47,6 @@ function Login(props) {
 
         // check if access token is valid
         const results = await fetch(getUrl);
-        const obj = await results.json();
 
         if (results.ok) {
 
@@ -56,8 +55,6 @@ function Login(props) {
           props.history.push("/");
 
         } else if (results.status === 401) {
-          console.log("Not authenticated! results =", results);
-          console.log("Not authenticated! obj =", obj);
 
           // redirect to ONID login
           window.location.href = url.format({
@@ -78,11 +75,11 @@ function Login(props) {
             }
           });
         } else {
-          throw Error("Unspecified error: results =", results);
+          throw Error(`Error code ${results.status}`);
         }
       } catch (err) {
         // send to 500 page if we have a server error while trying to login
-        console.log(err);
+        console.error(err);
         setPageError(500);
       }
 

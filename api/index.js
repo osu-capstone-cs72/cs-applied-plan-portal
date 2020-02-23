@@ -8,8 +8,6 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-const {requireAuth} = require("../utils/auth");
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
@@ -18,14 +16,6 @@ app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 app.all("*", (req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   next();
-});
-
-// check if a user is already authenticated
-app.get("/", requireAuth, (req, res)  => {
-  console.log("200: Test auth with React server - authenticated\n");
-  res.status(200).send({
-    message: "authenticated"
-  });
 });
 
 app.use("/comment", require("./comment"));
