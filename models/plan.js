@@ -143,9 +143,8 @@ async function getPlan(planId) {
     const result1 = await pool.query(sql, planId);
     sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ?;";
     const result2 = await pool.query(sql, planId);
-    sql = "SELECT * FROM PlanReview WHERE planId = ?;";
-    const result3 = await pool.query(sql, planId);
-    return [result1[0], result2[0], result3[0]];
+    result1[0][0].courses = result2[0];
+    return result1[0][0];
 
   } catch (err) {
     console.log("Error searching for plan");
@@ -171,7 +170,9 @@ async function getPlanActivity(planId) {
     const sql = sqlComments + " UNION " + sqlReviews;
 
     const results = await pool.query(sql, [planId, planId, planId]);
-    return results[0];
+    return {
+      activities: results[0]
+    };
 
   } catch (err) {
     console.log("Error searching for plan activity");
