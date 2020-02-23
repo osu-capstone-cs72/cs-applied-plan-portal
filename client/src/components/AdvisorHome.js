@@ -106,7 +106,7 @@ function AdvisorHome(props) {
     return (
       <div css={style}>
         <PageSpinner loading={loading} />
-        <NavBar showSearch={true} searchContent={"Search for plans"}/>
+        <NavBar />
         <div id="plan-data-container">
           <div id="plan-selection-container">
             <select id="select-status" className="advisor-plan-select">

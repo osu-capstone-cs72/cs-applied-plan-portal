@@ -133,7 +133,7 @@ function ViewPlan(props) {
     }
     fetchData(planId);
 
-  }, [planId, props.history, currentUserDev]);
+  }, [planId, props.history]);
 
   function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);

@@ -3,7 +3,6 @@ import NavBar from "./Navbar";
 import {getToken, getProfile} from "../utils/authService";
 import PageSpinner from "./general/PageSpinner";
 import PageInternalError from "./general/PageInternalError";
-import PropTypes from "prop-types";
 
 export default class StudentHome extends React.Component {
 
@@ -18,7 +17,10 @@ export default class StudentHome extends React.Component {
 
     this.getAllPlans = this.getAllPlans.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
+    this.getAllPlans = this.getAllPlans.bind(this);
+  }
 
+  componentDidMount() {
     this.getAllPlans();
   }
 
@@ -44,7 +46,9 @@ export default class StudentHome extends React.Component {
         });
       } else {
         // we got a bad status code
-        console.log("No plans found.");
+        this.setState({
+          loading: false
+        });
         return;
       }
     } catch (err) {

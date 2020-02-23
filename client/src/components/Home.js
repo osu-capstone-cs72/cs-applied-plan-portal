@@ -41,6 +41,7 @@ function Home(props) {
       }
     }
     checkLoggedIn();
+    // eslint-disable-next-line
   }, []);
 
   if (!pageState) {

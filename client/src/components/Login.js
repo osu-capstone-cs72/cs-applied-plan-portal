@@ -11,6 +11,7 @@ import {setToken} from "../utils/authService";
 
 function Login(props) {
 
+  const [redirect, setRedirect] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
 
@@ -34,7 +35,7 @@ function Login(props) {
 
         // set the base url for our request
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let getUrl = `http://${server}`;
+        let getUrl = `http://${server}/user/authenticated/`;
 
         // Add access token to url
         const parsedGetUrl = url.parse(getUrl, true);
@@ -44,6 +45,7 @@ function Login(props) {
 
         // get the final URL used in the request
         getUrl = url.format(parsedGetUrl);
+        console.log(getUrl);
 
         // check if access token is valid
         const results = await fetch(getUrl);
@@ -52,43 +54,56 @@ function Login(props) {
 
           // save the token and return to the homepage
           setToken(accessToken);
-          props.history.push("/");
+          setRedirect(1);
 
-        } else if (results.status === 401) {
+        } else if (results.status === 401 || results.status === 404) {
 
           // redirect to ONID login
-          window.location.href = url.format({
-            protocol: "https",
-            hostname: "login.oregonstate.edu",
-            pathname: "/idp-dev/profile/cas/login",
-            // callback URL for CAS
-            query: {
-              service: url.format({
-                protocol: "http",
-                host: server,
-                pathname: "/user/login",
-                // callback URL has its own query string
-                query: {
-                  target: "http://localhost:3000/login"
-                }
-              })
-            }
-          });
+          setRedirect(2);
+
         } else {
           throw Error(`Error code ${results.status}`);
         }
       } catch (err) {
         // send to 500 page if we have a server error while trying to login
-        console.error(err);
         setPageError(500);
       }
-
       setLoading(false);
     }
 
-    fetchLogin();
+    function redirectUrl(target) {
+      if (target === 1) {
+        props.history.push("/");
+      } else if (target === 2) {
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        window.location.href = url.format({
+          protocol: "https",
+          hostname: "login.oregonstate.edu",
+          pathname: "/idp-dev/profile/cas/login",
+          // callback URL for CAS
+          query: {
+            service: url.format({
+              protocol: "http",
+              host: server,
+              pathname: "/user/login",
+              // callback URL has its own query string
+              query: {
+                target: "http://localhost:3000/login"
+              }
+            })
+          }
+        });
+      }
+    }
 
-  }, []);
+    if (!redirect) {
+      fetchLogin();
+    } else {
+      redirectUrl(redirect);
+    }
+
+    // eslint-disable-next-line
+  }, [redirect]);
 
   if (!pageError) {
     return (

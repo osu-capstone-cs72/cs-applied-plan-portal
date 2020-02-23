@@ -141,7 +141,14 @@ async function getPlan(planId) {
 
     let sql = "SELECT * FROM Plan WHERE planId = ?;";
     const result1 = await pool.query(sql, planId);
-    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ?;";
+
+    if (!result1[0].length) {
+      return {planId: 0};
+    }
+
+    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ? " +
+      "ORDER BY courseCode ASC;";
+
     const result2 = await pool.query(sql, planId);
     result1[0][0].courses = result2[0];
     return result1[0][0];

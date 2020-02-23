@@ -56,6 +56,14 @@ app.post("/", requireAuth, async (req, res) => {
   }
 });
 
+// check if a user is already authenticated
+app.get("/authenticated", requireAuth, (req, res)  => {
+  console.log("200: Test auth with React server - authenticated\n");
+  res.status(200).send({
+    message: "authenticated"
+  });
+});
+
 // Retrieves the CAS ticket after a User has successfully logged in via ONID.
 // Sends the second request to CAS with the ticket to validate it.
 app.get("/login", async (req, res) => {
