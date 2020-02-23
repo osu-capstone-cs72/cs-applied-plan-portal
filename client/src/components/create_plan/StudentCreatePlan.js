@@ -27,8 +27,8 @@ export default function StudentCreatePlan() {
         // get data from the response
           obj = await response.json();
           // get the courses array from the plan object
-          setCourses(obj[1]);
-          setPlanName(obj[0][0].planName);
+          setCourses(obj.courses);
+          setPlanName(obj.planName);
           setLoading(false);
         }
       } catch (err) {

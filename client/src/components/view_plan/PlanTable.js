@@ -39,7 +39,7 @@ function PlanTable(props) {
             <th>Credit Hours</th>
             <th>Prerequisites</th>
           </tr>
-          {props.courses[1].map((course) => (
+          {props.courses.map((course) => (
             <tr key={course.courseId}>
               <td key={course.courseId + "a"}>
                 {course.courseCode}

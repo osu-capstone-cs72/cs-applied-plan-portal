@@ -20,7 +20,10 @@ async function getCourse(searchText, mode) {
 
   try {
     const results = await pool.query(sql, [searchText]);
-    return results[0];
+    return {
+      courses: results[0]
+    };
+
   } catch (err) {
     console.log("Error searching for course");
     throw Error(err);
