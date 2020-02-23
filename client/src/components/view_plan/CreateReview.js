@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
+import {getToken} from "../../utils/authService";
 import PropTypes from "prop-types";
 
 function CreateReview(props) {
@@ -48,9 +49,10 @@ function CreateReview(props) {
 
       const selectStatus = document.getElementById("review-select");
       const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
-
+      
+      const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/review`;
+      const url = `http://${server}/review/?accessToken=${token}`;
       let obj = [];
 
       const postObj = {

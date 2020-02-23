@@ -3,6 +3,7 @@ import Course from "./Course";
 import FilterBar from "./FilterBar";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
+import {getToken} from "../../utils/authService";
 
 export default class CourseContainer extends React.Component {
 
@@ -33,10 +34,11 @@ export default class CourseContainer extends React.Component {
   async filterSearch() {
     this.changeWarning("");
 
+    const token = getToken();
     const value = document.getElementById("search-container").value;
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const codeUrl = `http://${server}/course/courseCode/${value}`;
-    const nameUrl = `http://${server}/course/courseName/${value}`;
+    const codeUrl = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
+    const nameUrl = `http://${server}/course/courseName/${value}/?accessToken=${token}`;
     let obj = [];
     try {
       const results = await fetch(codeUrl);
@@ -69,8 +71,9 @@ export default class CourseContainer extends React.Component {
       filter: value
     });
     if (value !== "none") {
+      const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/course/courseCode/${value}`;
+      const url = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
       let obj = [];
 
       try {

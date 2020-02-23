@@ -9,6 +9,7 @@ import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
+import {getToken, getProfile} from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
@@ -16,7 +17,6 @@ const PHE = require("print-html-element");
 
 function ViewPlan(props) {
 
-  const [currentUserDev] = useState(2); // Development: Selecting the current user
   const [pageError, setPageError] = useState(0);
   const [currentUser, setCurrentUser] = useState(
     {
@@ -40,12 +40,15 @@ function ViewPlan(props) {
 
   useEffect(() => {
     async function fetchData(planId) {
+      setLoading(true);
       try {
 
+        const token = getToken();
         let created = "";
         let userId = 0;
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let url = `http://${server}/plan/${planId}`;
+        let url = `http://${server}/plan/${planId}` +
+          `?accessToken=${token}`;
         let obj = [];
 
         try {
@@ -74,7 +77,9 @@ function ViewPlan(props) {
         }
 
         // get active user information
-        url = `http://${server}/user/${currentUserDev}`;
+        const profile = getProfile();
+        url = `http://${server}/user/${profile.sub}/` +
+          `?accessToken=${token}`;
         let response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -90,7 +95,8 @@ function ViewPlan(props) {
         }
 
         // get plan user name
-        url = `http://${server}/user/${userId}`;
+        url = `http://${server}/user/${userId}/` +
+          `?accessToken=${token}`;
         response = await fetch(url);
         if (response.ok) {
           // get data from the response
@@ -110,9 +116,9 @@ function ViewPlan(props) {
         }
 
         // get plan activity
-        url = `http://${server}/plan/${planId}/activity`;
+        url = `http://${server}/plan/${planId}/activity/` +
+          `?accessToken=${token}`;
         response = await fetch(url);
-        setLoading(false);
         if (response.ok) {
           // get data from the response
           obj = await response.json();
@@ -123,10 +129,11 @@ function ViewPlan(props) {
         // this is a server error
         console.log("An internal server error occurred. Please try again later.");
       }
+      setLoading(false);
     }
     fetchData(planId);
 
-  }, [planId, props.history, currentUserDev]);
+  }, [planId, props.history]);
 
   function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);

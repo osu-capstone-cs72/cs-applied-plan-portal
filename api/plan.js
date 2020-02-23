@@ -12,10 +12,9 @@ const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlansStatus = require("../models/plan").getPlansStatus;
-const getPlanComments = require("../models/plan").getPlanComments;
-const getPlanReviews = require("../models/plan").getPlanReviews;
-const getPlanActivity = require("../models/plan").getPlanActivity;
 const deletePlan = require("../models/plan").deletePlan;
+const getPlanActivity = require("../models/plan").getPlanActivity;
+const {requireAuth} = require("../utils/auth");
 const {
   planSchema,
   patchPlanSchema,
@@ -23,8 +22,9 @@ const {
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
 
+
 // submit a plan
-app.post("/", async (req, res) => {
+app.post("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
@@ -71,7 +71,7 @@ app.post("/", async (req, res) => {
 });
 
 // update a plan
-app.patch("/", async (req, res) => {
+app.patch("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
@@ -126,7 +126,7 @@ app.patch("/", async (req, res) => {
 });
 
 // view a plan
-app.get("/:planId", async (req, res) => {
+app.get("/:planId", requireAuth, async (req, res) => {
 
   try {
 
@@ -134,7 +134,7 @@ app.get("/:planId", async (req, res) => {
     console.log("View plan", planId);
 
     const results = await getPlan(planId);
-    if (results.courses.length === 0) {
+    if (results.planId === 0) {
       console.error("404: No plan found\n");
       res.status(404).send({error: "No plan found."});
     } else {
@@ -150,7 +150,7 @@ app.get("/:planId", async (req, res) => {
 });
 
 // get plans based on status and time
-app.get("/status/:status/:created/:ascend", async (req, res) => {
+app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
 
   try {
 
@@ -176,7 +176,7 @@ app.get("/status/:status/:created/:ascend", async (req, res) => {
 });
 
 // delete a plan
-app.delete("/:planId", async (req, res) => {
+app.delete("/:planId", requireAuth, async (req, res) => {
 
   try {
 
@@ -213,54 +213,6 @@ app.get("/:planId/activity", async (req, res) => {
       res.status(404).send({error: "No plan activity found."});
     } else {
       console.log("200: Plan activity found\n");
-      res.status(200).send(results);
-    }
-
-  } catch (err) {
-    console.log("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get a plan's comments
-app.get("/:planId/comment", async (req, res) => {
-
-  try {
-
-    console.log("Get a plans comments");
-    const planId = req.params.planId;
-
-    const results = await getPlanComments(planId);
-    if (results.length === 0) {
-      console.error("404: No comments found\n");
-      res.status(404).send({error: "No comments found."});
-    } else {
-      console.log("200: Comments found\n");
-      res.status(200).send(results);
-    }
-
-  } catch (err) {
-    console.log("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get a plan's reviews
-app.get("/:planId/review", async (req, res) => {
-
-  try {
-
-    console.log("Get a plans reviews");
-    const planId = req.params.planId;
-
-    const results = await getPlanReviews(planId);
-    if (results.length === 0) {
-      console.error("404: No reviews found\n");
-      res.status(404).send({error: "No reviews found."});
-    } else {
-      console.log("200: Reviews found\n");
       res.status(200).send(results);
     }
 

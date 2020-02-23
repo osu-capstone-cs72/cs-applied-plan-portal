@@ -141,7 +141,14 @@ async function getPlan(planId) {
 
     let sql = "SELECT * FROM Plan WHERE planId = ?;";
     const result1 = await pool.query(sql, planId);
-    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ?;";
+
+    if (!result1[0].length) {
+      return {planId: 0};
+    }
+
+    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ? " +
+      "ORDER BY courseCode ASC;";
+
     const result2 = await pool.query(sql, planId);
     result1[0][0].courses = result2[0];
     return result1[0][0];
@@ -181,40 +188,6 @@ async function getPlanActivity(planId) {
 
 }
 exports.getPlanActivity = getPlanActivity;
-
-// get all comments from a plan
-async function getPlanComments(planId) {
-
-  try {
-    const sql = "SELECT * FROM Comment NATURAL JOIN User WHERE planId = ? ORDER BY time DESC;";
-    const results = await pool.query(sql, planId);
-    return results[0];
-
-  } catch (err) {
-    console.log("Error searching for comments");
-    throw Error(err);
-  }
-
-}
-exports.getPlanComments = getPlanComments;
-
-// get all reviews from a plan
-async function getPlanReviews(planId) {
-
-  try {
-
-    const sql = "SELECT * FROM PlanReview INNER JOIN User ON " +
-      "PlanReview.userId=User.userId WHERE planId=? ORDER BY time ASC;";
-    const results = await pool.query(sql, planId);
-    return results[0];
-
-  } catch (err) {
-    console.log("Error searching for reviews");
-    throw Error(err);
-  }
-
-}
-exports.getPlanReviews = getPlanReviews;
 
 // save basic plan information such as the student id and the plan name
 async function insertPlan(userId, planName) {

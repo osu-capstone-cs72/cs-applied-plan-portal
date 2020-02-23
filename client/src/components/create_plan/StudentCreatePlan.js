@@ -3,6 +3,7 @@ import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
 import Navbar from "../Navbar";
 import PageSpinner from "../general/PageSpinner";
+import {getToken} from "../../utils/authService";
 import {useParams} from "react-router-dom";
 
 export default function StudentCreatePlan() {
@@ -18,8 +19,9 @@ export default function StudentCreatePlan() {
     async function fetchPlan(planId) {
       setLoading(true);
       try {
+        const token = getToken();
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/plan/${planId}/`;
+        const url = `http://${server}/plan/${planId}/?accessToken=${token}`;
         let obj = [];
 
         const response = await fetch(url);

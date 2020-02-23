@@ -55,7 +55,6 @@ function PlanMetadata(props) {
       }
 
     }
-
   `;
 
   function renderStatus() {

@@ -3,6 +3,7 @@
 import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import {useEffect, useState} from "react";
+import {getToken} from "../utils/authService";
 import PageInternalError from "./general/PageInternalError";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -58,8 +59,10 @@ function AdvisorHome(props) {
       const selectOrder = document.getElementById("select-order");
       const orderValue = selectOrder.options[selectOrder.selectedIndex].value;
 
+      const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}`;
+      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}/` +
+        `?accessToken=${token}`;
       let obj = {};
 
       const results = await fetch(getUrl);
@@ -103,7 +106,7 @@ function AdvisorHome(props) {
     return (
       <div css={style}>
         <PageSpinner loading={loading} />
-        <NavBar showSearch={true} searchContent={"Search for plans"}/>
+        <NavBar />
         <div id="plan-data-container">
           <div id="plan-selection-container">
             <select id="select-status" className="advisor-plan-select">

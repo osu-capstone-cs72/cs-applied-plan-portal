@@ -1,15 +1,10 @@
 import React from "react";
 import NavBar from "./Navbar";
+import {getToken, getProfile} from "../utils/authService";
 import PageSpinner from "./general/PageSpinner";
 import PageInternalError from "./general/PageInternalError";
-import PropTypes from "prop-types";
 
 export default class StudentHome extends React.Component {
-  static get propTypes() {
-    return {
-      userId: PropTypes.number
-    };
-  }
 
   constructor(props) {
     super(props);
@@ -22,16 +17,24 @@ export default class StudentHome extends React.Component {
 
     this.getAllPlans = this.getAllPlans.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
+    this.getAllPlans = this.getAllPlans.bind(this);
+  }
 
+  componentDidMount() {
     this.getAllPlans();
   }
 
   async getAllPlans() {
+
     this.setState({
       loading: true
     });
+    const profile = getProfile();
+    const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/${this.props.userId}/plans`;
+    const getUrl = `http://${server}/user/${profile.sub}/plans/` +
+      `?accessToken=${token}`;
+
     let obj = [];
 
     try {
@@ -43,7 +46,9 @@ export default class StudentHome extends React.Component {
         });
       } else {
         // we got a bad status code
-        console.log("No plans found.");
+        this.setState({
+          loading: false
+        });
         return;
       }
     } catch (err) {
@@ -78,24 +83,27 @@ export default class StudentHome extends React.Component {
   }
 
   render() {
+
     if (!this.state.pageError) {
       return (
         <div>
           <PageSpinner loading={this.state.loading} />
-          <NavBar showSearch={true} searchContent={"Search for plans"}/>
+          <NavBar />
           <table className="student-plans-table">
-            <tr>
-              <th className="student-plans-data">Name</th>
-              <th className="student-plans-data">Status</th>
-              <th className="student-plans-data">Updated</th>
-              <th className="student-plans-data">Reviewers</th>
-            </tr>
-            {this.state.plans ? this.state.plans.map(p =>
-              <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
-                <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
-                <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
-                <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
-              </tr>) : null}
+            <thead>
+              <tr>
+                <th className="student-plans-data">Name</th>
+                <th className="student-plans-data">Status</th>
+                <th className="student-plans-data">Updated</th>
+                <th className="student-plans-data">Reviewers</th>
+              </tr>
+              {this.state.plans ? this.state.plans.map(p =>
+                <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
+                  <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
+                  <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
+                  <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
+                </tr>) : null}
+            </thead>
           </table>
           <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}>+</button>
         </div>
