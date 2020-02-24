@@ -27,7 +27,7 @@ app.post("/", requireAuth, async (req, res) => {
 
       // get request body
       const planId = sanitizedBody.planId;
-      const userId = sanitizedBody.userId;
+      const userId = req.auth.userId;
       const text = sanitizedBody.text;
       console.log("User ", userId, "creating a comment on plan", planId);
 

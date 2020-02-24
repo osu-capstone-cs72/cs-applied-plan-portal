@@ -106,7 +106,7 @@ async function lockedConstraint(planId) {
 
   } catch (err) {
     if (internalError(err, violation)) {
-      console.log("Error checking plan constraint\n", err);
+      console.log("Error checking locked constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;

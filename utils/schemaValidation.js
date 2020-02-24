@@ -130,18 +130,8 @@ const commentSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid plan id:\n" +
+      return "Invalid plan ID:\n" +
         "Plan ID must be a number greater than zero.";
-    }
-  },
-  userId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid user id:\n" +
-        "User ID must be a number greater than zero.";
     }
   },
   text: {
@@ -166,7 +156,7 @@ const reviewSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid plan id:\n" +
+      return "Invalid plan ID:\n" +
         "Plan ID must be an integer.";
     }
   },

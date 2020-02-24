@@ -59,7 +59,6 @@ function CreateComment(props) {
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.id,
         text: text
       };
 
