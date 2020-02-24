@@ -28,17 +28,6 @@ const planSchema = {
         `${this.maxLength} characters long.`;
     }
   },
-  userId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid user ID:\n" +
-        "The user ID associated with this plan must be an integer at least " +
-        `${this.minValue}.`;
-    }
-  },
   lastUpdated: {
     required: false,
     type: Type.timestamp,

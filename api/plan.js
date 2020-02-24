@@ -22,7 +22,6 @@ const {
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
 
-
 // submit a plan
 app.post("/", requireAuth, async (req, res) => {
   try {
@@ -36,7 +35,7 @@ app.post("/", requireAuth, async (req, res) => {
 
       // get request body
       console.log("Submit a plan");
-      const userId = sanitizedBody.userId;
+      const userId = req.auth.userId;
       const planName = sanitizedBody.planName;
       const courses = formatStringArray(req.body.courses);
 
