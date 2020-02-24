@@ -4,7 +4,6 @@
 const assert = require("assert");
 const jwt = require("jsonwebtoken");
 const needle = require("needle");
-const url = require("url");
 const xml2js = require("xml2js");
 
 const {Role} = require("../../entities/role");
