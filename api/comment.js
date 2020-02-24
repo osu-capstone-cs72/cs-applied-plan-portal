@@ -6,7 +6,6 @@ const express = require("express");
 const app = express();
 const {requireAuth} = require("../utils/auth");
 const enforceConstraints = require("../utils/commentValidation").enforceConstraints;
-const getComment = require("../models/comment").getComment;
 const createComment = require("../models/comment").createComment;
 const {
   commentSchema,
@@ -52,30 +51,6 @@ app.post("/", requireAuth, async (req, res) => {
       console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
-    }
-
-  } catch (err) {
-    console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get comment by id
-app.get("/:commentId", requireAuth, async (req, res) => {
-
-  const commentId = req.params.commentId;
-  console.log("Get comment", commentId);
-
-  try {
-
-    const results = await getComment(commentId);
-    if (results.length === 0) {
-      console.error("404: No comment found\n");
-      res.status(404).send({error: "No comment found."});
-    } else {
-      console.log("200: Comment found\n");
-      res.status(200).send(results);
     }
 
   } catch (err) {

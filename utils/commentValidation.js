@@ -9,6 +9,7 @@ async function enforceConstraints(planId, userId) {
   try {
     await userConstraint(userId);
     await planConstraint(planId);
+    await ownerConstraint(planId, userId);
     return "valid";
 
   } catch (err) {
@@ -68,6 +69,34 @@ async function planConstraint(planId) {
   } catch (err) {
     if (internalError(err, violation)) {
       console.log("Error checking plan constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+//  checks that if a student is commenting then they are the owner of the plan
+async function ownerConstraint(planId, userId) {
+
+  const violation = "Invalid user ID:\nThis user is not allowed to comment on this plan.";
+
+  try {
+
+    let sql = ""
+    sql = "SELECT * FROM Plan WHERE planId=?;";
+    const results = await pool.query(sql, planId);
+
+    if (results[0].length === 0) {
+      throw violation;
+    } else {
+      return;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking owner constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
