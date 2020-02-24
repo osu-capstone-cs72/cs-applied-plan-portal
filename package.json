@@ -2,7 +2,7 @@
   "name": "cs-applied-plan-portal",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },
@@ -36,7 +36,33 @@
     "type": "git",
     "url": "git+https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git"
   },
-  "author": "",
+  "author": {
+    "name": "Robin Hess",
+    "email": "hessro@oregonstate.edu",
+    "url": "http://web.engr.oregonstate.edu/~hessro/"
+  },
+  "contributors": [
+    {
+      "name": "Claire Cahill",
+      "email": "cahillc@oregonstate.edu",
+      "url": "https://github.com/clairecahill"
+    },
+    {
+      "name": "Jackson Golletz",
+      "email": "golletzj@oregonstate.edu",
+      "url": "https://github.com/JacksGo"
+    },
+    {
+      "name": "Phi Luu",
+      "email": "luuph@oregonstate.edu",
+      "url": "https://github.com/philectron"
+    },
+    {
+      "name": "Zachary Thomas",
+      "email": "thomasza@oregonstate.edu",
+      "url": "https://github.com/silverware13"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/osu-capstone-cs72/cs-applied-plan-portal/issues"
