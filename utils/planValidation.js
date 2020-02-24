@@ -31,7 +31,7 @@ async function enforceConstraints(userId, courses) {
 exports.enforceConstraints = enforceConstraints;
 
 // checks that the submitted data does not violate any patch constraints
-async function patchEnforceConstraints(planId, courses) {
+async function patchEnforceConstraints(planId, courses, userId) {
 
   try {
 
@@ -44,6 +44,7 @@ async function patchEnforceConstraints(planId, courses) {
       await courseConstraint(courses);
       await restrictionConstraint(courses);
       await creditConstraint(courses);
+      await ownerConstraint(planId, userId);
     }
 
     return "valid";
@@ -304,6 +305,43 @@ async function creditConstraint(courses) {
   } catch (err) {
     if (internalError(err, violation)) {
       console.log("Error checking credit constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+//  checks that a student editing the plan is the owner
+async function ownerConstraint(planId, userId) {
+
+  const violation = "Invalid user ID:\nThis user is not allowed to edit this plan.";
+
+  try {
+
+    let sql = "SELECT * FROM User WHERE userId=?;";
+    let results = await pool.query(sql, userId);
+
+    // if the user is a student they must be the plan owner
+    if (results[0][0].role === 0) {
+
+      sql = "SELECT * FROM Plan WHERE planId=?;";
+      results = await pool.query(sql, planId);
+
+      if (results[0][0].studentId === userId) {
+        return;
+      } else {
+        throw violation;
+      }
+
+    } else {
+      return;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking owner constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;

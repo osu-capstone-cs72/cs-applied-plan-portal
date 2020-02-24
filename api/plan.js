@@ -82,8 +82,8 @@ app.patch("/", requireAuth, async (req, res) => {
 
       // get request body
       console.log("Update a plan");
+      const userId = req.auth.userId;
       const planId = sanitizedBody.planId;
-
       let planName = 0;
       let courses = 0;
 
@@ -95,7 +95,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
       // only save a plan if it does not violate any constraints
-      const violation = await patchEnforceConstraints(planId, courses);
+      const violation = await patchEnforceConstraints(planId, courses, userId);
       if (violation === "valid") {
 
         // save the plan
