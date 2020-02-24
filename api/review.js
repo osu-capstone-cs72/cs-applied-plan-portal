@@ -7,6 +7,7 @@ const app = express();
 
 const enforceConstraints = require("../utils/reviewValidation").enforceConstraints;
 const createReview = require("../models/review").createReview;
+const {requireAuth} = require("../utils/auth");
 const {
   reviewSchema,
   getSchemaViolations,
@@ -14,7 +15,7 @@ const {
 } = require("../utils/schemaValidation");
 
 // create a new review
-app.post("/", async (req, res) => {
+app.post("/", requireAuth, async (req, res) => {
 
   try {
 
@@ -27,7 +28,7 @@ app.post("/", async (req, res) => {
 
       // get request body
       const planId = sanitizedBody.planId;
-      const userId = sanitizedBody.userId;
+      const userId = req.auth.userId;
       const status = sanitizedBody.status;
       console.log("User", userId, "creating a review on plan", planId);
 

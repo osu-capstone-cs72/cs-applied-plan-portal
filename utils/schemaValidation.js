@@ -158,7 +158,7 @@ const commentSchema = {
 };
 exports.commentSchema = commentSchema;
 
-// Schema of a reivew made on a plan.
+// Schema of a review made on a plan.
 const reviewSchema = {
   planId: {
     required: true,
@@ -168,16 +168,6 @@ const reviewSchema = {
     getErrorMessage: function() {
       return "Invalid plan id:\n" +
         "Plan ID must be an integer.";
-    }
-  },
-  userId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid user id:\n" +
-        "User ID must be a number greater than zero.";
     }
   },
   status: {
