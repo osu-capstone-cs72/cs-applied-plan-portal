@@ -1,7 +1,7 @@
 // File: comment.js
 // Description: data functions that handle comments
 
-const pool = require("../utils/mysqlPool").pool;
+const pool = require("../services/db/mysqlPool").pool;
 
 // get a comment by its ID
 async function getComment(commentId) {

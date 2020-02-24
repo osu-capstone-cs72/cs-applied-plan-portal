@@ -5,22 +5,22 @@ require("path");
 const express = require("express");
 const app = express();
 
-const formatStringArray = require("../utils/format").formatStringArray;
-const enforceConstraints = require("../utils/planValidation").enforceConstraints;
-const patchEnforceConstraints = require("../utils/planValidation").patchEnforceConstraints;
+const formatStringArray = require("../services/format/format").formatStringArray;
+const enforceConstraints = require("../services/validation/planValidation").enforceConstraints;
+const patchEnforceConstraints = require("../services/validation/planValidation").patchEnforceConstraints;
 const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
 const getPlansStatus = require("../models/plan").getPlansStatus;
 const deletePlan = require("../models/plan").deletePlan;
 const getPlanActivity = require("../models/plan").getPlanActivity;
-const {requireAuth} = require("../utils/auth");
+const {requireAuth} = require("../services/auth/auth");
 const {
   planSchema,
   patchPlanSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 
 
 // submit a plan

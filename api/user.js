@@ -12,12 +12,12 @@ const {
   userSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 const {
   casValidateUser,
   generateAuthToken,
   requireAuth
-} = require("../utils/auth");
+} = require("../services/auth/auth");
 
 const app = express();
 
