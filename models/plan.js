@@ -107,7 +107,6 @@ async function updatePlan(planId, planName, courses) {
     // perform the query
     if (planName !== 0 || courses !== 0) {
       sql += " COMMIT;";
-      console.log("SQL:", sql);
       results = await pool.query(sql, sqlArray);
     }
 
