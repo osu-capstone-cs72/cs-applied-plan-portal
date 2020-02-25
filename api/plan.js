@@ -115,7 +115,7 @@ app.patch("/", requireAuth, async (req, res) => {
         // update the plan
         const results = await updatePlan(planId, planName, courses);
         console.log("200: Plan has been updated\n");
-        res.status(200).send({affectedRows: results});
+        res.status(200).send(results);
 
       } else {
 
@@ -207,12 +207,12 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
         }
 
         const results = await getPlansStatus(status, created, ascend);
-        if (results.length === 0) {
+        if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});
         } else {
           console.log("200: Plan found\n");
-          res.status(200).send({plans: results});
+          res.status(200).send(results);
         }
 
       } else {
@@ -251,12 +251,12 @@ app.delete("/:planId", requireAuth, async (req, res) => {
     if (violation === "valid") {
 
       const results = await deletePlan(planId);
-      if (results === 0) {
+      if (results.affectedRows === 0) {
         console.error("404: No plan found\n");
         res.status(404).send({error: "Could not delete plan."});
       } else {
         console.log("202: Plan deleted\n");
-        res.status(202).send({affectedRows: results});
+        res.status(202).send(results);
       }
 
     } else {
