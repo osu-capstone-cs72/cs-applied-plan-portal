@@ -5,8 +5,8 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const enforceConstraints = require("../services/validation/commentValidation").enforceConstraints;
-const createComment = require("../models/comment").createComment;
+const {enforceConstraints} = require("../services/validation/commentValidation");
+const {createComment} = require("../models/comment");
 const {
   commentSchema,
   getSchemaViolations,

@@ -5,8 +5,8 @@ require("path");
 const express = require("express");
 const app = express();
 
-const enforceConstraints = require("../services/validation/reviewValidation").enforceConstraints;
-const createReview = require("../models/review").createReview;
+const {enforceConstraints} = require("../services/validation/reviewValidation");
+const {createReview} = require("../models/review");
 const {requireAuth} = require("../services/auth/auth");
 const {
   reviewSchema,

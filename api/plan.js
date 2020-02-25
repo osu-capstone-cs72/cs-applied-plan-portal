@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const formatStringArray = require("../services/format/format").formatStringArray;
+const {formatStringArray} = require("../services/format/format");
 const {
   createEnforceConstraints,
   patchEnforceConstraints,
