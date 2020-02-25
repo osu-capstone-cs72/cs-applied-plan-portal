@@ -7,11 +7,23 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const cors = require("cors");
 const app = express();
+
+// catch bad JSON body errors
+app.use((req, res, next) => {
+  bodyParser.json()(req, res, err => {
+    if (err) {
+      console.error("400: Invalid JSON request body");
+      res.status(400).send({error: "400: Invalid JSON request body"});
+    } else {
+      next();
+    }
+  });
+});
+
 app.use(cors());
-app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 
-// log incoming requests (no routes allowed above this)
+// log incoming requests
 app.all("*", (req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   next();
