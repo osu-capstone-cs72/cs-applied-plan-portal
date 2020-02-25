@@ -2,7 +2,7 @@
 // Description: Validates a submitted object against a predefined schema.
 
 const validator = require("validator");
-const {Type} = require("./type");
+const {Type} = require("../../entities/type");
 
 // Schema of a create Plan request used for the validator and the database.
 const postPlanSchema = {

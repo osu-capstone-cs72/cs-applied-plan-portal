@@ -6,18 +6,18 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
-const {Role} = require("../utils/role");
+const {Role} = require("../entities/role");
 const userModel = require("../models/user");
 const {
   userSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 const {
   casValidateUser,
   generateAuthToken,
   requireAuth
-} = require("../utils/auth");
+} = require("../services/auth/auth");
 
 const app = express();
 

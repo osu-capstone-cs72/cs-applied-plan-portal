@@ -2,12 +2,10 @@
 // Description: Provides functions that handle the authentication process.
 
 const assert = require("assert");
-const needle = require("needle");
 const jwt = require("jsonwebtoken");
-const url = require("url");
+const needle = require("needle");
 const xml2js = require("xml2js");
-
-const {Role} = require("./role");
+const {Role} = require("../../entities/role");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 

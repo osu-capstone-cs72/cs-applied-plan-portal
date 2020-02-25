@@ -32,7 +32,7 @@ function AdvisorHome(props) {
       position: relative;
       top: 100px;
     }
-    
+
     .advisor-plans-table {
       position: relative;
       top: 100px;

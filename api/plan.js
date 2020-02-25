@@ -4,9 +4,8 @@
 require("path");
 const express = require("express");
 const app = express();
-
-const {requireAuth} = require("../utils/auth");
-const formatStringArray = require("../utils/format").formatStringArray;
+const {requireAuth} = require("../services/auth/auth");
+const formatStringArray = require("../services/format/format").formatStringArray;
 const {
   createEnforceConstraints,
   patchEnforceConstraints,
@@ -14,7 +13,7 @@ const {
   statusEnforceConstraints,
   deleteEnforceConstraints,
   activityEnforceConstraints
-} = require("../utils/planValidation");
+} = require("../services/validation/planValidation");
 const {
   createPlan,
   updatePlan,
@@ -29,7 +28,7 @@ const {
   statusPlanSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 
 // submit a plan
 app.post("/", requireAuth, async (req, res) => {

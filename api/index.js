@@ -3,7 +3,6 @@
 
 require("path");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -21,7 +20,6 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
-app.use(cookieParser(process.env.COOKIE_PARSER_SECRET_KEY));
 
 // log incoming requests
 app.all("*", (req, res, next) => {

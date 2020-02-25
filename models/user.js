@@ -2,7 +2,7 @@
 // Description: Provides data functions that handle the User entity.
 
 const assert = require("assert");
-const pool = require("../utils/mysqlPool").pool;
+const pool = require("../services/db/mysqlPool").pool;
 
 // Creates a new User in the database with the provided User object.
 //
