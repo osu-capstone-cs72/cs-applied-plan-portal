@@ -18,7 +18,7 @@ function ActivityFeed(props) {
   return (
     <div id="plan-activity" css={style}>
       <h2>Activity Feed</h2>
-      <CreateComment currentUser={props.currentUser}
+      <CreateComment currentUser={props.currentUser} status={props.status}
         onNewComment={e => props.onNewComment(e)}/>
       {props.activity.map((obj) => {
         if (obj.commentId > 0) {
@@ -38,6 +38,7 @@ function ActivityFeed(props) {
 export default ActivityFeed;
 
 ActivityFeed.propTypes = {
+  status: PropTypes.number,
   onUpdate: PropTypes.any,
   activity: PropTypes.array,
   currentUser: PropTypes.object,

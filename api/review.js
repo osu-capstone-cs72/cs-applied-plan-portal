@@ -7,7 +7,7 @@ const app = express();
 
 const enforceConstraints = require("../services/validation/reviewValidation").enforceConstraints;
 const createReview = require("../models/review").createReview;
-const {requireAuth} = require("../utils/auth");
+const {requireAuth} = require("../services/auth/auth");
 const {
   reviewSchema,
   getSchemaViolations,

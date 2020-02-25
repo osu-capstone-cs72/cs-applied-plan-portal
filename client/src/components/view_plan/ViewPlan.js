@@ -198,7 +198,7 @@ function ViewPlan(props) {
         </div>
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
-        <ActivityFeed activity={activity} currentUser={currentUser}
+        <ActivityFeed activity={activity} currentUser={currentUser} status={status}
           onNewComment={e => handleAddComment(e)} />
       </div>
     );
