@@ -60,10 +60,30 @@ async function patchEnforceConstraints(planId, courses, userId) {
 }
 exports.patchEnforceConstraints = patchEnforceConstraints;
 
+// checks that the submitted data does not violate any view constraints
+async function viewEnforceConstraints(planId, userId) {
+
+  try {
+
+    await planConstraint(planId);
+    await ownerConstraint(planId, userId);
+    return "valid";
+
+  } catch (err) {
+    if (err === "Internal error") {
+      throw err;
+    } else {
+      return err;
+    }
+  }
+
+}
+exports.viewEnforceConstraints = viewEnforceConstraints;
+
 // checks that the plan exists
 async function planConstraint(planId) {
 
-  const violation = "Invalid plan ID:\nUnable to update plan.";
+  const violation = "Invalid plan ID:\nPlan does not exist.";
 
   try {
 
@@ -313,15 +333,20 @@ async function creditConstraint(courses) {
 
 }
 
-//  checks that a student editing the plan is the owner
+//  checks that the user owns the plan or is an advisor
 async function ownerConstraint(planId, userId) {
 
-  const violation = "Invalid user ID:\nThis user is not allowed to edit this plan.";
+  const violation = "Invalid user ID:\nThis user is not allowed perform this action on this plan.";
 
   try {
 
     let sql = "SELECT * FROM User WHERE userId=?;";
     let results = await pool.query(sql, userId);
+
+    // first ensure that the user exists
+    if (results[0].length  === 0) {
+      throw violation;
+    }
 
     // if the user is a student they must be the plan owner
     if (results[0][0].role === 0) {

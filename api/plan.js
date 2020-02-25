@@ -8,6 +8,7 @@ const app = express();
 const formatStringArray = require("../utils/format").formatStringArray;
 const createEnforceConstraints = require("../utils/planValidation").createEnforceConstraints;
 const patchEnforceConstraints = require("../utils/planValidation").patchEnforceConstraints;
+const viewEnforceConstraints = require("../utils/planValidation").viewEnforceConstraints;
 const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
 const getPlan = require("../models/plan").getPlan;
@@ -131,16 +132,29 @@ app.get("/:planId", requireAuth, async (req, res) => {
 
   try {
 
+    const userId = req.auth.userId;
     const planId = req.params.planId;
     console.log("View plan", planId);
 
-    const results = await getPlan(planId);
-    if (results.planId === 0) {
-      console.error("404: No plan found\n");
-      res.status(404).send({error: "No plan found."});
+    // only view a plan if it does not violate any constraints
+    const violation = await viewEnforceConstraints(planId, userId);
+    if (violation === "valid") {
+
+      const results = await getPlan(planId);
+      if (results.planId === 0) {
+        console.error("404: No plan found\n");
+        res.status(404).send({error: "No plan found."});
+      } else {
+        console.log("200: Plan found\n");
+        res.status(200).send(results);
+      }
+
     } else {
-      console.log("200: Plan found\n");
-      res.status(200).send(results);
+
+      // send an error that explains the violated constraint
+      console.error("400:", violation, "\n");
+      res.status(400).send({error: violation});
+
     }
 
   } catch (err) {
