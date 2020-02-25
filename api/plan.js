@@ -91,7 +91,9 @@ app.patch("/", requireAuth, async (req, res) => {
         planName = sanitizedBody.planName;
       }
       if (req.body.courses !== undefined) {
-        courses = formatStringArray(sanitizedBody.courses);
+        if (Array.isArray(req.body.courses)) {
+          courses = formatStringArray(sanitizedBody.courses);
+        }
       }
 
       // only save a plan if it does not violate any constraints

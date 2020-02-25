@@ -8,7 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// catch bad JSON body errors
+// catch invalid JSON request bodies
 app.use((req, res, next) => {
   bodyParser.json()(req, res, err => {
     if (err) {
