@@ -1,7 +1,10 @@
+/** @jsx jsx */
+
 import React from "react";
 import PlanCourse from "./PlanCourse";
 import PropTypes from "prop-types";
 import {getToken} from "../../utils/authService";
+import {css, jsx} from "@emotion/core";
 
 export default class EditPlan extends React.Component {
 
@@ -170,8 +173,46 @@ export default class EditPlan extends React.Component {
   }
 
   render() {
+
+    const style = css`
+      border-right: 2px solid black;
+      flex: 50%;
+      height: 100vh;
+      position: relative;
+      margin: 15px;
+      top: 40px;
+
+      .submit-button {
+        position: absolute;
+        bottom: 55px;
+        right: 30px;
+      }
+
+      .plan-header {
+        display: inline;
+      }
+
+      .plan-name {
+        padding: 5px;
+      }
+
+      .credits-header {
+        float: right;
+        margin-right: 15px;
+      }
+
+      .credits {
+        display: block;
+      }
+
+      .total-credits {
+        position: relative;
+        left: 50%;
+      }
+    `;
+
     return (
-      <div className="edit-plan">
+      <div className="edit-plan" css={style}>
         <div className="header">
           <div className="plan-header">
             <label className="plan-name">Plan name</label>

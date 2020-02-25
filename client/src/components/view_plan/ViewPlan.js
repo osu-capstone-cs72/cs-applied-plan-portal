@@ -13,7 +13,7 @@ import {getToken, getProfile} from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
-const PHE = require("print-html-element");
+import PHE from "print-html-element";
 
 function ViewPlan(props) {
 

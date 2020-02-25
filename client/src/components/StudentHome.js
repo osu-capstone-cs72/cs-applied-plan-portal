@@ -1,8 +1,11 @@
+/** @jsx jsx */
+
 import React from "react";
 import NavBar from "./Navbar";
 import {getToken, getProfile} from "../utils/authService";
 import PageSpinner from "./general/PageSpinner";
 import PageInternalError from "./general/PageInternalError";
+import {css, jsx} from "@emotion/core";
 
 export default class StudentHome extends React.Component {
 
@@ -89,9 +92,29 @@ export default class StudentHome extends React.Component {
 
   render() {
 
+    const style = css`
+
+      .student-plans-table {
+        margin: 0 auto;
+        position: relative;
+        top: 50px;
+      }
+
+      .student-plans-data {
+        padding: 10px;
+      }
+
+      .new-plan-button {
+        position: absolute;
+        bottom: 55px;
+        right: 30px;
+      }
+
+    `;
+
     if (!this.state.pageError) {
       return (
-        <div>
+        <div css={style}>
           <PageSpinner loading={this.state.loading} />
           <NavBar />
           <table className="student-plans-table">

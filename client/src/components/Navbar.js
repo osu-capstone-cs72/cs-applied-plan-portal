@@ -9,6 +9,21 @@ import {withRouter} from "react-router-dom";
 function Navbar(props) {
 
   const style = css`
+
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 35px;
+    background-color: orange;
+
+    #navbar-search {
+      width: 35%;
+    }
+
+    .logout {
+      margin-left: auto;
+    }
+
   `;
 
   function logoutUser() {

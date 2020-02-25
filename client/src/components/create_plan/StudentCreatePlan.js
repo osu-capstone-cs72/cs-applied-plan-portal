@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from "react";
+/** @jsx jsx */
+
+import {useState, useEffect} from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
 import Navbar from "../Navbar";
@@ -7,6 +9,7 @@ import {getToken} from "../../utils/authService";
 import {useParams} from "react-router-dom";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
+import {css, jsx} from "@emotion/core";
 
 export default function StudentCreatePlan() {
 
@@ -17,6 +20,10 @@ export default function StudentCreatePlan() {
   const [warning, setWarning] = useState("");
   const [edit, setEdit] = useState(0);
   const {planId} = useParams();
+
+  const style = css`
+    display: flex;
+  `;
 
   useEffect(() => {
     async function fetchPlan(planId) {
@@ -87,7 +94,7 @@ export default function StudentCreatePlan() {
 
   if (!pageError) {
     return (
-      <div className="student-create-plan">
+      <div className="student-create-plan" css={style}>
         <PageSpinner loading={loading} />
         <Navbar showSearch={false} searchContent={null}/>
         <EditPlan courses={courses} edit={edit} planName={planName} onLoading={e => setLoading(e)}
