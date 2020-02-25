@@ -13,7 +13,7 @@ import {getToken, getProfile} from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
-const PHE = require("print-html-element");
+import PHE from "print-html-element";
 
 function ViewPlan(props) {
 
@@ -28,6 +28,7 @@ function ViewPlan(props) {
   );
   const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState("");
+  const [email, setEmail] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
@@ -64,9 +65,26 @@ function ViewPlan(props) {
             setPlanName(obj.planName);
             setUserId(obj.studentId);
             setStatus(parseInt(obj.status));
+            setStudentName(obj.firstName + " " + obj.lastName);
+            setEmail(obj.email);
+            // add the intial review
+            setActivity([{
+              reviewId: 0,
+              commentId: 0,
+              status: 2,
+              planId: planId,
+              userId: userId,
+              time: created,
+              firstName: obj.firstName,
+              lastName: obj.lastName
+            }]);
           } else {
-            // we got a bad status code. send to 404 page
-            setPageError(404);
+            // we got a bad status code
+            if (response.status === 500) {
+              setPageError(500);
+            } else {
+              setPageError(404);
+            }
             return;
           }
 
@@ -92,27 +110,6 @@ function ViewPlan(props) {
               lastName: obj.lastName
             }
           );
-        }
-
-        // get plan user name
-        url = `http://${server}/user/${userId}/` +
-          `?accessToken=${token}`;
-        response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setStudentName(obj.firstName + " " + obj.lastName);
-          // add the intial review
-          setActivity([{
-            reviewId: 0,
-            commentId: 0,
-            status: 2,
-            planId: planId,
-            userId: userId,
-            time: created,
-            firstName: obj.firstName,
-            lastName: obj.lastName
-          }]);
         }
 
         // get plan activity
@@ -151,20 +148,57 @@ function ViewPlan(props) {
     PHE.printElement(document.getElementById("printable-content"), opts);
   }
 
+  async function handleDelete() {
+
+    if (window.confirm("Are you sure that you want to delete this plan?")) {
+      setLoading(true);
+      try {
+        const token = getToken();
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        const url = `http://${server}/plan/${planId}` +
+          `?accessToken=${token}`;
+
+        // delete plan data
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (response.ok) {
+          // redirect user to home
+          alert("Plan deleted.");
+          props.history.push("/");
+          return;
+        } else {
+          // we got a bad status code. show error
+          const obj = await response.json();
+          alert(obj.error);
+        }
+
+      } catch (err) {
+        // send to 500 error. show error
+        alert("An internal server error occurred. Please try again later.");
+      }
+      setLoading(false);
+    }
+
+  }
+
   if (!pageError) {
     return (
       <div className="view-plan" css={style}>
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <div id={"printable-content"}>
-          <PlanMetadata studentName={studentName} userId={userId}
+          <PlanMetadata studentName={studentName} userId={userId} email={email}
             planName={planName} status={status} currentUser={currentUser}
-            onPrint={() => handlePrint()}/>
+            onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
           <PlanTable courses={courses} />
         </div>
-        <CreateReview currentUser={currentUser}
+        <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
-        <ActivityFeed activity={activity} currentUser={currentUser}
+        <ActivityFeed activity={activity} currentUser={currentUser} status={status}
           onNewComment={e => handleAddComment(e)} />
       </div>
     );

@@ -4,7 +4,7 @@
 require("path");
 const express = require("express");
 const app = express();
-const getCourse = require("../models/course").getCourse;
+const {getCourse} = require("../models/course");
 const {requireAuth} = require("../services/auth/auth");
 
 // search for course data

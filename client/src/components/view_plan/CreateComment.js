@@ -59,7 +59,6 @@ function CreateComment(props) {
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.id,
         text: text
       };
 
@@ -94,36 +93,40 @@ function CreateComment(props) {
 
     } catch (err) {
       // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
+      setErrorMessage("An internal server error occurred. Please try again later.");
     }
 
   }
 
-  if (newComment) {
-    return (
-      <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => toggle()}>
-          +
-        </button>
-      </div>
-    );
-  } else {
-    return (
-      <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => toggle()}>
-        -
-        </button>
-        <div id="comment-error-container">
-          <p id="comment-error-message">{errorMessage}</p>
-        </div>
-        <div id="comment-input-container">
-          <textarea id="comment-text-input" rows="5" cols="50"/>
-          <button id="submit-comment-button" onClick={() => submit(planId)}>
-            Submit Comment
+  if (props.status !== 0 && props.status !== 4) {
+    if (newComment) {
+      return (
+        <div id="create-comment-container" css={style}>
+          <button className="toggle-creation-button" onClick={() => toggle()}>
+            +
           </button>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div id="create-comment-container" css={style}>
+          <button className="toggle-creation-button" onClick={() => toggle()}>
+          -
+          </button>
+          <div id="comment-error-container">
+            <p id="comment-error-message">{errorMessage}</p>
+          </div>
+          <div id="comment-input-container">
+            <textarea id="comment-text-input" rows="5" cols="50"/>
+            <button id="submit-comment-button" onClick={() => submit(planId)}>
+              Submit Comment
+            </button>
+          </div>
+        </div>
+      );
+    }
+  } else {
+    return null;
   }
 
 }

@@ -4,86 +4,116 @@
 const pool = require("../services/db/mysqlPool").pool;
 
 // save a plan with its selected courses. remove the plan if an error occurs
-async function savePlan(userId, planName, courses) {
+async function createPlan(userId, planName, courses) {
 
   try {
 
-    // save the basic plan information
-    const planId = await insertPlan(userId, planName);
+    // construct the first SQL query
+    let sql = "BEGIN; " +
+      "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
+      "SELECT LAST_INSERT_ID();";
 
-    // while inserting the selected courses, if there is an error
-    // we will need to delete the plan
-    try {
-      await insertSelectedCourses(planId, courses);
-    } catch (err) {
-      deletePlan(planId);
-      throw Error(err);
-    }
+    // perform the first insert operation
+    let results = await pool.query(sql, [userId, planName]);
+    const planId = results[0][1].insertId;
 
-    console.log("Plan saved");
+    // construct the second SQL query
+    const sqlArray = [];
+    sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+      sqlArray.push(planId);
+      sqlArray.push(currentValue);
+    });
+
+    // add the last line of the SQL query
+    sql = sql.replace(/.$/, "; COMMIT;");
+
+    // perform the second insert operation
+    results = await pool.query(sql, sqlArray);
     return {insertId: planId};
 
   } catch (err) {
-    console.log("Error saving plan");
+    console.log("Error creating plan");
     throw Error(err);
   }
 
 }
-exports.savePlan = savePlan;
+exports.createPlan = createPlan;
 
 // update a plan with its selected courses
 async function updatePlan(planId, planName, courses) {
 
   try {
 
-    // keep track of the total rows affected
-    let updatedRows = 0;
+    // get the owner and status from the current plan
+    let sql = "SELECT * FROM Plan WHERE planId=?;";
+    let results = await pool.query(sql, [planId]);
+    const ownerId = results[0][0].studentId;
+    const currentStatus = results[0][0].status;
+
+    // keep track of what is affected
+    let updatedName = false;
+    let updatedCourses = false;
+    const sqlArray = [];
+    sql = "BEGIN;";
 
     // update the plan name if it has changed
     if (planName !== 0) {
 
-      const sql = "UPDATE Plan SET planName=? WHERE planId=?;";
-      const results = await pool.query(sql, [planName, planId]);
-      updatedRows += results[0].affectedRows;
+      sql += "UPDATE Plan SET planName=? WHERE planId=?;";
+      sqlArray.push(planName);
+      sqlArray.push(planId);
+      updatedName = true;
 
     }
 
     // update the courses list if it has changed
     if (courses !== 0) {
 
-      // get the id of the owner of the plan and the current status
-      let sql = "SELECT * FROM Plan WHERE planId=?;";
-      let results = await pool.query(sql, [planId]);
-      const ownerId = results[0][0].studentId;
-      const currentStatus = results[0][0].status;
-
       // If the status is not "awaiting review" we will need to update it
       if (currentStatus !== 2) {
-        sql = "BEGIN;" +
-        "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, 2); " +
-        "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?; " +
-        "COMMIT;";
-        results = await pool.query(sql, [planId, ownerId, planId]);
-        updatedRows += 2;
+        sql += "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, 2); " +
+        "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+        sqlArray.push(planId);
+        sqlArray.push(ownerId);
+        sqlArray.push(planId);
       } else {
-        sql = "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
-        results = await pool.query(sql, [planId]);
-        updatedRows += 1;
+        sql += "UPDATE Plan SET status=2, lastUpdated=CURRENT_TIMESTAMP() WHERE planId=?;";
+        sqlArray.push(planId);
       }
 
-      // start by deleting all of the current selected courses
-      sql = "DELETE FROM SelectedCourse WHERE planId=?;";
-      results = await pool.query(sql, [planId, planName]);
-      updatedRows += results[0].affectedRows;
+      // delete all of the current selected courses
+      sql += "DELETE FROM SelectedCourse WHERE planId=?;";
+      sqlArray.push(planId);
 
-      // insert the new selection of courses
-      insertSelectedCourses(planId, courses);
-      updatedRows += courses.length;
+      sql += "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+
+      // expand the sql string and array based on the number of courses
+      courses.forEach((currentValue) => {
+        sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+        sqlArray.push(planId);
+        sqlArray.push(currentValue);
+      });
+
+      // replace the final comma with a semicolon
+      sql = sql.replace(/.$/, ";");
+      updatedCourses = true;
 
     }
 
-    console.log("Plan updated");
-    return updatedRows;
+    // perform the query
+    if (planName !== 0 || courses !== 0) {
+      sql += " COMMIT;";
+      results = await pool.query(sql, sqlArray);
+    }
+
+    return {
+      updatedName: updatedName,
+      updatedCourses: updatedCourses
+    };
 
   } catch (err) {
     console.log("Error updating plan plan");
@@ -124,7 +154,10 @@ async function getPlansStatus(status, created, ascend) {
     } else {
       results = await pool.query(sql);
     }
-    return results[0];
+
+    return {
+      plans: results[0]
+    };
 
   } catch (err) {
     console.log("Error searching for plans");
@@ -139,7 +172,7 @@ async function getPlan(planId) {
 
   try {
 
-    let sql = "SELECT * FROM Plan WHERE planId = ?;";
+    let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
     const result1 = await pool.query(sql, planId);
 
     if (!result1[0].length) {
@@ -189,52 +222,6 @@ async function getPlanActivity(planId) {
 }
 exports.getPlanActivity = getPlanActivity;
 
-// save basic plan information such as the student id and the plan name
-async function insertPlan(userId, planName) {
-
-  try {
-
-    // insert the student id and plan name into the Plan table
-    const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
-    const results = await pool.query(sql, [userId, planName]);
-    return results[0].insertId;
-
-  } catch (err) {
-    console.log("Error inserting basic plan data");
-    throw Error(err);
-  }
-
-}
-
-// save a list of selected courses for a plan
-async function insertSelectedCourses(planId, courses) {
-
-  let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
-  const sqlArray = [];
-
-  // expand the sql string and array based on the number of courses
-  courses.forEach((currentValue) => {
-    sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
-    sqlArray.push(planId);
-    sqlArray.push(currentValue);
-  });
-  // replace the last character of the sql query with ;
-  sql = sql.replace(/.$/, ";");
-
-  try {
-
-    // add each of the courses to the SelectedCourse table
-    await pool.query(sql, sqlArray);
-    console.log("Added courses to plan", planId);
-    return ([planId, courses, ""]);
-
-  } catch (err) {
-    console.log("Error adding courses to plan", planId);
-    throw Error(err);
-  }
-
-}
-
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {
 
@@ -244,7 +231,9 @@ async function deletePlan(planId) {
     const sql = "DELETE FROM Plan WHERE planId=?;";
     const results = await pool.query(sql, planId);
     console.log("Plan", planId, "deleted");
-    return results[0].affectedRows;
+    return {
+      affectedRows: results[0].affectedRows
+    };
 
   } catch (err) {
     console.log("Error deleting plan", planId, ":\n", err);

@@ -6,10 +6,22 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-// log incoming requests (no routes allowed above this)
+// catch invalid JSON request bodies
+app.use((req, res, next) => {
+  bodyParser.json()(req, res, err => {
+    if (err) {
+      console.error("400: Invalid JSON request body");
+      res.status(400).send({error: "400: Invalid JSON request body"});
+    } else {
+      next();
+    }
+  });
+});
+
+app.use(cors());
+
+// log incoming requests
 app.all("*", (req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   next();

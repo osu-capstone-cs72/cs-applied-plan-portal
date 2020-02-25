@@ -5,7 +5,6 @@ const assert = require("assert");
 const jwt = require("jsonwebtoken");
 const needle = require("needle");
 const xml2js = require("xml2js");
-
 const {Role} = require("../../entities/role");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;

@@ -1,8 +1,11 @@
+/** @jsx jsx */
+
 import React from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
+import {css, jsx} from "@emotion/core";
 import {getToken} from "../../utils/authService";
 
 export default class CourseContainer extends React.Component {
@@ -104,8 +107,39 @@ export default class CourseContainer extends React.Component {
   }
 
   render() {
+
+    const style = css`
+      flex: 50%;
+      margin: 10px;
+      position: relative;
+      top: 40px;
+
+      .explore-courses {
+        margin: 10px;
+        padding: 8px;
+        height: 85vh;
+        overflow: scroll;
+      }
+
+      .search-container {
+        margin: 10px;
+        padding: 8px;
+        display: inline-block;
+      }
+
+      .course-filter {
+        float: right;
+        margin: 25px;
+        margin-right: 50px;
+      }
+
+      .form {
+        display: inline;
+      }
+    `;
+
     return (
-      <div className="course-container">
+      <div className="course-container" css={style}>
         <div className="top-bar">
           <div className="search-container">
             <form className="form form-inline my-2 my-lg-0" onSubmit={this.submitHandler}>

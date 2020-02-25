@@ -26,8 +26,17 @@ function PlanMetadata(props) {
     .metadata-field {
       vertical-align: top;
       display: inline-block;
-      width: 16%;
+      width: 12%;
       height: 55px;
+      word-wrap: break-word;
+    }
+
+    .small-metadata-field {
+      vertical-align: top;
+      display: inline-block;
+      width: 50%;
+      height: 55px;
+      word-wrap: break-word;
     }
 
     .field-type {
@@ -40,18 +49,28 @@ function PlanMetadata(props) {
       vertical-align: middle;
     }
 
-    #edit-plan-button, #print-plan-button {
+    #delete-plan-button, #edit-plan-button, #print-plan-button {
       padding: 10px;
+    }
+
+    #modify-button-container {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0;
+      width: 24%;
     }
 
     @media print {
 
-      .button-field, #edit-plan-link, #edit-plan-button, #print-plan-button {
+      .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button,
+        #print-plan-button, #modify-button-container {
         display: none;
       }
 
       .metadata-field {
-        width: 25%;
+        width: 20%;
+        word-wrap: break-word;
       }
 
     }
@@ -78,16 +97,20 @@ function PlanMetadata(props) {
     <div id="metadata-container" css={style}>
       <div className="plan-metadata">
         <div className="metadata-field">
+          <p className="field-type">Plan Name:</p>
+          <p className="field-text">{props.planName}</p>
+        </div>
+        <div className="metadata-field">
           <p className="field-type">Student Name:</p>
           <p className="field-text">{props.studentName}</p>
         </div>
         <div className="metadata-field">
-          <p className="field-type">User ID:</p>
-          <p className="field-text">{props.userId}</p>
+          <p className="field-type">Email:</p>
+          <p className="field-text">{props.email}</p>
         </div>
         <div className="metadata-field">
-          <p className="field-type">Plan Name:</p>
-          <p className="field-text">{props.planName}</p>
+          <p className="field-type">User ID:</p>
+          <p className="field-text">{props.userId}</p>
         </div>
         <div className="metadata-field">
           <p className="field-type">Plan Status:</p>
@@ -98,13 +121,24 @@ function PlanMetadata(props) {
             Print Plan
           </button>
         </div>
-        <div className="metadata-field button-field">
-          <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-            <button id="edit-plan-button">
-                Edit Plan
-            </button>
-          </Link>
-        </div>
+        {props.status === 1 || props.status === 2 ? (
+          <div id="modify-button-container">
+            <div className="small-metadata-field button-field">
+              <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+                <button id="edit-plan-button">
+                    Edit Plan
+                </button>
+              </Link>
+            </div>
+            <div className="small-metadata-field button-field">
+              <button id="delete-plan-button" onClick={() => props.onDelete()}>
+                  Delete Plan
+              </button>
+            </div>
+          </div>
+        ) : (
+          null
+        )}
       </div>
     </div>
   );
@@ -115,9 +149,11 @@ export default withRouter(PlanMetadata);
 PlanMetadata.propTypes = {
   studentName: PropTypes.string,
   userId: PropTypes.number,
+  email: PropTypes.string,
   planName: PropTypes.string,
   status: PropTypes.number,
   history: PropTypes.object,
   currentUser: PropTypes.object,
-  onPrint: PropTypes.func
+  onPrint: PropTypes.func,
+  onDelete: PropTypes.func
 };

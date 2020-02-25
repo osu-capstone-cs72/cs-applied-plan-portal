@@ -5,9 +5,8 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const enforceConstraints = require("../services/validation/commentValidation").enforceConstraints;
-const getComment = require("../models/comment").getComment;
-const createComment = require("../models/comment").createComment;
+const {enforceConstraints} = require("../services/validation/commentValidation");
+const {createComment} = require("../models/comment");
 const {
   commentSchema,
   getSchemaViolations,
@@ -28,7 +27,7 @@ app.post("/", requireAuth, async (req, res) => {
 
       // get request body
       const planId = sanitizedBody.planId;
-      const userId = sanitizedBody.userId;
+      const userId = req.auth.userId;
       const text = sanitizedBody.text;
       console.log("User ", userId, "creating a comment on plan", planId);
 
@@ -52,30 +51,6 @@ app.post("/", requireAuth, async (req, res) => {
       console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
-    }
-
-  } catch (err) {
-    console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({error: "An internal server error occurred. Please try again later."});
-  }
-
-});
-
-// get comment by id
-app.get("/:commentId", requireAuth, async (req, res) => {
-
-  const commentId = req.params.commentId;
-  console.log("Get comment", commentId);
-
-  try {
-
-    const results = await getComment(commentId);
-    if (results.length === 0) {
-      console.error("404: No comment found\n");
-      res.status(404).send({error: "No comment found."});
-    } else {
-      console.log("200: Comment found\n");
-      res.status(200).send(results);
     }
 
   } catch (err) {

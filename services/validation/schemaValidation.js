@@ -2,22 +2,10 @@
 // Description: Validates a submitted object against a predefined schema.
 
 const validator = require("validator");
-
 const {Type} = require("../../entities/type");
 
-// Schema of an applied Plan used for the validator and the database.
-const planSchema = {
-  status: {
-    required: false,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: 4,
-    getErrorMessage: function() {
-      return "Invalid plan status:\n" +
-        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
-        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
-    }
-  },
+// Schema of a create Plan request used for the validator and the database.
+const postPlanSchema = {
   planName: {
     required: true,
     type: Type.string,
@@ -29,29 +17,18 @@ const planSchema = {
         `${this.maxLength} characters long.`;
     }
   },
-  userId: {
+  courses: {
     required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
+    type: Type.courseArray,
     getErrorMessage: function() {
-      return "Invalid user ID:\n" +
-        "The user ID associated with this plan must be an integer at least " +
-        `${this.minValue}.`;
-    }
-  },
-  lastUpdated: {
-    required: false,
-    type: Type.timestamp,
-    getErrorMessage: function() {
-      return "Invalid plan timestamp:\n" +
-        "The plan timestamp must be in ISO 8601 format.";
+      return "Invalid courses:\n" +
+        `Courses must be an array of strings.`;
     }
   }
 };
-exports.planSchema = planSchema;
+exports.postPlanSchema = postPlanSchema;
 
-// Patch schema of an applied Plan used for the validator and the database.
+// Schema of a patch Plan request used for the validator and the database.
 const patchPlanSchema = {
   planId: {
     required: true,
@@ -73,9 +50,52 @@ const patchPlanSchema = {
         `The plan name must be a string between ${this.minLength} and ` +
         `${this.maxLength} characters long.`;
     }
+  },
+  courses: {
+    required: false,
+    type: Type.courseArray,
+    getErrorMessage: function() {
+      return "Invalid courses:\n" +
+        `Courses must be an array of strings.`;
+    }
   }
 };
 exports.patchPlanSchema = patchPlanSchema;
+
+// Schema of a status Plan request used for the validator and the database.
+const statusPlanSchema = {
+  status: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid status value:\n" +
+        "The status value associated with this request must be a number greater than zero.";
+    }
+  },
+  created: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid created value:\n" +
+        "The created value associated with this request must be a number greater than zero.";
+    }
+  },
+  ascend: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid ascend value:\n" +
+        "The ascend value associated with this request must be a number greater than zero.";
+    }
+  }
+};
+exports.statusPlanSchema = statusPlanSchema;
 
 // Schema of a user.
 const userSchema = {
@@ -131,18 +151,8 @@ const commentSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid plan id:\n" +
+      return "Invalid plan ID:\n" +
         "Plan ID must be a number greater than zero.";
-    }
-  },
-  userId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid user id:\n" +
-        "User ID must be a number greater than zero.";
     }
   },
   text: {
@@ -159,7 +169,7 @@ const commentSchema = {
 };
 exports.commentSchema = commentSchema;
 
-// Schema of a reivew made on a plan.
+// Schema of a review made on a plan.
 const reviewSchema = {
   planId: {
     required: true,
@@ -167,18 +177,8 @@ const reviewSchema = {
     minValue: 1,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid plan id:\n" +
+      return "Invalid plan ID:\n" +
         "Plan ID must be an integer.";
-    }
-  },
-  userId: {
-    required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid user id:\n" +
-        "User ID must be a number greater than zero.";
     }
   },
   status: {
@@ -295,6 +295,10 @@ function getPropertyViolation(obj, property, schema) {
       isValid = validator.isISO8601(obj[property] + "", {
         strict: true
       });
+      break;
+
+    case Type.courseArray:
+      isValid = Array.isArray(obj.courses);
       break;
 
     case Type.email:
