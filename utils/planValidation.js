@@ -171,9 +171,9 @@ async function planConstraint(planId) {
 // checks that the plan has not been accepted, rejected, or is awaiting final review
 async function lockedConstraint(planId) {
 
-  const violation = "Plan cannot be modified:\n" +
-    "This plan is either awaiting final review, has been accepted, or has been rejected. " +
-    "It may no longer be altered.";
+  const violation = `Plan cannot be modified:\n` +
+    `This plan has the "awaiting final review", "accepted", or "rejected" status ` +
+    `and may no longer be altered.`;
 
   try {
 

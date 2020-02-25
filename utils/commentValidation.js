@@ -118,7 +118,7 @@ async function ownerConstraint(planId, userId) {
 //  checks that the plan still allows comments
 async function historicalConstraint(planId) {
 
-  const violation = "Invalid plan ID:\nThis plan has been accepted or " +
+  const violation = "Cannot add comments:\nThis plan has been accepted or " +
     "rejected and no longer allows comments.";
 
   try {

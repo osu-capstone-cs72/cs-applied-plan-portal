@@ -196,7 +196,7 @@ function ViewPlan(props) {
             onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
           <PlanTable courses={courses} />
         </div>
-        <CreateReview currentUser={currentUser}
+        <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
         <ActivityFeed activity={activity} currentUser={currentUser}
           onNewComment={e => handleAddComment(e)} />
