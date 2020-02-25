@@ -150,36 +150,38 @@ function ViewPlan(props) {
 
   async function handleDelete() {
 
-    setLoading(true);
-    try {
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}` +
-        `?accessToken=${token}`;
+    if (window.confirm("Are you sure that you want to delete this plan?")) {
+      setLoading(true);
+      try {
+        const token = getToken();
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        const url = `http://${server}/plan/${planId}` +
+          `?accessToken=${token}`;
 
-      // delete plan data
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
+        // delete plan data
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (response.ok) {
+          // redirect user to home
+          alert("Plan deleted.");
+          props.history.push("/");
+          return;
+        } else {
+          // we got a bad status code. show error
+          const obj = await response.json();
+          alert(obj.error);
         }
-      });
-      if (response.ok) {
-        // redirect user to home
-        alert("Plan deleted.");
-        props.history.push("/");
-        return;
-      } else {
-        // we got a bad status code. show error
-        const obj = await response.json();
-        alert(obj.error);
-      }
 
-    } catch (err) {
-      // send to 500 error. show error
-      alert("An internal server error occurred. Please try again later.");
+      } catch (err) {
+        // send to 500 error. show error
+        alert("An internal server error occurred. Please try again later.");
+      }
+      setLoading(false);
     }
-    setLoading(false);
 
   }
 
