@@ -31,6 +31,14 @@ function PlanMetadata(props) {
       word-wrap: break-word;
     }
 
+    .small-metadata-field {
+      vertical-align: top;
+      display: inline-block;
+      width: 50%;
+      height: 55px;
+      word-wrap: break-word;
+    }
+
     .field-type {
       font-weight: bold;
       vertical-align: middle;
@@ -45,9 +53,18 @@ function PlanMetadata(props) {
       padding: 10px;
     }
 
+    #modify-button-container {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0;
+      width: 24%;
+    }
+
     @media print {
 
-      .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button, #print-plan-button {
+      .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button,
+        #print-plan-button, #modify-button-container {
         display: none;
       }
 
@@ -100,22 +117,28 @@ function PlanMetadata(props) {
           <p className="field-text">{renderStatus()}</p>
         </div>
         <div className="metadata-field button-field">
-          <button id="delete-plan-button" onClick={() => props.onDelete()}>
-              Delete Plan
-          </button>
-        </div>
-        <div className="metadata-field button-field">
           <button id="print-plan-button" onClick={() => props.onPrint()}>
             Print Plan
           </button>
         </div>
-        <div className="metadata-field button-field">
-          <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-            <button id="edit-plan-button">
-                Edit Plan
-            </button>
-          </Link>
-        </div>
+        {props.status === 1 || props.status === 2 ? (
+          <div id="modify-button-container">
+            <div className="small-metadata-field button-field">
+              <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+                <button id="edit-plan-button">
+                    Edit Plan
+                </button>
+              </Link>
+            </div>
+            <div className="small-metadata-field button-field">
+              <button id="delete-plan-button" onClick={() => props.onDelete()}>
+                  Delete Plan
+              </button>
+            </div>
+          </div>
+        ) : (
+          null
+        )}
       </div>
     </div>
   );
