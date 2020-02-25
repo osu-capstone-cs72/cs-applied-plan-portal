@@ -49,7 +49,7 @@ function CreateReview(props) {
 
       const selectStatus = document.getElementById("review-select");
       const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
-      
+
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const url = `http://${server}/review/?accessToken=${token}`;
@@ -57,7 +57,6 @@ function CreateReview(props) {
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.id,
         status: statusValue
       };
 

@@ -46,6 +46,11 @@ export default class StudentHome extends React.Component {
         });
       } else {
         // we got a bad status code
+        if (results.status === 500) {
+          this.setState({
+            pageError: 500
+          });
+        }
         this.setState({
           loading: false
         });

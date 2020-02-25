@@ -28,6 +28,7 @@ function ViewPlan(props) {
   );
   const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState("");
+  const [email, setEmail] = useState("");
   const [userId, setUserId] = useState(null);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(-1);
@@ -65,6 +66,7 @@ function ViewPlan(props) {
             setUserId(obj.studentId);
             setStatus(parseInt(obj.status));
             setStudentName(obj.firstName + " " + obj.lastName);
+            setEmail(obj.email);
             // add the intial review
             setActivity([{
               reviewId: 0,
@@ -77,8 +79,12 @@ function ViewPlan(props) {
               lastName: obj.lastName
             }]);
           } else {
-            // we got a bad status code. send to 404 page
-            setPageError(404);
+            // we got a bad status code
+            if (response.status === 500) {
+              setPageError(500);
+            } else {
+              setPageError(404);
+            }
             return;
           }
 
@@ -142,15 +148,50 @@ function ViewPlan(props) {
     PHE.printElement(document.getElementById("printable-content"), opts);
   }
 
+  async function handleDelete() {
+
+    setLoading(true);
+    try {
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/plan/${planId}` +
+        `?accessToken=${token}`;
+
+      // delete plan data
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      if (response.ok) {
+        // redirect user to home
+        alert("Plan deleted.");
+        props.history.push("/");
+        return;
+      } else {
+        // we got a bad status code. show error
+        const obj = await response.json();
+        alert(obj.error);
+      }
+
+    } catch (err) {
+      // send to 500 error. show error
+      alert("An internal server error occurred. Please try again later.");
+    }
+    setLoading(false);
+
+  }
+
   if (!pageError) {
     return (
       <div className="view-plan" css={style}>
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <div id={"printable-content"}>
-          <PlanMetadata studentName={studentName} userId={userId}
+          <PlanMetadata studentName={studentName} userId={userId} email={email}
             planName={planName} status={status} currentUser={currentUser}
-            onPrint={() => handlePrint()}/>
+            onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
           <PlanTable courses={courses} />
         </div>
         <CreateReview currentUser={currentUser}

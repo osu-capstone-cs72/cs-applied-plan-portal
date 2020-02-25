@@ -74,6 +74,9 @@ function AdvisorHome(props) {
         // we got a bad status code. Show the error
         obj = await results.json();
         setErrorMessage(obj.error);
+        if (results.status === 500) {
+          setPageError(500);
+        }
       }
     } catch (err) {
       // send to 500 page if a server error happens while fetching plan

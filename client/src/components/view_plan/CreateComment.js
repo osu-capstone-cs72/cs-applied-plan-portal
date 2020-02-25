@@ -93,7 +93,7 @@ function CreateComment(props) {
 
     } catch (err) {
       // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
+      setErrorMessage("An internal server error occurred. Please try again later.");
     }
 
   }
