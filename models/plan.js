@@ -139,7 +139,7 @@ async function getPlan(planId) {
 
   try {
 
-    let sql = "SELECT * FROM Plan WHERE planId = ?;";
+    let sql = "SELECT Plan.*, User.firstName, User.lastName FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
     const result1 = await pool.query(sql, planId);
 
     if (!result1[0].length) {

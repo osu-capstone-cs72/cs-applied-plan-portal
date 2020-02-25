@@ -64,6 +64,18 @@ function ViewPlan(props) {
             setPlanName(obj.planName);
             setUserId(obj.studentId);
             setStatus(parseInt(obj.status));
+            setStudentName(obj.firstName + " " + obj.lastName);
+            // add the intial review
+            setActivity([{
+              reviewId: 0,
+              commentId: 0,
+              status: 2,
+              planId: planId,
+              userId: userId,
+              time: created,
+              firstName: obj.firstName,
+              lastName: obj.lastName
+            }]);
           } else {
             // we got a bad status code. send to 404 page
             setPageError(404);
@@ -92,27 +104,6 @@ function ViewPlan(props) {
               lastName: obj.lastName
             }
           );
-        }
-
-        // get plan user name
-        url = `http://${server}/user/${userId}/` +
-          `?accessToken=${token}`;
-        response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setStudentName(obj.firstName + " " + obj.lastName);
-          // add the intial review
-          setActivity([{
-            reviewId: 0,
-            commentId: 0,
-            status: 2,
-            planId: planId,
-            userId: userId,
-            time: created,
-            firstName: obj.firstName,
-            lastName: obj.lastName
-          }]);
         }
 
         // get plan activity

@@ -67,6 +67,7 @@ app.post("/", requireAuth, async (req, res) => {
       }
 
     } else {
+      // send an error explaining the schema violation
       console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
@@ -125,6 +126,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
     } else {
+      // send an error explaining the schema violation
       console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
@@ -222,6 +224,7 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
       }
 
     } else {
+      // send an error explaining the schema violation
       console.error("400:", errorMessage, "\n");
       res.status(400).send({error: errorMessage});
       return;
