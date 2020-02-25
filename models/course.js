@@ -1,7 +1,7 @@
 // File: course.js
 // Description: data functions that handle courses
 
-const pool = require("../utils/mysqlPool").pool;
+const pool = require("../services/db/mysqlPool").pool;
 
 // search for a course using text and a mode setting
 // the mode can be courseId, courseCode, or courseName

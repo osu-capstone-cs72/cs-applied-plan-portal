@@ -5,13 +5,13 @@ require("path");
 const express = require("express");
 const app = express();
 
-const enforceConstraints = require("../utils/reviewValidation").enforceConstraints;
+const enforceConstraints = require("../services/validation/reviewValidation").enforceConstraints;
 const createReview = require("../models/review").createReview;
 const {
   reviewSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 
 // create a new review
 app.post("/", async (req, res) => {

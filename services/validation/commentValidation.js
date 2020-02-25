@@ -1,7 +1,7 @@
 // File: commentValidation.js
 // Description: validates a submitted comment against a list of constraints
 
-const pool = require("./mysqlPool").pool;
+const pool = require("../db/mysqlPool").pool;
 
 // checks that the submitted data does not violate any constraints
 async function enforceConstraints(planId, userId) {

@@ -1,7 +1,7 @@
 // File: plan.js
 // Description: data functions that handle plans
 
-const pool = require("../utils/mysqlPool").pool;
+const pool = require("../services/db/mysqlPool").pool;
 
 // save a plan with its selected courses. remove the plan if an error occurs
 async function savePlan(userId, planName, courses) {

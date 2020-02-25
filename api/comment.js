@@ -4,15 +4,15 @@
 require("path");
 const express = require("express");
 const app = express();
-const {requireAuth} = require("../utils/auth");
-const enforceConstraints = require("../utils/commentValidation").enforceConstraints;
+const {requireAuth} = require("../services/auth/auth");
+const enforceConstraints = require("../services/validation/commentValidation").enforceConstraints;
 const getComment = require("../models/comment").getComment;
 const createComment = require("../models/comment").createComment;
 const {
   commentSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 
 // create a new comment
 app.post("/", requireAuth, async (req, res) => {
