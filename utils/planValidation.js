@@ -6,7 +6,7 @@ const pool = require("./mysqlPool").pool;
 const CREDITS_MIN = 32;
 
 // checks that the submitted data does not violate any constraints
-async function enforceConstraints(userId, courses) {
+async function createEnforceConstraints(userId, courses) {
 
   try {
 
@@ -28,7 +28,7 @@ async function enforceConstraints(userId, courses) {
   }
 
 }
-exports.enforceConstraints = enforceConstraints;
+exports.createEnforceConstraints = createEnforceConstraints;
 
 // checks that the submitted data does not violate any patch constraints
 async function patchEnforceConstraints(planId, courses, userId) {

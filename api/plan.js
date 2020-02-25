@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 
 const formatStringArray = require("../utils/format").formatStringArray;
-const enforceConstraints = require("../utils/planValidation").enforceConstraints;
+const createEnforceConstraints = require("../utils/planValidation").createEnforceConstraints;
 const patchEnforceConstraints = require("../utils/planValidation").patchEnforceConstraints;
 const savePlan = require("../models/plan").savePlan;
 const updatePlan = require("../models/plan").updatePlan;
@@ -37,10 +37,10 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("Submit a plan");
       const userId = req.auth.userId;
       const planName = sanitizedBody.planName;
-      const courses = formatStringArray(req.body.courses);
+      const courses = formatStringArray(sanitizedBody.courses);
 
       // only save a plan if it does not violate any constraints
-      const violation = await enforceConstraints(userId, courses);
+      const violation = await createEnforceConstraints(userId, courses);
       if (violation === "valid") {
 
         // save the plan
@@ -91,7 +91,7 @@ app.patch("/", requireAuth, async (req, res) => {
         planName = sanitizedBody.planName;
       }
       if (req.body.courses !== undefined) {
-        courses = formatStringArray(req.body.courses);
+        courses = formatStringArray(sanitizedBody.courses);
       }
 
       // only save a plan if it does not violate any constraints
@@ -199,7 +199,7 @@ app.delete("/:planId", requireAuth, async (req, res) => {
 });
 
 // get a plan's activity (comments and reviews)
-app.get("/:planId/activity", async (req, res) => {
+app.get("/:planId/activity", requireAuth, async (req, res) => {
 
   try {
 

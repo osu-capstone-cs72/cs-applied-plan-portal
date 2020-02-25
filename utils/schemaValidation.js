@@ -4,19 +4,8 @@
 const validator = require("validator");
 const {Type} = require("./type");
 
-// Schema of an applied Plan used for the validator and the database.
+// Schema of a create Plan request used for the validator and the database.
 const planSchema = {
-  status: {
-    required: false,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: 4,
-    getErrorMessage: function() {
-      return "Invalid plan status:\n" +
-        "Plan status must be 0 (Rejected), 1 (Awaiting Student Changes) " +
-        "2 (Awaiting Reivew), 3 (Awaiting Final Review), or 4 (Accepted).";
-    }
-  },
   planName: {
     required: true,
     type: Type.string,
@@ -28,18 +17,18 @@ const planSchema = {
         `${this.maxLength} characters long.`;
     }
   },
-  lastUpdated: {
-    required: false,
-    type: Type.timestamp,
+  courses: {
+    required: true,
+    type: Type.courseArray,
     getErrorMessage: function() {
-      return "Invalid plan timestamp:\n" +
-        "The plan timestamp must be in ISO 8601 format.";
+      return "Invalid courses:\n" +
+        `Courses must be an array of strings.`;
     }
   }
 };
 exports.planSchema = planSchema;
 
-// Patch schema of an applied Plan used for the validator and the database.
+// Schema of a patch Plan request used for the validator and the database.
 const patchPlanSchema = {
   planId: {
     required: true,
@@ -60,6 +49,14 @@ const patchPlanSchema = {
       return "Invalid plan name:\n" +
         `The plan name must be a string between ${this.minLength} and ` +
         `${this.maxLength} characters long.`;
+    }
+  },
+  courses: {
+    required: false,
+    type: Type.courseArray,
+    getErrorMessage: function() {
+      return "Invalid courses:\n" +
+        `Courses must be an array of strings.`;
     }
   }
 };
@@ -263,6 +260,10 @@ function getPropertyViolation(obj, property, schema) {
       isValid = validator.isISO8601(obj[property] + "", {
         strict: true
       });
+      break;
+
+    case Type.courseArray:
+      isValid = Array.isArray(obj.courses);
       break;
 
     case Type.email:
