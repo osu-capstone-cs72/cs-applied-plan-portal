@@ -11,7 +11,9 @@ const {
   createEnforceConstraints,
   patchEnforceConstraints,
   viewEnforceConstraints,
+  statusEnforceConstraints,
   deleteEnforceConstraints,
+  activityEnforceConstraints
 } = require("../utils/planValidation");
 const {
   savePlan,
@@ -185,25 +187,38 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
       const sanitizedBody = sanitizeUsingSchema(req.params, statusPlanSchema);
 
       // get request body
+      const userId = req.auth.userId;
       const status = sanitizedBody.status;
       const created = sanitizedBody.created;
       const ascend = sanitizedBody.ascend;
       console.log("Search plans by status");
 
-      // only allow advisors to search search plans
-      if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
-        console.error("403: Only advisors are allowed to list plans", "\n");
-        res.status(403).send({error: "Only advisors are allowed to list plans"});
-        return;
-      }
+      // only list plans if they do not violate any constraints
+      const violation = await statusEnforceConstraints(userId);
+      if (violation === "valid") {
 
-      const results = await getPlansStatus(status, created, ascend);
-      if (results.length === 0) {
-        console.error("404: No plans found\n");
-        res.status(404).send({error: "No plans found."});
+        // only allow advisors to search search plans
+        if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
+          console.error("403: Only advisors are allowed to list plans", "\n");
+          res.status(403).send({error: "Only advisors are allowed to list plans"});
+          return;
+        }
+
+        const results = await getPlansStatus(status, created, ascend);
+        if (results.length === 0) {
+          console.error("404: No plans found\n");
+          res.status(404).send({error: "No plans found."});
+        } else {
+          console.log("200: Plan found\n");
+          res.status(200).send({plans: results});
+        }
+
       } else {
-        console.log("200: Plan found\n");
-        res.status(200).send({plans: results});
+
+        // send an error that explains the violated constraint
+        console.error("400:", violation, "\n");
+        res.status(400).send({error: violation});
+
       }
 
     } else {
@@ -265,13 +280,25 @@ app.get("/:planId/activity", requireAuth, async (req, res) => {
     const userId = req.auth.userId;
     const planId = req.params.planId;
 
-    const results = await getPlanActivity(planId);
-    if (results.length === 0) {
-      console.error("404: No plan activity found\n");
-      res.status(404).send({error: "No plan activity found."});
+    // only view plan activity if it does not violate any constraints
+    const violation = await activityEnforceConstraints(planId, userId);
+    if (violation === "valid") {
+
+      const results = await getPlanActivity(planId);
+      if (results.length === 0) {
+        console.error("404: No plan activity found\n");
+        res.status(404).send({error: "No plan activity found."});
+      } else {
+        console.log("200: Plan activity found\n");
+        res.status(200).send(results);
+      }
+
     } else {
-      console.log("200: Plan activity found\n");
-      res.status(200).send(results);
+
+      // send an error that explains the violated constraint
+      console.error("400:", violation, "\n");
+      res.status(400).send({error: violation});
+
     }
 
   } catch (err) {

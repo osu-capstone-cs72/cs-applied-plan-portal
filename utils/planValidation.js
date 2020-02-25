@@ -80,6 +80,26 @@ async function viewEnforceConstraints(planId, userId) {
 }
 exports.viewEnforceConstraints = viewEnforceConstraints;
 
+// checks that the submitted data does not violate any view constraints
+async function statusEnforceConstraints(userId) {
+
+  try {
+
+    await userConstraint(userId);
+    await advisorConstraint(userId);
+    return "valid";
+
+  } catch (err) {
+    if (err === "Internal error") {
+      throw err;
+    } else {
+      return err;
+    }
+  }
+
+}
+exports.statusEnforceConstraints = statusEnforceConstraints;
+
 // checks that the submitted data does not violate any delete constraints
 async function deleteEnforceConstraints(planId, userId) {
 
@@ -100,6 +120,26 @@ async function deleteEnforceConstraints(planId, userId) {
 
 }
 exports.deleteEnforceConstraints = deleteEnforceConstraints;
+
+// checks that the submitted data does not violate any activity constraints
+async function activityEnforceConstraints(planId, userId) {
+
+  try {
+
+    await planConstraint(planId);
+    await ownerConstraint(planId, userId);
+    return "valid";
+
+  } catch (err) {
+    if (err === "Internal error") {
+      throw err;
+    } else {
+      return err;
+    }
+  }
+
+}
+exports.activityEnforceConstraints = activityEnforceConstraints;
 
 // checks that the plan exists
 async function planConstraint(planId) {
@@ -194,7 +234,34 @@ async function studentConstraint(userId) {
     const sql = "SELECT * FROM User WHERE userId=? AND role=0;";
     const results = await pool.query(sql, userId);
 
-    if (results[0].length  === 0) {
+    if (results[0].length === 0) {
+      throw violation;
+    } else {
+      return;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking student constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+// checks that the user is an advisor
+async function advisorConstraint(userId) {
+
+  const violation = "Invalid user ID:\nOnly advisors can perform this action.";
+
+  try {
+
+    const sql = "SELECT * FROM User WHERE userId=? AND role>0;";
+    const results = await pool.query(sql, userId);
+
+    if (results[0].length === 0) {
       throw violation;
     } else {
       return;
