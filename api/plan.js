@@ -11,6 +11,7 @@ const {
   createEnforceConstraints,
   patchEnforceConstraints,
   viewEnforceConstraints,
+  deleteEnforceConstraints,
 } = require("../utils/planValidation");
 const {
   savePlan,
@@ -223,16 +224,29 @@ app.delete("/:planId", requireAuth, async (req, res) => {
 
   try {
 
+    const userId = req.auth.userId;
     const planId = req.params.planId;
     console.log("Delete plan", planId);
 
-    const results = await deletePlan(planId);
-    if (results === 0) {
-      console.error("404: No plan found\n");
-      res.status(404).send({error: "Could not delete plan."});
+    // only delete a plan if it does not violate any constraints
+    const violation = await deleteEnforceConstraints(planId, userId);
+    if (violation === "valid") {
+
+      const results = await deletePlan(planId);
+      if (results === 0) {
+        console.error("404: No plan found\n");
+        res.status(404).send({error: "Could not delete plan."});
+      } else {
+        console.log("202: Plan deleted\n");
+        res.status(202).send({affectedRows: results});
+      }
+
     } else {
-      console.log("202: Plan deleted\n");
-      res.status(202).send({affectedRows: results});
+
+      // send an error that explains the violated constraint
+      console.error("400:", violation, "\n");
+      res.status(400).send({error: violation});
+
     }
 
   } catch (err) {
@@ -248,6 +262,7 @@ app.get("/:planId/activity", requireAuth, async (req, res) => {
   try {
 
     console.log("Get a plans activity");
+    const userId = req.auth.userId;
     const planId = req.params.planId;
 
     const results = await getPlanActivity(planId);

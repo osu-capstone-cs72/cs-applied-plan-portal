@@ -80,6 +80,27 @@ async function viewEnforceConstraints(planId, userId) {
 }
 exports.viewEnforceConstraints = viewEnforceConstraints;
 
+// checks that the submitted data does not violate any delete constraints
+async function deleteEnforceConstraints(planId, userId) {
+
+  try {
+
+    await planConstraint(planId);
+    await lockedConstraint(planId);
+    await deleteConstraint(planId, userId);
+    return "valid";
+
+  } catch (err) {
+    if (err === "Internal error") {
+      throw err;
+    } else {
+      return err;
+    }
+  }
+
+}
+exports.deleteEnforceConstraints = deleteEnforceConstraints;
+
 // checks that the plan exists
 async function planConstraint(planId) {
 
@@ -110,9 +131,9 @@ async function planConstraint(planId) {
 // checks that the plan has not been accepted, rejected, or is awaiting final review
 async function lockedConstraint(planId) {
 
-  const violation = "Plan cannot be modifed:\n" +
+  const violation = "Plan cannot be modified:\n" +
     "This plan is either awaiting final review, has been accepted, or has been rejected. " +
-    "It is no longer modifiable.";
+    "It may no longer be altered.";
 
   try {
 
@@ -139,7 +160,7 @@ async function lockedConstraint(planId) {
 // checks that the user exists
 async function userConstraint(userId) {
 
-  const violation = "Invalid user ID:\nUnable to submit plan.";
+  const violation = "Invalid user ID:\nUser does not exist, unable to submit plan.";
 
   try {
 
@@ -367,6 +388,55 @@ async function ownerConstraint(planId, userId) {
   } catch (err) {
     if (internalError(err, violation)) {
       console.log("Error checking owner constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+//  checks that the user is allowed to delete this plan
+async function deleteConstraint(planId, userId) {
+
+  const violation = "Invalid user ID:\nThis user is not allowed to delete this plan.";
+
+  try {
+
+    let sql = "SELECT * FROM User WHERE userId=?;";
+    let results = await pool.query(sql, userId);
+
+    // first ensure that the user exists
+    if (results[0].length  === 0) {
+      throw violation;
+    }
+
+    // if the user is a student they must be the plan owner
+    if (results[0][0].role === 0) {
+
+      sql = "SELECT * FROM Plan WHERE planId=?;";
+      results = await pool.query(sql, planId);
+
+      if (results[0][0].studentId === userId) {
+        return;
+      } else {
+        throw violation;
+      }
+
+    } else {
+
+      // only the head advisor can delete a students plan
+      if (results[0][0].role === 2) {
+        return;
+      } else {
+        throw violation;
+      }
+
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking delete constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
