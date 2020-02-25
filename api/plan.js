@@ -5,34 +5,40 @@ require("path");
 const express = require("express");
 const app = express();
 
-const formatStringArray = require("../utils/format").formatStringArray;
-const createEnforceConstraints = require("../utils/planValidation").createEnforceConstraints;
-const patchEnforceConstraints = require("../utils/planValidation").patchEnforceConstraints;
-const viewEnforceConstraints = require("../utils/planValidation").viewEnforceConstraints;
-const savePlan = require("../models/plan").savePlan;
-const updatePlan = require("../models/plan").updatePlan;
-const getPlan = require("../models/plan").getPlan;
-const getPlansStatus = require("../models/plan").getPlansStatus;
-const deletePlan = require("../models/plan").deletePlan;
-const getPlanActivity = require("../models/plan").getPlanActivity;
 const {requireAuth} = require("../utils/auth");
+const formatStringArray = require("../utils/format").formatStringArray;
 const {
-  planSchema,
+  createEnforceConstraints,
+  patchEnforceConstraints,
+  viewEnforceConstraints,
+} = require("../utils/planValidation");
+const {
+  savePlan,
+  updatePlan,
+  getPlan,
+  getPlansStatus,
+  deletePlan,
+  getPlanActivity,
+} = require("../models/plan");
+const {
+  postPlanSchema,
   patchPlanSchema,
+  statusPlanSchema,
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../utils/schemaValidation");
 
 // submit a plan
 app.post("/", requireAuth, async (req, res) => {
+
   try {
 
     // use schema validation to ensure valid request body
-    const errorMessage = getSchemaViolations(req.body, planSchema);
+    const errorMessage = getSchemaViolations(req.body, postPlanSchema);
 
     if (!errorMessage) {
 
-      const sanitizedBody = sanitizeUsingSchema(req.body, planSchema);
+      const sanitizedBody = sanitizeUsingSchema(req.body, postPlanSchema);
 
       // get request body
       console.log("Submit a plan");
@@ -72,6 +78,7 @@ app.post("/", requireAuth, async (req, res) => {
 
 // update a plan
 app.patch("/", requireAuth, async (req, res) => {
+
   try {
 
     // use schema validation to ensure valid request body
@@ -169,18 +176,39 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
 
   try {
 
-    const status = req.params.status;
-    const created = req.params.created;
-    const ascend = req.params.ascend;
-    console.log("Search plans by status");
+    // use schema validation to ensure valid request body
+    const errorMessage = getSchemaViolations(req.params, statusPlanSchema);
 
-    const results = await getPlansStatus(status, created, ascend);
-    if (results.length === 0) {
-      console.error("404: No plans found\n");
-      res.status(404).send({error: "No plans found."});
+    if (!errorMessage) {
+
+      const sanitizedBody = sanitizeUsingSchema(req.params, statusPlanSchema);
+
+      // get request body
+      const status = sanitizedBody.status;
+      const created = sanitizedBody.created;
+      const ascend = sanitizedBody.ascend;
+      console.log("Search plans by status");
+
+      // only allow advisors to search search plans
+      if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
+        console.error("403: Only advisors are allowed to list plans", "\n");
+        res.status(403).send({error: "Only advisors are allowed to list plans"});
+        return;
+      }
+
+      const results = await getPlansStatus(status, created, ascend);
+      if (results.length === 0) {
+        console.error("404: No plans found\n");
+        res.status(404).send({error: "No plans found."});
+      } else {
+        console.log("200: Plan found\n");
+        res.status(200).send({plans: results});
+      }
+
     } else {
-      console.log("200: Plan found\n");
-      res.status(200).send({plans: results});
+      console.error("400:", errorMessage, "\n");
+      res.status(400).send({error: errorMessage});
+      return;
     }
 
   } catch (err) {

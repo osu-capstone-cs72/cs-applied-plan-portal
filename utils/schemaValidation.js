@@ -5,7 +5,7 @@ const validator = require("validator");
 const {Type} = require("./type");
 
 // Schema of a create Plan request used for the validator and the database.
-const planSchema = {
+const postPlanSchema = {
   planName: {
     required: true,
     type: Type.string,
@@ -26,7 +26,7 @@ const planSchema = {
     }
   }
 };
-exports.planSchema = planSchema;
+exports.postPlanSchema = postPlanSchema;
 
 // Schema of a patch Plan request used for the validator and the database.
 const patchPlanSchema = {
@@ -61,6 +61,41 @@ const patchPlanSchema = {
   }
 };
 exports.patchPlanSchema = patchPlanSchema;
+
+// Schema of a status Plan request used for the validator and the database.
+const statusPlanSchema = {
+  status: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid status value:\n" +
+        "The status value associated with this request must be a number greater than zero.";
+    }
+  },
+  created: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid created value:\n" +
+        "The created value associated with this request must be a number greater than zero.";
+    }
+  },
+  ascend: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid ascend value:\n" +
+        "The ascend value associated with this request must be a number greater than zero.";
+    }
+  }
+};
+exports.statusPlanSchema = statusPlanSchema;
 
 // Schema of a user.
 const userSchema = {
