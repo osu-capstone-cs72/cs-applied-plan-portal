@@ -16,7 +16,7 @@ const {
   activityEnforceConstraints
 } = require("../utils/planValidation");
 const {
-  savePlan,
+  createPlan,
   updatePlan,
   getPlan,
   getPlansStatus,
@@ -49,13 +49,13 @@ app.post("/", requireAuth, async (req, res) => {
       const planName = sanitizedBody.planName;
       const courses = formatStringArray(sanitizedBody.courses);
 
-      // only save a plan if it does not violate any constraints
+      // only create a plan if it does not violate any constraints
       const violation = await createEnforceConstraints(userId, courses);
       if (violation === "valid") {
 
-        // save the plan
-        const results = await savePlan(userId, planName, courses);
-        console.log("201: Submited plan has been saved\n");
+        // create the plan
+        const results = await createPlan(userId, planName, courses);
+        console.log("201: Submited plan has been created\n");
         res.status(201).send(results);
 
       } else {
@@ -108,11 +108,11 @@ app.patch("/", requireAuth, async (req, res) => {
         }
       }
 
-      // only save a plan if it does not violate any constraints
+      // only update a plan if it does not violate any constraints
       const violation = await patchEnforceConstraints(planId, courses, userId);
       if (violation === "valid") {
 
-        // save the plan
+        // update the plan
         const results = await updatePlan(planId, planName, courses);
         console.log("200: Plan has been updated\n");
         res.status(200).send({affectedRows: results});

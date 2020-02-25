@@ -4,32 +4,75 @@
 const pool = require("../utils/mysqlPool").pool;
 
 // save a plan with its selected courses. remove the plan if an error occurs
-async function savePlan(userId, planName, courses) {
+async function createPlan(userId, planName, courses) {
 
   try {
 
-    // save the basic plan information
-    const planId = await insertPlan(userId, planName);
+    // construct the first SQL query
+    let sql = "BEGIN; " +
+      "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
+      "SELECT LAST_INSERT_ID();";
 
-    // while inserting the selected courses, if there is an error
-    // we will need to delete the plan
-    try {
-      await insertSelectedCourses(planId, courses);
-    } catch (err) {
-      deletePlan(planId);
-      throw Error(err);
-    }
+    // perform the first insert operation
+    let results = await pool.query(sql, [userId, planName]);
+    console.log("RESULTS1", results);
+    const planId = results[0][1].insertId;
 
-    console.log("Plan saved");
+    // construct the second SQL query
+    const sqlArray = [];
+    sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+      sqlArray.push(planId);
+      sqlArray.push(currentValue);
+    });
+
+    // add the last line of the SQL query
+    sql = sql.replace(/.$/, "; COMMIT;");
+
+    // perform the second insert operation
+    results = await pool.query(sql, sqlArray);
+    console.log("RESULTS2:", results);
     return {insertId: planId};
 
   } catch (err) {
-    console.log("Error saving plan");
+    console.log("Error creating plan");
     throw Error(err);
   }
 
 }
-exports.savePlan = savePlan;
+exports.createPlan = createPlan;
+
+// save a list of selected courses for a plan
+async function insertSelectedCourses(planId, courses) {
+
+  let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+  const sqlArray = [];
+
+  // expand the sql string and array based on the number of courses
+  courses.forEach((currentValue) => {
+    sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+    sqlArray.push(planId);
+    sqlArray.push(currentValue);
+  });
+  // replace the last character of the sql query with ;
+  sql = sql.replace(/.$/, ";");
+
+  try {
+
+    // add each of the courses to the SelectedCourse table
+    await pool.query(sql, sqlArray);
+    console.log("Added courses to plan", planId);
+    return ([planId, courses, ""]);
+
+  } catch (err) {
+    console.log("Error adding courses to plan", planId);
+    throw Error(err);
+  }
+
+}
 
 // update a plan with its selected courses
 async function updatePlan(planId, planName, courses) {
@@ -82,7 +125,6 @@ async function updatePlan(planId, planName, courses) {
 
     }
 
-    console.log("Plan updated");
     return updatedRows;
 
   } catch (err) {
@@ -188,52 +230,6 @@ async function getPlanActivity(planId) {
 
 }
 exports.getPlanActivity = getPlanActivity;
-
-// save basic plan information such as the student id and the plan name
-async function insertPlan(userId, planName) {
-
-  try {
-
-    // insert the student id and plan name into the Plan table
-    const sql = "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2);";
-    const results = await pool.query(sql, [userId, planName]);
-    return results[0].insertId;
-
-  } catch (err) {
-    console.log("Error inserting basic plan data");
-    throw Error(err);
-  }
-
-}
-
-// save a list of selected courses for a plan
-async function insertSelectedCourses(planId, courses) {
-
-  let sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
-  const sqlArray = [];
-
-  // expand the sql string and array based on the number of courses
-  courses.forEach((currentValue) => {
-    sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
-    sqlArray.push(planId);
-    sqlArray.push(currentValue);
-  });
-  // replace the last character of the sql query with ;
-  sql = sql.replace(/.$/, ";");
-
-  try {
-
-    // add each of the courses to the SelectedCourse table
-    await pool.query(sql, sqlArray);
-    console.log("Added courses to plan", planId);
-    return ([planId, courses, ""]);
-
-  } catch (err) {
-    console.log("Error adding courses to plan", planId);
-    throw Error(err);
-  }
-
-}
 
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {
