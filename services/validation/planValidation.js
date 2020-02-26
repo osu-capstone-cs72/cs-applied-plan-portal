@@ -6,10 +6,11 @@ const pool = require("../db/mysqlPool").pool;
 const CREDITS_MIN = 32;
 
 // checks that the submitted data does not violate any constraints
-async function createEnforceConstraints(userId, courses) {
+async function createEnforceConstraints(userId, planName, courses) {
 
   try {
 
+    await nameConstraint(planName, userId);
     await userConstraint(userId);
     await studentConstraint(userId);
     await zeroCourseConstraint(courses);
@@ -31,12 +32,16 @@ async function createEnforceConstraints(userId, courses) {
 exports.createEnforceConstraints = createEnforceConstraints;
 
 // checks that the submitted data does not violate any patch constraints
-async function patchEnforceConstraints(planId, courses, userId) {
+async function patchEnforceConstraints(planId, planName, courses, userId) {
 
   try {
 
     await planConstraint(planId);
     await lockedConstraint(planId);
+
+    if (planName !== 0) {
+      await nameConstraint(planName, userId);
+    }
 
     if (courses !== 0) {
       await zeroCourseConstraint(courses);
@@ -160,6 +165,33 @@ async function planConstraint(planId) {
   } catch (err) {
     if (internalError(err, violation)) {
       console.log("Error checking plan constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+// checks that the plan does not share a name with another plan by that user
+async function nameConstraint(planName, userId) {
+
+  const violation = "Invalid plan name:\nYou already have a plan with this name.";
+
+  try {
+
+    const sql = "SELECT planName FROM Plan WHERE studentId=? AND planName=?;";
+    const results = await pool.query(sql, [userId, planName]);
+
+    if (results[0].length === 0) {
+      return;
+    } else {
+      throw violation;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking name constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;

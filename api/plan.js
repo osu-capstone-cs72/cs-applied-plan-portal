@@ -49,7 +49,7 @@ app.post("/", requireAuth, async (req, res) => {
       const courses = formatStringArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
-      const violation = await createEnforceConstraints(userId, courses);
+      const violation = await createEnforceConstraints(userId, planName, courses);
       if (violation === "valid") {
 
         // create the plan
@@ -108,7 +108,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
       // only update a plan if it does not violate any constraints
-      const violation = await patchEnforceConstraints(planId, courses, userId);
+      const violation = await patchEnforceConstraints(planId, planName, courses, userId);
       if (violation === "valid") {
 
         // update the plan

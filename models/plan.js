@@ -8,35 +8,39 @@ async function createPlan(userId, planName, courses) {
 
   try {
 
-    pool.getConnection(async (err, conn) => {
-      // construct the first SQL query
-      let sql = "BEGIN; " +
-        "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
-        "SELECT LAST_INSERT_ID();";
+    // hold on to a single connection
+    const conn = await pool.getConnection();
 
-      // perform the first insert operation
-      let results = await conn.query(sql, [userId, planName]);
-      const planId = results[0][1].insertId;
+    // construct the first SQL query
+    let sql = "BEGIN; " +
+      "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
+      "SELECT LAST_INSERT_ID();";
 
-      // construct the second SQL query
-      const sqlArray = [];
-      sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+    // perform the first insert operation
+    let results = await conn.query(sql, [userId, planName]);
+    const planId = results[0][1].insertId;
 
-      // expand the sql string and array based on the number of courses
-      courses.forEach((currentValue) => {
-        sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
-        sqlArray.push(planId);
-        sqlArray.push(currentValue);
-      });
+    // construct the second SQL query
+    const sqlArray = [];
+    sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
 
-      // add the last line of the SQL query
-      sql = sql.replace(/.$/, "; COMMIT;");
-
-      // perform the second insert operation
-      results = await conn.query(sql, sqlArray);
-      pool.releaseConnection(conn);
-      return {insertId: planId};
+    // expand the sql string and array based on the number of courses
+    courses.forEach((currentValue) => {
+      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+      sqlArray.push(planId);
+      sqlArray.push(currentValue);
     });
+
+    // add the last line of the SQL query
+    sql = sql.replace(/.$/, "; COMMIT;");
+
+    // perform the second insert operation
+    results = await conn.query(sql, sqlArray);
+
+    // release the connection
+    conn.release();
+
+    return {insertId: planId};
 
   } catch (err) {
     console.log("Error creating plan");
