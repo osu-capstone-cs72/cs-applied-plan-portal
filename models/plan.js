@@ -1,39 +1,42 @@
 // File: plan.js
 // Description: data functions that handle plans
 
-const pool = require("../services/db/mysqlPool").pool;
+const {pool} = require("../services/db/mysqlPool");
 
 // save a plan with its selected courses. remove the plan if an error occurs
 async function createPlan(userId, planName, courses) {
 
   try {
 
-    // construct the first SQL query
-    let sql = "BEGIN; " +
-      "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
-      "SELECT LAST_INSERT_ID();";
+    pool.getConnection(async (err, conn) => {
+      // construct the first SQL query
+      let sql = "BEGIN; " +
+        "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
+        "SELECT LAST_INSERT_ID();";
 
-    // perform the first insert operation
-    let results = await pool.query(sql, [userId, planName]);
-    const planId = results[0][1].insertId;
+      // perform the first insert operation
+      let results = await conn.query(sql, [userId, planName]);
+      const planId = results[0][1].insertId;
 
-    // construct the second SQL query
-    const sqlArray = [];
-    sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+      // construct the second SQL query
+      const sqlArray = [];
+      sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
 
-    // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
-      sqlArray.push(planId);
-      sqlArray.push(currentValue);
+      // expand the sql string and array based on the number of courses
+      courses.forEach((currentValue) => {
+        sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+        sqlArray.push(planId);
+        sqlArray.push(currentValue);
+      });
+
+      // add the last line of the SQL query
+      sql = sql.replace(/.$/, "; COMMIT;");
+
+      // perform the second insert operation
+      results = await conn.query(sql, sqlArray);
+      pool.releaseConnection(conn);
+      return {insertId: planId};
     });
-
-    // add the last line of the SQL query
-    sql = sql.replace(/.$/, "; COMMIT;");
-
-    // perform the second insert operation
-    results = await pool.query(sql, sqlArray);
-    return {insertId: planId};
 
   } catch (err) {
     console.log("Error creating plan");
