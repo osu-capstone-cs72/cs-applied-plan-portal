@@ -1,7 +1,7 @@
 // File: planValidation.js
 // Description: validates a submitted plan against a list of constraints
 
-const pool = require("../db/mysqlPool").pool;
+const {pool} = require("../db/mysqlPool");
 
 const CREDITS_MIN = 32;
 
