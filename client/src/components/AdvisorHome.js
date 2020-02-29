@@ -88,12 +88,41 @@ function AdvisorHome() {
   `;
 
   useEffect(() => {
-    // searchPlans();
+    getRecentPlans();
   }, []);
 
   function submitHandler(e) {
     e.preventDefault();
     searchPlans();
+  }
+
+  async function getRecentPlans() {
+    try {
+      setErrorMessage("");
+      setLoading(true);
+      setRecentPlans([]);
+
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const getUrl = `http://${server}/plan/recent/?accessToken=${token}`;
+      let obj = {};
+
+      const results = await fetch(getUrl);
+      setLoading(false);
+      if (results.ok) {
+        obj = await results.json();
+        setRecentPlans(obj.plans);
+      } else {
+        // we got a bad status code.
+        obj = await results.json();
+        if (results.status === 500) {
+          setPageError(500);
+        }
+      }
+    } catch (err) {
+      // send to 500 page if a server error happens while fetching plan
+      setPageError(500);
+    }
   }
 
   async function searchPlans() {
@@ -136,12 +165,12 @@ function AdvisorHome() {
         obj = await results.json();
         setErrorMessage(obj.error);
         if (results.status === 500) {
-          setPageError(500);
+          setErrorMessage("An internal server error occurred. Please try again later.");
         }
       }
     } catch (err) {
-      // send to 500 page if a server error happens while fetching plan
-      setPageError(500);
+      // show error message if error while searching
+      setErrorMessage("An internal server error occurred. Please try again later.");
     }
   }
 

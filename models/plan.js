@@ -292,15 +292,19 @@ async function getRecentPlans(userId) {
 
   try {
 
-    const sql = "SELECT * FROM RecentPlan INNER JOIN Plan ON Plan.studentId = RecentPlan.userId WHERE userId=?;";
+    const sql = "SELECT R.planId, planName, firstName, lastName, status, created, lastUpdated, studentId AS userId " +
+      "FROM RecentPlan AS R LEFT JOIN Plan AS P " +
+      "ON R.planId = P.planId LEFT JOIN User AS U " +
+      "ON P.studentId = U.userId WHERE R.userId=?;";
     const results = await pool.query(sql, userId);
 
+    console.log(results[0]);
     return {
       plans: results[0]
     };
 
   } catch (err) {
-    console.log("Error getting notifications");
+    console.log("Error getting recent plans");
     throw Error(err);
   }
 
