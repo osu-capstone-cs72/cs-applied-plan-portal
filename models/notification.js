@@ -66,9 +66,38 @@ async function createNotification(planId, userId, text, type) {
     return;
 
   } catch (err) {
-    console.log("Error checking notification");
+    console.log("Error creating notification");
     throw Error(err);
   }
 
 }
 exports.createNotification = createNotification;
+
+// notify all users who are watching a plan
+async function planNotification(planId, userId, text, type) {
+
+  try {
+
+    // find all users who are interested in this plan
+    // who are not the current user
+    const sql = "SELECT userId FROM Comment WHERE planId=? AND userId!=? " +
+     "UNION " +
+     "SELECT userId FROM PlanReview WHERE planId=? AND userId!=?;";
+    const results = await pool.query(sql, [planId, userId, planId, userId]);
+    const userList = results[0];
+
+    // send out the notifications
+    for (let i = 0; i < userList.length; i++) {
+      console.log("Creating a notification for user", userList[i].userId);
+      await createNotification(planId, userList[i].userId, text, type);
+    }
+
+    return;
+
+  } catch (err) {
+    console.log("Error creating notifications for plan");
+    throw Error(err);
+  }
+
+}
+exports.planNotification = planNotification;
