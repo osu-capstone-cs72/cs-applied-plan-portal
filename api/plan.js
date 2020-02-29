@@ -151,7 +151,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
     const violation = await viewEnforceConstraints(planId, userId);
     if (violation === "valid") {
 
-      const results = await getPlan(planId);
+      const results = await getPlan(planId, userId);
       if (results.planId === 0) {
         console.error("404: No plan found\n");
         res.status(404).send({error: "No plan found."});

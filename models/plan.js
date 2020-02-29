@@ -175,9 +175,12 @@ async function getPlansStatus(status, created, ascend) {
 exports.getPlansStatus = getPlansStatus;
 
 // get all data for a specific plan, including selected courses, and reviews
-async function getPlan(planId) {
+async function getPlan(planId, userId) {
 
   try {
+
+    // first remove all notifications for a plan
+    checkPlanNotifications(planId, userId);
 
     let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
     const result1 = await pool.query(sql, planId);
@@ -228,6 +231,25 @@ async function getPlanActivity(planId) {
 
 }
 exports.getPlanActivity = getPlanActivity;
+
+// check all notifications on a plan for a specific user
+async function checkPlanNotifications(planId, userId) {
+
+  try {
+
+    const sql = "UPDATE Notification SET checked=1 WHERE planId=? AND userId=?;";
+    const results = await pool.query(sql, [planId, userId]);
+    return {
+      affectedRows: results[0].affectedRows
+    };
+
+  } catch (err) {
+    console.log("Error checking notification");
+    throw Error(err);
+  }
+
+}
+exports.checkPlanNotifications = checkPlanNotifications;
 
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {
