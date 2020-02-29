@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Feb 29, 2020 at 12:28 PM
+-- Generation Time: Feb 29, 2020 at 03:52 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -223,10 +223,23 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 --
 
 CREATE TABLE `RecentPlan` (
+  `recentId` int(11) NOT NULL,
   `planId` int(11) NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `RecentPlan`
+--
+
+INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
+(1, 364, 6, '2020-02-29 23:10:33'),
+(17, 376, 82757579527, '2020-02-29 23:46:46'),
+(18, 368, 82757579527, '2020-02-29 23:46:51'),
+(19, 364, 82757579527, '2020-02-29 23:46:57'),
+(20, 310, 82757579527, '2020-02-29 23:49:08'),
+(21, 375, 82757579527, '2020-02-29 23:50:03');
 
 -- --------------------------------------------------------
 
@@ -441,6 +454,7 @@ ALTER TABLE `PlanReview`
 -- Indexes for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
+  ADD PRIMARY KEY (`recentId`),
   ADD KEY `fk_planIdRecent` (`planId`),
   ADD KEY `fk_userIdRecent` (`userId`);
 
@@ -491,6 +505,12 @@ ALTER TABLE `Plan`
 --
 ALTER TABLE `PlanReview`
   MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+
+--
+-- AUTO_INCREMENT for table `RecentPlan`
+--
+ALTER TABLE `RecentPlan`
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables
