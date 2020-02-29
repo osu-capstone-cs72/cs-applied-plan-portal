@@ -157,7 +157,6 @@ async function searchPlans(text, search, status, sort, order) {
       sql += "WHERE TRUE ";
     }
 
-    console.log("STATUS:", status);
     // get the status we are searching for
     if (status >= 0 && status <= 4) {
       sql += "AND status=? ";
@@ -217,6 +216,9 @@ async function getPlan(planId, userId) {
 
     // first remove all notifications for a plan
     checkPlanNotifications(planId, userId);
+
+    // add plan to recently viewed
+    addRecentPlan(planId, userId);
 
     let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
     const result1 = await pool.query(sql, planId);
@@ -298,7 +300,6 @@ async function getRecentPlans(userId) {
       "ON P.studentId = U.userId WHERE R.userId=?;";
     const results = await pool.query(sql, userId);
 
-    console.log(results[0]);
     return {
       plans: results[0]
     };
@@ -310,6 +311,45 @@ async function getRecentPlans(userId) {
 
 }
 exports.getRecentPlans = getRecentPlans;
+
+// add a plan to the recently viewed plan list
+async function addRecentPlan(planId, userId) {
+
+  try {
+
+    // the maximum number of recent plans that a user can have
+    const RECENT_MAX = 5;
+
+    // confirm that this plan isn't already in the recent list
+    let sql = "SELECT * FROM RecentPlan WHERE planId=? AND userID=?";
+    let results = await pool.query(sql, [planId, userId]);
+
+    if (results[0].length) {
+      return;
+    }
+
+    // check if we have exceeded the max number of recent plans
+    sql = "SELECT COUNT(userId) AS count FROM RecentPlan WHERE userID=?";
+    results = await pool.query(sql, userId);
+    const count = results[0][0].count;
+
+    // if we have too many recent plans we will have to clear some
+    if (count >= RECENT_MAX) {
+      //
+    }
+
+    // create the new recent plan
+    sql = "INSERT INTO RecentPlan (planId, userId) VALUES (?, ?);";
+    results = await pool.query(sql, [planId, userId]);
+    return;
+
+  } catch (err) {
+    console.log("Error adding to recent plans list");
+    throw Error(err);
+  }
+
+}
+exports.addRecentPlan = addRecentPlan;
 
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {
