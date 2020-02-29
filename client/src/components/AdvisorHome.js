@@ -13,10 +13,18 @@ function AdvisorHome() {
 
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
+  const [recentPlans, setRecentPlans] = useState([]);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   const style = css`
+
+    #advisor-home-container {
+      position: absolute;
+      top: 75px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
     #plan-data-container {
       margin: 0 auto;
@@ -24,28 +32,25 @@ function AdvisorHome() {
     }
 
     #plan-search-container {
-      position: relative;
-      top: 75px;
       padding: 10px;
+      border: 1px solid black;
+      margin: 25px auto;
+      width: 100%;
+    }
+
+    .table-container {
+      text-align: center;
       border: 1px solid black;
     }
 
     .home-error-message-container {
-      margin: 0 auto;
       text-align: center;
-      position: relative;
-      top: 100px;
+      margin: 0 auto;
     }
 
     .advisor-plans-table {
+      text-align: left;
       margin: 0 auto;
-      position: relative;
-      top: 100px;
-    }
-
-    #plan-search-container {
-      margin: 0 auto;
-      width: 70%;
     }
 
     #search-bar {
@@ -170,84 +175,120 @@ function AdvisorHome() {
       <div css={style}>
         <PageSpinner loading={loading} />
         <NavBar />
+        <div id="advisor-home-container">
+          <div id="plan-data-container">
 
-        <div id="plan-data-container">
+            {recentPlans.length ? (
+              <div className="table-container">
+                <h3>Recently Viewed Plans</h3>
+                <table className="advisor-plans-table">
+                  <tbody>
+                    <tr>
+                      <th className="student-plans-data">User Name</th>
+                      <th className="student-plans-data">User ID</th>
+                      <th className="student-plans-data">Plan Name</th>
+                      <th className="student-plans-data">Status</th>
+                      <th className="student-plans-data">Time Created</th>
+                      <th className="student-plans-data">Time Updated</th>
+                    </tr>
+                    {recentPlans.map(plan =>
+                      <tr key={plan.planId} onClick={() => goToPlan(plan)}>
+                        <td className="student-plans-data" key={plan.planId + "a"}>
+                          {plan.firstName + " " + plan.lastName}
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
+                        <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
+                        <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
+                        <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
+                        <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
 
-          <div id="plan-search-container">
-            <form id="search-form" onSubmit={e => submitHandler(e)}>
-              <input type="text" id="input-search" />
-              <button id="search-plan-button" onClick={() => { searchPlans(); }}>
-                Search
-              </button>
-            </form>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              null
+            )}
 
-            <div id="filter-container">
-              <label className="filter-label">Search By</label>
-              <select id="select-search" className="advisor-plan-filter" defaultValue={"0"}>
-                <option value="0">User Name</option>
-                <option value="1">User ID</option>
-                <option value="2">Plan Name</option>
-              </select>
-              <label className="filter-label">Status</label>
-              <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
-                <option value="5">Any</option>
-                <option value="2">Awaiting Review</option>
-                <option value="3">Awaiting final review</option>
-                <option value="1">Awaiting student changes</option>
-                <option value="4">Accepted</option>
-                <option value="0">Rejected</option>
-              </select>
-              <label className="filter-label">Sort By</label>
-              <select id="select-sort" className="advisor-plan-filter" defaultValue={"5"}>
-                <option value="0">User Name</option>
-                <option value="1">User ID</option>
-                <option value="2">Plan Name</option>
-                <option value="3">Status</option>
-                <option value="4">Time Created</option>
-                <option value="5">Time Updated</option>
-              </select>
-              <label className="filter-label">Order</label>
-              <select id="select-order" className="advisor-plan-filter" defaultValue={"1"}>
-                <option value="1">Ascending</option>
-                <option value="0">Decending</option>
-              </select>
+            <div id="plan-search-container">
+              <form id="search-form" onSubmit={e => submitHandler(e)}>
+                <input type="text" id="input-search" />
+                <button id="search-plan-button" onClick={() => { searchPlans(); }}>
+                  Search
+                </button>
+              </form>
+
+              <div id="filter-container">
+                <label className="filter-label">Search By</label>
+                <select id="select-search" className="advisor-plan-filter" defaultValue={"0"}>
+                  <option value="0">User Name</option>
+                  <option value="1">User ID</option>
+                  <option value="2">Plan Name</option>
+                </select>
+                <label className="filter-label">Status</label>
+                <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
+                  <option value="5">Any</option>
+                  <option value="2">Awaiting Review</option>
+                  <option value="3">Awaiting final review</option>
+                  <option value="1">Awaiting student changes</option>
+                  <option value="4">Accepted</option>
+                  <option value="0">Rejected</option>
+                </select>
+                <label className="filter-label">Sort By</label>
+                <select id="select-sort" className="advisor-plan-filter" defaultValue={"5"}>
+                  <option value="0">User Name</option>
+                  <option value="1">User ID</option>
+                  <option value="2">Plan Name</option>
+                  <option value="3">Status</option>
+                  <option value="4">Time Created</option>
+                  <option value="5">Time Updated</option>
+                </select>
+                <label className="filter-label">Order</label>
+                <select id="select-order" className="advisor-plan-filter" defaultValue={"1"}>
+                  <option value="1">Ascending</option>
+                  <option value="0">Decending</option>
+                </select>
+              </div>
+
             </div>
 
+            <div className="home-error-message-container">{errorMessage}</div>
+            {plans.length ? (
+              <div className="table-container">
+                <h3>Search Results</h3>
+                <table className="advisor-plans-table">
+                  <tbody>
+                    <tr>
+                      <th className="student-plans-data">User Name</th>
+                      <th className="student-plans-data">User ID</th>
+                      <th className="student-plans-data">Plan Name</th>
+                      <th className="student-plans-data">Status</th>
+                      <th className="student-plans-data">Time Created</th>
+                      <th className="student-plans-data">Time Updated</th>
+                    </tr>
+                    {plans.map(plan =>
+                      <tr key={plan.planId} onClick={() => goToPlan(plan)}>
+                        <td className="student-plans-data" key={plan.planId + "a"}>
+                          {plan.firstName + " " + plan.lastName}
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
+                        <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
+                        <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
+                        <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
+                        <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
+
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              null
+            )}
+
           </div>
-
-          <div className="home-error-message-container">{errorMessage}</div>
-          {plans.length ? (
-            <table className="advisor-plans-table">
-              <tbody>
-                <tr>
-                  <th className="student-plans-data">User Name</th>
-                  <th className="student-plans-data">User ID</th>
-                  <th className="student-plans-data">Plan Name</th>
-                  <th className="student-plans-data">Status</th>
-                  <th className="student-plans-data">Time Created</th>
-                  <th className="student-plans-data">Time Updated</th>
-                </tr>
-                {plans.map(plan =>
-                  <tr key={plan.planId} onClick={() => goToPlan(plan)}>
-                    <td className="student-plans-data" key={plan.planId + "a"}>
-                      {plan.firstName + " " + plan.lastName}
-                    </td>
-                    <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
-                    <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
-                    <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
-                    <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
-                    <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
-
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            null
-          )}
-
         </div>
-
       </div>
     );
   } else {
