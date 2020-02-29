@@ -42,3 +42,33 @@ async function checkNotification(notificationId, userId) {
 
 }
 exports.checkNotification = checkNotification;
+
+// create a new notification
+async function createNotification(planId, userId, text, type) {
+
+  try {
+
+    // only create a notification if we don't already have one
+    // of the same type for the same user on this plan
+    let sql = "SELECT * FROM Notification WHERE planId=? AND userId=? " +
+      "AND type=? AND checked=0;";
+    let results = await pool.query(sql, [planId, userId, type]);
+
+    if (results[0].length) {
+      // we already have this notification, do not add a new one
+      return;
+    }
+
+    // create the new notification
+    sql = "INSERT INTO Notification (planId, userId, text, type, checked) " +
+      "VALUES (?, ?, ?, ?, 0)";
+    results = await pool.query(sql, [planId, userId, text, type]);
+    return;
+
+  } catch (err) {
+    console.log("Error checking notification");
+    throw Error(err);
+  }
+
+}
+exports.createNotification = createNotification;
