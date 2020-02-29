@@ -297,7 +297,7 @@ async function getRecentPlans(userId) {
     const sql = "SELECT R.planId, planName, firstName, lastName, status, created, lastUpdated, studentId AS userId " +
       "FROM RecentPlan AS R LEFT JOIN Plan AS P " +
       "ON R.planId = P.planId LEFT JOIN User AS U " +
-      "ON P.studentId = U.userId WHERE R.userId=?;";
+      "ON P.studentId = U.userId WHERE R.userId=? ORDER BY R.time DESC;";
     const results = await pool.query(sql, userId);
 
     return {
@@ -320,13 +320,25 @@ async function addRecentPlan(planId, userId) {
     // the maximum number of recent plans that a user can have
     const RECENT_MAX = 5;
 
+    // only add recent plans for advisors
+    let sql = "SELECT role FROM User WHERE userId=?";
+    let results = await pool.query(sql, userId);
+
+    if (!results[0][0].role) {
+      return;
+    }
+
     // confirm that this plan isn't already in the recent list
-    let sql = "SELECT * FROM RecentPlan WHERE planId=? AND userID=?";
-    let results = await pool.query(sql, [planId, userId]);
+    sql = "SELECT * FROM RecentPlan WHERE planId=? AND userID=?";
+    results = await pool.query(sql, [planId, userId]);
 
     if (results[0].length) {
       return;
     }
+
+    // create the new recent plan
+    sql = "INSERT INTO RecentPlan (planId, userId) VALUES (?, ?);";
+    results = await pool.query(sql, [planId, userId]);
 
     // check if we have exceeded the max number of recent plans
     sql = "SELECT COUNT(userId) AS count FROM RecentPlan WHERE userID=?";
@@ -334,14 +346,11 @@ async function addRecentPlan(planId, userId) {
     const count = results[0][0].count;
 
     // if we have too many recent plans we will have to clear some
-    if (count >= RECENT_MAX) {
-      //
+    if (count > RECENT_MAX) {
+      const limit = count - RECENT_MAX;
+      sql = "DELETE FROM RecentPlan WHERE userId=? ORDER BY time ASC LIMIT ?;";
+      results = await pool.query(sql, [userId, limit]);
     }
-
-    // create the new recent plan
-    sql = "INSERT INTO RecentPlan (planId, userId) VALUES (?, ?);";
-    results = await pool.query(sql, [planId, userId]);
-    return;
 
   } catch (err) {
     console.log("Error adding to recent plans list");
