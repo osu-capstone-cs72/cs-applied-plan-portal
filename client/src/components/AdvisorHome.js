@@ -26,7 +26,7 @@ function AdvisorHome() {
       width: 100%;
     }
 
-    #plan-data-container {
+    #advisor-home-contents-container {
       margin: 0 auto;
       width: 50%;
     }
@@ -51,10 +51,6 @@ function AdvisorHome() {
     .advisor-plans-table {
       text-align: left;
       margin: 0 auto;
-    }
-
-    #search-bar {
-      margin: 10px;
     }
 
     #search-form {
@@ -176,7 +172,7 @@ function AdvisorHome() {
         <PageSpinner loading={loading} />
         <NavBar />
         <div id="advisor-home-container">
-          <div id="plan-data-container">
+          <div id="advisor-home-contents-container">
 
             {recentPlans.length ? (
               <div className="table-container">

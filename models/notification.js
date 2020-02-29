@@ -12,7 +12,6 @@ async function getNotifications(userId) {
     const results = await pool.query(sql, userId);
 
     return {
-      count: results[0].length,
       notifications: results[0]
     };
 

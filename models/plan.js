@@ -287,6 +287,26 @@ async function checkPlanNotifications(planId, userId) {
 }
 exports.checkPlanNotifications = checkPlanNotifications;
 
+// get a list of plans recently viewed by the user
+async function getRecentPlans(userId) {
+
+  try {
+
+    const sql = "SELECT * FROM RecentPlan INNER JOIN Plan ON Plan.studentId = RecentPlan.userId WHERE userId=?;";
+    const results = await pool.query(sql, userId);
+
+    return {
+      plans: results[0]
+    };
+
+  } catch (err) {
+    console.log("Error getting notifications");
+    throw Error(err);
+  }
+
+}
+exports.getRecentPlans = getRecentPlans;
+
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {
 
