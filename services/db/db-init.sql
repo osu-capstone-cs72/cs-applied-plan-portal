@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Feb 28, 2020 at 07:54 AM
+-- Generation Time: Feb 29, 2020 at 12:28 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -54,7 +54,8 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (88, 375, 82757579527, '2020-02-23 19:26:44', 'Here is the plan I made.'),
 (100, 376, 82757579527, '2020-02-25 20:40:11', 'Adding comment.'),
 (102, 399, 82757579527, '2020-02-26 21:53:30', 'Here I am adding a comment.'),
-(103, 399, 82757579527, '2020-02-26 23:26:13', 'Hello');
+(103, 399, 82757579527, '2020-02-26 23:26:13', 'Hello'),
+(109, 368, 82757579527, '2020-02-29 03:12:14', 'I guess you might consider adding some courses.');
 
 -- --------------------------------------------------------
 
@@ -129,8 +130,19 @@ CREATE TABLE `Notification` (
   `planId` int(11) NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `text` varchar(100) NOT NULL,
+  `type` int(11) NOT NULL,
   `checked` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `Notification`
+--
+
+INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`, `checked`) VALUES
+(2, 399, 82757579527, 'The plan \"No-CS plan\" has a new status.', 2, 1),
+(3, 399, 82757579527, 'The plan \"No-CS plan\" has new comments.', 1, 1),
+(26, 368, 60535363653, 'The plan \"and report this issue to me asap!\" has a new status.', 2, 0),
+(27, 368, 60535363653, 'The plan \"and report this issue to me asap!\" has new comments.', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -152,7 +164,7 @@ CREATE TABLE `Plan` (
 --
 
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
-(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42', '2020-02-17 01:57:19'),
+(308, 4, 'Luke\'s Plan', 1, '2020-01-01 11:35:42', '2020-02-29 19:19:36'),
 (310, 0, 'Han\'s cool plan', 5, '2020-01-02 11:35:42', '2020-02-16 19:54:53'),
 (358, 2, 'Another Plan by Luke 2', 1, '2020-01-06 11:35:42', '2020-02-26 23:28:11'),
 (359, 3, 'ECE Plan by Luke', 1, '2020-01-17 11:35:42', '2020-02-16 19:54:53'),
@@ -160,7 +172,7 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 (361, 1, 'Wicket\'s Plan', 12, '2020-02-11 21:37:22', '2020-02-16 19:54:53'),
 (362, 3, 'some plan', 1, '2020-02-12 00:36:38', '2020-02-23 19:22:58'),
 (364, 3, 'Boba\'s Plan', 10, '2020-02-16 18:57:30', '2020-02-16 19:54:53'),
-(368, 4, 'and report this issue to me asap!', 60535363653, '2020-02-19 04:34:14', '2020-02-23 19:18:16'),
+(368, 2, 'and report this issue to me asap!', 60535363653, '2020-02-19 04:34:14', '2020-02-29 03:11:59'),
 (375, 3, 'This is a great plan', 82757579527, '2020-02-23 19:26:36', '2020-02-25 04:46:55'),
 (376, 2, 'Some new plan', 82757579527, '2020-02-24 17:35:59', '2020-02-24 17:35:59'),
 (399, 0, 'No-CS plan', 82757579527, '2020-02-26 21:53:14', '2020-02-26 23:27:43');
@@ -201,7 +213,20 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 (71, 375, 82757579527, 3, '2020-02-25 04:46:55'),
 (100, 399, 82757579527, 3, '2020-02-26 23:26:36'),
 (101, 399, 82757579527, 1, '2020-02-26 23:27:19'),
-(102, 399, 82757579527, 0, '2020-02-26 23:27:43');
+(102, 399, 82757579527, 0, '2020-02-26 23:27:43'),
+(124, 368, 82757579527, 2, '2020-02-29 03:11:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `RecentPlan`
+--
+
+CREATE TABLE `RecentPlan` (
+  `planId` int(11) NOT NULL,
+  `userId` bigint(11) UNSIGNED NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -368,7 +393,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (14, 'R2', 'D2', 'artoo@gmail.com', 0),
 (15, 'C', '3PO', 'human_cyborg_relations@aol.com', 0),
 (60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 2),
-(82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 0);
+(82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2);
 
 --
 -- Indexes for dumped tables
@@ -413,6 +438,13 @@ ALTER TABLE `PlanReview`
   ADD KEY `fk_userId_review` (`userId`);
 
 --
+-- Indexes for table `RecentPlan`
+--
+ALTER TABLE `RecentPlan`
+  ADD KEY `fk_planIdRecent` (`planId`),
+  ADD KEY `fk_userIdRecent` (`userId`);
+
+--
 -- Indexes for table `SelectedCourse`
 --
 ALTER TABLE `SelectedCourse`
@@ -434,7 +466,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -446,7 +478,7 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `Plan`
@@ -458,7 +490,7 @@ ALTER TABLE `Plan`
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- Constraints for dumped tables
@@ -490,6 +522,13 @@ ALTER TABLE `Plan`
 ALTER TABLE `PlanReview`
   ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_userId_review` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`);
+
+--
+-- Constraints for table `RecentPlan`
+--
+ALTER TABLE `RecentPlan`
+  ADD CONSTRAINT `fk_planIdRecent` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_userIdRecent` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `SelectedCourse`
