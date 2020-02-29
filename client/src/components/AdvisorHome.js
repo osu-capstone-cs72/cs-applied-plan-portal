@@ -48,6 +48,17 @@ function AdvisorHome() {
       width: 70%;
     }
 
+    #search-bar {
+      margin: 10px;
+    }
+
+    #search-form {
+      display: inline-block;
+      margin: 0;
+      padding: 10px;
+      width: 100%;
+    }
+
     #input-search {
       width: 90%;
     }
@@ -65,6 +76,7 @@ function AdvisorHome() {
 
     .advisor-plan-filter {
       display:inline-block;
+      margin-bottom: 10px;
       width: 100%;
     }
 
@@ -75,10 +87,15 @@ function AdvisorHome() {
   `;
 
   useEffect(() => {
-    // fetchPlans();
+    // searchPlans();
   }, []);
 
-  async function fetchPlans() {
+  function submitHandler(e) {
+    e.preventDefault();
+    searchPlans();
+  }
+
+  async function searchPlans() {
     try {
       setErrorMessage("");
       setLoading(true);
@@ -153,15 +170,16 @@ function AdvisorHome() {
       <div css={style}>
         <PageSpinner loading={loading} />
         <NavBar />
+
         <div id="plan-data-container">
 
           <div id="plan-search-container">
-            <div id="plan-search-bar">
+            <form id="search-form" onSubmit={e => submitHandler(e)}>
               <input type="text" id="input-search" />
-              <button id="search-plan-button" onClick={() => { fetchPlans(); }}>
+              <button id="search-plan-button" onClick={() => { searchPlans(); }}>
                 Search
               </button>
-            </div>
+            </form>
 
             <div id="filter-container">
               <label className="filter-label">Search By</label>
@@ -209,7 +227,7 @@ function AdvisorHome() {
                   <th className="student-plans-data">Time Created</th>
                   <th className="student-plans-data">Time Updated</th>
                 </tr>
-                {plans ? plans.map(plan =>
+                {plans.map(plan =>
                   <tr key={plan.planId} onClick={() => goToPlan(plan)}>
                     <td className="student-plans-data" key={plan.planId + "a"}>
                       {plan.firstName + " " + plan.lastName}
@@ -220,13 +238,16 @@ function AdvisorHome() {
                     <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
                     <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
 
-                  </tr>) : null}
+                  </tr>
+                )}
               </tbody>
             </table>
           ) : (
             null
           )}
+
         </div>
+
       </div>
     );
   } else {
