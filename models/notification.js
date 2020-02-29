@@ -80,16 +80,18 @@ async function planNotification(planId, userId, text, type) {
 
     // find all users who are interested in this plan
     // who are not the current user
-    const sql = "SELECT userId FROM Comment WHERE planId=? AND userId!=? " +
+    const sql = "SELECT studentId AS userId FROM Plan WHERE planId=? AND studentId!=? " +
+     "UNION " +
+     "SELECT userId FROM Comment WHERE planId=? AND userId!=? " +
      "UNION " +
      "SELECT userId FROM PlanReview WHERE planId=? AND userId!=?;";
-    const results = await pool.query(sql, [planId, userId, planId, userId]);
+    const results = await pool.query(sql, [planId, userId, planId, userId, planId, userId]);
     const userList = results[0];
 
-    // send out the notifications
+    // send out the notifications (No need to wait)
     for (let i = 0; i < userList.length; i++) {
       console.log("Creating a notification for user", userList[i].userId);
-      await createNotification(planId, userList[i].userId, text, type);
+      createNotification(planId, userList[i].userId, text, type);
     }
 
     return;

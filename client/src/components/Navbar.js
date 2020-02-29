@@ -11,6 +11,7 @@ import {getToken} from "../utils/authService";
 function Navbar(props) {
 
   const [notifications, setNotifications] = useState([]);
+  const TIME_BETWEEN_NOTIFICATIONS = 5000;
 
   const style = css`
 
@@ -78,35 +79,43 @@ function Navbar(props) {
   `;
 
   useEffect(() => {
-    async function fetchData() {
-
-      try {
-
-        const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/notification` +
-          `?accessToken=${token}`;
-        let obj = [];
-
-        // get notifications data
-        const response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setNotifications(obj.notifications);
-        }
-
-      } catch (err) {
-        // log server error, if it happens while fetching notifications
-        console.log("An internal server error occurred. Please try again later.");
-      }
-
-    }
 
     fetchData();
 
   }, []);
 
+  // get all notifications for the current user
+  async function fetchData() {
+
+    try {
+
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/notification` +
+        `?accessToken=${token}`;
+      let obj = [];
+
+      // get notifications data
+      const response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
+        setNotifications(obj.notifications);
+      } else {
+        setNotifications([]);
+      }
+
+    } catch (err) {
+      // log server error, if it happens while fetching notifications
+      console.log("An internal server error occurred. Please try again later.");
+    }
+
+    // after the notifications are returned or fail set a timer to try again
+    setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
+
+  }
+
+  // logout the current user
   function logoutUser() {
     logout();
     props.history.push("/login");
