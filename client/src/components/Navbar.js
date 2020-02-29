@@ -84,7 +84,7 @@ function Navbar(props) {
 
         const token = getToken();
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let url = `http://${server}/notification` +
+        const url = `http://${server}/notification` +
           `?accessToken=${token}`;
         let obj = [];
 
@@ -125,9 +125,11 @@ function Navbar(props) {
           {notifications.length ?
             <span className="badge">{notifications.length}</span> : null }
           <div className="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
+            {notifications.map((item) => (
+              <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
+                {item.text}
+              </Link>
+            ))}
           </div>
         </div>
         {props.showSearch ? <input id="navbar-search" className="form-control mr-sm-2" type="text" placeholder={props.searchContent} name="search"/> : null}

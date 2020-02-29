@@ -5,7 +5,6 @@ require("path");
 const express = require("express");
 const app = express();
 const {getNotifications, checkNotification} = require("../models/notification");
-// const {viewEnforceConstraints} = require("../services/validation/notificationValidation");
 const {requireAuth} = require("../services/auth/auth");
 
 

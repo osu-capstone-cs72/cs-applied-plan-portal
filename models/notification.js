@@ -8,7 +8,7 @@ async function getNotifications(userId) {
 
   try {
 
-    const sql = "SELECT * FROM Notification WHERE userId=?;";
+    const sql = "SELECT * FROM Notification WHERE userId=? AND checked=0;";
     const results = await pool.query(sql, userId);
 
     return {
