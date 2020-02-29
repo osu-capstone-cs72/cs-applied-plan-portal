@@ -21,6 +21,7 @@ const {
   searchPlans,
   deletePlan,
   getPlanActivity,
+  getRecentPlans
 } = require("../models/plan");
 const {
   postPlanSchema,
@@ -166,6 +167,30 @@ app.get("/:planId", requireAuth, async (req, res) => {
       console.error("400:", violation, "\n");
       res.status(400).send({error: violation});
 
+    }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// view a list of recently viewed plans
+app.get("/recent", requireAuth, async (req, res) => {
+
+  try {
+
+    const userId = req.auth.userId;
+    console.log("View a list of plans recently viewed by", userId);
+
+    const results = await getRecentPlans(userId);
+    if (results.count === 0) {
+      console.error("404: No plans found\n");
+      res.status(404).send({error: "No plans found."});
+    } else {
+      console.log("200: Plans found\n");
+      res.status(200).send(results);
     }
 
   } catch (err) {
