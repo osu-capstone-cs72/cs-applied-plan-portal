@@ -85,8 +85,8 @@ async function viewEnforceConstraints(planId, userId) {
 }
 exports.viewEnforceConstraints = viewEnforceConstraints;
 
-// checks that the submitted data does not violate any view constraints
-async function statusEnforceConstraints(userId) {
+// checks that the submitted data does not violate any search constraints
+async function searchEnforceConstraints(userId) {
 
   try {
 
@@ -103,7 +103,7 @@ async function statusEnforceConstraints(userId) {
   }
 
 }
-exports.statusEnforceConstraints = statusEnforceConstraints;
+exports.searchEnforceConstraints = searchEnforceConstraints;
 
 // checks that the submitted data does not violate any delete constraints
 async function deleteEnforceConstraints(planId, userId) {

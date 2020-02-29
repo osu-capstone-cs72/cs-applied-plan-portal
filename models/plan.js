@@ -130,37 +130,73 @@ async function updatePlan(planId, planName, courses) {
 }
 exports.updatePlan = updatePlan;
 
-// get all plans that match the requested status
-async function getPlansStatus(status, created, ascend) {
+// get all plans that match the requested search
+async function searchPlans(text, search, status, sort, order) {
   try {
 
+    const sqlArray = [];
     let sql = "SELECT * FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
-    // a status code of 5 means "any" status
-    if (status !== "5") {
-      sql += "WHERE status=? ";
-    }
-
-    // sort by the created or last updated time
-    if (created === "1") {
-      sql += "ORDER BY created ";
+    // get the type of value we are searching for
+    if (text !== "*") {
+      switch (search) {
+        case 0:
+          sql += "WHERE CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') ";
+          break;
+        case 1:
+          sql += "WHERE userId LIKE CONCAT('%', ?, '%') ";
+          break;
+        case 2:
+          sql += "WHERE planName LIKE CONCAT('%', ?, '%') ";
+          break;
+        default:
+          sql += "WHERE CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') ";
+      }
+      sqlArray.push(text);
     } else {
-      sql += "ORDER BY lastUpdated ";
+      sql += "WHERE TRUE ";
     }
 
-    // sort by ascending or descending
-    if (ascend === "1") {
+    console.log("STATUS:", status);
+    // get the status we are searching for
+    if (status >= 0 && status <= 4) {
+      sql += "AND status=? ";
+      sqlArray.push(status);
+    }
+
+    // get the value we are sorting by
+    switch (sort) {
+      case 0:
+        sql += "ORDER BY CONCAT(firstName , ' ' , lastName) ";
+        break;
+      case 1:
+        sql += "ORDER BY userId ";
+        break;
+      case 2:
+        sql += "ORDER BY planName ";
+        break;
+      case 3:
+        sql += "ORDER BY status ";
+        break;
+      case 4:
+        sql += "ORDER BY created ";
+        break;
+      case 5:
+        sql += "ORDER BY lastUpdated ";
+        break;
+      default:
+        sql += "ORDER BY lastUpdated ";
+    }
+
+    // order by ascending or descending
+    if (order === 1) {
       sql += "ASC;";
     } else {
       sql += "DESC;";
     }
 
-    let results;
-    if (status !== 5) {
-      results = await pool.query(sql, [status]);
-    } else {
-      results = await pool.query(sql);
-    }
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
 
     return {
       plans: results[0]
@@ -172,7 +208,7 @@ async function getPlansStatus(status, created, ascend) {
   }
 
 }
-exports.getPlansStatus = getPlansStatus;
+exports.searchPlans = searchPlans;
 
 // get all data for a specific plan, including selected courses, and reviews
 async function getPlan(planId, userId) {

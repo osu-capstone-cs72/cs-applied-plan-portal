@@ -10,7 +10,7 @@ const {
   createEnforceConstraints,
   patchEnforceConstraints,
   viewEnforceConstraints,
-  statusEnforceConstraints,
+  searchEnforceConstraints,
   deleteEnforceConstraints,
   activityEnforceConstraints
 } = require("../services/validation/planValidation");
@@ -18,14 +18,14 @@ const {
   createPlan,
   updatePlan,
   getPlan,
-  getPlansStatus,
+  searchPlans,
   deletePlan,
   getPlanActivity,
 } = require("../models/plan");
 const {
   postPlanSchema,
   patchPlanSchema,
-  statusPlanSchema,
+  searchPlanSchema,
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../services/validation/schemaValidation");
@@ -175,42 +175,44 @@ app.get("/:planId", requireAuth, async (req, res) => {
 
 });
 
-// get plans based on status and time
-app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
+// search for plans
+app.get("/search/:text/:search/:status/:sort/:order", requireAuth, async (req, res) => {
 
   try {
 
     // use schema validation to ensure valid request body
-    const errorMessage = getSchemaViolations(req.params, statusPlanSchema);
+    const errorMessage = getSchemaViolations(req.params, searchPlanSchema);
 
     if (!errorMessage) {
 
-      const sanitizedBody = sanitizeUsingSchema(req.params, statusPlanSchema);
+      const sanitizedBody = sanitizeUsingSchema(req.params, searchPlanSchema);
 
       // get request body
       const userId = req.auth.userId;
+      const text = sanitizedBody.text;
+      const search = sanitizedBody.search;
       const status = sanitizedBody.status;
-      const created = sanitizedBody.created;
-      const ascend = sanitizedBody.ascend;
-      console.log("Search plans by status");
+      const sort = sanitizedBody.sort;
+      const order = sanitizedBody.order;
+      console.log("Searching for plans");
 
-      // only list plans if they do not violate any constraints
-      const violation = await statusEnforceConstraints(userId);
+      // only search plans if they do not violate any constraints
+      const violation = await searchEnforceConstraints(userId);
       if (violation === "valid") {
 
-        // only allow advisors to search search plans
+        // only allow advisors to search plans
         if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
-          console.error("403: Only advisors are allowed to list plans", "\n");
-          res.status(403).send({error: "Only advisors are allowed to list plans"});
+          console.error("403: Only advisors are allowed to search plans", "\n");
+          res.status(403).send({error: "Only advisors are allowed to search plans"});
           return;
         }
 
-        const results = await getPlansStatus(status, created, ascend);
+        const results = await searchPlans(text, parseInt(search, 10), parseInt(status, 10), parseInt(sort, 10), parseInt(order, 10));
         if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});
         } else {
-          console.log("200: Plan found\n");
+          console.log("200: Plans found\n");
           res.status(200).send(results);
         }
 

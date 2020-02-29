@@ -81,7 +81,7 @@ function Navbar(props) {
   useEffect(() => {
 
     fetchData();
-
+    // eslint-disable-next-line
   }, []);
 
   // get all notifications for the current user

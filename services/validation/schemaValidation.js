@@ -62,8 +62,26 @@ const patchPlanSchema = {
 };
 exports.patchPlanSchema = patchPlanSchema;
 
-// Schema of a status Plan request used for the validator and the database.
-const statusPlanSchema = {
+// Schema of a search Plan request used for the validator and the database.
+const searchPlanSchema = {
+  text: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid search text:\n" +
+        `The search text must be a string.`;
+    }
+  },
+  search: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid search value:\n" +
+        "The search value associated with this request must be a number greater than zero.";
+    }
+  },
   status: {
     required: true,
     type: Type.integer,
@@ -74,28 +92,28 @@ const statusPlanSchema = {
         "The status value associated with this request must be a number greater than zero.";
     }
   },
-  created: {
+  sort: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid created value:\n" +
-        "The created value associated with this request must be a number greater than zero.";
+      return "Invalid sort value:\n" +
+        "The sort value associated with this request must be a number greater than zero.";
     }
   },
-  ascend: {
+  order: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid ascend value:\n" +
-        "The ascend value associated with this request must be a number greater than zero.";
+      return "Invalid order value:\n" +
+        "The order value associated with this request must be a number greater than zero.";
     }
   }
 };
-exports.statusPlanSchema = statusPlanSchema;
+exports.searchPlanSchema = searchPlanSchema;
 
 // Schema of a user.
 const userSchema = {

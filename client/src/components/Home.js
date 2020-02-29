@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import StudentHome from "./StudentHome";
 import AdvisorHome from "./AdvisorHome";
@@ -48,7 +47,6 @@ function Home(props) {
     return (
       <div id="home-container" css={style}>
         <PageSpinner loading={loading} />
-        <NavBar />
       </div>
     );
   } else if (pageState === 1) {

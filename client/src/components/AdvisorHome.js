@@ -9,9 +9,9 @@ import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-function AdvisorHome(props) {
+function AdvisorHome() {
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -31,11 +31,14 @@ function AdvisorHome(props) {
     }
 
     .home-error-message-container {
+      margin: 0 auto;
+      text-align: center;
       position: relative;
       top: 100px;
     }
 
     .advisor-plans-table {
+      margin: 0 auto;
       position: relative;
       top: 100px;
     }
@@ -65,11 +68,15 @@ function AdvisorHome(props) {
       width: 100%;
     }
 
+    th, td {
+      padding: 10px;
+    }
+
   `;
 
   useEffect(() => {
-    fetchPlans();
-  }, [props.history]);
+    // fetchPlans();
+  }, []);
 
   async function fetchPlans() {
     try {
@@ -77,19 +84,28 @@ function AdvisorHome(props) {
       setLoading(true);
       setPlans([]);
 
-      const selectStatus = document.getElementById("select-status");
-      const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
+      const text = document.getElementById("input-search");
+      let textValue = text.value;
+      if (textValue === "") {
+        textValue = "*";
+      }
 
-      const selectTime = document.getElementById("select-time");
-      const timeValue = selectTime.options[selectTime.selectedIndex].value;
+      const search = document.getElementById("select-search");
+      const searchValue = search.options[search.selectedIndex].value;
 
-      const selectOrder = document.getElementById("select-order");
-      const orderValue = selectOrder.options[selectOrder.selectedIndex].value;
+      const status = document.getElementById("select-status");
+      const statusValue = status.options[status.selectedIndex].value;
+
+      const sort = document.getElementById("select-sort");
+      const sortValue = sort.options[sort.selectedIndex].value;
+
+      const order = document.getElementById("select-order");
+      const orderValue = order.options[order.selectedIndex].value;
 
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/status/${statusValue}/${timeValue}/${orderValue}/` +
-        `?accessToken=${token}`;
+      const getUrl = `http://${server}/plan/search/${textValue}/${searchValue}/${statusValue}/` +
+        `${sortValue}/${orderValue}/?accessToken=${token}`;
       let obj = {};
 
       const results = await fetch(getUrl);
@@ -149,14 +165,14 @@ function AdvisorHome(props) {
 
             <div id="filter-container">
               <label className="filter-label">Search By</label>
-              <select id="select-status" className="advisor-plan-filter">
-                <option value="0" selected>User Name</option>
+              <select id="select-search" className="advisor-plan-filter" defaultValue={"0"}>
+                <option value="0">User Name</option>
                 <option value="1">User ID</option>
                 <option value="2">Plan Name</option>
               </select>
               <label className="filter-label">Status</label>
-              <select id="select-status" className="advisor-plan-filter">
-                <option value="5" selected>Any</option>
+              <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
+                <option value="5">Any</option>
                 <option value="2">Awaiting Review</option>
                 <option value="3">Awaiting final review</option>
                 <option value="1">Awaiting student changes</option>
@@ -164,17 +180,17 @@ function AdvisorHome(props) {
                 <option value="0">Rejected</option>
               </select>
               <label className="filter-label">Sort By</label>
-              <select id="select-time" className="advisor-plan-filter">
+              <select id="select-sort" className="advisor-plan-filter" defaultValue={"5"}>
                 <option value="0">User Name</option>
                 <option value="1">User ID</option>
                 <option value="2">Plan Name</option>
                 <option value="3">Status</option>
                 <option value="4">Time Created</option>
-                <option value="5" selected>Time Updated</option>
+                <option value="5">Time Updated</option>
               </select>
               <label className="filter-label">Order</label>
-              <select id="select-order" className="advisor-plan-filter">
-                <option value="1" selected>Ascending</option>
+              <select id="select-order" className="advisor-plan-filter" defaultValue={"1"}>
+                <option value="1">Ascending</option>
                 <option value="0">Decending</option>
               </select>
             </div>
