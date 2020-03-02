@@ -134,9 +134,9 @@ exports.updatePlan = updatePlan;
 async function searchPlans(text, search, status, sort, order, page) {
   try {
 
-    const RESULTS_PER_PAGE = 2;
+    const RESULTS_PER_PAGE = 5;
     const sqlArray = [];
-    let sql = "SELECT status, planName, userId, firstName, lastName, created, lastUpdated " +
+    let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated " +
       "FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
     // get the type of value we are searching for
@@ -206,7 +206,7 @@ async function searchPlans(text, search, status, sort, order, page) {
 
     // find the total number of pages
     sql = sql.replace(
-      "SELECT status, planName, userId, firstName, lastName, created, lastUpdated",
+      "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated",
       "SELECT COUNT(planName) AS count"
     );
     sql = sql.replace(

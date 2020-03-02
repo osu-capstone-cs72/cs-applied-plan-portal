@@ -4,6 +4,7 @@ import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import {useEffect, useState} from "react";
 import {getToken} from "../utils/authService";
+import {formatTime} from "../utils/formatTime";
 import PageInternalError from "./general/PageInternalError";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -13,9 +14,19 @@ function AdvisorHome() {
 
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [recentPlans, setRecentPlans] = useState([]);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [searchFields, setSearchFields] = useState({
+    textValue: "*",
+    searchValue: 0,
+    statusValue: 0,
+    sortValue: 0,
+    orderValue: 0
+  });
+  console.log(plans);
 
   const style = css`
 
@@ -27,7 +38,7 @@ function AdvisorHome() {
     }
 
     #advisor-home-contents-container {
-      margin: 0 auto;
+      margin: 25px auto;
       width: 50%;
     }
 
@@ -85,6 +96,10 @@ function AdvisorHome() {
       padding: 10px;
     }
 
+    #page-load-more-button {
+      margin: 25px;
+    }
+
   `;
 
   useEffect(() => {
@@ -93,7 +108,7 @@ function AdvisorHome() {
 
   function submitHandler(e) {
     e.preventDefault();
-    searchPlans();
+    searchPlans(1);
   }
 
   async function getRecentPlans() {
@@ -125,11 +140,10 @@ function AdvisorHome() {
     }
   }
 
-  async function searchPlans() {
+  async function searchPlans(page) {
     try {
       setErrorMessage("");
       setLoading(true);
-      setPlans([]);
 
       const text = document.getElementById("input-search");
       let textValue = text.value;
@@ -138,28 +152,53 @@ function AdvisorHome() {
       }
 
       const search = document.getElementById("select-search");
-      const searchValue = search.options[search.selectedIndex].value;
+      let searchValue = search.options[search.selectedIndex].value;
 
       const status = document.getElementById("select-status");
-      const statusValue = status.options[status.selectedIndex].value;
+      let statusValue = status.options[status.selectedIndex].value;
 
       const sort = document.getElementById("select-sort");
-      const sortValue = sort.options[sort.selectedIndex].value;
+      let sortValue = sort.options[sort.selectedIndex].value;
 
       const order = document.getElementById("select-order");
-      const orderValue = order.options[order.selectedIndex].value;
+      let orderValue = order.options[order.selectedIndex].value;
+
+      // don't use search fields if we are just showing other pages of our results
+      if (page > 1) {
+        searchValue = searchFields.searchValue;
+        statusValue = searchFields.statusValue;
+        sortValue = searchFields.sortValue;
+        orderValue = searchFields.orderValue;
+      } else {
+        setSearchFields({
+          searchValue: searchValue,
+          statusValue: statusValue,
+          sortValue: sortValue,
+          orderValue: orderValue
+        });
+      }
 
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const getUrl = `http://${server}/plan/search/${textValue}/${searchValue}/${statusValue}/` +
-        `${sortValue}/${orderValue}/?accessToken=${token}`;
+        `${sortValue}/${orderValue}/${page}/?accessToken=${token}`;
       let obj = {};
 
+      // get our search results
       const results = await fetch(getUrl);
       setLoading(false);
       if (results.ok) {
+
+        // if this is a new search clear all of the previous results
         obj = await results.json();
-        setPlans(obj.plans);
+        if (page > 1) {
+          setPlans([...plans, ...obj.plans]);
+        } else {
+          setPlans([...obj.plans]);
+        }
+        setPageNumber(obj.page);
+        setTotalPages(obj.totalPages);
+
       } else {
         // we got a bad status code. Show the error
         obj = await results.json();
@@ -224,8 +263,8 @@ function AdvisorHome() {
                         <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
                         <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
                         <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
-                        <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
-                        <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
+                        <td className="student-plans-data" key={plan.planId + "e"}>{formatTime(plan.created)}</td>
+                        <td className="student-plans-data" key={plan.planId + "f"}>{formatTime(plan.lastUpdated)}</td>
 
                       </tr>
                     )}
@@ -239,7 +278,7 @@ function AdvisorHome() {
             <div id="plan-search-container">
               <form id="search-form" onSubmit={e => submitHandler(e)}>
                 <input type="text" id="input-search" />
-                <button id="search-plan-button" onClick={() => { searchPlans(); }}>
+                <button id="search-plan-button" onClick={() => { searchPlans(1); }}>
                   Search
                 </button>
               </form>
@@ -300,13 +339,18 @@ function AdvisorHome() {
                         <td className="student-plans-data" key={plan.planId + "b"}>{plan.userId}</td>
                         <td className="student-plans-data" key={plan.planId + "c"}>{plan.planName}</td>
                         <td className="student-plans-data" key={plan.planId + "d"}>{renderStatus(plan.status)}</td>
-                        <td className="student-plans-data" key={plan.planId + "e"}>{plan.created}</td>
-                        <td className="student-plans-data" key={plan.planId + "f"}>{plan.lastUpdated}</td>
+                        <td className="student-plans-data" key={plan.planId + "e"}>{formatTime(plan.created)}</td>
+                        <td className="student-plans-data" key={plan.planId + "f"}>{formatTime(plan.lastUpdated)}</td>
 
                       </tr>
                     )}
                   </tbody>
                 </table>
+                { pageNumber < totalPages ? (
+                  <button id="page-load-more-button" onClick={() => searchPlans(pageNumber + 1)}>Show More</button>
+                ) : (
+                  null
+                )}
               </div>
             ) : (
               null
