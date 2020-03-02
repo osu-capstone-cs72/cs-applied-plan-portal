@@ -214,7 +214,7 @@ async function searchPlans(text, search, status, sort, order, page) {
       ";"
     );
     const totalResults = await pool.query(sql, sqlArray);
-    const totalPages = totalResults[0][0].count / RESULTS_PER_PAGE;
+    const totalPages = Math.ceil(totalResults[0][0].count / RESULTS_PER_PAGE);
 
     return {
       plans: results[0],
@@ -268,28 +268,29 @@ async function getPlanActivity(planId, page) {
 
   try {
 
-    // get the list of activities for the plan
-    const RESULTS_PER_PAGE = 2;
+    // list the activity for the plan
+    const RESULTS_PER_PAGE = 10;
+    const offset = RESULTS_PER_PAGE * (page - 1);
     const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
       "-1 AS status, time, firstName, lastName FROM Comment " +
       "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
 
     const sqlReviews = "SELECT reviewId, 0 AS commentId, planId, PlanReview.userId, " +
       "'' AS text, status, time, firstName, lastName FROM PlanReview " +
-      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC;";
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC LIMIT ?, ?;";
 
     let sql = sqlComments + " UNION " + sqlReviews;
 
-    const results = await pool.query(sql, [planId, planId, planId]);
+    const results = await pool.query(sql, [planId, planId, offset, RESULTS_PER_PAGE]);
 
     // find the total number of pages
     sql = "SELECT ( SELECT COUNT(*) FROM Comment WHERE planId=? ) " +
       "+ ( SELECT COUNT(*) FROM PlanReview WHERE planId=? ) AS count;";
     const totalResults = await pool.query(sql, [planId, planId]);
-    const totalPages = totalResults[0][0].count / RESULTS_PER_PAGE;
+    const totalPages = Math.ceil(totalResults[0][0].count / RESULTS_PER_PAGE);
 
     return {
-      activities: results[0],
+      activity: results[0],
       page: page,
       totalPages: totalPages
     };

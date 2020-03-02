@@ -8,13 +8,13 @@ import PropTypes from "prop-types";
 
 function ActivityFeed(props) {
 
+  console.log("pageNumber =", props.pageNumber, "totalPages =", props.totalPages);
   const style = css`
     margin: 50px auto;
     text-align: center;
     width: 100%;
   `;
 
-  // if (props.activity.length > 0) {
   return (
     <div id="plan-activity" css={style}>
       <h2>Activity Feed</h2>
@@ -31,6 +31,11 @@ function ActivityFeed(props) {
             userName={obj.firstName + " " + obj.lastName} />;
         }
       })}
+      { props.pageNumber < props.totalPages ? (
+        <button id="page-load-more-button" onClick={() => props.onShowMore()}>Show More</button>
+      ) : (
+        null
+      )}
     </div>
   );
 
@@ -42,5 +47,8 @@ ActivityFeed.propTypes = {
   onUpdate: PropTypes.any,
   activity: PropTypes.array,
   currentUser: PropTypes.object,
-  onNewComment: PropTypes.func
+  onNewComment: PropTypes.func,
+  onShowMore: PropTypes.func,
+  pageNumber: PropTypes.number,
+  totalPages: PropTypes.number
 };

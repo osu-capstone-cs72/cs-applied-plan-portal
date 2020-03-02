@@ -18,6 +18,19 @@ import PHE from "print-html-element";
 function ViewPlan(props) {
 
   const [pageError, setPageError] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [studentFirstName, setStudentFirstName] = useState("");
+  const [studentLastName, setStudentLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState(null);
+  const [planName, setPlanName] = useState("");
+  const [created, setCreated] = useState("");
+  const [status, setStatus] = useState(-1);
+  const [activity, setActivity] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const {planId} = useParams();
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -26,111 +39,130 @@ function ViewPlan(props) {
       lastName: ""
     }
   );
-  const [loading, setLoading] = useState(true);
-  const [studentName, setStudentName] = useState("");
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState(null);
-  const [planName, setPlanName] = useState("");
-  const [status, setStatus] = useState(-1);
-  const [activity, setActivity] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const {planId} = useParams();
 
   const style = css`
   `;
 
   useEffect(() => {
-    async function fetchData(planId) {
-      setLoading(true);
+    fetchPlan(planId);
+    // eslint-disable-next-line
+  }, [planId]);
+
+  async function fetchPlan(planId) {
+    setLoading(true);
+    try {
+
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      let url = `http://${server}/plan/${planId}` +
+        `?accessToken=${token}`;
+      let obj = [];
+
       try {
 
-        const token = getToken();
-        let created = "";
-        let userId = 0;
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let url = `http://${server}/plan/${planId}` +
-          `?accessToken=${token}`;
-        let obj = [];
-
-        try {
-
-          // get plan data
-          const response = await fetch(url);
-          if (response.ok) {
-            // get data from the response
-            obj = await response.json();
-            userId = obj.studentId;
-            created = obj.created;
-            setCourses(obj.courses);
-            setPlanName(obj.planName);
-            setUserId(obj.studentId);
-            setStatus(parseInt(obj.status));
-            setStudentName(obj.firstName + " " + obj.lastName);
-            setEmail(obj.email);
-            // add the intial review
-            setActivity([{
-              reviewId: 0,
-              commentId: 0,
-              status: 2,
-              planId: planId,
-              userId: userId,
-              time: created,
-              firstName: obj.firstName,
-              lastName: obj.lastName
-            }]);
+        // get plan data
+        const response = await fetch(url);
+        if (response.ok) {
+          // get data from the response
+          obj = await response.json();
+          setCreated(obj.created);
+          setCourses(obj.courses);
+          setPlanName(obj.planName);
+          setUserId(obj.studentId);
+          setStatus(parseInt(obj.status));
+          setStudentFirstName(obj.firstName);
+          setStudentLastName(obj.lastName);
+          setEmail(obj.email);
+        } else {
+          // we got a bad status code
+          if (response.status === 500) {
+            setPageError(500);
           } else {
-            // we got a bad status code
-            if (response.status === 500) {
-              setPageError(500);
-            } else {
-              setPageError(404);
-            }
-            return;
+            setPageError(404);
           }
-
-        } catch (err) {
-          // send to 500 page if a server error happens while fetching plan
-          setPageError(500);
           return;
         }
 
-        // get active user information
-        const profile = getProfile();
-        url = `http://${server}/user/${profile.sub}/` +
-          `?accessToken=${token}`;
-        let response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setCurrentUser(
-            {
-              id: obj.userId,
-              role: obj.role,
-              firstName: obj.firstName,
-              lastName: obj.lastName
-            }
-          );
-        }
-
-        // get plan activity
-        url = `http://${server}/plan/${planId}/activity/` +
-          `?accessToken=${token}`;
-        response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setActivity(prev => [...obj.activities, ...prev]);
-        }
-
       } catch (err) {
-        // this is a server error
-        console.log("An internal server error occurred. Please try again later.");
+        // send to 500 page if a server error happens while fetching plan
+        setPageError(500);
+        return;
       }
-      setLoading(false);
-    }
-    fetchData(planId);
 
-  }, [planId, props.history]);
+      // get active user information
+      const profile = getProfile();
+      url = `http://${server}/user/${profile.sub}/` +
+        `?accessToken=${token}`;
+      const response = await fetch(url);
+      if (response.ok) {
+        // get data from the response
+        obj = await response.json();
+        setCurrentUser(
+          {
+            id: obj.userId,
+            role: obj.role,
+            firstName: obj.firstName,
+            lastName: obj.lastName
+          }
+        );
+      }
+
+      // get the plan activity
+      await fetchActivity(planId, 1);
+
+    } catch (err) {
+      // this is a server error
+      console.log("An internal server error occurred. Please try again later.");
+    }
+    setLoading(false);
+  }
+
+  async function fetchActivity(planId, page) {
+    setLoading(true);
+    try {
+
+      const intialReview =
+      {
+        reviewId: 0,
+        commentId: 0,
+        status: 2,
+        planId: planId,
+        userId: userId,
+        time: created,
+        firstName: studentFirstName,
+        lastName: studentLastName
+      };
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/plan/${planId}/activity/${page}/` +
+      `?accessToken=${token}`;
+      let obj = [];
+
+      // get plan activity
+      const response = await fetch(url);
+
+      if (response.ok) {
+
+        // get data from the response
+        obj = await response.json();
+
+        // if we are showing all activity then show the intial review
+        if (obj.page === obj.totalPages) {
+          setActivity([...activity, ...obj.activity, intialReview]);
+        } else {
+          setActivity([...activity, ...obj.activity]);
+        }
+        setPageNumber(obj.page);
+        setTotalPages(obj.totalPages);
+
+      }
+
+    } catch (err) {
+      // this is a server error
+      console.log("An internal server error occurred. Please try again later.");
+    }
+    setLoading(false);
+  }
 
   function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);
@@ -182,7 +214,6 @@ function ViewPlan(props) {
       }
       setLoading(false);
     }
-
   }
 
   if (!pageError) {
@@ -191,7 +222,7 @@ function ViewPlan(props) {
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <div id={"printable-content"}>
-          <PlanMetadata studentName={studentName} userId={userId} email={email}
+          <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
             planName={planName} status={status} currentUser={currentUser}
             onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
           <PlanTable courses={courses} />
@@ -199,7 +230,8 @@ function ViewPlan(props) {
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
         <ActivityFeed activity={activity} currentUser={currentUser} status={status}
-          onNewComment={e => handleAddComment(e)} />
+          pageNumber={pageNumber} totalPages={totalPages}
+          onNewComment={e => handleAddComment(e)} onShowMore={() => fetchActivity(planId, pageNumber + 1)}/>
       </div>
     );
   } else if (pageError === 404) {
