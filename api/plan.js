@@ -27,6 +27,7 @@ const {
   postPlanSchema,
   patchPlanSchema,
   searchPlanSchema,
+  activitySchema,
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../services/validation/schemaValidation");
@@ -296,33 +297,49 @@ app.delete("/:planId", requireAuth, async (req, res) => {
 });
 
 // get a plan's activity (comments and reviews)
-app.get("/:planId/activity", requireAuth, async (req, res) => {
+app.get("/:planId/activity/:page", requireAuth, async (req, res) => {
 
   try {
 
-    console.log("Get a plans activity");
-    const userId = req.auth.userId;
-    const planId = req.params.planId;
+    // use schema validation to ensure valid request params
+    const errorMessage = getSchemaViolations(req.params, activitySchema);
 
-    // only view plan activity if it does not violate any constraints
-    const violation = await activityEnforceConstraints(planId, userId);
-    if (violation === "valid") {
+    if (!errorMessage) {
 
-      const results = await getPlanActivity(planId);
-      if (results.length === 0) {
-        console.error("404: No plan activity found\n");
-        res.status(404).send({error: "No plan activity found."});
+      const sanitizedBody = sanitizeUsingSchema(req.params, activitySchema);
+
+      // get request params
+      console.log("Get a plans activity");
+      const userId = req.auth.userId;
+      const planId = sanitizedBody.planId;
+      const page = sanitizedBody.page;
+
+      // only view plan activity if it does not violate any constraints
+      const violation = await activityEnforceConstraints(planId, userId);
+      if (violation === "valid") {
+
+        const results = await getPlanActivity(planId, page);
+        if (results.length === 0) {
+          console.error("404: No plan activity found\n");
+          res.status(404).send({error: "No plan activity found."});
+        } else {
+          console.log("200: Plan activity found\n");
+          res.status(200).send(results);
+        }
+
       } else {
-        console.log("200: Plan activity found\n");
-        res.status(200).send(results);
+
+        // send an error that explains the violated constraint
+        console.error("400:", violation, "\n");
+        res.status(400).send({error: violation});
+
       }
 
     } else {
-
-      // send an error that explains the violated constraint
-      console.error("400:", violation, "\n");
-      res.status(400).send({error: violation});
-
+      // send an error explaining the schema violation
+      console.error("400:", errorMessage, "\n");
+      res.status(400).send({error: errorMessage});
+      return;
     }
 
   } catch (err) {

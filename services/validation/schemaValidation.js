@@ -222,6 +222,31 @@ const reviewSchema = {
 };
 exports.reviewSchema = reviewSchema;
 
+// Schema of an activity.
+const activitySchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid plan ID:\n" +
+        "Plan ID must be an integer.";
+    }
+  },
+  page: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid page number:\n" +
+        "The page associated with this request must be a number greater than zero.";
+    }
+  }
+};
+exports.activitySchema = activitySchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.

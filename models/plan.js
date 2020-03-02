@@ -264,10 +264,12 @@ async function getPlan(planId, userId) {
 exports.getPlan = getPlan;
 
 // get all activity from a plan (comments and reviews)
-async function getPlanActivity(planId) {
+async function getPlanActivity(planId, page) {
 
   try {
 
+    // get the list of activities for the plan
+    const RESULTS_PER_PAGE = 2;
     const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
       "-1 AS status, time, firstName, lastName FROM Comment " +
       "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
@@ -276,11 +278,20 @@ async function getPlanActivity(planId) {
       "'' AS text, status, time, firstName, lastName FROM PlanReview " +
       "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC;";
 
-    const sql = sqlComments + " UNION " + sqlReviews;
+    let sql = sqlComments + " UNION " + sqlReviews;
 
     const results = await pool.query(sql, [planId, planId, planId]);
+
+    // find the total number of pages
+    sql = "SELECT ( SELECT COUNT(*) FROM Comment WHERE planId=? ) " +
+      "+ ( SELECT COUNT(*) FROM PlanReview WHERE planId=? ) AS count;";
+    const totalResults = await pool.query(sql, [planId, planId]);
+    const totalPages = totalResults[0][0].count / RESULTS_PER_PAGE;
+
     return {
-      activities: results[0]
+      activities: results[0],
+      page: page,
+      totalPages: totalPages
     };
 
   } catch (err) {
