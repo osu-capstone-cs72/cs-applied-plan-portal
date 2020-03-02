@@ -3,6 +3,7 @@
 import React from "react";
 import NavBar from "./Navbar";
 import {getToken, getProfile} from "../utils/authService";
+import {formatTime} from "../utils/formatTime";
 import PageSpinner from "./general/PageSpinner";
 import PageInternalError from "./general/PageInternalError";
 import {css, jsx} from "@emotion/core";
@@ -129,7 +130,7 @@ export default class StudentHome extends React.Component {
                 <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
                   <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
                   <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
-                  <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
+                  <td className="student-plans-data" key={p.planId + "d"}>{formatTime(p.lastUpdated)}</td>
                 </tr>) : null}
             </thead>
           </table>

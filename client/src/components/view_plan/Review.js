@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {formatTime} from "../../utils/formatTime";
 
 function Reviews(props) {
 
@@ -56,7 +57,7 @@ function Reviews(props) {
         <div className="review-text-container">
           <p className="review-status-text">{renderStatus(props.status)}</p>
           <p className="review-user">{props.userName}</p>
-          <p className="review-time">{props.time}</p>
+          <p className="review-time">{formatTime(props.time)}</p>
         </div>
       </div>
     );
