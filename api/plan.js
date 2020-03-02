@@ -201,7 +201,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
 });
 
 // search for plans
-app.get("/search/:text/:search/:status/:sort/:order", requireAuth, async (req, res) => {
+app.get("/search/:text/:search/:status/:sort/:order/:page", requireAuth, async (req, res) => {
 
   try {
 
@@ -219,20 +219,15 @@ app.get("/search/:text/:search/:status/:sort/:order", requireAuth, async (req, r
       const status = sanitizedBody.status;
       const sort = sanitizedBody.sort;
       const order = sanitizedBody.order;
+      const page = sanitizedBody.page;
       console.log("Searching for plans");
 
       // only search plans if they do not violate any constraints
       const violation = await searchEnforceConstraints(userId);
       if (violation === "valid") {
 
-        // only allow advisors to search plans
-        if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
-          console.error("403: Only advisors are allowed to search plans", "\n");
-          res.status(403).send({error: "Only advisors are allowed to search plans"});
-          return;
-        }
-
-        const results = await searchPlans(text, parseInt(search, 10), parseInt(status, 10), parseInt(sort, 10), parseInt(order, 10));
+        const results = await searchPlans(text, parseInt(search, 10), parseInt(status, 10),
+          parseInt(sort, 10), parseInt(order, 10), parseInt(page, 10));
         if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});

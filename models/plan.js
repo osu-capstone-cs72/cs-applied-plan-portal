@@ -131,11 +131,13 @@ async function updatePlan(planId, planName, courses) {
 exports.updatePlan = updatePlan;
 
 // get all plans that match the requested search
-async function searchPlans(text, search, status, sort, order) {
+async function searchPlans(text, search, status, sort, order, page) {
   try {
 
+    const RESULTS_PER_PAGE = 2;
     const sqlArray = [];
-    let sql = "SELECT * FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
+    let sql = "SELECT status, planName, userId, firstName, lastName, created, lastUpdated " +
+      "FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
     // get the type of value we are searching for
     if (text !== "*") {
@@ -189,16 +191,35 @@ async function searchPlans(text, search, status, sort, order) {
 
     // order by ascending or descending
     if (order === 1) {
-      sql += "ASC;";
+      sql += "ASC LIMIT ?, ?;";
     } else {
-      sql += "DESC;";
+      sql += "DESC LIMIT ?, ?;";
     }
+
+    // get the selected page
+    sqlArray.push(RESULTS_PER_PAGE * (page - 1));
+    sqlArray.push(RESULTS_PER_PAGE);
+
 
     // perform the query
     const results = await pool.query(sql, sqlArray);
 
+    // find the total number of pages
+    sql = sql.replace(
+      "SELECT status, planName, userId, firstName, lastName, created, lastUpdated",
+      "SELECT COUNT(planName) AS count"
+    );
+    sql = sql.replace(
+      "LIMIT ?, ?;",
+      ";"
+    );
+    const totalResults = await pool.query(sql, sqlArray);
+    const totalPages = totalResults[0][0].count / RESULTS_PER_PAGE;
+
     return {
-      plans: results[0]
+      plans: results[0],
+      page: page,
+      totalPages: totalPages
     };
 
   } catch (err) {

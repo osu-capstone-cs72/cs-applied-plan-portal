@@ -79,7 +79,7 @@ const searchPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid search value:\n" +
-        "The search value associated with this request must be a number greater than zero.";
+        "The search value associated with this request must be a number greater than or equal zero.";
     }
   },
   status: {
@@ -89,7 +89,7 @@ const searchPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid status value:\n" +
-        "The status value associated with this request must be a number greater than zero.";
+        "The status value associated with this request must be a number greater than or equal zero.";
     }
   },
   sort: {
@@ -99,7 +99,7 @@ const searchPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid sort value:\n" +
-        "The sort value associated with this request must be a number greater than zero.";
+        "The sort value associated with this request must be a number greater than or equal zero.";
     }
   },
   order: {
@@ -109,7 +109,17 @@ const searchPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid order value:\n" +
-        "The order value associated with this request must be a number greater than zero.";
+        "The order value associated with this request must be a number greater than or equal to zero.";
+    }
+  },
+  page: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid page number:\n" +
+        "The page associated with this request must be a number greater than zero.";
     }
   }
 };
