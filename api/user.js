@@ -106,7 +106,7 @@ app.get("/login", async (req, res) => {
     // make this nested try to catch potential error when parsing
     try {
       // try fetching the User from the database by ID
-      const osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
+      const osuuid = validator.toInt(userAttributes["cas:osuuid"][0] + "");
       const existingUser = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
