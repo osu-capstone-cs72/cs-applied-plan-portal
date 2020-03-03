@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Feb 29, 2020 at 03:52 PM
+-- Generation Time: Mar 03, 2020 at 05:45 AM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -55,7 +55,16 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (100, 376, 82757579527, '2020-02-25 20:40:11', 'Adding comment.'),
 (102, 399, 82757579527, '2020-02-26 21:53:30', 'Here I am adding a comment.'),
 (103, 399, 82757579527, '2020-02-26 23:26:13', 'Hello'),
-(109, 368, 82757579527, '2020-02-29 03:12:14', 'I guess you might consider adding some courses.');
+(109, 368, 82757579527, '2020-02-29 03:12:14', 'I guess you might consider adding some courses.'),
+(110, 364, 82757579527, '2020-03-02 22:21:09', 'This is a nice plan.'),
+(111, 364, 82757579527, '2020-03-02 22:21:19', 'You should be proud of your nice plan.'),
+(112, 364, 82757579527, '2020-03-02 22:21:28', 'One day it might get approved.'),
+(113, 364, 82757579527, '2020-03-02 22:21:36', 'But today is not that day.'),
+(114, 364, 82757579527, '2020-03-02 22:21:46', 'I am sure leaving a lot of comments on this plan.'),
+(115, 364, 82757579527, '2020-03-02 22:21:58', 'I hope this isn\'t too many comments.'),
+(116, 364, 82757579527, '2020-03-02 22:22:06', 'No one minds, right?'),
+(117, 364, 82757579527, '2020-03-02 23:25:21', 'New comment now'),
+(118, 364, 82757579527, '2020-03-02 23:52:23', 'New comment');
 
 -- --------------------------------------------------------
 
@@ -131,7 +140,7 @@ CREATE TABLE `Notification` (
   `userId` bigint(11) UNSIGNED NOT NULL,
   `text` varchar(100) NOT NULL,
   `type` int(11) NOT NULL,
-  `checked` int(11) NOT NULL
+  `checked` tinyint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -142,7 +151,9 @@ INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`
 (2, 399, 82757579527, 'The plan \"No-CS plan\" has a new status.', 2, 1),
 (3, 399, 82757579527, 'The plan \"No-CS plan\" has new comments.', 1, 1),
 (26, 368, 60535363653, 'The plan \"and report this issue to me asap!\" has a new status.', 2, 0),
-(27, 368, 60535363653, 'The plan \"and report this issue to me asap!\" has new comments.', 1, 0);
+(27, 368, 60535363653, 'The plan \"and report this issue to me asap!\" has new comments.', 1, 0),
+(28, 364, 4, 'The plan \"Boba\'s Plan\" has new comments.', 1, 0),
+(29, 364, 10, 'The plan \"Boba\'s Plan\" has new comments.', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -235,11 +246,11 @@ CREATE TABLE `RecentPlan` (
 
 INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (1, 364, 6, '2020-02-29 23:10:33'),
-(17, 376, 82757579527, '2020-02-29 23:46:46'),
-(18, 368, 82757579527, '2020-02-29 23:46:51'),
-(19, 364, 82757579527, '2020-02-29 23:46:57'),
-(20, 310, 82757579527, '2020-02-29 23:49:08'),
-(21, 375, 82757579527, '2020-02-29 23:50:03');
+(23, 359, 82757579527, '2020-03-02 20:13:01'),
+(24, 308, 82757579527, '2020-03-02 21:27:29'),
+(25, 364, 82757579527, '2020-03-02 22:20:57'),
+(26, 399, 82757579527, '2020-03-02 23:30:21'),
+(27, 361, 82757579527, '2020-03-03 04:46:08');
 
 -- --------------------------------------------------------
 
@@ -405,6 +416,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (13, 'Wedge', 'Antilles', 'x-wing@aol.com', 0),
 (14, 'R2', 'D2', 'artoo@gmail.com', 0),
 (15, 'C', '3PO', 'human_cyborg_relations@aol.com', 0),
+(19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 0),
 (60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 2),
 (82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2);
 
@@ -480,7 +492,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -492,7 +504,7 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `Plan`
@@ -510,7 +522,7 @@ ALTER TABLE `PlanReview`
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
