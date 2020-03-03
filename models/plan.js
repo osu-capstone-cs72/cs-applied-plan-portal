@@ -269,7 +269,7 @@ async function getPlanActivity(planId, page) {
   try {
 
     // list the activity for the plan
-    const RESULTS_PER_PAGE = 10;
+    const RESULTS_PER_PAGE = 5;
     const offset = RESULTS_PER_PAGE * (page - 1);
     const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
       "-1 AS status, time, firstName, lastName FROM Comment " +

@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 
 function ActivityFeed(props) {
 
-  console.log("pageNumber =", props.pageNumber, "totalPages =", props.totalPages);
   const style = css`
     margin: 50px auto;
     text-align: center;

@@ -26,7 +26,6 @@ function AdvisorHome() {
     sortValue: 0,
     orderValue: 0
   });
-  console.log(plans);
 
   const style = css`
 

@@ -319,7 +319,7 @@ app.get("/:planId/activity/:page", requireAuth, async (req, res) => {
       if (violation === "valid") {
 
         const results = await getPlanActivity(planId, parseInt(page, 10));
-        if (results.length === 0) {
+        if (results.activity.length === 0) {
           console.error("404: No plan activity found\n");
           res.status(404).send({error: "No plan activity found."});
         } else {

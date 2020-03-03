@@ -48,6 +48,15 @@ function ViewPlan(props) {
     // eslint-disable-next-line
   }, [planId]);
 
+  useEffect(() => {
+    // fetch the plan activity if the activity feed is empty
+    // and the plan metadata has fully loaded
+    if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
+      fetchActivity(planId, 1);
+    }
+    // eslint-disable-next-line
+  }, [planId, created, studentFirstName, studentLastName]);
+
   async function fetchPlan(planId) {
     setLoading(true);
     try {
@@ -107,9 +116,6 @@ function ViewPlan(props) {
         );
       }
 
-      // get the plan activity
-      await fetchActivity(planId, 1);
-
     } catch (err) {
       // this is a server error
       console.log("An internal server error occurred. Please try again later.");
@@ -155,6 +161,12 @@ function ViewPlan(props) {
         setPageNumber(obj.page);
         setTotalPages(obj.totalPages);
 
+      } else {
+        // if there is no activity to show, then show the intial review
+        // but first wait for all of the plan metadata to load
+        if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
+          setActivity([intialReview]);
+        }
       }
 
     } catch (err) {
