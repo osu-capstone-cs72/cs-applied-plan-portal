@@ -147,6 +147,9 @@ function AdvisorHome() {
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }
+        if (results.status === 404) {
+          setPlans([]);
+        }
       }
     } catch (err) {
       // show error message if error while searching
