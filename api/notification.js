@@ -18,7 +18,7 @@ app.get("/", requireAuth, async (req, res) => {
     console.log("View notifications owned by", userId);
 
     const results = await getNotifications(userId);
-    if (results.length === 0) {
+    if (results.notifications.length === 0) {
       console.error("404: No notifications found\n");
       res.status(404).send({error: "No notifications found."});
     } else {

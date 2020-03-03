@@ -149,7 +149,7 @@ app.get("/recent", requireAuth, async (req, res) => {
     console.log("View a list of plans recently viewed by", userId);
 
     const results = await getRecentPlans(userId);
-    if (results.length === 0) {
+    if (results.plans.length === 0) {
       console.error("404: No plans found\n");
       res.status(404).send({error: "No plans found."});
     } else {
