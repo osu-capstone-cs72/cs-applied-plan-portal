@@ -22,6 +22,7 @@ const {
   deletePlan,
   getPlanActivity,
 } = require("../models/plan");
+const {getUserById} = require("../models/user");
 const {
   postPlanSchema,
   patchPlanSchema,
@@ -198,8 +199,12 @@ app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
       const violation = await statusEnforceConstraints(userId);
       if (violation === "valid") {
 
-        // only allow advisors to search search plans
-        if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
+        // fetch the target user matching the provided ID
+        const user = await getUserById(userId);
+
+        // if there is no matching user or if the user is not an advisor,
+        // respond with an authorization error
+        if (!user || (user.role !== 1 && user.role !== 2)) {
           console.error("403: Only advisors are allowed to list plans", "\n");
           res.status(403).send({error: "Only advisors are allowed to list plans"});
           return;
