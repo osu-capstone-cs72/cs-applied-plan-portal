@@ -27,7 +27,7 @@ app.post("/", requireAuth, async (req, res) => {
     // fetch the authenticated user's info
     const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-    // only permit HeadAdvisor (aka Admin) to create new Users
+    // only allow a Head Advisor to create new Users
     if (authenticatedUser.role === Role.headAdvisor) {
       // validate the request body against the schema and get error message,
       // if any
@@ -164,7 +164,7 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-      // only permit the authenticated user with the same ID as the target user,
+      // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
       if (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
@@ -209,7 +209,7 @@ app.get("/:userId", requireAuth, async (req, res) => {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-      // only permit the authenticated user with the same ID as the target user,
+      // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
       if (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
@@ -228,6 +228,52 @@ app.get("/:userId", requireAuth, async (req, res) => {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
         res.status(403).send({
           error: "Only the target user, advisors, and head advisors can fetch the target user's info"
+        });
+      }
+    } else {
+      console.error("400: Invalid target user's ID\n");
+      res.status(400).send({error: "Invalid targeet user's ID"});
+    }
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
+  }
+});
+
+// Partially updates the User with the provided ID.
+app.patch("/:userId", requireAuth, async (req, res) => {
+  try {
+    // attempt to convert the target user's ID in route to an integer
+    // return NaN if it's not an integer
+    const userId = validator.toInt(req.params.userId + "");
+
+    // ensure the provided target user's ID is a positive integer
+    if (Number.isInteger(userId) && userId > 0) {
+      // fetch the authenticated user's info
+      const authenticatedUser = await userModel.getUserById(req.auth.userId);
+
+      // only allow a Head Advisor to update a User's info
+      if (authenticatedUser.role === Role.headAdvisor) {
+        // validate the request body against the schema and get error message,
+        // if any
+        const schemaViolations = getSchemaViolations(req.body, userSchema, true);
+        if (!schemaViolations) {
+          // sanitize the request body and pass it to the model
+          const updatedUser = sanitizeUsingSchema(req.body, userSchema);
+          const result = await userModel.updateUserPartial(userId, updatedUser);
+
+          console.log("200: User partial update succeeded\n");
+          res.status(200).send({changedRows: result.changedRows});
+        } else {
+          console.error(schemaViolations);
+          res.status(400).send({error: schemaViolations});
+        }
+      } else {
+        console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+        res.status(403).send({
+          error: "Only head advisors can update a user's information"
         });
       }
     } else {
