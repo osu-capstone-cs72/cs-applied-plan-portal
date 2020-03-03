@@ -2,6 +2,7 @@
 // Description: handles routing for notifications
 
 require("path");
+const validator = require("validator");
 const express = require("express");
 const app = express();
 const {getNotifications, checkNotification} = require("../models/notification");
@@ -38,7 +39,7 @@ app.patch("/:notificationId", requireAuth, async (req, res) => {
   try {
 
     const userId = req.auth.userId;
-    const notificationId = req.params.notificationId;
+    const notificationId = validator.toInt(req.params.notificationId);
     console.log("Check notification", notificationId);
 
     const results = await checkNotification(notificationId, userId);
