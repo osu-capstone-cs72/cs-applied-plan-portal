@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {renderStatus} from "../../utils/renderStatus";
 import {formatTime} from "../../utils/formatTime";
 
 function Reviews(props) {
@@ -33,23 +34,6 @@ function Reviews(props) {
       font-size: medium;
     }
   `;
-
-  function renderStatus() {
-    switch (props.status) {
-      case 0:
-        return "Rejected";
-      case 1:
-        return "Awaiting student changes";
-      case 2:
-        return "Awaiting review";
-      case 3:
-        return "Awaiting final review";
-      case 4:
-        return "Accepted";
-      default:
-        return "Undefined status";
-    }
-  }
 
   if (props.commentId !== 0) {
     return (

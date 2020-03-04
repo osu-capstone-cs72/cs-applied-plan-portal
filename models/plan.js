@@ -271,13 +271,13 @@ async function getPlanActivity(planId, page) {
     // list the activity for the plan
     const RESULTS_PER_PAGE = 5;
     const offset = RESULTS_PER_PAGE * (page - 1);
-    const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
+    const sqlComments = "SELECT CONCAT(commentId, 'c') AS id, planId, Comment.userId, text, " +
       "-1 AS status, time, firstName, lastName FROM Comment " +
       "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
 
-    const sqlReviews = "SELECT reviewId, 0 AS commentId, planId, PlanReview.userId, " +
+    const sqlReviews = "SELECT CONCAT(reviewId, 'r') AS id, planId, PlanReview.userId, " +
       "'' AS text, status, time, firstName, lastName FROM PlanReview " +
-      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC LIMIT ?, ?;";
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time, id DESC LIMIT ?, ?;";
 
     let sql = sqlComments + " UNION " + sqlReviews;
 

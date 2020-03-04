@@ -20,12 +20,12 @@ function ActivityFeed(props) {
       <CreateComment currentUser={props.currentUser} status={props.status}
         onNewComment={e => props.onNewComment(e)}/>
       {props.activity.map((obj) => {
-        if (obj.commentId > 0) {
-          return <Comment key={obj.commentId + "c"} commentId={obj.commentId}
+        if (obj.id.charAt(obj.id.length - 1) === "c") {
+          return <Comment key={obj.id}
             userId={obj.userId} time={obj.time} text={obj.text}
             firstName={obj.firstName} lastName={obj.lastName}/>;
         } else {
-          return <Review key={obj.reviewId + "r"} userId={obj.advisorId}
+          return <Review key={obj.id} userId={obj.advisorId}
             status={obj.status} time={obj.time}
             userName={obj.firstName + " " + obj.lastName} />;
         }

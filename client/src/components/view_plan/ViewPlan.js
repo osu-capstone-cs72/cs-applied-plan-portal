@@ -129,8 +129,7 @@ function ViewPlan(props) {
 
       const intialReview =
       {
-        reviewId: 0,
-        commentId: 0,
+        id: "0r",
         status: 2,
         planId: planId,
         userId: userId,
