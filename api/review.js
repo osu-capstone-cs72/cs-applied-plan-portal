@@ -5,16 +5,17 @@ require("path");
 const express = require("express");
 const app = express();
 
-const enforceConstraints = require("../utils/reviewValidation").enforceConstraints;
-const createReview = require("../models/review").createReview;
+const {enforceConstraints} = require("../services/validation/reviewValidation");
+const {createReview} = require("../models/review");
+const {requireAuth} = require("../services/auth/auth");
 const {
   reviewSchema,
   getSchemaViolations,
   sanitizeUsingSchema
-} = require("../utils/schemaValidation");
+} = require("../services/validation/schemaValidation");
 
 // create a new review
-app.post("/", async (req, res) => {
+app.post("/", requireAuth, async (req, res) => {
 
   try {
 
@@ -27,7 +28,7 @@ app.post("/", async (req, res) => {
 
       // get request body
       const planId = sanitizedBody.planId;
-      const userId = sanitizedBody.userId;
+      const userId = req.auth.userId;
       const status = sanitizedBody.status;
       console.log("User", userId, "creating a review on plan", planId);
 

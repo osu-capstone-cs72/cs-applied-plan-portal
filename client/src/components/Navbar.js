@@ -1,24 +1,51 @@
-import React from "react";
+/** @jsx jsx */
+
+import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
+import {logout} from "../utils/authService";
+import {withRouter} from "react-router-dom";
 
-export default class Navbar extends React.Component {
-  static get propTypes() {
-    return {
-      showSearch: PropTypes.bool,
-      searchContent: PropTypes.string
-    };
+function Navbar(props) {
+
+  const style = css`
+
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 35px;
+    background-color: orange;
+
+    #navbar-search {
+      width: 35%;
+    }
+
+    .logout {
+      margin-left: auto;
+    }
+
+  `;
+
+  function logoutUser() {
+    logout();
+    props.history.push("/login");
   }
 
-  render() {
-    return (
-      <div className="navbar-parent">
-        <Link to={"/"}>
-          <p className="osu-logo">Oregon State University</p>
-        </Link>
-        {this.props.showSearch ? <input id="navbar-search" className="form-control mr-sm-2" type="text" placeholder={this.props.searchContent} name="search"/> : null}
-        <p className="logout">Log out</p>
-      </div>
-    );
-  }
+  return (
+    <div className="navbar-parent" css={style}>
+      <Link to={"/"}>
+        <p className="osu-logo">Oregon State University</p>
+      </Link>
+      {props.showSearch ? <input id="navbar-search" className="form-control mr-sm-2" type="text" placeholder={props.searchContent} name="search"/> : null}
+      <button className="logout" onClick={() => logoutUser()}>Log out</button>
+    </div>
+  );
+
 }
+export default withRouter(Navbar);
+
+Navbar.propTypes = {
+  history: PropTypes.object,
+  showSearch: PropTypes.bool,
+  searchContent: PropTypes.string
+};

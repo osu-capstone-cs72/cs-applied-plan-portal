@@ -1,5 +1,8 @@
+/** @jsx jsx */
+
 import React from "react";
 import PropTypes from "prop-types";
+import {css, jsx} from "@emotion/core";
 
 export default class Course extends React.Component {
   static get propTypes() {
@@ -46,8 +49,26 @@ export default class Course extends React.Component {
   }
 
   render() {
+
+    const style = css`
+
+      border: 1px solid black;
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #f2f2f2;
+
+      .btn.btn-add {
+        background-color: #b3b3b3;
+      }
+
+      .expand-btn {
+        float: right;
+      }
+
+    `;
+
     return (
-      <div className="course">
+      <div className="course" css={style}>
         <p>{this.props.courseCode} - {this.props.courseName}</p>
         {this.state.full && <p>Credit hours: {this.props.credits}</p>}
         {this.state.full && <p>{this.props.description}</p>}

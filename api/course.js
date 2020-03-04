@@ -4,10 +4,11 @@
 require("path");
 const express = require("express");
 const app = express();
-const getCourse = require("../models/course").getCourse;
+const {getCourse} = require("../models/course");
+const {requireAuth} = require("../services/auth/auth");
 
 // search for course data
-app.get("/:mode/:searchText", async (req, res) => {
+app.get("/:mode/:searchText", requireAuth, async (req, res) => {
 
   console.log("Search for course data");
   const searchText = req.params.searchText;

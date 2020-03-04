@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
+import {getToken} from "../../utils/authService";
 
 function CreateComment(props) {
 
@@ -51,13 +52,13 @@ function CreateComment(props) {
 
       const text = document.getElementById("comment-text-input").value;
 
+      const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/comment`;
+      const url = `http://${server}/comment/?accessToken=${token}`;
       let obj = [];
 
       const postObj = {
         planId: planId,
-        userId: props.currentUser.id,
         text: text
       };
 
@@ -83,7 +84,7 @@ function CreateComment(props) {
           planId: planId,
           userId: props.currentUser.id,
           text: text
-        }); // lift state up
+        });
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();
@@ -92,36 +93,40 @@ function CreateComment(props) {
 
     } catch (err) {
       // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
+      setErrorMessage("An internal server error occurred. Please try again later.");
     }
 
   }
 
-  if (newComment) {
-    return (
-      <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => toggle()}>
-          +
-        </button>
-      </div>
-    );
-  } else {
-    return (
-      <div id="create-comment-container" css={style}>
-        <button className="toggle-creation-button" onClick={() => toggle()}>
-        -
-        </button>
-        <div id="comment-error-container">
-          <p id="comment-error-message">{errorMessage}</p>
-        </div>
-        <div id="comment-input-container">
-          <textarea id="comment-text-input" rows="5" cols="50"/>
-          <button id="submit-comment-button" onClick={() => submit(planId)}>
-            Submit Comment
+  if (props.status !== 0 && props.status !== 4) {
+    if (newComment) {
+      return (
+        <div id="create-comment-container" css={style}>
+          <button className="toggle-creation-button" onClick={() => toggle()}>
+            +
           </button>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div id="create-comment-container" css={style}>
+          <button className="toggle-creation-button" onClick={() => toggle()}>
+          -
+          </button>
+          <div id="comment-error-container">
+            <p id="comment-error-message">{errorMessage}</p>
+          </div>
+          <div id="comment-input-container">
+            <textarea id="comment-text-input" rows="5" cols="50"/>
+            <button id="submit-comment-button" onClick={() => submit(planId)}>
+              Submit Comment
+            </button>
+          </div>
+        </div>
+      );
+    }
+  } else {
+    return null;
   }
 
 }

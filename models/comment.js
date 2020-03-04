@@ -1,24 +1,7 @@
 // File: comment.js
 // Description: data functions that handle comments
 
-const pool = require("../utils/mysqlPool").pool;
-
-// get a comment by its ID
-async function getComment(commentId) {
-
-  try {
-
-    const sql = "SELECT * FROM Comment WHERE commentId = ?;";
-    const results = await pool.query(sql, [commentId]);
-    return results[0];
-
-  } catch (err) {
-    console.log("Error searching for comment");
-    throw Error(err);
-  }
-
-}
-exports.getComment = getComment;
+const pool = require("../services/db/mysqlPool").pool;
 
 // create a new comment
 async function createComment(planId, userId, text) {

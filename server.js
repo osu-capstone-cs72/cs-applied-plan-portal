@@ -5,7 +5,7 @@ console.log("Server JavaScript start");
 
 // setup database connection and routing
 require("dotenv").config();
-const pool = require("./utils/mysqlPool").pool;
+const pool = require("./services/db/mysqlPool").pool;
 const app = require("./api/index");
 
 // confirm that connection was made to the database
