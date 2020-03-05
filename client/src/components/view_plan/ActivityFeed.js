@@ -30,10 +30,10 @@ function ActivityFeed(props) {
             userName={obj.firstName + " " + obj.lastName} />;
         }
       })}
-      { props.pageNumber < props.totalPages ? (
-        <button id="page-load-more-button" onClick={() => props.onShowMore()}>Show More</button>
-      ) : (
+      { props.cursor.primary === "null" ? (
         null
+      ) : (
+        <button id="page-load-more-button" onClick={() => props.onShowMore(props.cursor)}>Show More</button>
       )}
     </div>
   );
@@ -48,6 +48,5 @@ ActivityFeed.propTypes = {
   currentUser: PropTypes.object,
   onNewComment: PropTypes.func,
   onShowMore: PropTypes.func,
-  pageNumber: PropTypes.number,
-  totalPages: PropTypes.number
+  cursor: PropTypes.object
 };

@@ -29,8 +29,10 @@ function ViewPlan(props) {
   const [activity, setActivity] = useState([]);
   const [courses, setCourses] = useState([]);
   const {planId} = useParams();
-  const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [cursor, setCursor] = useState({
+    primary: "null",
+    secondary: "null"
+  });
   const [currentUser, setCurrentUser] = useState(
     {
       id: 0,
@@ -52,7 +54,7 @@ function ViewPlan(props) {
     // fetch the plan activity if the activity feed is empty
     // and the plan metadata has fully loaded
     if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
-      fetchActivity(planId, 1);
+      fetchActivity(planId, cursor);
     }
     // eslint-disable-next-line
   }, [planId, created, studentFirstName, studentLastName]);
@@ -123,11 +125,11 @@ function ViewPlan(props) {
     setLoading(false);
   }
 
-  async function fetchActivity(planId, page) {
+  async function fetchActivity(planId, cursor) {
     setLoading(true);
     try {
 
-      const intialReview =
+      const initialReview =
       {
         id: "0r",
         status: 2,
@@ -139,8 +141,8 @@ function ViewPlan(props) {
       };
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}/activity/${page}/` +
-      `?accessToken=${token}`;
+      const url = `http://${server}/plan/${planId}/activity/${cursor.primary}/` +
+      `${cursor.secondary}/?accessToken=${token}`;
       let obj = [];
 
       // get plan activity
@@ -151,20 +153,19 @@ function ViewPlan(props) {
         // get data from the response
         obj = await response.json();
 
-        // if we are showing all activity then show the intial review
-        if (obj.page === obj.totalPages) {
-          setActivity([...activity, ...obj.activity, intialReview]);
+        // if we are showing all activity then show the initial review
+        if (obj.nextCursor.primary === "null") {
+          setActivity([...activity, ...obj.activity, initialReview]);
         } else {
           setActivity([...activity, ...obj.activity]);
         }
-        setPageNumber(obj.page);
-        setTotalPages(obj.totalPages);
+        setCursor(obj.nextCursor);
 
       } else {
-        // if there is no activity to show, then show the intial review
+        // if there is no activity to show, then show the initial review
         // but first wait for all of the plan metadata to load
         if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
-          setActivity([intialReview]);
+          setActivity([initialReview]);
         }
       }
 
@@ -241,8 +242,8 @@ function ViewPlan(props) {
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
         <ActivityFeed activity={activity} currentUser={currentUser} status={status}
-          pageNumber={pageNumber} totalPages={totalPages}
-          onNewComment={e => handleAddComment(e)} onShowMore={() => fetchActivity(planId, pageNumber + 1)}/>
+          cursor={cursor} onNewComment={e => handleAddComment(e)}
+          onShowMore={cursor => fetchActivity(planId, cursor)}/>
       </div>
     );
   } else if (pageError === 404) {

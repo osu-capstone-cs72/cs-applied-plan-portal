@@ -75,8 +75,7 @@ function CreateReview(props) {
           obj = await response.json();
           setErrorMessage("");
           props.onNewStatus({
-            reviewId: obj.insertId,
-            commentId: 0,
+            id: obj.insertId + "r",
             firstName: props.currentUser.firstName,
             lastName: props.currentUser.lastName,
             time: obj.time,

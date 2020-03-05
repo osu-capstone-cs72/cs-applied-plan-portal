@@ -134,13 +134,14 @@ exports.updatePlan = updatePlan;
 async function searchPlans(text, status, sort, order, cursor) {
   try {
 
+    const ASC = 1;
     const RESULTS_PER_PAGE = 5;
     const sqlArray = [];
+    let plans;
     const nextCursor = {
       primary: "null",
       secondary: "null"
     };
-    let plans;
 
     let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated, " +
       "UNIX_TIMESTAMP(created) AS createdUnix, UNIX_TIMESTAMP(lastUpdated) AS updatedUnix " +
@@ -159,7 +160,7 @@ async function searchPlans(text, status, sort, order, cursor) {
       // are handled by also sorting by plan ID.
 
       let orderChar = "<";
-      if (order === 1) {
+      if (order === ASC) {
         orderChar = ">";
       }
 
@@ -239,7 +240,7 @@ async function searchPlans(text, status, sort, order, cursor) {
     }
 
     // order by ascending or descending
-    if (order === 1) {
+    if (order === ASC) {
       sql += "ASC, planId ASC LIMIT ?;";
     } else {
       sql += "DESC, planId ASC LIMIT ?;";
@@ -342,35 +343,71 @@ async function getPlan(planId, userId) {
 exports.getPlan = getPlan;
 
 // get all activity from a plan (comments and reviews)
-async function getPlanActivity(planId, page) {
+async function getPlanActivity(planId, cursor) {
 
   try {
 
     // list the activity for the plan
     const RESULTS_PER_PAGE = 5;
-    const offset = RESULTS_PER_PAGE * (page - 1);
+    const sqlArray = [];
+    let activity;
+    const nextCursor = {
+      primary: "null",
+      secondary: "null"
+    };
+
+    // construct the sql query
     const sqlComments = "SELECT CONCAT(commentId, 'c') AS id, planId, Comment.userId, text, " +
-      "-1 AS status, time, firstName, lastName FROM Comment " +
+      "-1 AS status, time, UNIX_TIMESTAMP(time) AS timeUnix, firstName, lastName FROM Comment " +
       "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
+    sqlArray.push(planId);
 
     const sqlReviews = "SELECT CONCAT(reviewId, 'r') AS id, planId, PlanReview.userId, " +
-      "'' AS text, status, time, firstName, lastName FROM PlanReview " +
-      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC, id DESC LIMIT ?, ?;";
+      "'' AS text, status, time, UNIX_TIMESTAMP(time) AS timeUnix, firstName, lastName FROM PlanReview " +
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY timeUnix DESC, id ASC";
+    sqlArray.push(planId);
 
-    let sql = sqlComments + " UNION " + sqlReviews;
+    let sql = "SELECT * FROM (" + sqlComments + " UNION " + sqlReviews + ") AS U ";
 
-    const results = await pool.query(sql, [planId, planId, offset, RESULTS_PER_PAGE]);
+    // only use the cursor if it isn't the initial search request
+    if (cursor.primary !== "null") {
+      sql += `WHERE (UNIX_TIMESTAMP(time) <= ? AND ` +
+        `(UNIX_TIMESTAMP(time) < ? OR id >= ? )) `;
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.secondary);
+      sqlArray.push(RESULTS_PER_PAGE + 1);
+    }
 
-    // find the total number of pages
-    sql = "SELECT ( SELECT COUNT(*) FROM Comment WHERE planId=? ) " +
-      "+ ( SELECT COUNT(*) FROM PlanReview WHERE planId=? ) AS count;";
-    const totalResults = await pool.query(sql, [planId, planId]);
-    const totalPages = Math.ceil(totalResults[0][0].count / RESULTS_PER_PAGE);
+    // get the number of results per page (plus the next cursor)
+    sql += "LIMIT ?;";
+    sqlArray.push(RESULTS_PER_PAGE + 1);
+
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
+
+    // get the next cursor and return the correct number of activities
+    if (results[0].length < RESULTS_PER_PAGE + 1) {
+
+      // if we have returned the last of the data then we return
+      // a null next cursor
+      activity = results[0];
+      nextCursor.primary = "null";
+      nextCursor.secondary = "null";
+
+    } else {
+
+      // Our next cursor will store the time and the activity ID
+      activity = results[0].slice(0, -1);
+      const nextActivity = results[0][RESULTS_PER_PAGE];
+      nextCursor.primary = String(nextActivity.timeUnix);
+      nextCursor.secondary = String(nextActivity.id);
+
+    }
 
     return {
-      activity: results[0],
-      page: page,
-      totalPages: totalPages
+      activity: activity,
+      nextCursor: nextCursor
     };
 
   } catch (err) {

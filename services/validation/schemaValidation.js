@@ -230,14 +230,20 @@ const activitySchema = {
         "Plan ID must be an integer.";
     }
   },
-  page: {
+  cursorPrimary: {
     required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
+    type: Type.string,
     getErrorMessage: function() {
-      return "Invalid page number:\n" +
-        "The page associated with this request must be a number greater than zero.";
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
     }
   }
 };

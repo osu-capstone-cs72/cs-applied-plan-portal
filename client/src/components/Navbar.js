@@ -111,7 +111,7 @@ function Navbar(props) {
     }
 
     // after the notifications are returned or fail set a timer to try again
-    // setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
+    setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
 
   }
 

@@ -299,7 +299,7 @@ app.delete("/:planId", requireAuth, async (req, res) => {
 });
 
 // get a plan's activity (comments and reviews)
-app.get("/:planId/activity/:page", requireAuth, async (req, res) => {
+app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
 
   try {
 
@@ -314,13 +314,16 @@ app.get("/:planId/activity/:page", requireAuth, async (req, res) => {
       console.log("Get a plans activity");
       const userId = req.auth.userId;
       const planId = sanitizedBody.planId;
-      const page = sanitizedBody.page;
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
 
       // only view plan activity if it does not violate any constraints
       const violation = await activityEnforceConstraints(planId, userId);
       if (violation === "valid") {
 
-        const results = await getPlanActivity(planId, parseInt(page, 10));
+        const results = await getPlanActivity(planId, cursor);
         if (results.activity.length === 0) {
           console.error("404: No plan activity found\n");
           res.status(404).send({error: "No plan activity found."});
