@@ -106,16 +106,16 @@ const searchPlanSchema = {
     required: true,
     type: Type.string,
     getErrorMessage: function() {
-      return "Invalid primary cursor:\n" +
-        `The cursor must be a string`;
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
     }
   },
   cursorSecondary: {
     required: true,
     type: Type.string,
     getErrorMessage: function() {
-      return "Invalid secondary cursor:\n" +
-        `The cursor must be a string`;
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
     }
   }
 };

@@ -219,8 +219,10 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
       const status = sanitizedBody.status;
       const sort = sanitizedBody.sort;
       const order = sanitizedBody.order;
-      const cursorPrimary = sanitizedBody.cursorPrimary;
-      const cursorSecondary = sanitizedBody.cursorSecondary;
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
       console.log("Searching for plans");
 
       // only search plans if they do not violate any constraints
@@ -228,7 +230,7 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
       if (violation === "valid") {
 
         const results = await searchPlans(text, parseInt(status, 10),
-          parseInt(sort, 10), parseInt(order, 10), cursorPrimary, cursorSecondary);
+          parseInt(sort, 10), parseInt(order, 10), cursor);
         if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});

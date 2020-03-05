@@ -131,26 +131,32 @@ async function updatePlan(planId, planName, courses) {
 exports.updatePlan = updatePlan;
 
 // get all plans that match the requested search
-async function searchPlans(text, status, sort, order, cursorPrimary, cursorSecondary) {
+async function searchPlans(text, status, sort, order, cursor) {
   try {
 
     const RESULTS_PER_PAGE = 5;
     const sqlArray = [];
-    let nextCursorPrimary;
-    let nextCursorSecondary;
+    const nextCursor = {
+      primary: "null",
+      secondary: "null"
+    };
     let plans;
 
-    let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated " +
+    let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated, " +
+      "UNIX_TIMESTAMP(created) AS createdUnix, UNIX_TIMESTAMP(lastUpdated) AS updatedUnix " +
       "FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
     // only use the cursor if it isn't the initial search request
-    if (cursorPrimary === "null") {
+    if (cursor.primary === "null") {
       sql += "WHERE TRUE ";
     } else {
 
-      // depending on our search query the primary cursor will
-      // represent a different value.
-      // select the correct order and value to sort by
+      // Depending on our search query the primary cursor value may
+      // represent any number of values (ex: userId, status, etc...).
+      // We select the correct value by using the value that we are sorting by.
+
+      // Instances where the primary cursor value could have duplicate values
+      // are handled by also sorting by plan ID.
 
       let orderChar = "<";
       if (order === 1) {
@@ -159,30 +165,36 @@ async function searchPlans(text, status, sort, order, cursorPrimary, cursorSecon
 
       switch (sort) {
         case 0:
-          // sql += `WHERE (CONCAT(firstName , ' ' , lastName) ${orderChar}= ? AND planId >= ?) `;
-          sql += `WHERE (CONCAT(firstName , ' ' , lastName, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (CONCAT(firstName , ' ' , lastName) ${orderChar}= ? AND ` +
+            `(CONCAT(firstName , ' ' , lastName) ${orderChar} ? OR planId >= ? )) `;
           break;
         case 1:
-          // sql += `WHERE (userId ${orderChar}= ? AND planId >= ?) `;
-          sql += `WHERE (CONCAT(userId, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (userId ${orderChar}= ? AND ` +
+            `(userId ${orderChar} ? OR planId >= ? )) `;
           break;
         case 2:
-          sql += `WHERE (CONCAT(planName, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (planName ${orderChar}= ? AND ` +
+            `(planName ${orderChar} ? OR planId >= ? )) `;
           break;
         case 3:
-          sql += `WHERE (CONCAT(status, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (status ${orderChar}= ? AND ` +
+            `(status ${orderChar} ? OR planId >= ? )) `;
           break;
         case 4:
-          sql += `WHERE (CONCAT(created, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (UNIX_TIMESTAMP(created) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(created) ${orderChar} ? OR planId >= ? )) `;
           break;
         case 5:
-          sql += `WHERE (CONCAT(lastUpdated, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (UNIX_TIMESTAMP(lastUpdated) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(lastUpdated) ${orderChar} ? OR planId >= ? )) `;
           break;
         default:
-          sql += `WHERE (CONCAT(lastUpdated, ' ', planId) ${orderChar}= ?) `;
+          sql += `WHERE (UNIX_TIMESTAMP(lastUpdated) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(lastUpdated) ${orderChar} ? OR planId >= ? )) `;
       }
-      sqlArray.push(cursorPrimary + " " + cursorSecondary);
-      console.log("PLAN:", cursorPrimary + " " + cursorSecondary);
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.secondary);
 
     }
 
@@ -205,38 +217,32 @@ async function searchPlans(text, status, sort, order, cursorPrimary, cursorSecon
     // get the results in the order we are sorting by
     switch (sort) {
       case 0:
-        sql += "ORDER BY CONCAT(firstName , ' ' , lastName, ' ', planId) ";
+        sql += "ORDER BY CONCAT(firstName , ' ' , lastName) ";
         break;
       case 1:
-        // sql += "ORDER BY userId ";
-        sql += "ORDER BY CONCAT(userId, ' ', planId) ";
+        sql += "ORDER BY userId ";
         break;
       case 2:
-        // sql += "ORDER BY planName ";
-        sql += "ORDER BY CONCAT(planName, ' ', planId) ";
+        sql += "ORDER BY planName ";
         break;
       case 3:
-        // sql += "ORDER BY status ";
-        sql += "ORDER BY CONCAT(status, ' ', planId) ";
+        sql += "ORDER BY status ";
         break;
       case 4:
-        // sql += "ORDER BY created ";
-        sql += "ORDER BY CONCAT(created, ' ', planId) ";
+        sql += "ORDER BY createdUnix ";
         break;
       case 5:
-        // sql += "ORDER BY lastUpdated ";
-        sql += "ORDER BY CONCAT(lastUpdated, ' ', planId) ";
+        sql += "ORDER BY updatedUnix ";
         break;
       default:
-        sql += "ORDER BY CONCAT(lastUpdated, ' ', planId) ";
-        // sql += "ORDER BY lastUpdated ";
+        sql += "ORDER BY updatedUnix ";
     }
 
     // order by ascending or descending
     if (order === 1) {
-      sql += "ASC LIMIT ?;";
+      sql += "ASC, planId ASC LIMIT ?;";
     } else {
-      sql += "DESC LIMIT ?;";
+      sql += "DESC, planId ASC LIMIT ?;";
     }
 
     // get the number of results per page (plus the next cursor)
@@ -251,50 +257,47 @@ async function searchPlans(text, status, sort, order, cursorPrimary, cursorSecon
       // if we have returned the last of the data then we return
       // a null next cursor
       plans = results[0];
-      nextCursorPrimary = "null";
-      nextCursorSecondary = "null";
+      nextCursor.primary = "null";
+      nextCursor.secondary = "null";
 
     } else {
 
-      // our next cursor will store a primary and secondary value.
-      // the primary value is the main value we are sorting by.
-      // the secondary value is the plan id and it is used in sorting when we
-      // have results with matching primary values
+      // Our next cursor will store a primary and secondary value.
+      // The primary value is the main value we are sorting by.
+      // The secondary value is the plan ID and it is used to sort when we
+      // have results with matching primary values.
       plans = results[0].slice(0, -1);
       const nextPlan = results[0][RESULTS_PER_PAGE];
 
       switch (sort) {
         case 0:
-          nextCursorPrimary = String(nextPlan.firstName + " " + nextPlan.lastName);
+          nextCursor.primary = String(nextPlan.firstName + " " + nextPlan.lastName);
           break;
         case 1:
-          nextCursorPrimary = String(nextPlan.userId);
+          nextCursor.primary = String(nextPlan.userId);
           break;
         case 2:
-          nextCursorPrimary = String(nextPlan.planName);
+          nextCursor.primary = String(nextPlan.planName);
           break;
         case 3:
-          nextCursorPrimary = String(nextPlan.status);
+          nextCursor.primary = String(nextPlan.status);
           break;
         case 4:
-          nextCursorPrimary = String(nextPlan.created);
+          nextCursor.primary = String(nextPlan.createdUnix);
           break;
         case 5:
-          nextCursorPrimary = String(nextPlan.lastUpdated);
+          nextCursor.primary = String(nextPlan.updatedUnix);
           break;
         default:
-          nextCursorPrimary = String(nextPlan.lastUpdated);
+          nextCursor.primary = String(nextPlan.updatedUnix);
       }
-      nextCursorSecondary = String(nextPlan.planId);
+      nextCursor.secondary = String(nextPlan.planId);
 
     }
 
-    console.log(nextCursorPrimary);
-    console.log(nextCursorSecondary);
     return {
       plans: plans,
-      nextCursorPrimary: nextCursorPrimary,
-      nextCursorSecondary: nextCursorSecondary
+      nextCursor: nextCursor
     };
 
   } catch (err) {
