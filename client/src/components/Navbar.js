@@ -37,7 +37,7 @@ function Navbar(props) {
       display: inline-block;
     }
 
-    .dropdown .dropbtn, .logout {
+    .dropdown .drop-button, .logout {
       height: 35px;
     }
 
@@ -111,7 +111,7 @@ function Navbar(props) {
     }
 
     // after the notifications are returned or fail set a timer to try again
-    setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
+    // setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
 
   }
 
@@ -128,7 +128,7 @@ function Navbar(props) {
       </Link>
       <div className="right-container">
         <div className="dropdown">
-          <button className="dropbtn">Notifications
+          <button className="drop-button">Notifications
             <i className="fa fa-caret-down"></i>
           </button>
           {notifications.length ?

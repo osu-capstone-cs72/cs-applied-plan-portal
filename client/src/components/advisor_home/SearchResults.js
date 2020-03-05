@@ -59,10 +59,13 @@ function SearchResults(props) {
           )}
         </tbody>
       </table>
-      { props.pageNumber < props.totalPages ? (
-        <button id="page-load-more-button" onClick={() => props.onLoadMore(props.pageNumber + 1)}>Show More</button>
-      ) : (
+      { props.cursorPrimary === "null" ? (
         null
+      ) : (
+        <button id="page-load-more-button"
+          onClick={() => props.onLoadMore(props.cursorPrimary, props.cursorSecondary) }>
+          Show More
+        </button>
       )}
     </div>
   );
@@ -73,7 +76,7 @@ export default withRouter(SearchResults);
 SearchResults.propTypes = {
   history: PropTypes.object,
   plans: PropTypes.array,
-  pageNumber: PropTypes.number,
-  totalPages: PropTypes.number,
+  cursorPrimary: PropTypes.string,
+  cursorSecondary: PropTypes.string,
   onLoadMore: PropTypes.func
 };

@@ -15,8 +15,8 @@ function AdvisorHome() {
 
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [cursorPrimary, setCursorPrimary] = useState("null");
+  const [cursorSecondary, setCursorSecondary] = useState("null");
   const [recentPlans, setRecentPlans] = useState([]);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -81,7 +81,7 @@ function AdvisorHome() {
     }
   }
 
-  async function searchPlans(page) {
+  async function searchPlans(cursorPrimary, cursorSecondary) {
     try {
       setErrorMessage("");
       setLoading(true);
@@ -104,25 +104,25 @@ function AdvisorHome() {
       const order = document.getElementById("select-order");
       let orderValue = order.options[order.selectedIndex].value;
 
-      // don't use search fields if we are just showing other pages of our results
-      if (page > 1) {
-        searchValue = searchFields.searchValue;
-        statusValue = searchFields.statusValue;
-        sortValue = searchFields.sortValue;
-        orderValue = searchFields.orderValue;
-      } else {
+      // only set the search values if we are performing a new search
+      if (cursorPrimary === "null") {
         setSearchFields({
           searchValue: searchValue,
           statusValue: statusValue,
           sortValue: sortValue,
           orderValue: orderValue
         });
+      } else {
+        searchValue = searchFields.searchValue;
+        statusValue = searchFields.statusValue;
+        sortValue = searchFields.sortValue;
+        orderValue = searchFields.orderValue;
       }
 
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/search/${textValue}/${searchValue}/${statusValue}/` +
-        `${sortValue}/${orderValue}/${page}/?accessToken=${token}`;
+      const getUrl = `http://${server}/plan/search/${textValue}/${statusValue}/` +
+        `${sortValue}/${orderValue}/${cursorPrimary}/${cursorSecondary}/?accessToken=${token}`;
       let obj = {};
 
       // get our search results
@@ -132,13 +132,13 @@ function AdvisorHome() {
 
         // if this is a new search clear all of the previous results
         obj = await results.json();
-        if (page > 1) {
-          setPlans([...plans, ...obj.plans]);
-        } else {
+        if (cursorPrimary === "null") {
           setPlans([...obj.plans]);
+        } else {
+          setPlans([...plans, ...obj.plans]);
         }
-        setPageNumber(obj.page);
-        setTotalPages(obj.totalPages);
+        setCursorPrimary(obj.nextCursorPrimary);
+        setCursorSecondary(obj.nextCursorSecondary);
 
       } else {
         // we got a bad status code. Show the error
@@ -171,13 +171,13 @@ function AdvisorHome() {
               null
             )}
 
-            <FindPlans onSearch={(e) => searchPlans(e)}/>
+            <FindPlans onSearch={(p, s) => searchPlans(p, s)}/>
 
             <div className="home-error-message-container">{errorMessage}</div>
 
             {plans.length ? (
-              <SearchResults plans={plans} pageNumber={pageNumber} totalPages={totalPages}
-                onLoadMore={(e) => searchPlans(e)} />
+              <SearchResults plans={plans} cursorPrimary={cursorPrimary}
+                cursorSecondary={cursorSecondary} onLoadMore={(p, s) => searchPlans(p, s)} />
             ) : (
               null
             )}
