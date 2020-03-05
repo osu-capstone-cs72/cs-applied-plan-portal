@@ -43,7 +43,7 @@ function FindPlans(props) {
 
   function submitHandler(e) {
     e.preventDefault();
-    props.onSearch("null", "null");
+    props.onSearch({primary: "null", secondary: "null"});
   }
 
   return (
@@ -51,7 +51,7 @@ function FindPlans(props) {
 
       <form id="search-form" onSubmit={e => submitHandler(e)}>
         <input type="text" id="input-search" />
-        <button id="search-plan-button" onClick={() => { props.onSearch("null", "null"); }}>
+        <button id="search-plan-button">
           Search
         </button>
       </form>

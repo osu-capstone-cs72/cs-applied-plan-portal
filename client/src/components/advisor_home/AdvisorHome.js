@@ -15,8 +15,10 @@ function AdvisorHome() {
 
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
-  const [cursorPrimary, setCursorPrimary] = useState("null");
-  const [cursorSecondary, setCursorSecondary] = useState("null");
+  const [cursor, setCursor] = useState({
+    primary: "null",
+    secondary: "null"
+  });
   const [recentPlans, setRecentPlans] = useState([]);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -81,7 +83,7 @@ function AdvisorHome() {
     }
   }
 
-  async function searchPlans(cursorPrimary, cursorSecondary) {
+  async function searchPlans(cursor) {
     try {
       setErrorMessage("");
       setLoading(true);
@@ -105,7 +107,7 @@ function AdvisorHome() {
       let orderValue = order.options[order.selectedIndex].value;
 
       // only set the search values if we are performing a new search
-      if (cursorPrimary === "null") {
+      if (cursor.primary === "null") {
         setSearchFields({
           searchValue: searchValue,
           statusValue: statusValue,
@@ -122,7 +124,7 @@ function AdvisorHome() {
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const getUrl = `http://${server}/plan/search/${textValue}/${statusValue}/` +
-        `${sortValue}/${orderValue}/${cursorPrimary}/${cursorSecondary}/?accessToken=${token}`;
+        `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}/?accessToken=${token}`;
       let obj = {};
 
       // get our search results
@@ -132,13 +134,12 @@ function AdvisorHome() {
 
         // if this is a new search clear all of the previous results
         obj = await results.json();
-        if (cursorPrimary === "null") {
+        if (cursor.primary === "null") {
           setPlans([...obj.plans]);
         } else {
           setPlans([...plans, ...obj.plans]);
         }
-        setCursorPrimary(obj.nextCursorPrimary);
-        setCursorSecondary(obj.nextCursorSecondary);
+        setCursor(obj.nextCursor);
 
       } else {
         // we got a bad status code. Show the error
@@ -171,13 +172,13 @@ function AdvisorHome() {
               null
             )}
 
-            <FindPlans onSearch={(p, s) => searchPlans(p, s)}/>
+            <FindPlans onSearch={cursor => searchPlans(cursor)}/>
 
             <div className="home-error-message-container">{errorMessage}</div>
 
             {plans.length ? (
-              <SearchResults plans={plans} cursorPrimary={cursorPrimary}
-                cursorSecondary={cursorSecondary} onLoadMore={(p, s) => searchPlans(p, s)} />
+              <SearchResults plans={plans} cursor={cursor}
+                onLoadMore={cursor => searchPlans(cursor)} />
             ) : (
               null
             )}
