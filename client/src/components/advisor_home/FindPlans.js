@@ -58,37 +58,13 @@ function FindPlans(props) {
 
       <div id="filter-container">
 
-        <label className="filter-label">Search By</label>
-        <select id="select-search" className="advisor-plan-filter" defaultValue={"0"}>
-          <option value="0">User Name</option>
-          <option value="1">User ID</option>
-          <option value="2">Plan Name</option>
-        </select>
-
-        <label className="filter-label">Status</label>
         <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
-          <option value="5">Any</option>
+          <option value="5">Any status</option>
           <option value="2">Awaiting Review</option>
           <option value="3">Awaiting final review</option>
           <option value="1">Awaiting student changes</option>
           <option value="4">Accepted</option>
           <option value="0">Rejected</option>
-        </select>
-
-        <label className="filter-label">Sort By</label>
-        <select id="select-sort" className="advisor-plan-filter" defaultValue={"5"}>
-          <option value="0">User Name</option>
-          <option value="1">User ID</option>
-          <option value="2">Plan Name</option>
-          <option value="3">Status</option>
-          <option value="4">Time Created</option>
-          <option value="5">Time Updated</option>
-        </select>
-
-        <label className="filter-label">Order</label>
-        <select id="select-order" className="advisor-plan-filter" defaultValue={"1"}>
-          <option value="1">Ascending</option>
-          <option value="0">Decending</option>
         </select>
 
       </div>

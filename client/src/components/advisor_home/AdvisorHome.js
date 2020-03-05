@@ -4,7 +4,6 @@ import NavBar from "../Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
 import {getToken} from "../../utils/authService";
-import RecentPlans from "./RecentPlans";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
 import PageInternalError from "../general/PageInternalError";
@@ -24,10 +23,9 @@ function AdvisorHome() {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchFields, setSearchFields] = useState({
     textValue: "*",
-    searchValue: 0,
-    statusValue: 0,
-    sortValue: 0,
-    orderValue: 0
+    statusValue: 5,
+    sortValue: 5,
+    orderValue: 1
   });
 
   const style = css`
@@ -51,10 +49,22 @@ function AdvisorHome() {
 
   `;
 
+  // get the list of recent plans
   useEffect(() => {
     getRecentPlans();
   }, []);
 
+  // if the sorting order changes perform a new search
+  useEffect(() => {
+    const newCursor = {
+      primary: "null",
+      secondary: "null"
+    };
+    searchPlans(newCursor, false);
+    // eslint-disable-next-line
+  }, [searchFields.orderValue, searchFields.sortValue]);
+
+  // get the five most recent plans
   async function getRecentPlans() {
     try {
       setErrorMessage("");
@@ -83,44 +93,42 @@ function AdvisorHome() {
     }
   }
 
-  async function searchPlans(cursor) {
+  // search for plans using some sorting logic
+  async function searchPlans(cursor, newSearch) {
     try {
       setErrorMessage("");
       setLoading(true);
+      const sortValue = searchFields.sortValue;
+      const orderValue = searchFields.orderValue;
 
+      // get search text from searchbar
       const text = document.getElementById("input-search");
       let textValue = text.value;
+
+      // if search text is empty we use a special char to represent
+      // any text response as valid
       if (textValue === "") {
         textValue = "*";
       }
 
-      const search = document.getElementById("select-search");
-      let searchValue = search.options[search.selectedIndex].value;
-
+      // get the status from the status select
       const status = document.getElementById("select-status");
       let statusValue = status.options[status.selectedIndex].value;
 
-      const sort = document.getElementById("select-sort");
-      let sortValue = sort.options[sort.selectedIndex].value;
-
-      const order = document.getElementById("select-order");
-      let orderValue = order.options[order.selectedIndex].value;
-
       // only set the search values if we are performing a new search
-      if (cursor.primary === "null") {
+      if (newSearch) {
         setSearchFields({
-          searchValue: searchValue,
+          textValue: textValue,
           statusValue: statusValue,
           sortValue: sortValue,
           orderValue: orderValue
         });
       } else {
-        searchValue = searchFields.searchValue;
+        textValue = searchFields.textValue;
         statusValue = searchFields.statusValue;
-        sortValue = searchFields.sortValue;
-        orderValue = searchFields.orderValue;
       }
 
+      // construct the request url
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const getUrl = `http://${server}/plan/search/${textValue}/${statusValue}/` +
@@ -132,7 +140,7 @@ function AdvisorHome() {
       setLoading(false);
       if (results.ok) {
 
-        // if this is a new search clear all of the previous results
+        // if the cursor is new then we will want to relist plans
         obj = await results.json();
         if (cursor.primary === "null") {
           setPlans([...obj.plans]);
@@ -158,6 +166,18 @@ function AdvisorHome() {
     }
   }
 
+  // update the sorting rules
+  function handleChangeSort(sort, order) {
+
+    setSearchFields ({
+      textValue: searchFields.textValue,
+      statusValue: searchFields.statusValue,
+      sortValue: sort,
+      orderValue: order
+    });
+
+  }
+
   if (!pageError) {
     return (
       <div css={style}>
@@ -166,19 +186,14 @@ function AdvisorHome() {
         <div id="advisor-home-container">
           <div id="advisor-home-contents-container">
 
-            {recentPlans.length ? (
-              <RecentPlans recentPlans={recentPlans}/>
-            ) : (
-              null
-            )}
-
-            <FindPlans onSearch={cursor => searchPlans(cursor)}/>
+            <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
 
             <div className="home-error-message-container">{errorMessage}</div>
 
             {plans.length ? (
-              <SearchResults plans={plans} cursor={cursor}
-                onLoadMore={cursor => searchPlans(cursor)} />
+              <SearchResults plans={plans} cursor={cursor} searchFields={searchFields}
+                onChangeSort={(sort, order) => handleChangeSort(sort, order)}
+                onLoadMore={cursor => searchPlans(cursor, false)} />
             ) : (
               null
             )}

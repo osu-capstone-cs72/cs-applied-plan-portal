@@ -19,7 +19,7 @@ function Navbar(props) {
     position: absolute;
     width: 100%;
     height: 35px;
-    background-color: orange;
+    background-color: #d73f09;
 
     #navbar-search {
       width: 35%;
@@ -27,6 +27,8 @@ function Navbar(props) {
 
     .osu-logo {
       vertical-align: middle;
+      font-size: large;
+      color: white;
     }
 
     .right-container {
