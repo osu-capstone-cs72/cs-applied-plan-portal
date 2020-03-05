@@ -98,7 +98,7 @@ function PlanMetadata(props) {
         </div>
         <div className="metadata-field">
           <p className="field-type">Plan Status:</p>
-          <p className="field-text">{renderStatus()}</p>
+          <p className="field-text">{renderStatus(props.status)}</p>
         </div>
         <div className="metadata-field button-field">
           <button id="print-plan-button" onClick={() => props.onPrint()}>

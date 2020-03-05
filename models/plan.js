@@ -131,32 +131,69 @@ async function updatePlan(planId, planName, courses) {
 exports.updatePlan = updatePlan;
 
 // get all plans that match the requested search
-async function searchPlans(text, search, status, sort, order, page) {
+async function searchPlans(text, status, sort, order, cursorPrimary, cursorSecondary) {
   try {
 
     const RESULTS_PER_PAGE = 5;
     const sqlArray = [];
+    let nextCursorPrimary;
+    let nextCursorSecondary;
+    let plans;
+
     let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated " +
       "FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
 
-    // get the type of value we are searching for
-    if (text !== "*") {
-      switch (search) {
+    // only use the cursor if it isn't the initial search request
+    if (cursorPrimary === "null") {
+      sql += "WHERE TRUE ";
+    } else {
+
+      // depending on our search query the primary cursor will
+      // represent a different value.
+      // select the correct order and value to sort by
+
+      let orderChar = "<";
+      if (order === 1) {
+        orderChar = ">";
+      }
+
+      switch (sort) {
         case 0:
-          sql += "WHERE CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') ";
+          // sql += `WHERE (CONCAT(firstName , ' ' , lastName) ${orderChar}= ? AND planId >= ?) `;
+          sql += `WHERE (CONCAT(firstName , ' ' , lastName, ' ', planId) ${orderChar}= ?) `;
           break;
         case 1:
-          sql += "WHERE userId LIKE CONCAT('%', ?, '%') ";
+          // sql += `WHERE (userId ${orderChar}= ? AND planId >= ?) `;
+          sql += `WHERE (CONCAT(userId, ' ', planId) ${orderChar}= ?) `;
           break;
         case 2:
-          sql += "WHERE planName LIKE CONCAT('%', ?, '%') ";
+          sql += `WHERE (CONCAT(planName, ' ', planId) ${orderChar}= ?) `;
+          break;
+        case 3:
+          sql += `WHERE (CONCAT(status, ' ', planId) ${orderChar}= ?) `;
+          break;
+        case 4:
+          sql += `WHERE (CONCAT(created, ' ', planId) ${orderChar}= ?) `;
+          break;
+        case 5:
+          sql += `WHERE (CONCAT(lastUpdated, ' ', planId) ${orderChar}= ?) `;
           break;
         default:
-          sql += "WHERE CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') ";
+          sql += `WHERE (CONCAT(lastUpdated, ' ', planId) ${orderChar}= ?) `;
       }
+      sqlArray.push(cursorPrimary + " " + cursorSecondary);
+      console.log("PLAN:", cursorPrimary + " " + cursorSecondary);
+
+    }
+
+    // get the text we are searching for
+    if (text !== "*") {
+      sql += "AND (CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') " +
+        "OR userId LIKE CONCAT('%', ?, '%') " +
+        "OR planName LIKE CONCAT('%', ?, '%')) ";
       sqlArray.push(text);
-    } else {
-      sql += "WHERE TRUE ";
+      sqlArray.push(text);
+      sqlArray.push(text);
     }
 
     // get the status we are searching for
@@ -165,61 +202,99 @@ async function searchPlans(text, search, status, sort, order, page) {
       sqlArray.push(status);
     }
 
-    // get the value we are sorting by
+    // get the results in the order we are sorting by
     switch (sort) {
       case 0:
-        sql += "ORDER BY CONCAT(firstName , ' ' , lastName) ";
+        sql += "ORDER BY CONCAT(firstName , ' ' , lastName, ' ', planId) ";
         break;
       case 1:
-        sql += "ORDER BY userId ";
+        // sql += "ORDER BY userId ";
+        sql += "ORDER BY CONCAT(userId, ' ', planId) ";
         break;
       case 2:
-        sql += "ORDER BY planName ";
+        // sql += "ORDER BY planName ";
+        sql += "ORDER BY CONCAT(planName, ' ', planId) ";
         break;
       case 3:
-        sql += "ORDER BY status ";
+        // sql += "ORDER BY status ";
+        sql += "ORDER BY CONCAT(status, ' ', planId) ";
         break;
       case 4:
-        sql += "ORDER BY created ";
+        // sql += "ORDER BY created ";
+        sql += "ORDER BY CONCAT(created, ' ', planId) ";
         break;
       case 5:
-        sql += "ORDER BY lastUpdated ";
+        // sql += "ORDER BY lastUpdated ";
+        sql += "ORDER BY CONCAT(lastUpdated, ' ', planId) ";
         break;
       default:
-        sql += "ORDER BY lastUpdated ";
+        sql += "ORDER BY CONCAT(lastUpdated, ' ', planId) ";
+        // sql += "ORDER BY lastUpdated ";
     }
 
     // order by ascending or descending
     if (order === 1) {
-      sql += "ASC LIMIT ?, ?;";
+      sql += "ASC LIMIT ?;";
     } else {
-      sql += "DESC LIMIT ?, ?;";
+      sql += "DESC LIMIT ?;";
     }
 
-    // get the selected page
-    sqlArray.push(RESULTS_PER_PAGE * (page - 1));
-    sqlArray.push(RESULTS_PER_PAGE);
-
+    // get the number of results per page (plus the next cursor)
+    sqlArray.push(RESULTS_PER_PAGE + 1);
 
     // perform the query
     const results = await pool.query(sql, sqlArray);
 
-    // find the total number of pages
-    sql = sql.replace(
-      "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated",
-      "SELECT COUNT(planName) AS count"
-    );
-    sql = sql.replace(
-      "LIMIT ?, ?;",
-      ";"
-    );
-    const totalResults = await pool.query(sql, sqlArray);
-    const totalPages = Math.ceil(totalResults[0][0].count / RESULTS_PER_PAGE);
+    // get the next cursor and return the correct number of plans
+    if (results[0].length < RESULTS_PER_PAGE + 1) {
 
+      // if we have returned the last of the data then we return
+      // a null next cursor
+      plans = results[0];
+      nextCursorPrimary = "null";
+      nextCursorSecondary = "null";
+
+    } else {
+
+      // our next cursor will store a primary and secondary value.
+      // the primary value is the main value we are sorting by.
+      // the secondary value is the plan id and it is used in sorting when we
+      // have results with matching primary values
+      plans = results[0].slice(0, -1);
+      const nextPlan = results[0][RESULTS_PER_PAGE];
+
+      switch (sort) {
+        case 0:
+          nextCursorPrimary = String(nextPlan.firstName + " " + nextPlan.lastName);
+          break;
+        case 1:
+          nextCursorPrimary = String(nextPlan.userId);
+          break;
+        case 2:
+          nextCursorPrimary = String(nextPlan.planName);
+          break;
+        case 3:
+          nextCursorPrimary = String(nextPlan.status);
+          break;
+        case 4:
+          nextCursorPrimary = String(nextPlan.created);
+          break;
+        case 5:
+          nextCursorPrimary = String(nextPlan.lastUpdated);
+          break;
+        default:
+          nextCursorPrimary = String(nextPlan.lastUpdated);
+      }
+      nextCursorSecondary = String(nextPlan.planId);
+
+    }
+
+    console.log(nextCursorPrimary);
+    console.log(nextCursorSecondary);
     return {
-      plans: results[0],
-      page: page,
-      totalPages: totalPages
+      plans: plans,
+      nextCursorPrimary: nextCursorPrimary,
+      nextCursorSecondary: nextCursorSecondary
     };
 
   } catch (err) {
@@ -235,7 +310,7 @@ async function getPlan(planId, userId) {
 
   try {
 
-    // first remove all notifications for a plan
+    // remove all notifications for the plan
     checkPlanNotifications(planId, userId);
 
     // add plan to recently viewed
@@ -277,7 +352,7 @@ async function getPlanActivity(planId, page) {
 
     const sqlReviews = "SELECT CONCAT(reviewId, 'r') AS id, planId, PlanReview.userId, " +
       "'' AS text, status, time, firstName, lastName FROM PlanReview " +
-      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time, id DESC LIMIT ?, ?;";
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC, id DESC LIMIT ?, ?;";
 
     let sql = sqlComments + " UNION " + sqlReviews;
 

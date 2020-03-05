@@ -72,16 +72,6 @@ const searchPlanSchema = {
         `The search text must be a string.`;
     }
   },
-  search: {
-    required: true,
-    type: Type.integer,
-    minValue: 0,
-    maxValue: Infinity,
-    getErrorMessage: function() {
-      return "Invalid search value:\n" +
-        "The search value associated with this request must be a number greater than or equal zero.";
-    }
-  },
   status: {
     required: true,
     type: Type.integer,
@@ -112,14 +102,20 @@ const searchPlanSchema = {
         "The order value associated with this request must be a number greater than or equal to zero.";
     }
   },
-  page: {
+  cursorPrimary: {
     required: true,
-    type: Type.integer,
-    minValue: 1,
-    maxValue: Infinity,
+    type: Type.string,
     getErrorMessage: function() {
-      return "Invalid page number:\n" +
-        "The page associated with this request must be a number greater than zero.";
+      return "Invalid primary cursor:\n" +
+        `The cursor must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor:\n" +
+        `The cursor must be a string`;
     }
   }
 };

@@ -202,7 +202,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
 });
 
 // search for plans
-app.get("/search/:text/:search/:status/:sort/:order/:page", requireAuth, async (req, res) => {
+app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
 
   try {
 
@@ -216,19 +216,19 @@ app.get("/search/:text/:search/:status/:sort/:order/:page", requireAuth, async (
       // get request body
       const userId = req.auth.userId;
       const text = sanitizedBody.text;
-      const search = sanitizedBody.search;
       const status = sanitizedBody.status;
       const sort = sanitizedBody.sort;
       const order = sanitizedBody.order;
-      const page = sanitizedBody.page;
+      const cursorPrimary = sanitizedBody.cursorPrimary;
+      const cursorSecondary = sanitizedBody.cursorSecondary;
       console.log("Searching for plans");
 
       // only search plans if they do not violate any constraints
       const violation = await searchEnforceConstraints(userId);
       if (violation === "valid") {
 
-        const results = await searchPlans(text, parseInt(search, 10), parseInt(status, 10),
-          parseInt(sort, 10), parseInt(order, 10), parseInt(page, 10));
+        const results = await searchPlans(text, parseInt(status, 10),
+          parseInt(sort, 10), parseInt(order, 10), cursorPrimary, cursorSecondary);
         if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});
