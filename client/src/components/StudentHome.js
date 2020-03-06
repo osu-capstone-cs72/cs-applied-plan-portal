@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import React from "react";
-import NavBar from "./Navbar";
+import NavBar from "./navbar/Navbar";
 import {getToken, getProfile} from "../utils/authService";
 import {formatTime} from "../utils/formatTime";
 import PageSpinner from "./general/PageSpinner";

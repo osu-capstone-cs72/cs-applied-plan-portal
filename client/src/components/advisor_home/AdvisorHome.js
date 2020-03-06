@@ -1,24 +1,17 @@
 /** @jsx jsx */
 
-import NavBar from "../Navbar";
+import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
 import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
-import PageInternalError from "../general/PageInternalError";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
 function AdvisorHome() {
 
   const [loading, setLoading] = useState(false);
-  const [pageError, setPageError] = useState(0);
-  const [cursor, setCursor] = useState({
-    primary: "null",
-    secondary: "null"
-  });
-  const [recentPlans, setRecentPlans] = useState([]);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchFields, setSearchFields] = useState({
@@ -26,6 +19,10 @@ function AdvisorHome() {
     statusValue: 5,
     sortValue: 5,
     orderValue: 1
+  });
+  const [cursor, setCursor] = useState({
+    primary: "null",
+    secondary: "null"
   });
 
   const style = css`
@@ -49,11 +46,6 @@ function AdvisorHome() {
 
   `;
 
-  // get the list of recent plans
-  useEffect(() => {
-    getRecentPlans();
-  }, []);
-
   // if the sorting order changes perform a new search
   useEffect(() => {
     const newCursor = {
@@ -64,36 +56,7 @@ function AdvisorHome() {
     // eslint-disable-next-line
   }, [searchFields.orderValue, searchFields.sortValue]);
 
-  // get the five most recent plans
-  async function getRecentPlans() {
-    try {
-      setErrorMessage("");
-      setLoading(true);
-
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/recent/?accessToken=${token}`;
-      let obj = {};
-
-      const results = await fetch(getUrl);
-      setLoading(false);
-      if (results.ok) {
-        obj = await results.json();
-        setRecentPlans(obj.plans);
-      } else {
-        // we got a bad status code.
-        obj = await results.json();
-        if (results.status === 500) {
-          setPageError(500);
-        }
-      }
-    } catch (err) {
-      // send to 500 page if a server error happens while fetching plan
-      setPageError(500);
-    }
-  }
-
-  // search for plans using some sorting logic
+  // search for plans using various sorting logic
   async function searchPlans(cursor, newSearch) {
     try {
       setErrorMessage("");
@@ -178,33 +141,30 @@ function AdvisorHome() {
 
   }
 
-  if (!pageError) {
-    return (
-      <div css={style}>
-        <PageSpinner loading={loading} />
-        <NavBar />
-        <div id="advisor-home-container">
-          <div id="advisor-home-contents-container">
+  return (
+    <div css={style}>
+      <PageSpinner loading={loading} />
+      <NavBar />
+      <div id="advisor-home-container">
+        <div id="advisor-home-contents-container">
 
-            <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
+          <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
 
-            <div className="home-error-message-container">{errorMessage}</div>
+          <div className="home-error-message-container">{errorMessage}</div>
 
-            {plans.length ? (
-              <SearchResults plans={plans} cursor={cursor} searchFields={searchFields}
-                onChangeSort={(sort, order) => handleChangeSort(sort, order)}
-                onLoadMore={cursor => searchPlans(cursor, false)} />
-            ) : (
-              null
-            )}
+          {plans.length ? (
+            <SearchResults plans={plans} cursor={cursor} searchFields={searchFields}
+              onChangeSort={(sort, order) => handleChangeSort(sort, order)}
+              onLoadMore={cursor => searchPlans(cursor, false)} />
+          ) : (
+            null
+          )}
 
-          </div>
         </div>
       </div>
-    );
-  } else {
-    return <PageInternalError />;
-  }
+    </div>
+  );
+
 }
 export default AdvisorHome;
 

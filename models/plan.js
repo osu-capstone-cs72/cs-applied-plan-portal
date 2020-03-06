@@ -476,13 +476,10 @@ async function addRecentPlan(planId, userId) {
       return;
     }
 
-    // confirm that this plan isn't already in the recent list
-    sql = "SELECT * FROM RecentPlan WHERE planId=? AND userID=?";
-    results = await pool.query(sql, [planId, userId]);
-
-    if (results[0].length) {
-      return;
-    }
+    // if the plan is already in the recent plans list delete it
+    // this will allow us to replace at it the correct place in the list
+    sql = "DELETE FROM RecentPlan WHERE planId=? AND userID=?";
+    await pool.query(sql, [planId, userId]);
 
     // create the new recent plan
     sql = "INSERT INTO RecentPlan (planId, userId) VALUES (?, ?);";

@@ -4,42 +4,26 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import {logout} from "../utils/authService";
 import {withRouter} from "react-router-dom";
-import {getToken} from "../utils/authService";
+import {getToken} from "../../utils/authService";
 
-function Navbar(props) {
+function Notifications() {
 
   const [notifications, setNotifications] = useState([]);
   const TIME_BETWEEN_NOTIFICATIONS = 5000;
 
   const style = css`
 
-    display: flex;
-    position: absolute;
-    width: 100%;
-    height: 35px;
-    background-color: #d73f09;
-
-    #navbar-search {
-      width: 35%;
-    }
-
-    .osu-logo {
-      vertical-align: middle;
-      font-size: large;
-      color: white;
-    }
-
-    .right-container {
-      margin-left: auto;
-    }
-
-    .dropdown {
+    & {
       display: inline-block;
+      height: 35px;
     }
 
-    .dropdown .drop-button, .logout {
+    &:hover .dropdown-content {
+      display: block;
+    }
+
+    .drop-button {
       height: 35px;
     }
 
@@ -65,14 +49,10 @@ function Navbar(props) {
       background-color: #ddd;
     }
 
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
     .badge {
       position: absolute;
       top: 5px;
-      right: 10px;
+      right: 80px;
       padding: 5px 10px;
       border-radius: 50%;
       background-color: red;
@@ -82,12 +62,12 @@ function Navbar(props) {
 
   useEffect(() => {
 
-    fetchData();
+    fetchNotifications();
     // eslint-disable-next-line
   }, []);
 
   // get all notifications for the current user
-  async function fetchData() {
+  async function fetchNotifications() {
 
     try {
 
@@ -113,47 +93,30 @@ function Navbar(props) {
     }
 
     // after the notifications are returned or fail set a timer to try again
-    setTimeout(fetchData, TIME_BETWEEN_NOTIFICATIONS);
+    setTimeout(fetchNotifications, TIME_BETWEEN_NOTIFICATIONS);
 
-  }
-
-  // logout the current user
-  function logoutUser() {
-    logout();
-    props.history.push("/login");
   }
 
   return (
-    <div className="navbar-parent" css={style}>
-      <Link to={"/"}>
-        <p className="osu-logo">Oregon State University</p>
-      </Link>
-      <div className="right-container">
-        <div className="dropdown">
-          <button className="drop-button">Notifications
-            <i className="fa fa-caret-down"></i>
-          </button>
-          {notifications.length ?
-            <span className="badge">{notifications.length}</span> : null }
-          <div className="dropdown-content">
-            {notifications.map((item) => (
-              <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
-                {item.text}
-              </Link>
-            ))}
-          </div>
-        </div>
-        {props.showSearch ? <input id="navbar-search" className="form-control mr-sm-2" type="text" placeholder={props.searchContent} name="search"/> : null}
-        <button className="logout" onClick={() => logoutUser()}>Log out</button>
+    <div className="notification-dropdown" css={style}>
+      <button className="drop-button">Notifications
+        <i className="fa fa-caret-down" />
+      </button>
+      {notifications.length ?
+        <span className="badge">{notifications.length}</span> : null }
+      <div className="dropdown-content">
+        {notifications.map((item) => (
+          <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
+            {item.text}
+          </Link>
+        ))}
       </div>
     </div>
   );
 
 }
-export default withRouter(Navbar);
+export default withRouter(Notifications);
 
-Navbar.propTypes = {
+Notifications.propTypes = {
   history: PropTypes.object,
-  showSearch: PropTypes.bool,
-  searchContent: PropTypes.string
 };

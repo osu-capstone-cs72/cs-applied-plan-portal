@@ -2,7 +2,7 @@
 
 import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
-import NavBar from "../Navbar";
+import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
 import CreateReview from "./CreateReview";
