@@ -37,6 +37,9 @@ function App() {
         <Route path="/editPlan/:planId">
           <StudentCreatePlan />
         </Route>
+        <Route path="/manageRoles">
+          <Home />
+        </Route>
         <Route path="/500">
           <PageInternalError />
         </Route>

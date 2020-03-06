@@ -31,7 +31,7 @@ function Navbar(props) {
       margin-left: auto;
     }
 
-    .logout {
+    #logout-button, #manage-roles-button {
       height: 35px;
     }
 
@@ -49,9 +49,16 @@ function Navbar(props) {
         <p className="osu-logo">Oregon State University</p>
       </Link>
       <div className="right-container">
+        {profile.role === 2 ? (
+          <Link to={"/manageRoles"}>
+            <button id="manage-roles-button">Manage Roles</button>
+          </Link>
+        ) : (
+          null
+        )}
         {profile.role ? <History /> : null}
         <Notifications />
-        <button className="logout" onClick={() => logoutUser()}>Log out</button>
+        <button id="logout-button" onClick={() => logoutUser()}>Log out</button>
       </div>
     </div>
   );
