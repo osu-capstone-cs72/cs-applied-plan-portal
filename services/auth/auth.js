@@ -7,6 +7,8 @@ const needle = require("needle");
 const validator = require("validator");
 const xml2js = require("xml2js");
 
+const {userSchema} = require("../validation/schemaValidation");
+
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 // Generates an auth token for a specific User with the provided ID.
@@ -43,9 +45,15 @@ function requireAuth(req, res, next) {
     // this function call throws an error if token is invalid
     const payload = jwt.verify(req.query.accessToken, JWT_SECRET_KEY);
 
-    // ensure the retrieved `sub` (i.e. User's ID) is a positive integer or
-    // throw an error otherwise
-    assert(validator.isInt(payload.sub + "", {min: 1}), "Invalid ID format in token");
+    // ensure the retrieved `sub` (i.e. User's ID) satisfies the schema or
+    // throw a schema validation error otherwise
+    assert(
+      validator.isInt(payload.sub + "", {
+        min: userSchema.userId.minValue,
+        max: userSchema.userId.maxValue
+      }),
+      userSchema.userId.getErrorMessage()
+    );
 
     // if verified, add an extra property to the request object
     req.auth = {
