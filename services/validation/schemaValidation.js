@@ -99,6 +99,16 @@ exports.statusPlanSchema = statusPlanSchema;
 
 // Schema of a user.
 const userSchema = {
+  userId: {
+    required: true,
+    typee: Type.integer,
+    minValue: 10000000000,
+    maxValue: 99999999999,
+    getErrorMessage: function() {
+      return "Invalid user's ID:\n" +
+        "The user's ID must be a positive 11-digit integer.";
+    }
+  },
   firstName: {
     required: true,
     type: Type.string,
@@ -203,10 +213,8 @@ exports.reviewSchema = reviewSchema;
 // Note:
 // - An object can have properties that are not in the schema and can still be
 //   valid.
-//
 // - Extra properties not in schema are ignored and are not included in the
 //   sanitized object.
-//
 // - For partial objects (e.g. usually those come from PATCH requests), not all
 //   properties are provided. In these cases, this function ignores keys not in
 //   the schema and only validates the rest.
@@ -315,6 +323,7 @@ function getPropertyViolation(obj, property, schema) {
   // string otherwise
   return isValid ? "" : (schema[property].getErrorMessage());
 }
+exports.getPropertyViolation = getPropertyViolation;
 
 // Sanitizes an object using a provided schema by extracting valid properties to
 // a new object and returns that object.

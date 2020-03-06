@@ -159,8 +159,10 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
     // return NaN if it's not an integer
     const userId = validator.toInt(req.params.userId + "");
 
-    // ensure the provided target user's ID is a positive integer
-    if (Number.isInteger(userId) && userId > 0) {
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
@@ -186,8 +188,8 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
         });
       }
     } else {
-      console.error("400: Invalid target user's ID\n");
-      res.status(400).send({error: "Invalid target user's ID"});
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
@@ -204,8 +206,10 @@ app.get("/:userId", requireAuth, async (req, res) => {
     // return NaN if it's not an integer
     const userId = validator.toInt(req.params.userId + "");
 
-    // ensure the provided target user's ID is a positive integer
-    if (Number.isInteger(userId) && userId > 0) {
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
@@ -231,8 +235,8 @@ app.get("/:userId", requireAuth, async (req, res) => {
         });
       }
     } else {
-      console.error("400: Invalid target user's ID\n");
-      res.status(400).send({error: "Invalid targeet user's ID"});
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
@@ -249,8 +253,10 @@ app.patch("/:userId", requireAuth, async (req, res) => {
     // return NaN if it's not an integer
     const userId = validator.toInt(req.params.userId + "");
 
-    // ensure the provided target user's ID is a positive integer
-    if (Number.isInteger(userId) && userId > 0) {
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
@@ -277,8 +283,8 @@ app.patch("/:userId", requireAuth, async (req, res) => {
         });
       }
     } else {
-      console.error("400: Invalid target user's ID\n");
-      res.status(400).send({error: "Invalid targeet user's ID"});
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
