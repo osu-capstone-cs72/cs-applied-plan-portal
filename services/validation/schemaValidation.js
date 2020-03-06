@@ -62,8 +62,16 @@ const patchPlanSchema = {
 };
 exports.patchPlanSchema = patchPlanSchema;
 
-// Schema of a status Plan request used for the validator and the database.
-const statusPlanSchema = {
+// Schema of a search Plan request used for the validator and the database.
+const searchPlanSchema = {
+  text: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid search text:\n" +
+        `The search text must be a string.`;
+    }
+  },
   status: {
     required: true,
     type: Type.integer,
@@ -71,31 +79,47 @@ const statusPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid status value:\n" +
-        "The status value associated with this request must be a number greater than zero.";
+        "The status value associated with this request must be a number greater than or equal zero.";
     }
   },
-  created: {
+  sort: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid created value:\n" +
-        "The created value associated with this request must be a number greater than zero.";
+      return "Invalid sort value:\n" +
+        "The sort value associated with this request must be a number greater than or equal zero.";
     }
   },
-  ascend: {
+  order: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid ascend value:\n" +
-        "The ascend value associated with this request must be a number greater than zero.";
+      return "Invalid order value:\n" +
+        "The order value associated with this request must be a number greater than or equal to zero.";
+    }
+  },
+  cursorPrimary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
     }
   }
 };
-exports.statusPlanSchema = statusPlanSchema;
+exports.searchPlanSchema = searchPlanSchema;
 
 // Schema of a user.
 const userSchema = {
@@ -203,6 +227,37 @@ const reviewSchema = {
   }
 };
 exports.reviewSchema = reviewSchema;
+
+// Schema of an activity.
+const activitySchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid plan ID:\n" +
+        "Plan ID must be an integer.";
+    }
+  },
+  cursorPrimary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
+    }
+  }
+};
+exports.activitySchema = activitySchema;
 
 // Validates an object against a provided schema.
 //

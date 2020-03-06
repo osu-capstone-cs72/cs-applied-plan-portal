@@ -1,10 +1,13 @@
 /** @jsx jsx */
 
 import React from "react";
-import NavBar from "./Navbar";
+import NavBar from "./navbar/Navbar";
 import {getToken, getProfile} from "../utils/authService";
+import {formatTime} from "../utils/formatTime";
 import PageSpinner from "./general/PageSpinner";
 import PageInternalError from "./general/PageInternalError";
+import {renderStatus} from "../utils/renderStatus";
+
 import {css, jsx} from "@emotion/core";
 
 export default class StudentHome extends React.Component {
@@ -19,7 +22,6 @@ export default class StudentHome extends React.Component {
     };
 
     this.getAllPlans = this.getAllPlans.bind(this);
-    this.renderStatus = this.renderStatus.bind(this);
     this.getAllPlans = this.getAllPlans.bind(this);
   }
 
@@ -69,23 +71,6 @@ export default class StudentHome extends React.Component {
     });
   }
 
-  renderStatus(status) {
-    switch (status) {
-      case 0:
-        return "Rejected";
-      case 1:
-        return "Awaiting student changes";
-      case 2:
-        return "Awaiting review";
-      case 3:
-        return "Awaiting final review";
-      case 4:
-        return "Accepted";
-      default:
-        return "Undefined status";
-    }
-  }
-
   goToPlan(plan) {
     window.location.href = `/viewPlan/${plan.planId}`;
   }
@@ -128,8 +113,8 @@ export default class StudentHome extends React.Component {
               {this.state.plans ? this.state.plans.map(p =>
                 <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
                   <td className="student-plans-data" key={p.planId + "b"}>{p.planName}</td>
-                  <td className="student-plans-data" key={p.planId + "c"}>{this.renderStatus(p.status)}</td>
-                  <td className="student-plans-data" key={p.planId + "d"}>{p.lastUpdated}</td>
+                  <td className="student-plans-data" key={p.planId + "c"}>{renderStatus(p.status)}</td>
+                  <td className="student-plans-data" key={p.planId + "d"}>{formatTime(p.lastUpdated)}</td>
                 </tr>) : null}
             </thead>
           </table>

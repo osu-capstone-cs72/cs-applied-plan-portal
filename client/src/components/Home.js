@@ -1,9 +1,8 @@
 /** @jsx jsx */
 
-import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import StudentHome from "./StudentHome";
-import AdvisorHome from "./AdvisorHome";
+import AdvisorHome from "./advisor_home/AdvisorHome";
 import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -48,7 +47,6 @@ function Home(props) {
     return (
       <div id="home-container" css={style}>
         <PageSpinner loading={loading} />
-        <NavBar />
       </div>
     );
   } else if (pageState === 1) {

@@ -27,6 +27,7 @@ app.all("*", (req, res, next) => {
   next();
 });
 
+app.use("/notification", require("./notification"));
 app.use("/review", require("./review"));
 app.use("/comment", require("./comment"));
 app.use("/course", require("./course"));
