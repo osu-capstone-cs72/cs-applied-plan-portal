@@ -14,23 +14,27 @@ function ActivityFeed(props) {
     width: 100%;
   `;
 
-  // if (props.activity.length > 0) {
   return (
     <div id="plan-activity" css={style}>
       <h2>Activity Feed</h2>
       <CreateComment currentUser={props.currentUser} status={props.status}
         onNewComment={e => props.onNewComment(e)}/>
       {props.activity.map((obj) => {
-        if (obj.commentId > 0) {
-          return <Comment key={obj.commentId + "c"} commentId={obj.commentId}
+        if (obj.id.charAt(obj.id.length - 1) === "c") {
+          return <Comment key={obj.id}
             userId={obj.userId} time={obj.time} text={obj.text}
             firstName={obj.firstName} lastName={obj.lastName}/>;
         } else {
-          return <Review key={obj.reviewId + "r"} userId={obj.advisorId}
+          return <Review key={obj.id} userId={obj.advisorId}
             status={obj.status} time={obj.time}
             userName={obj.firstName + " " + obj.lastName} />;
         }
       })}
+      { props.cursor.primary === "null" ? (
+        null
+      ) : (
+        <button id="page-load-more-button" onClick={() => props.onShowMore(props.cursor)}>Show More</button>
+      )}
     </div>
   );
 
@@ -42,5 +46,7 @@ ActivityFeed.propTypes = {
   onUpdate: PropTypes.any,
   activity: PropTypes.array,
   currentUser: PropTypes.object,
-  onNewComment: PropTypes.func
+  onNewComment: PropTypes.func,
+  onShowMore: PropTypes.func,
+  cursor: PropTypes.object
 };

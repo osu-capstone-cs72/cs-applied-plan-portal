@@ -1,12 +1,15 @@
 // File: plan.js
 // Description: data functions that handle plans
 
-const pool = require("../services/db/mysqlPool").pool;
+const {pool} = require("../services/db/mysqlPool");
 
 // save a plan with its selected courses. remove the plan if an error occurs
 async function createPlan(userId, planName, courses) {
 
   try {
+
+    // hold on to a single connection
+    const conn = await pool.getConnection();
 
     // construct the first SQL query
     let sql = "BEGIN; " +
@@ -14,7 +17,7 @@ async function createPlan(userId, planName, courses) {
       "SELECT LAST_INSERT_ID();";
 
     // perform the first insert operation
-    let results = await pool.query(sql, [userId, planName]);
+    let results = await conn.query(sql, [userId, planName]);
     const planId = results[0][1].insertId;
 
     // construct the second SQL query
@@ -32,7 +35,11 @@ async function createPlan(userId, planName, courses) {
     sql = sql.replace(/.$/, "; COMMIT;");
 
     // perform the second insert operation
-    results = await pool.query(sql, sqlArray);
+    results = await conn.query(sql, sqlArray);
+
+    // release the connection
+    conn.release();
+
     return {insertId: planId};
 
   } catch (err) {
@@ -123,40 +130,175 @@ async function updatePlan(planId, planName, courses) {
 }
 exports.updatePlan = updatePlan;
 
-// get all plans that match the requested status
-async function getPlansStatus(status, created, ascend) {
+// get all plans that match the requested search
+async function searchPlans(text, status, sort, order, cursor) {
   try {
 
-    let sql = "SELECT * FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
+    const ASC = 1;
+    const RESULTS_PER_PAGE = 5;
+    const sqlArray = [];
+    let plans;
+    const nextCursor = {
+      primary: "null",
+      secondary: "null"
+    };
 
-    // a status code of 5 means "any" status
-    if (status !== "5") {
-      sql += "WHERE status=? ";
+    let sql = "SELECT planId, status, planName, userId, firstName, lastName, created, lastUpdated, " +
+      "UNIX_TIMESTAMP(created) AS createdUnix, UNIX_TIMESTAMP(lastUpdated) AS updatedUnix " +
+      "FROM Plan INNER JOIN User ON Plan.studentId = User.userId ";
+
+    // only use the cursor if it isn't the initial search request
+    if (cursor.primary === "null") {
+      sql += "WHERE TRUE ";
+    } else {
+
+      // Depending on our search query the primary cursor value may
+      // represent any number of values (ex: userId, status, etc...).
+      // We select the correct value by using the value that we are sorting by.
+
+      // Instances where the primary cursor value could have duplicate values
+      // are handled by also sorting by plan ID.
+
+      let orderChar = "<";
+      if (order === ASC) {
+        orderChar = ">";
+      }
+
+      switch (sort) {
+        case 0:
+          sql += `WHERE (CONCAT(firstName , ' ' , lastName) ${orderChar}= ? AND ` +
+            `(CONCAT(firstName , ' ' , lastName) ${orderChar} ? OR planId >= ? )) `;
+          break;
+        case 1:
+          sql += `WHERE (userId ${orderChar}= ? AND ` +
+            `(userId ${orderChar} ? OR planId >= ? )) `;
+          break;
+        case 2:
+          sql += `WHERE (planName ${orderChar}= ? AND ` +
+            `(planName ${orderChar} ? OR planId >= ? )) `;
+          break;
+        case 3:
+          sql += `WHERE (status ${orderChar}= ? AND ` +
+            `(status ${orderChar} ? OR planId >= ? )) `;
+          break;
+        case 4:
+          sql += `WHERE (UNIX_TIMESTAMP(created) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(created) ${orderChar} ? OR planId >= ? )) `;
+          break;
+        case 5:
+          sql += `WHERE (UNIX_TIMESTAMP(lastUpdated) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(lastUpdated) ${orderChar} ? OR planId >= ? )) `;
+          break;
+        default:
+          sql += `WHERE (UNIX_TIMESTAMP(lastUpdated) ${orderChar}= ? AND ` +
+            `(UNIX_TIMESTAMP(lastUpdated) ${orderChar} ? OR planId >= ? )) `;
+      }
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.secondary);
+
     }
 
-    // sort by the created or last updated time
-    if (created === "1") {
-      sql += "ORDER BY created ";
-    } else {
-      sql += "ORDER BY lastUpdated ";
+    // get the text we are searching for
+    if (text !== "*") {
+      sql += "AND (CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') " +
+        "OR userId LIKE CONCAT('%', ?, '%') " +
+        "OR planName LIKE CONCAT('%', ?, '%')) ";
+      sqlArray.push(text);
+      sqlArray.push(text);
+      sqlArray.push(text);
     }
 
-    // sort by ascending or descending
-    if (ascend === "1") {
-      sql += "ASC;";
-    } else {
-      sql += "DESC;";
+    // get the status we are searching for
+    if (status >= 0 && status <= 4) {
+      sql += "AND status=? ";
+      sqlArray.push(status);
     }
 
-    let results;
-    if (status !== 5) {
-      results = await pool.query(sql, [status]);
+    // get the results in the order we are sorting by
+    switch (sort) {
+      case 0:
+        sql += "ORDER BY CONCAT(firstName , ' ' , lastName) ";
+        break;
+      case 1:
+        sql += "ORDER BY userId ";
+        break;
+      case 2:
+        sql += "ORDER BY planName ";
+        break;
+      case 3:
+        sql += "ORDER BY status ";
+        break;
+      case 4:
+        sql += "ORDER BY createdUnix ";
+        break;
+      case 5:
+        sql += "ORDER BY updatedUnix ";
+        break;
+      default:
+        sql += "ORDER BY updatedUnix ";
+    }
+
+    // order by ascending or descending
+    if (order === ASC) {
+      sql += "ASC, planId ASC LIMIT ?;";
     } else {
-      results = await pool.query(sql);
+      sql += "DESC, planId ASC LIMIT ?;";
+    }
+
+    // get the number of results per page (plus the next cursor)
+    sqlArray.push(RESULTS_PER_PAGE + 1);
+
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
+
+    // get the next cursor and return the correct number of plans
+    if (results[0].length < RESULTS_PER_PAGE + 1) {
+
+      // if we have returned the last of the data then we return
+      // a null next cursor
+      plans = results[0];
+      nextCursor.primary = "null";
+      nextCursor.secondary = "null";
+
+    } else {
+
+      // Our next cursor will store a primary and secondary value.
+      // The primary value is the main value we are sorting by.
+      // The secondary value is the plan ID and it is used to sort when we
+      // have results with matching primary values.
+      plans = results[0].slice(0, -1);
+      const nextPlan = results[0][RESULTS_PER_PAGE];
+
+      switch (sort) {
+        case 0:
+          nextCursor.primary = String(nextPlan.firstName + " " + nextPlan.lastName);
+          break;
+        case 1:
+          nextCursor.primary = String(nextPlan.userId);
+          break;
+        case 2:
+          nextCursor.primary = String(nextPlan.planName);
+          break;
+        case 3:
+          nextCursor.primary = String(nextPlan.status);
+          break;
+        case 4:
+          nextCursor.primary = String(nextPlan.createdUnix);
+          break;
+        case 5:
+          nextCursor.primary = String(nextPlan.updatedUnix);
+          break;
+        default:
+          nextCursor.primary = String(nextPlan.updatedUnix);
+      }
+      nextCursor.secondary = String(nextPlan.planId);
+
     }
 
     return {
-      plans: results[0]
+      plans: plans,
+      nextCursor: nextCursor
     };
 
   } catch (err) {
@@ -165,12 +307,18 @@ async function getPlansStatus(status, created, ascend) {
   }
 
 }
-exports.getPlansStatus = getPlansStatus;
+exports.searchPlans = searchPlans;
 
 // get all data for a specific plan, including selected courses, and reviews
-async function getPlan(planId) {
+async function getPlan(planId, userId) {
 
   try {
+
+    // remove all notifications for the plan
+    checkPlanNotifications(planId, userId);
+
+    // add plan to recently viewed
+    addRecentPlan(planId, userId);
 
     let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
     const result1 = await pool.query(sql, planId);
@@ -195,23 +343,71 @@ async function getPlan(planId) {
 exports.getPlan = getPlan;
 
 // get all activity from a plan (comments and reviews)
-async function getPlanActivity(planId) {
+async function getPlanActivity(planId, cursor) {
 
   try {
 
-    const sqlComments = "SELECT 0 AS reviewId, commentId, planId, Comment.userId, text, " +
-      "-1 AS status, time, firstName, lastName FROM Comment " +
+    // list the activity for the plan
+    const RESULTS_PER_PAGE = 5;
+    const sqlArray = [];
+    let activity;
+    const nextCursor = {
+      primary: "null",
+      secondary: "null"
+    };
+
+    // construct the sql query
+    const sqlComments = "SELECT CONCAT(commentId, 'c') AS id, planId, Comment.userId, text, " +
+      "-1 AS status, time, UNIX_TIMESTAMP(time) AS timeUnix, firstName, lastName FROM Comment " +
       "INNER JOIN User ON User.userId=Comment.userId WHERE planId=?";
+    sqlArray.push(planId);
 
-    const sqlReviews = "SELECT reviewId, 0 AS commentId, planId, PlanReview.userId, " +
-      "'' AS text, status, time, firstName, lastName FROM PlanReview " +
-      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY time DESC;";
+    const sqlReviews = "SELECT CONCAT(reviewId, 'r') AS id, planId, PlanReview.userId, " +
+      "'' AS text, status, time, UNIX_TIMESTAMP(time) AS timeUnix, firstName, lastName FROM PlanReview " +
+      "INNER JOIN User ON User.userId=PlanReview.userId WHERE planId=? ORDER BY timeUnix DESC, id ASC";
+    sqlArray.push(planId);
 
-    const sql = sqlComments + " UNION " + sqlReviews;
+    let sql = "SELECT * FROM (" + sqlComments + " UNION " + sqlReviews + ") AS U ";
 
-    const results = await pool.query(sql, [planId, planId, planId]);
+    // only use the cursor if it isn't the initial search request
+    if (cursor.primary !== "null") {
+      sql += `WHERE (UNIX_TIMESTAMP(time) <= ? AND ` +
+        `(UNIX_TIMESTAMP(time) < ? OR id >= ? )) `;
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.primary);
+      sqlArray.push(cursor.secondary);
+      sqlArray.push(RESULTS_PER_PAGE + 1);
+    }
+
+    // get the number of results per page (plus the next cursor)
+    sql += "LIMIT ?;";
+    sqlArray.push(RESULTS_PER_PAGE + 1);
+
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
+
+    // get the next cursor and return the correct number of activities
+    if (results[0].length < RESULTS_PER_PAGE + 1) {
+
+      // if we have returned the last of the data then we return
+      // a null next cursor
+      activity = results[0];
+      nextCursor.primary = "null";
+      nextCursor.secondary = "null";
+
+    } else {
+
+      // Our next cursor will store the time and the activity ID
+      activity = results[0].slice(0, -1);
+      const nextActivity = results[0][RESULTS_PER_PAGE];
+      nextCursor.primary = String(nextActivity.timeUnix);
+      nextCursor.secondary = String(nextActivity.id);
+
+    }
+
     return {
-      activities: results[0]
+      activity: activity,
+      nextCursor: nextCursor
     };
 
   } catch (err) {
@@ -221,6 +417,93 @@ async function getPlanActivity(planId) {
 
 }
 exports.getPlanActivity = getPlanActivity;
+
+// check all notifications on a plan for a specific user
+async function checkPlanNotifications(planId, userId) {
+
+  try {
+
+    const sql = "UPDATE Notification SET checked=1 WHERE planId=? AND userId=?;";
+    const results = await pool.query(sql, [planId, userId]);
+    return {
+      affectedRows: results[0].affectedRows
+    };
+
+  } catch (err) {
+    console.log("Error checking notification");
+    throw Error(err);
+  }
+
+}
+exports.checkPlanNotifications = checkPlanNotifications;
+
+// get a list of plans recently viewed by the user
+async function getRecentPlans(userId) {
+
+  try {
+
+    const sql = "SELECT R.planId, planName, firstName, lastName, status, created, lastUpdated, studentId AS userId " +
+      "FROM RecentPlan AS R LEFT JOIN Plan AS P " +
+      "ON R.planId = P.planId LEFT JOIN User AS U " +
+      "ON P.studentId = U.userId WHERE R.userId=? ORDER BY R.time DESC;";
+    const results = await pool.query(sql, userId);
+
+    return {
+      plans: results[0]
+    };
+
+  } catch (err) {
+    console.log("Error getting recent plans");
+    throw Error(err);
+  }
+
+}
+exports.getRecentPlans = getRecentPlans;
+
+// add a plan to the recently viewed plan list
+async function addRecentPlan(planId, userId) {
+
+  try {
+
+    // the maximum number of recent plans that a user can have
+    const RECENT_MAX = 5;
+
+    // only add recent plans for advisors
+    let sql = "SELECT role FROM User WHERE userId=?";
+    let results = await pool.query(sql, userId);
+
+    if (!results[0][0].role) {
+      return;
+    }
+
+    // if the plan is already in the recent plans list delete it
+    // this will allow us to replace at it the correct place in the list
+    sql = "DELETE FROM RecentPlan WHERE planId=? AND userID=?";
+    await pool.query(sql, [planId, userId]);
+
+    // create the new recent plan
+    sql = "INSERT INTO RecentPlan (planId, userId) VALUES (?, ?);";
+    results = await pool.query(sql, [planId, userId]);
+
+    // check if we have exceeded the max number of recent plans
+    sql = "SELECT COUNT(userId) AS count FROM RecentPlan WHERE userID=?";
+    results = await pool.query(sql, userId);
+    const count = results[0][0].count;
+
+    // if we have too many recent plans we will have to clear some
+    if (count > RECENT_MAX) {
+      const limit = count - RECENT_MAX;
+      sql = "DELETE FROM RecentPlan WHERE userId=? ORDER BY time ASC LIMIT ?;";
+      results = await pool.query(sql, [userId, limit]);
+    }
+
+  } catch (err) {
+    console.log("Error adding to recent plans list");
+    throw Error(err);
+  }
+
+}
+exports.addRecentPlan = addRecentPlan;
 
 // delete a plan from the database, including selected courses and comments
 async function deletePlan(planId) {

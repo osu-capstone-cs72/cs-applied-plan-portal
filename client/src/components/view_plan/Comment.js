@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {formatTime} from "../../utils/formatTime";
 
 function Comment(props) {
 
@@ -28,25 +29,18 @@ function Comment(props) {
     }
   `;
 
-  if (props.commentId !== 0) {
-    return (
-      <div className="comment-container" css={style}>
-        <p className="comment-user">{props.firstName + " " + props.lastName}</p>
-        <p className="comment-time">{props.time}</p>
-        <p className="comment-text">{props.text}</p>
-      </div>
-    );
-  } else {
-    return (
-      <div></div>
-    );
-  }
+  return (
+    <div className="comment-container" css={style}>
+      <p className="comment-user">{props.firstName + " " + props.lastName}</p>
+      <p className="comment-time">{formatTime(props.time)}</p>
+      <p className="comment-text">{props.text}</p>
+    </div>
+  );
 
 }
 export default Comment;
 
 Comment.propTypes = {
-  commentId: PropTypes.number,
   firstName: PropTypes.string,
   lastName: PropTypes.string,
   userId: PropTypes.number,
