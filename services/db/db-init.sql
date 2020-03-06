@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Mar 06, 2020 at 01:37 AM
+-- Generation Time: Mar 06, 2020 at 11:28 AM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -266,11 +266,11 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (56, 362, 19424289189, '2020-03-06 03:02:30'),
 (57, 359, 19424289189, '2020-03-06 03:02:33'),
 (58, 399, 19424289189, '2020-03-06 03:02:42'),
-(63, 362, 82757579527, '2020-03-06 03:03:03'),
-(64, 360, 82757579527, '2020-03-06 03:03:12'),
-(65, 364, 82757579527, '2020-03-06 03:03:27'),
 (66, 405, 82757579527, '2020-03-06 03:05:12'),
-(68, 310, 82757579527, '2020-03-06 03:05:34');
+(69, 308, 82757579527, '2020-03-06 10:37:52'),
+(70, 361, 82757579527, '2020-03-06 10:37:55'),
+(71, 376, 82757579527, '2020-03-06 10:38:13'),
+(74, 310, 82757579527, '2020-03-06 10:56:33');
 
 -- --------------------------------------------------------
 
@@ -437,13 +437,13 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (13000000000, 'Wedge', 'Antilles', 'x-wing@aol.com', 0),
 (14000000000, 'R2', 'D2', 'artoo@gmail.com', 0),
 (15000000000, 'C', '3PO', 'human_cyborg_relations@aol.com', 0),
-(19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 1),
+(19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 2),
 (20000000000, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 1),
 (30000000000, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (40000000000, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (50000000000, 'Han', 'Solo', 'kessel_run@aol.com', 0),
 (60000000000, 'Sheev', 'Palpatine', 'order66@gmail.com', 2),
-(60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 0),
+(60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 2),
 (70000000000, 'Lando', 'Calrissian', 'cloud_city@hotmail.com', 0),
 (80000000000, 'Ben', 'Kenobi', 'hello-there@hotmail.com', 1),
 (82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2),
@@ -551,7 +551,7 @@ ALTER TABLE `PlanReview`
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- Constraints for dumped tables
