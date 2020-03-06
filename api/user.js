@@ -23,36 +23,37 @@ const app = express();
 
 // Creates a new User in the system.
 app.post("/", requireAuth, async (req, res) => {
-  // limit auth payload's info to this function's scope
-  const auth = req.auth;
-  req.auth = {};
+  try {
+    // fetch the authenticated user's info
+    const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-  // only permit HeadAdvisor (aka Admin) to create new Users
-  if (auth.userRole === Role.headAdvisor) {
-    // validate the request body against the schema and get error message,
-    // if any
-    const schemaViolations = getSchemaViolations(req.body, userSchema);
-    if (!schemaViolations) {
-      try {
+    // only allow a Head Advisor to create new Users
+    if (authenticatedUser.role === Role.headAdvisor) {
+      // validate the request body against the schema and get error message,
+      // if any
+      const schemaViolations = getSchemaViolations(req.body, userSchema);
+      if (!schemaViolations) {
         // sanitize the request body and pass it to the model
         const newUser = sanitizeUsingSchema(req.body, userSchema);
         const result = await userModel.createUser(newUser);
 
         console.log("201: User created\n");
         res.status(201).send({userId: result.insertId});
-      } catch (err) {
-        console.error("500: Error creating new User:", err);
-        res.status(500).send({
-          error: "Error creating new User. Please try again later."
-        });
+      } else {
+        console.error(schemaViolations);
+        res.status(400).send({error: schemaViolations});
       }
     } else {
-      console.error(schemaViolations);
-      res.status(400).send({error: schemaViolations});
+      console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+      res.status(403).send({
+        error: "Only head advisors can create new users"
+      });
     }
-  } else {
-    console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
-    res.status(403).send({error: "Forbidden"});
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
   }
 });
 
@@ -105,7 +106,7 @@ app.get("/login", async (req, res) => {
     // make this nested try to catch potential error when parsing
     try {
       // try fetching the User from the database by ID
-      const osuuid = validator.toInt(userAttributes["cas:osuuid"][0]);
+      const osuuid = validator.toInt(userAttributes["cas:osuuid"][0] + "");
       const existingUser = await userModel.getUserById(osuuid);
 
       // if the User is not already in the database, create one for them
@@ -128,7 +129,7 @@ app.get("/login", async (req, res) => {
       const user = await userModel.getUserById(osuuid);  // guaranteed to have 1
 
       // sign this User with a JWT
-      const token = generateAuthToken(user.userId, user.role);
+      const token = generateAuthToken(user.userId);
 
       // include this token in the redirect URL
       const parsedTargetUrl = url.parse(targetUrl, true);
@@ -153,21 +154,24 @@ app.get("/login", async (req, res) => {
 
 // Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", requireAuth, async (req, res) => {
-  // limit auth payload's info to this function's scope
-  const auth = req.auth;
-  req.auth = {};
+  try {
+    // attempt to convert the target user's ID in route to an integer
+    // return NaN if it's not an integer
+    const userId = validator.toInt(req.params.userId + "");
 
-  // attempt to convert `userId` param in route to an integer
-  // return NaN if it's not an integer
-  const userId = validator.toInt(req.params.userId + "");
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
+      // fetch the authenticated user's info
+      const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-  // ensure the provided request parameter is a valid integer
-  if (Number.isInteger(userId)) {
-    // only permit the User with this ID or an Advisor or a Head Advisor
-    if (auth.userId === userId ||
-        auth.userRole === Role.advisor ||
-        auth.userRole === Role.headAdvisor) {
-      try {
+      // only allow the authenticated user with the same ID as the target user,
+      // an Advisor, and a Head Advisor to perform this action
+      if (authenticatedUser.userId === userId ||
+          authenticatedUser.role === Role.advisor ||
+          authenticatedUser.role === Role.headAdvisor) {
+        // fetch the target user's plans
         const plans = await userModel.getUserPlans(userId);
 
         if (plans.length > 0) {
@@ -177,39 +181,44 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found"});
         }
-      } catch (err) {
-        console.error("500: Error fetching Plans:", err);
-        res.status(500).send({
-          error: "Unable to fetch Plans. Please try again later."
+      } else {
+        console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+        res.status(403).send({
+          error: "Only the target user, advisors, and head advisors can fetch the target user's plans"
         });
       }
     } else {
-      console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
-      res.status(403).send({error: "Forbidden"});
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
     }
-  } else {
-    console.error("400: Invalid User ID\n");
-    res.status(400).send({error: "Invalid User ID"});
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
   }
 });
 
 // Fetches information about a specific User.
 app.get("/:userId", requireAuth, async (req, res) => {
-  // limit auth payload's info to this function's scope
-  const auth = req.auth;
-  req.auth = {};
+  try {
+    // attempt to convert the target user's ID in route to an integer
+    // return NaN if it's not an integer
+    const userId = validator.toInt(req.params.userId + "");
 
-  // attempt to convert `userId` param in route to an integer
-  // return NaN if it's not an integer
-  const userId = validator.toInt(req.params.userId + "");
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
+      // fetch the authenticated user's info
+      const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
-  // ensure the provided request parameter is a valid integer
-  if (Number.isInteger(userId)) {
-    // only permit the User with this ID or an Advisor or a Head Advisor
-    if (auth.userId === userId ||
-        auth.userRole === Role.advisor ||
-        auth.userRole === Role.headAdvisor) {
-      try {
+      // only allow the authenticated user with the same ID as the target user,
+      // an Advisor, and a Head Advisor to perform this action
+      if (authenticatedUser.userId === userId ||
+          authenticatedUser.role === Role.advisor ||
+          authenticatedUser.role === Role.headAdvisor) {
+        // fetch the target user's info
         const user = await userModel.getUserById(userId);
 
         if (user) {
@@ -219,21 +228,69 @@ app.get("/:userId", requireAuth, async (req, res) => {
           console.error("404: No User found\n");
           res.status(404).send({error: "No User found"});
         }
-      } catch (err) {
-        console.error("500: Error fetching User:", err);
-        res.status(500).send({
-          error: "Unable to fetch User. Please try again later."
+      } else {
+        console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+        res.status(403).send({
+          error: "Only the target user, advisors, and head advisors can fetch the target user's info"
         });
       }
     } else {
-      console.error(`403: User ${auth.userId} not authorized to perform this action\n`);
-      res.status(403).send({
-        error: "Forbidden"
-      });
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
     }
-  } else {
-    console.error("400: Invalid User Id\n");
-    res.status(400).send({error: "Invalid User Id"});
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
+  }
+});
+
+// Partially updates the User with the provided ID.
+app.patch("/:userId", requireAuth, async (req, res) => {
+  try {
+    // attempt to convert the target user's ID in route to an integer
+    // return NaN if it's not an integer
+    const userId = validator.toInt(req.params.userId + "");
+
+    // ensure the provided target user's ID satisfies the schema
+    if (Number.isInteger(userId) &&
+        userSchema.userId.minValue <= userId &&
+        userId <= userSchema.userId.maxValue) {
+      // fetch the authenticated user's info
+      const authenticatedUser = await userModel.getUserById(req.auth.userId);
+
+      // only allow a Head Advisor to update a User's info
+      if (authenticatedUser.role === Role.headAdvisor) {
+        // validate the request body against the schema and get error message,
+        // if any
+        const schemaViolations = getSchemaViolations(req.body, userSchema, true);
+        if (!schemaViolations) {
+          // sanitize the request body and pass it to the model
+          const updatedUser = sanitizeUsingSchema(req.body, userSchema);
+          const result = await userModel.updateUserPartial(userId, updatedUser);
+
+          console.log("200: User partial update succeeded\n");
+          res.status(200).send({changedRows: result.changedRows});
+        } else {
+          console.error(schemaViolations);
+          res.status(400).send({error: schemaViolations});
+        }
+      } else {
+        console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+        res.status(403).send({
+          error: "Only head advisors can update a user's information"
+        });
+      }
+    } else {
+      console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
+      res.status(400).send({error: userSchema.userId.getErrorMessage()});
+    }
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
   }
 });
 
