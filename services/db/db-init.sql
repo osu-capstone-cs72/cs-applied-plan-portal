@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Mar 06, 2020 at 11:28 AM
+-- Generation Time: Mar 07, 2020 at 06:13 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -266,11 +266,11 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (56, 362, 19424289189, '2020-03-06 03:02:30'),
 (57, 359, 19424289189, '2020-03-06 03:02:33'),
 (58, 399, 19424289189, '2020-03-06 03:02:42'),
-(66, 405, 82757579527, '2020-03-06 03:05:12'),
 (69, 308, 82757579527, '2020-03-06 10:37:52'),
 (70, 361, 82757579527, '2020-03-06 10:37:55'),
 (71, 376, 82757579527, '2020-03-06 10:38:13'),
-(74, 310, 82757579527, '2020-03-06 10:56:33');
+(75, 405, 82757579527, '2020-03-06 21:39:07'),
+(76, 310, 82757579527, '2020-03-06 21:39:21');
 
 -- --------------------------------------------------------
 
@@ -551,7 +551,7 @@ ALTER TABLE `PlanReview`
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- Constraints for dumped tables
@@ -572,20 +572,6 @@ ALTER TABLE `Notification`
   ADD CONSTRAINT `fk_userIdNotification` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `Notification`
---
-ALTER TABLE `Notification`
-  ADD CONSTRAINT `fk_planIdNotification` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_userIdNotification` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `Notification`
---
-ALTER TABLE `Notification`
-  ADD CONSTRAINT `fk_planIdNotification` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_userIdNotification` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `Plan`
 --
 ALTER TABLE `Plan`
@@ -597,20 +583,6 @@ ALTER TABLE `Plan`
 ALTER TABLE `PlanReview`
   ADD CONSTRAINT `fk_planId` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_userId_review` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `RecentPlan`
---
-ALTER TABLE `RecentPlan`
-  ADD CONSTRAINT `fk_planIdRecent` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_userIdRecent` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `RecentPlan`
---
-ALTER TABLE `RecentPlan`
-  ADD CONSTRAINT `fk_planIdRecent` FOREIGN KEY (`planId`) REFERENCES `Plan` (`planId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_userIdRecent` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `RecentPlan`
