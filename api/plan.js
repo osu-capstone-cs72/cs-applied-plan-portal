@@ -18,6 +18,7 @@ const {
   createPlan,
   updatePlan,
   getPlan,
+  getSimilarPlans,
   searchPlans,
   deletePlan,
   getPlanActivity,
@@ -193,6 +194,26 @@ app.get("/:planId", requireAuth, async (req, res) => {
       res.status(400).send({error: violation});
 
     }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// view the number of rejected and accepted plans
+// that are similar to the selected plan
+app.get("/:planId/similar", requireAuth, async (req, res) => {
+
+  try {
+
+    const planId = req.params.planId;
+    console.log("Count similar plans to", planId);
+
+    const results = await getSimilarPlans(planId);
+    console.log("200: Similar plans found\n");
+    res.status(200).send(results);
 
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);

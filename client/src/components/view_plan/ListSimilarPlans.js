@@ -49,7 +49,7 @@ function ListSimilarPlans() {
   `;
 
   useEffect(() => {
-    // fetchSimilar(planId);
+    fetchSimilar(planId);
     // eslint-disable-next-line
   }, [planId]);
 
@@ -69,6 +69,8 @@ function ListSimilarPlans() {
         obj = await response.json();
         setAccepted(obj.accepted);
         setRejected(obj.rejected);
+        console.log("ACCEPTED", obj.accepted);
+        console.log("REJECTED", obj.rejected);
       }
 
     } catch (err) {
