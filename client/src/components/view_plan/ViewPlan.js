@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
+import ListSimilarPlans from "./ListSimilarPlans";
 import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
@@ -238,6 +239,7 @@ function ViewPlan(props) {
             planName={planName} status={status} currentUser={currentUser}
             onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
           <PlanTable courses={courses} />
+          <ListSimilarPlans />
         </div>
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
