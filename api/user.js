@@ -28,7 +28,7 @@ app.post("/", requireAuth, async (req, res) => {
     const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
     // only allow a Head Advisor to create new Users
-    if (authenticatedUser.role === Role.headAdvisor) {
+    if (authenticatedUser && authenticatedUser.role === Role.headAdvisor) {
       // validate the request body against the schema and get error message,
       // if any
       const schemaViolations = getSchemaViolations(req.body, userSchema);
@@ -152,6 +152,31 @@ app.get("/login", async (req, res) => {
   }
 });
 
+// Fetches only ID and role of the User whose `userId` is provided by the JWT.
+app.get("/idRole", requireAuth, async (req, res) => {
+  try {
+    // attempt to fetch the user from the database
+    const authenticatedUser = await userModel.getUserById(req.auth.userId);
+
+    // if the authenticated user exists and has a valid role, return the role
+    if (authenticatedUser) {
+      console.log("200: Authenticated user's ID and role\n");
+      res.status(200).send({
+        userId: authenticatedUser.userId,
+        role: authenticatedUser.role
+      });
+    } else {
+      console.log("404: No matching User or invalid role\n");
+      res.status(404).send({error: "No matching User or invalid role"});
+    }
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
+  }
+});
+
 // Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", requireAuth, async (req, res) => {
   try {
@@ -168,9 +193,10 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
 
       // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
-      if (authenticatedUser.userId === userId ||
+      if (authenticatedUser &&
+          (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
-          authenticatedUser.role === Role.headAdvisor) {
+          authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's plans
         const plans = await userModel.getUserPlans(userId);
 
@@ -215,9 +241,10 @@ app.get("/:userId", requireAuth, async (req, res) => {
 
       // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
-      if (authenticatedUser.userId === userId ||
+      if (authenticatedUser &&
+          (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
-          authenticatedUser.role === Role.headAdvisor) {
+          authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's info
         const user = await userModel.getUserById(userId);
 
@@ -261,7 +288,7 @@ app.patch("/:userId", requireAuth, async (req, res) => {
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
       // only allow a Head Advisor to update a User's info
-      if (authenticatedUser.role === Role.headAdvisor) {
+      if (authenticatedUser && authenticatedUser.role === Role.headAdvisor) {
         // validate the request body against the schema and get error message,
         // if any
         const schemaViolations = getSchemaViolations(req.body, userSchema, true);

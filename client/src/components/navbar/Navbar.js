@@ -8,10 +8,24 @@ import {withRouter} from "react-router-dom";
 import Notifications from "./Notifications";
 import History from "./History";
 import {getProfile} from "../../utils/authService";
+import {useEffect, useState} from "react";
 
 function Navbar(props) {
 
-  const profile = getProfile();
+  // role and function to set role, default to 0 (Student)
+  const [role, setRole] = useState(0);
+
+  useEffect(() => {
+    async function checkRole() {
+      const profile = await getProfile();
+      if (!profile.role) {
+        setRole(0);
+      } else {
+        setRole(profile.role);
+      }
+    }
+    checkRole();
+  }, []);
 
   const style = css`
 
@@ -49,7 +63,7 @@ function Navbar(props) {
         <p className="osu-logo">Oregon State University</p>
       </Link>
       <div className="right-container">
-        {profile.role ? <History /> : null}
+        {role ? <History /> : null}
         <Notifications />
         <button className="logout" onClick={() => logoutUser()}>Log out</button>
       </div>

@@ -17,7 +17,7 @@ function Home(props) {
   `;
 
   useEffect(() => {
-    function checkLoggedIn () {
+    async function checkLoggedIn () {
 
       // check to see if the user is logged in
       const validToken = loggedIn();
@@ -25,7 +25,7 @@ function Home(props) {
       if (validToken) {
 
         // render a page based on the users role
-        const profile = getProfile();
+        const profile = await getProfile();
         if (!profile.role) {
           setPageState(1);
         } else {
