@@ -35,7 +35,24 @@ export function logout() {
   localStorage.removeItem("id_token");
 }
 
-// get payload data from token
-export function getProfile() {
-  return jwtDecode(getToken());
+// get the user associated with the JWT payload, or return an empty object `{}`
+// if the user cannot be found or on error
+export async function getProfile() {
+  try {
+    const token = getToken();
+
+    // find the User associated with the payload subject
+    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+    const getUrl = `http://${server}/user/idRole?accessToken=${token}`;
+
+    const results = await fetch(getUrl);
+    const user = await results.json();
+    if (results.ok && user) {
+      return user;
+    } else {
+      return {};
+    }
+  } catch (err) {
+    return {};
+  }
 }
