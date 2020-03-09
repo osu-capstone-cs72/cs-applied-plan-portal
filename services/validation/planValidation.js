@@ -4,6 +4,7 @@
 const {pool} = require("../db/mysqlPool");
 
 const CREDITS_MIN = 32;
+const CREDITS_MAX = 50;
 
 // checks that the submitted data does not violate any constraints
 async function createEnforceConstraints(userId, planName, courses) {
@@ -419,7 +420,10 @@ async function restrictionConstraint(courses) {
 // checks that at least the minimum plan credits are selected
 async function creditConstraint(courses) {
 
-  const violation = `Invalid course selection:\nLess than ${CREDITS_MIN} credits selected.`;
+  const violationMin = `Invalid course selection:\n` +
+    `A plan must have at least ${CREDITS_MIN} credits selected.`;
+  const violationMax = `Invalid course selection:\n` +
+    `A plan must have no more than ${CREDITS_MAX} credits selected.`;
   let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
   const sqlArray = [];
 
@@ -433,17 +437,20 @@ async function creditConstraint(courses) {
 
   try {
 
+    // perform the sql query
     const results = await pool.query(sql, sqlArray);
 
-    // check if the sum of credits is less than the min
+    // check if the sum of credits is less than the min or greater than the max
     if (results[0][0].sumCredits < CREDITS_MIN) {
-      throw violation;
+      throw violationMin;
+    } else if (results[0][0].sumCredits > CREDITS_MAX) {
+      throw violationMax;
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
+    if (internalError(err, violationMin) && internalError(err, violationMax)) {
       console.log("Error checking credit constraint\n", err);
       throw ("Internal error");
     } else {
