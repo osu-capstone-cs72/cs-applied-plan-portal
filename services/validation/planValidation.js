@@ -5,6 +5,7 @@ const {pool} = require("../db/mysqlPool");
 
 const CREDITS_MIN = 32;
 const CREDITS_MAX = 50;
+const PLANS_MAX = 5;
 
 // checks that the submitted data does not violate any constraints
 async function createEnforceConstraints(userId, planName, courses) {
@@ -19,6 +20,7 @@ async function createEnforceConstraints(userId, planName, courses) {
     await courseConstraint(courses);
     await restrictionConstraint(courses);
     await creditConstraint(courses);
+    await limitConstraint(userId);
     return "valid";
 
   } catch (err) {
@@ -409,6 +411,37 @@ async function restrictionConstraint(courses) {
   } catch (err) {
     if (internalError(err, violationReq) && internalError(err, violationGrad)) {
       console.log("Error checking restriction constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+// checks to see if the user is allowed to create any more plans
+async function limitConstraint(userId) {
+
+  const violation = `Plan limit exceeded:\n` +
+    `You may not have more than ${PLANS_MAX} plans that are still awaiting approval.`;
+  const sql = "SELECT * FROM Plan WHERE studentId = ? " +
+    "AND (status = 1 OR status = 2 OR status = 3);";
+
+  try {
+
+    // perform the query
+    const results = await pool.query(sql, userId);
+
+    // see if the plan limit is exceeded
+    if (results[0].length >= PLANS_MAX) {
+      throw violation;
+    } else {
+      return;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking limit constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
