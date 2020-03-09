@@ -46,6 +46,12 @@ function ListSimilarPlans() {
         text-decoration: none;
     }
 
+    @media print {
+      &, #similar-plans, abbr {
+        display: none;
+      }
+    }
+
   `;
 
   useEffect(() => {

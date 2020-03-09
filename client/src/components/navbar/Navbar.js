@@ -28,11 +28,13 @@ function Navbar() {
 
   const style = css`
 
-    display: flex;
-    position: absolute;
-    width: 100%;
-    height: 35px;
-    background-color: #d73f09;
+    & {
+      display: flex;
+      position: absolute;
+      width: 100%;
+      height: 35px;
+      background-color: #d73f09;
+    }
 
     .osu-logo {
       vertical-align: middle;
@@ -46,6 +48,12 @@ function Navbar() {
 
     .logout {
       height: 35px;
+    }
+
+    @media print {
+      & {
+        display: none;
+      }
     }
 
   `;

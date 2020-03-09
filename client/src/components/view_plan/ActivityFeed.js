@@ -9,9 +9,21 @@ import PropTypes from "prop-types";
 function ActivityFeed(props) {
 
   const style = css`
-    margin: 50px auto;
-    text-align: center;
-    width: 100%;
+
+    & {
+      margin: 50px auto;
+      text-align: center;
+      width: 100%;
+    }
+
+    @media print {
+      & {
+        display: none;
+      }
+    }
+
+}
+
   `;
 
   return (
