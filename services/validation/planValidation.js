@@ -43,7 +43,7 @@ async function patchEnforceConstraints(planId, planName, courses, userId) {
     await lockedConstraint(planId);
 
     if (planName !== 0) {
-      await nameConstraint(planName, userId);
+      await nameConstraint(planName, userId, planId);
     }
 
     if (courses !== 0) {
@@ -177,12 +177,26 @@ async function planConstraint(planId) {
 }
 
 // checks that the plan does not share a name with another plan by that user
-async function nameConstraint(planName, userId) {
+async function nameConstraint(planName, userId, planId) {
 
   const violation = "Invalid plan name:\nYou already have a plan with this name.";
 
   try {
 
+    // check to see if this is a new plan or one being edited
+    if (arguments.length > 2) {
+      const sql = "SELECT planName FROM Plan WHERE planId=?;";
+      const results = await pool.query(sql, planId);
+
+      // if the plan being edited already has this name
+      // we allow it to keep the same name
+      if (results[0][0].planName.toLowerCase() === planName.toLowerCase()) {
+        return;
+      }
+
+    }
+
+    // check to see if the user already has a plan with this name
     const sql = "SELECT planName FROM Plan WHERE studentId=? AND planName=?;";
     const results = await pool.query(sql, [userId, planName]);
 
