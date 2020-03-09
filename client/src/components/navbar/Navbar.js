@@ -1,16 +1,15 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
-import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import {logout} from "../../utils/authService";
 import {withRouter} from "react-router-dom";
 import Notifications from "./Notifications";
 import History from "./History";
+import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
 
-function Navbar(props) {
+function Navbar() {
 
   // role and function to set role, default to 0 (Student)
   const [role, setRole] = useState(0);
@@ -51,12 +50,6 @@ function Navbar(props) {
 
   `;
 
-  // logout the current user
-  function logoutUser() {
-    logout();
-    props.history.push("/login");
-  }
-
   return (
     <div className="navbar-parent" css={style}>
       <Link to={"/"}>
@@ -65,14 +58,10 @@ function Navbar(props) {
       <div className="right-container">
         {role ? <History /> : null}
         <Notifications />
-        <button className="logout" onClick={() => logoutUser()}>Log out</button>
+        <Logout />
       </div>
     </div>
   );
 
 }
 export default withRouter(Navbar);
-
-Navbar.propTypes = {
-  history: PropTypes.object
-};

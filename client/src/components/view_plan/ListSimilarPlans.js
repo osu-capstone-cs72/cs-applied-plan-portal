@@ -58,7 +58,7 @@ function ListSimilarPlans() {
 
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      let url = `http://${server}/plan/${planId}/similar` +
+      const url = `http://${server}/plan/${planId}/similar` +
         `?accessToken=${token}`;
       let obj = [];
 

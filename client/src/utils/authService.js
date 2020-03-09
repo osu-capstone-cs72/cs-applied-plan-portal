@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import url from "url";
 
 // check if there is a valid saved token
 export function loggedIn() {
@@ -32,7 +33,17 @@ export function getToken() {
 
 // clear token from local storage
 export function logout() {
+
+  // remove the JWT
   localStorage.removeItem("id_token");
+
+  // redirect to the CAS logout page
+  window.location.href = url.format({
+    protocol: "https",
+    hostname: "login.oregonstate.edu",
+    pathname: "/idp-dev/profile/cas/logout",
+  });
+
 }
 
 // get the user associated with the JWT payload, or return an empty object `{}`
