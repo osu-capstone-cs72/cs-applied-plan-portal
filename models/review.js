@@ -8,19 +8,11 @@ const {planNotification} = require("./notification");
 async function createReview(planId, userId, status) {
 
   try {
-
-    // start by sending out notifications when we change the status
-    let sql = "SELECT planName FROM Plan WHERE planId=?;";
-    let results = await pool.query(sql, planId);
-    const planName = results[0][0].planName;
-    const notificationText = `The plan "${planName}" has a new status.`;
-    planNotification(planId, userId, notificationText, 2);
-
     // create the new review
-    sql = "BEGIN;" +
+    let sql = "BEGIN;" +
     "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, ?); " +
     "UPDATE Plan SET status=? WHERE planId=?; COMMIT;";
-    results = await pool.query(sql, [planId, userId, status, status, planId]);
+    let results = await pool.query(sql, [planId, userId, status, status, planId]);
     const reviewId = results[0][1].insertId;
 
     sql = "SELECT time FROM PlanReview WHERE reviewId=?;";
@@ -30,6 +22,9 @@ async function createReview(planId, userId, status) {
       insertId: reviewId,
       time: results[0][0].time
     };
+
+    // send out notifications about the new status
+    planNotification(planId, userId, 2);
 
     return obj;
 
