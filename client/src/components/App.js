@@ -7,6 +7,7 @@ import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
 import Home from "./Home";
 import Login from "./Login";
+import SetRoles from "./SetRoles";
 
 const globalStyles = css`
   @import url('https://fonts.googleapis.com/css?family=Muli');
@@ -38,7 +39,7 @@ function App() {
           <StudentCreatePlan />
         </Route>
         <Route path="/manageRoles">
-          <Home />
+          <SetRoles />
         </Route>
         <Route path="/500">
           <PageInternalError />
