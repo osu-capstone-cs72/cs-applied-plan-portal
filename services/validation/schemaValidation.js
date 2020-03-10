@@ -177,6 +177,46 @@ const userSchema = {
 };
 exports.userSchema = userSchema;
 
+// Schema of a search User request.
+const searchUserSchema = {
+  text: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid search text:\n" +
+        `The search text must be a string.`;
+    }
+  },
+  role: {
+    required: true,
+    type: Type.integer,
+    minValue: 0,
+    maxValue: 3,
+    getErrorMessage: function() {
+      return "Invalid user's role:\n" +
+        "User's role must be 0 (Student), 1 (Advisor), 2 (Head Advisor), " +
+        "or 3 (Any).";
+    }
+  },
+  cursorPrimary: {
+    required: false,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: false,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
+    }
+  }
+};
+exports.searchUserSchema = searchUserSchema;
+
 // Schema of a comment made on a plan.
 const commentSchema = {
   planId: {
