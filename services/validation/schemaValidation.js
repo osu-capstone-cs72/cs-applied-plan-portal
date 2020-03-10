@@ -62,8 +62,16 @@ const patchPlanSchema = {
 };
 exports.patchPlanSchema = patchPlanSchema;
 
-// Schema of a status Plan request used for the validator and the database.
-const statusPlanSchema = {
+// Schema of a search Plan request used for the validator and the database.
+const searchPlanSchema = {
+  text: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid search text:\n" +
+        `The search text must be a string.`;
+    }
+  },
   status: {
     required: true,
     type: Type.integer,
@@ -71,34 +79,60 @@ const statusPlanSchema = {
     maxValue: Infinity,
     getErrorMessage: function() {
       return "Invalid status value:\n" +
-        "The status value associated with this request must be a number greater than zero.";
+        "The status value associated with this request must be a number greater than or equal zero.";
     }
   },
-  created: {
+  sort: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid created value:\n" +
-        "The created value associated with this request must be a number greater than zero.";
+      return "Invalid sort value:\n" +
+        "The sort value associated with this request must be a number greater than or equal zero.";
     }
   },
-  ascend: {
+  order: {
     required: true,
     type: Type.integer,
     minValue: 0,
     maxValue: Infinity,
     getErrorMessage: function() {
-      return "Invalid ascend value:\n" +
-        "The ascend value associated with this request must be a number greater than zero.";
+      return "Invalid order value:\n" +
+        "The order value associated with this request must be a number greater than or equal to zero.";
+    }
+  },
+  cursorPrimary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
     }
   }
 };
-exports.statusPlanSchema = statusPlanSchema;
+exports.searchPlanSchema = searchPlanSchema;
 
 // Schema of a user.
 const userSchema = {
+  userId: {
+    required: true,
+    typee: Type.integer,
+    minValue: 10000000000,
+    maxValue: 99999999999,
+    getErrorMessage: function() {
+      return "Invalid user's ID:\n" +
+        "The user's ID must be a positive 11-digit integer.";
+    }
+  },
   firstName: {
     required: true,
     type: Type.string,
@@ -194,6 +228,37 @@ const reviewSchema = {
 };
 exports.reviewSchema = reviewSchema;
 
+// Schema of an activity.
+const activitySchema = {
+  planId: {
+    required: true,
+    type: Type.integer,
+    minValue: 1,
+    maxValue: Infinity,
+    getErrorMessage: function() {
+      return "Invalid plan ID:\n" +
+        "Plan ID must be an integer.";
+    }
+  },
+  cursorPrimary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid primary cursor field:\n" +
+        `The primary cursor field must be a string`;
+    }
+  },
+  cursorSecondary: {
+    required: true,
+    type: Type.string,
+    getErrorMessage: function() {
+      return "Invalid secondary cursor field:\n" +
+        `The secondary cursor field must be a string`;
+    }
+  }
+};
+exports.activitySchema = activitySchema;
+
 // Validates an object against a provided schema.
 //
 // Returns an empty string (a falsy value) if the object is valid to the schema.
@@ -203,10 +268,8 @@ exports.reviewSchema = reviewSchema;
 // Note:
 // - An object can have properties that are not in the schema and can still be
 //   valid.
-//
 // - Extra properties not in schema are ignored and are not included in the
 //   sanitized object.
-//
 // - For partial objects (e.g. usually those come from PATCH requests), not all
 //   properties are provided. In these cases, this function ignores keys not in
 //   the schema and only validates the rest.
@@ -315,6 +378,7 @@ function getPropertyViolation(obj, property, schema) {
   // string otherwise
   return isValid ? "" : (schema[property].getErrorMessage());
 }
+exports.getPropertyViolation = getPropertyViolation;
 
 // Sanitizes an object using a provided schema by extracting valid properties to
 // a new object and returns that object.

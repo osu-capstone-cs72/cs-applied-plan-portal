@@ -76,8 +76,7 @@ function CreateComment(props) {
         setErrorMessage("");
         setNewComment(!newComment);
         props.onNewComment({
-          commentId: obj.insertId,
-          reviewId: 0,
+          id: obj.insertId + "c",
           firstName: props.currentUser.firstName,
           lastName: props.currentUser.lastName,
           time: obj.time,

@@ -3,7 +3,7 @@
 import {useState, useEffect} from "react";
 import EditPlan from "./EditPlan";
 import CourseContainer from "./CourseContainer";
-import Navbar from "../Navbar";
+import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {getToken} from "../../utils/authService";
 import {useParams} from "react-router-dom";

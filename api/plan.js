@@ -10,7 +10,7 @@ const {
   createEnforceConstraints,
   patchEnforceConstraints,
   viewEnforceConstraints,
-  statusEnforceConstraints,
+  searchEnforceConstraints,
   deleteEnforceConstraints,
   activityEnforceConstraints
 } = require("../services/validation/planValidation");
@@ -18,14 +18,17 @@ const {
   createPlan,
   updatePlan,
   getPlan,
-  getPlansStatus,
+  getSimilarPlans,
+  searchPlans,
   deletePlan,
   getPlanActivity,
+  getRecentPlans
 } = require("../models/plan");
 const {
   postPlanSchema,
   patchPlanSchema,
-  statusPlanSchema,
+  searchPlanSchema,
+  activitySchema,
   getSchemaViolations,
   sanitizeUsingSchema
 } = require("../services/validation/schemaValidation");
@@ -49,7 +52,7 @@ app.post("/", requireAuth, async (req, res) => {
       const courses = formatStringArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
-      const violation = await createEnforceConstraints(userId, courses);
+      const violation = await createEnforceConstraints(userId, planName, courses);
       if (violation === "valid") {
 
         // create the plan
@@ -108,7 +111,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
       // only update a plan if it does not violate any constraints
-      const violation = await patchEnforceConstraints(planId, courses, userId);
+      const violation = await patchEnforceConstraints(planId, planName, courses, userId);
       if (violation === "valid") {
 
         // update the plan
@@ -138,6 +141,30 @@ app.patch("/", requireAuth, async (req, res) => {
 
 });
 
+// view a list of recently viewed plans
+app.get("/recent", requireAuth, async (req, res) => {
+
+  try {
+
+    const userId = req.auth.userId;
+    console.log("View a list of plans recently viewed by", userId);
+
+    const results = await getRecentPlans(userId);
+    if (results.plans.length === 0) {
+      console.error("404: No plans found\n");
+      res.status(404).send({error: "No plans found."});
+    } else {
+      console.log("200: Plans found\n");
+      res.status(200).send(results);
+    }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
 // view a plan
 app.get("/:planId", requireAuth, async (req, res) => {
 
@@ -151,7 +178,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
     const violation = await viewEnforceConstraints(planId, userId);
     if (violation === "valid") {
 
-      const results = await getPlan(planId);
+      const results = await getPlan(planId, userId);
       if (results.planId === 0) {
         console.error("404: No plan found\n");
         res.status(404).send({error: "No plan found."});
@@ -175,42 +202,61 @@ app.get("/:planId", requireAuth, async (req, res) => {
 
 });
 
-// get plans based on status and time
-app.get("/status/:status/:created/:ascend", requireAuth, async (req, res) => {
+// view the number of rejected and accepted plans
+// that are similar to the selected plan
+app.get("/:planId/similar", requireAuth, async (req, res) => {
+
+  try {
+
+    const planId = req.params.planId;
+    console.log("Count similar plans to", planId);
+
+    const results = await getSimilarPlans(planId);
+    console.log("200: Similar plans found\n");
+    res.status(200).send(results);
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({error: "An internal server error occurred. Please try again later."});
+  }
+
+});
+
+// search for plans
+app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
 
   try {
 
     // use schema validation to ensure valid request body
-    const errorMessage = getSchemaViolations(req.params, statusPlanSchema);
+    const errorMessage = getSchemaViolations(req.params, searchPlanSchema);
 
     if (!errorMessage) {
 
-      const sanitizedBody = sanitizeUsingSchema(req.params, statusPlanSchema);
+      const sanitizedBody = sanitizeUsingSchema(req.params, searchPlanSchema);
 
       // get request body
       const userId = req.auth.userId;
+      const text = sanitizedBody.text;
       const status = sanitizedBody.status;
-      const created = sanitizedBody.created;
-      const ascend = sanitizedBody.ascend;
-      console.log("Search plans by status");
+      const sort = sanitizedBody.sort;
+      const order = sanitizedBody.order;
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
+      console.log("Searching for plans");
 
-      // only list plans if they do not violate any constraints
-      const violation = await statusEnforceConstraints(userId);
+      // only search plans if they do not violate any constraints
+      const violation = await searchEnforceConstraints(userId);
       if (violation === "valid") {
 
-        // only allow advisors to search search plans
-        if (req.auth.userRole !== 1 && req.auth.userRole !== 2) {
-          console.error("403: Only advisors are allowed to list plans", "\n");
-          res.status(403).send({error: "Only advisors are allowed to list plans"});
-          return;
-        }
-
-        const results = await getPlansStatus(status, created, ascend);
+        const results = await searchPlans(text, parseInt(status, 10),
+          parseInt(sort, 10), parseInt(order, 10), cursor);
         if (results.plans.length === 0) {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found."});
         } else {
-          console.log("200: Plan found\n");
+          console.log("200: Plans found\n");
           res.status(200).send(results);
         }
 
@@ -274,33 +320,52 @@ app.delete("/:planId", requireAuth, async (req, res) => {
 });
 
 // get a plan's activity (comments and reviews)
-app.get("/:planId/activity", requireAuth, async (req, res) => {
+app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
 
   try {
 
-    console.log("Get a plans activity");
-    const userId = req.auth.userId;
-    const planId = req.params.planId;
+    // use schema validation to ensure valid request params
+    const errorMessage = getSchemaViolations(req.params, activitySchema);
 
-    // only view plan activity if it does not violate any constraints
-    const violation = await activityEnforceConstraints(planId, userId);
-    if (violation === "valid") {
+    if (!errorMessage) {
 
-      const results = await getPlanActivity(planId);
-      if (results.length === 0) {
-        console.error("404: No plan activity found\n");
-        res.status(404).send({error: "No plan activity found."});
+      const sanitizedBody = sanitizeUsingSchema(req.params, activitySchema);
+
+      // get request params
+      console.log("Get a plans activity");
+      const userId = req.auth.userId;
+      const planId = sanitizedBody.planId;
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
+
+      // only view plan activity if it does not violate any constraints
+      const violation = await activityEnforceConstraints(planId, userId);
+      if (violation === "valid") {
+
+        const results = await getPlanActivity(planId, cursor);
+        if (results.activity.length === 0) {
+          console.error("404: No plan activity found\n");
+          res.status(404).send({error: "No plan activity found."});
+        } else {
+          console.log("200: Plan activity found\n");
+          res.status(200).send(results);
+        }
+
       } else {
-        console.log("200: Plan activity found\n");
-        res.status(200).send(results);
+
+        // send an error that explains the violated constraint
+        console.error("400:", violation, "\n");
+        res.status(400).send({error: violation});
+
       }
 
     } else {
-
-      // send an error that explains the violated constraint
-      console.error("400:", violation, "\n");
-      res.status(400).send({error: violation});
-
+      // send an error explaining the schema violation
+      console.error("400:", errorMessage, "\n");
+      res.status(400).send({error: errorMessage});
+      return;
     }
 
   } catch (err) {

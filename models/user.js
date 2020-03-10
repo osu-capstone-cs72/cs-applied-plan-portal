@@ -2,7 +2,7 @@
 // Description: Provides data functions that handle the User entity.
 
 const assert = require("assert");
-const pool = require("../services/db/mysqlPool").pool;
+const {pool} = require("../services/db/mysqlPool");
 
 // Creates a new User in the database with the provided User object.
 //
@@ -23,6 +23,27 @@ async function createUser(newUser) {
   }
 }
 exports.createUser = createUser;
+
+// Updates an existing User in the database with the provided ID and updated
+// User object.
+//
+// On success, returns the result header from MySQL.
+// On failure, logs the error and bubbles it up.
+async function updateUserPartial(userId, updatedUser) {
+  try {
+    const sql = "UPDATE User SET ? WHERE userId = ?";
+    const results = await pool.query(sql, [updatedUser, userId]);
+
+    // ensure there's exactly 1 row affected and at most 1 row changed
+    assert(results[0].affectedRows === 1 && results[0].changedRows <= 1);
+
+    return results[0];
+  } catch (err) {
+    console.error("Error partially updating User");
+    throw Error(err);  // bubble the error up
+  }
+}
+exports.updateUserPartial = updateUserPartial;
 
 // Fetches information about a User from the database using the provided ID.
 //

@@ -1,13 +1,14 @@
 // File: comment.js
 // Description: data functions that handle comments
 
-const pool = require("../services/db/mysqlPool").pool;
+const {pool} = require("../services/db/mysqlPool");
+const {planNotification} = require("./notification");
 
 // create a new review
 async function createReview(planId, userId, status) {
 
   try {
-
+    // create the new review
     let sql = "BEGIN;" +
     "INSERT INTO PlanReview (planId, userId, status) VALUES (?, ?, ?); " +
     "UPDATE Plan SET status=? WHERE planId=?; COMMIT;";
@@ -15,12 +16,15 @@ async function createReview(planId, userId, status) {
     const reviewId = results[0][1].insertId;
 
     sql = "SELECT time FROM PlanReview WHERE reviewId=?;";
-    results = await pool.query(sql, [reviewId]);
+    results = await pool.query(sql, reviewId);
 
     const obj = {
       insertId: reviewId,
       time: results[0][0].time
     };
+
+    // send out notifications about the new status
+    planNotification(planId, userId, 2);
 
     return obj;
 

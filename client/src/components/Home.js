@@ -1,9 +1,8 @@
 /** @jsx jsx */
 
-import NavBar from "./Navbar";
 import PageSpinner from "./general/PageSpinner";
 import StudentHome from "./StudentHome";
-import AdvisorHome from "./AdvisorHome";
+import AdvisorHome from "./advisor_home/AdvisorHome";
 import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -18,7 +17,7 @@ function Home(props) {
   `;
 
   useEffect(() => {
-    function checkLoggedIn () {
+    async function checkLoggedIn () {
 
       // check to see if the user is logged in
       const validToken = loggedIn();
@@ -26,7 +25,7 @@ function Home(props) {
       if (validToken) {
 
         // render a page based on the users role
-        const profile = getProfile();
+        const profile = await getProfile();
         if (!profile.role) {
           setPageState(1);
         } else {
@@ -48,7 +47,6 @@ function Home(props) {
     return (
       <div id="home-container" css={style}>
         <PageSpinner loading={loading} />
-        <NavBar />
       </div>
     );
   } else if (pageState === 1) {
