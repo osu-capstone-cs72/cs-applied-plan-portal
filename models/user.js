@@ -45,6 +45,29 @@ async function updateUserPartial(userId, updatedUser) {
 }
 exports.updateUserPartial = updateUserPartial;
 
+// Fetches information about a User (or Users) that matches the search query.
+//
+// On success, returns null if there's no matching User or an array of User
+// objects if there is.
+// On failure, logs the error and bubbles it up.
+async function searchUsers(searchQuery) {
+  try {
+    const sql =
+      "SELECT * FROM User " +
+      "WHERE firstName LIKE CONCAT('%', ?, '%') " +
+      "OR lastName LIKE CONCAT('%', ?, '%') " +
+      "OR email LIKE CONCAT('%', ?, '%') " +
+      "OR role LIKE CONCAT('%', ?, '%')";
+    const results = await pool.query(sql, Array(4).fill(searchQuery));
+
+    return results[0].length > 0 ? results[0] : null;
+  } catch (err) {
+    console.error("Error searching Users");
+    throw Error(err);
+  }
+}
+exports.searchUsers = searchUsers;
+
 // Fetches information about a User from the database using the provided ID.
 //
 // On success, returns the User object if any, or `null` if no such User.
