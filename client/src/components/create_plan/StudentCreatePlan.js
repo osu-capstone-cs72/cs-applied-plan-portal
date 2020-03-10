@@ -72,16 +72,16 @@ export default function StudentCreatePlan() {
         setWarning("This course is already in your plan.");
         return;
       }
-      // check for required courses
-      if (course.restriction === 1) {
-        setWarning("You've selected a required course.");
-        return;
-      }
-      // check for graduate courses
-      if (course.restriction === 2) {
-        setWarning("You've selected a graduate course.");
-        return;
-      }
+    }
+    // check for required courses
+    if (course.restriction === 1) {
+      setWarning("You've selected a required course.");
+      return;
+    }
+    // check for graduate courses
+    if (course.restriction === 2) {
+      setWarning("You've selected a graduate course.");
+      return;
     }
     // add the new course
     setCourses(prev => [...prev, course]);
