@@ -5,7 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import Navbar from "../navbar/Navbar";
 import {getToken} from "../../utils/authService";
-import {formatRole} from "../../utils/formatRole";
+import SelectRole from "./SelectRole";
 
 export default function SetRoles() {
 
@@ -178,7 +178,11 @@ export default function SetRoles() {
                     </td>
                     <td className="user-data" key={user.userId + "b"}>{user.userId}</td>
                     <td className="user-data" key={user.userId + "c"}>{user.email}</td>
-                    <td className="user-data" key={user.userId + "d"}>{formatRole(user.role)}</td>
+                    <td className="user-data" key={user.userId + "d"}>
+                      <SelectRole role={user.role} userId={user.userId}
+                        userName={user.firstName + " " + user.lastName}/>
+                    </td>
+
 
                   </tr>
                 )}
