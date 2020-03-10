@@ -10,7 +10,7 @@ function Reviews(props) {
   const style = css`
     text-align: center;
     margin: 25px auto;
-    padding: 1rem;
+    padding: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,17 +23,21 @@ function Reviews(props) {
     .review-text-container {
     }
 
-    .review-status-text {
-      font-weight: bold;
-      font-size: medium;
+    .review-status {
+      font-style: italic;
+      font-size: larger;
+      color: #333;
     }
 
     .review-time {
-      font-style: italic;
+      font-size: small;
+      color: #555;
     }
 
     .review-user {
-      font-size: medium;
+      font-weight: bold;
+      font-size: large;
+      display: block;
     }
   `;
 
@@ -41,9 +45,8 @@ function Reviews(props) {
     return (
       <div className="review-container" css={style}>
         <div className="review-text-container">
-          <p className="review-status-text">{renderStatus(props.status)}</p>
-          <p className="review-user">{props.userName}</p>
-          <p className="review-time">{formatTime(props.time)}</p>
+          <p><span className="review-user">{props.userName}</span><span className="review-time">{formatTime(props.time)}</span></p>
+          <p className="review-status">Updated status to {renderStatus(props.status)}</p>
         </div>
       </div>
     );

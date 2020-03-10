@@ -21,21 +21,22 @@ function Comment(props) {
     .comment-user {
       font-weight: bold;
       font-size: large;
+      display: block;
     }
 
     .comment-time {
-      font-style: italic;
+      font-size: small;
+      color: #555;
     }
 
-    comment-text {
-      font-size: large;
+    .comment-text {
+      font-size: larger;
     }
   `;
 
   return (
     <div className="comment-container" css={style}>
-      <p className="comment-user">{props.firstName + " " + props.lastName}</p>
-      <p className="comment-time">{formatTime(props.time)}</p>
+      <p><span className="comment-user">{props.firstName + " " + props.lastName}</span><span className="comment-time">{formatTime(props.time)}</span></p>
       <p className="comment-text">{props.text}</p>
     </div>
   );
