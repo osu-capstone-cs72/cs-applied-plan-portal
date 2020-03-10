@@ -112,8 +112,8 @@ export default function SetRoles() {
         setUsers(obj.users);
 
       } else {
-        alert("bad status");
         // we got a bad status code. Show the error
+        setUsers([]);
         obj = await response.json();
         setErrorMessage(obj.error);
         if (response.status === 500) {

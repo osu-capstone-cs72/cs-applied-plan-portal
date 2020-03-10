@@ -70,7 +70,9 @@ async function searchUsers(text, role) {
     // check if any search text was sent
     if (text !== "*") {
       sql += "AND (CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') " +
-      "OR email LIKE CONCAT('%', ?, '%'));";
+      "OR email LIKE CONCAT('%', ?, '%') " +
+      "OR userId LIKE CONCAT('%', ?, '%'));";
+      sqlArray.push(text);
       sqlArray.push(text);
       sqlArray.push(text);
     }
