@@ -168,11 +168,10 @@ const userSchema = {
     required: true,
     type: Type.integer,
     minValue: 0,
-    maxValue: 3,
+    maxValue: 2,
     getErrorMessage: function() {
       return "Invalid user's role:\n" +
-        "User's role must be 0 (Student), 1 (Advisor), 2 (Head Advisor), " +
-        "or 3 (Any).";
+        "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
     }
   }
 };
@@ -192,10 +191,11 @@ const searchUserSchema = {
     required: true,
     type: Type.integer,
     minValue: 0,
-    maxValue: 2,
+    maxValue: 3,
     getErrorMessage: function() {
       return "Invalid user's role:\n" +
-        "User's role must be 0 (Student), 1 (Advisor), or 2 (Head Advisor).";
+        "User's role must be 0 (Student), 1 (Advisor), 2 (Head Advisor), " +
+        "or 3 (Any).";
     }
   },
   cursorPrimary: {

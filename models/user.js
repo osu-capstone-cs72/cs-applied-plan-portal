@@ -76,7 +76,6 @@ async function searchUsers(text, role) {
     }
 
     // perform the query
-    console.log(sql, sqlArray);
     const results = await pool.query(sql, sqlArray);
 
     return results[0].length > 0 ? results[0] : null;
