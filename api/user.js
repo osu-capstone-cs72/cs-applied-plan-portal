@@ -11,7 +11,8 @@ const userModel = require("../models/user");
 const {
   userSchema,
   getSchemaViolations,
-  sanitizeUsingSchema
+  sanitizeUsingSchema,
+  searchUserSchema
 } = require("../services/validation/schemaValidation");
 const {
   casValidateUser,
@@ -20,6 +21,63 @@ const {
 } = require("../services/auth/auth");
 
 const app = express();
+
+// Fetches a list of Users based on the search query.
+app.get("/search/:text/:role", requireAuth, async (req, res) => {
+  try {
+
+    // use schema validation to ensure valid request params
+    const errorMessage = getSchemaViolations(req.params, searchUserSchema);
+
+    if (!errorMessage) {
+
+      const sanitizedBody = sanitizeUsingSchema(req.params, searchUserSchema);
+
+      const text = sanitizedBody.text;
+      const role = sanitizedBody.role;
+      // const cursor = {
+      //  primary: sanitizedBody.cursorPrimary,
+      //  secondary: sanitizedBody.cursorSecondary
+      // };
+
+      console.log("Searching for users");
+
+      // fetch the authenticated user's info
+      const authenticatedUser = await userModel.getUserById(req.auth.userId);
+
+      // only allow an Advisor or a Head Advisor to fetch Users
+      if (authenticatedUser.role === Role.advisor ||
+          authenticatedUser.role === Role.headAdvisor) {
+        const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10));
+
+        if (matchingUsers) {
+          console.log("200: Matching Users found \n");
+          res.status(200).send({users: matchingUsers});
+        } else {
+          console.error("404: No matching Users found\n");
+          res.status(404).send({error: "No matching Users found"});
+        }
+      } else {
+        console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
+        res.status(403).send({
+          error: "Only advisors and head advisors can fetch users"
+        });
+      }
+
+    } else {
+      // send an error explaining the schema violation
+      console.error("400:", errorMessage, "\n");
+      res.status(400).send({error: errorMessage});
+      return;
+    }
+
+  } catch (err) {
+    console.error("500: An internal server error occurred\n Error:", err);
+    res.status(500).send({
+      error: "An internal server error occurred. Please try again later."
+    });
+  }
+});
 
 // Creates a new User in the system.
 app.post("/", requireAuth, async (req, res) => {
