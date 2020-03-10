@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 
 import {useState} from "react";
 import Navbar from "../navbar/Navbar";
+import PageSpinner from "../general/PageSpinner";
 import {getToken} from "../../utils/authService";
 import SelectRole from "./SelectRole";
 
@@ -11,6 +12,7 @@ export default function SetRoles() {
 
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const style = css`
 
@@ -132,6 +134,7 @@ export default function SetRoles() {
 
   return (
     <div css={style}>
+      <PageSpinner loading={loading} />
       <Navbar />
 
       <div id="user-manage-container">
@@ -180,12 +183,11 @@ export default function SetRoles() {
                     <td className="user-data" key={user.userId + "c"}>{user.email}</td>
                     <td className="user-data" key={user.userId + "d"}>
                       <SelectRole role={user.role} userId={user.userId}
-                        userName={user.firstName + " " + user.lastName}/>
+                        userName={user.firstName + " " + user.lastName} onLoading={e => setLoading(e)}/>
                     </td>
-
-
                   </tr>
                 )}
+
               </tbody>
             </table>
           </div>

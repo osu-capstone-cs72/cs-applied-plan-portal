@@ -3,6 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
+import {getToken} from "../../utils/authService";
 
 function SelectRole(props) {
 
@@ -18,7 +19,28 @@ function SelectRole(props) {
 
     if (window.confirm(confirmMessage)) {
 
-      console.log("Change the role");
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const patchURL = `http://${server}/user/${props.userId}/?accessToken=${token}`;
+      const patchObj = {
+        role: select.value
+      };
+
+      try {
+        props.onLoading(true);
+        fetch(patchURL, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(patchObj),
+        })
+          .catch((error) => alert("Error: " + error));
+      } catch (err) {
+        // this is a server error
+        alert("An internal server error occurred. Please try again later.");
+      }
+      props.onLoading(false);
 
     } else {
 
@@ -46,5 +68,6 @@ export default SelectRole;
 SelectRole.propTypes = {
   role: PropTypes.number,
   userId: PropTypes.number,
-  userName: PropTypes.string
+  userName: PropTypes.string,
+  onLoading: PropTypes.func
 };
