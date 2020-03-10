@@ -76,30 +76,45 @@ export default class CourseContainer extends React.Component {
     this.setState({
       filter: value
     });
-    if (value !== "none") {
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
-      let obj = [];
+    if (this.state.courses.length === 0) {
+      if (value !== "none") {
+        // if there are no courses and the user selects a filter, search for all classes with the course code
+        const token = getToken();
+        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+        const url = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
+        let obj = [];
 
-      try {
-        const results = await fetch(url);
-        if (results.ok) {
-          obj = await results.json();
-          this.setState({
-            courses: obj.courses
-          });
-        } else {
+        try {
+          const results = await fetch(url);
+          if (results.ok) {
+            obj = await results.json();
+            this.setState({
+              courses: obj.courses
+            });
+          } else {
           // we got a bad status code
-          obj = await results.json();
-          this.changeWarning(obj.error);
+            obj = await results.json();
+            this.changeWarning(obj.error);
+          }
+        } catch (err) {
+          alert("An internal server error occurred. Please try again later.");
         }
-      } catch (err) {
-        alert("An internal server error occurred. Please try again later.");
+      } else {
+        // if the empty value is selected, clear the courses list
+        this.setState({
+          courses: []
+        });
       }
     } else {
+      // if there are courses from the user's search, filter the existing courses
+      const newCourses = [...this.state.courses];
+      for (let i = 0; i < newCourses.length; i++) {
+        if (!newCourses[i].courseCode.startsWith(value)) {
+          newCourses.splice(i, 1);
+        }
+      }
       this.setState({
-        courses: []
+        courses: newCourses
       });
     }
   }
