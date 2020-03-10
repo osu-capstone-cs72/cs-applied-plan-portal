@@ -50,17 +50,37 @@ exports.updateUserPartial = updateUserPartial;
 // On success, returns null if there's no matching User or an array of User
 // objects if there is.
 // On failure, logs the error and bubbles it up.
-async function searchUsers(searchQuery) {
+async function searchUsers(text, role) {
   try {
-    const sql =
-      "SELECT * FROM User " +
-      "WHERE firstName LIKE CONCAT('%', ?, '%') " +
-      "OR lastName LIKE CONCAT('%', ?, '%') " +
-      "OR email LIKE CONCAT('%', ?, '%') " +
-      "OR role LIKE CONCAT('%', ?, '%')";
-    const results = await pool.query(sql, Array(4).fill(searchQuery));
+
+    const sqlArray = [];
+
+    // initial sql query
+    let sql =
+      "SELECT * FROM User ";
+
+    // check if we are searching for any role (instead of a specific role)
+    if (role === 3) {
+      sql += "WHERE TRUE ";
+    } else {
+      sql += "WHERE role = ? ";
+      sqlArray.push(role);
+    }
+
+    // check if any search text was sent
+    if (text !== "*") {
+      sql += "AND (CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') " +
+      "OR email LIKE CONCAT('%', ?, '%'));";
+      sqlArray.push(text);
+      sqlArray.push(text);
+    }
+
+    // perform the query
+    console.log(sql, sqlArray);
+    const results = await pool.query(sql, sqlArray);
 
     return results[0].length > 0 ? results[0] : null;
+
   } catch (err) {
     console.error("Error searching Users");
     throw Error(err);
