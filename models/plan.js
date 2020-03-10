@@ -460,6 +460,74 @@ async function getRecentPlans(userId) {
 }
 exports.getRecentPlans = getRecentPlans;
 
+// get a count of the similar accepted and rejected plans
+async function getSimilarPlans(planId) {
+
+  try {
+
+    // get all of the selected courses from the current plan
+    let sql = "SELECT courseId FROM SelectedCourse WHERE planId=?;";
+    let results = await pool.query(sql, planId);
+
+    const courses = results[0];
+    const sqlArray = [planId];
+
+    // if we don't have any courses then we stop here
+    if (!courses.length) {
+      return ({
+        accepted: 0,
+        rejected: 0
+      });
+    }
+
+    // add each course to the sql array for the following queries
+    for (let i = 0; i < courses.length; i++) {
+      sqlArray.push(courses[i].courseId);
+    }
+
+    // keep track of the total number of courses we are checking
+    sqlArray.push(courses.length);
+
+    // get all similar accepted plans
+    sql = "SELECT count(*) AS count FROM " +
+    "(SELECT S.planId, courseId, status, COUNT(*) AS matches " +
+    "FROM SelectedCourse AS S " +
+    "LEFT JOIN Plan AS P " +
+    "ON S.planId = P.planId " +
+    "WHERE status = 4 " +
+    "AND S.planId != ? ";
+
+    // make sure we only select courses that are in our plan
+    sql += "AND (courseId = ? ";
+
+    for (let i = 2; i < sqlArray.length - 1; i++) {
+      sql += "OR courseId = ? ";
+    }
+
+    sql += ") GROUP BY S.planId) AS C WHERE matches >= ?;";
+
+    // perform the query for the accepted courses
+    results = await pool.query(sql, sqlArray);
+    const accepted = results[0][0].count;
+
+    // perform the query for the rejected courses
+    sql = sql.replace("WHERE status = 4", "WHERE status = 0");
+    results = await pool.query(sql, sqlArray);
+    const rejected = results[0][0].count;
+
+    return {
+      accepted: accepted,
+      rejected: rejected
+    };
+
+  } catch (err) {
+    console.log("Error getting similar plans");
+    throw Error(err);
+  }
+
+}
+exports.getSimilarPlans = getSimilarPlans;
+
 // add a plan to the recently viewed plan list
 async function addRecentPlan(planId, userId) {
 
