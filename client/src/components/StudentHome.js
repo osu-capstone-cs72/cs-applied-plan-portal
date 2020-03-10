@@ -134,6 +134,7 @@ export default class StudentHome extends React.Component {
         padding: 1rem 2rem;
         /*padding: 10px;*/
         font-weight: bold;
+        white-space: nowrap;
       }
 
       table.student-plans-table  thead tr th:nth-child(2) {
@@ -144,6 +145,10 @@ export default class StudentHome extends React.Component {
       table tbody tr td {
         vertical-align: middle;
         padding: 1rem 2rem;
+      }
+      
+      table tbody tr {
+        cursor: pointer;
       }
 
       table.student-plans-table tbody tr td {
@@ -188,6 +193,8 @@ export default class StudentHome extends React.Component {
                 <th className="student-plans-data">Name</th>
                 <th className="student-plans-data">Updated</th>
               </tr>
+            </thead>
+            <tbody>
               {this.state.plans ? this.state.plans.map(p =>
                 <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
                   <td className="student-plans-data" key={p.planId + "b"}>
@@ -196,7 +203,7 @@ export default class StudentHome extends React.Component {
                   </td>
                   <td className="student-plans-data" key={p.planId + "d"}>{formatTime(p.lastUpdated)}</td>
                 </tr>) : null}
-            </thead>
+            </tbody>
           </table>
           <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
         </div>

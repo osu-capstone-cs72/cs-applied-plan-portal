@@ -49,6 +49,7 @@ function PlanTable(props) {
       padding: 0.5rem 2rem;
       /*padding: 10px;*/
       font-weight: bold;
+      white-space: nowrap;
     }
     
     table tbody tr td {
