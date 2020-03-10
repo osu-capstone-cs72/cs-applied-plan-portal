@@ -2,7 +2,6 @@
 
 import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
-import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import {getToken} from "../../utils/authService";
@@ -116,7 +115,3 @@ function Notifications() {
 
 }
 export default withRouter(Notifications);
-
-Notifications.propTypes = {
-  history: PropTypes.object,
-};

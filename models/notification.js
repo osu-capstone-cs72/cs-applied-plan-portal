@@ -2,6 +2,7 @@
 // Description: data functions that handle notification
 
 const {pool} = require("../services/db/mysqlPool");
+const {formatStatus} = require("../services/format/format");
 
 // get all notifications owned by a user
 async function getNotifications(userId) {
@@ -43,18 +44,31 @@ async function checkNotification(notificationId, userId) {
 exports.checkNotification = checkNotification;
 
 // create a new notification
-async function createNotification(planId, userId, text, type) {
+async function createNotification(planId, userId, type, status, planName, actorName) {
 
   try {
 
-    // only create a notification if we don't already have one
-    // of the same type for the same user on this plan
-    let sql = "SELECT * FROM Notification WHERE planId=? AND userId=? " +
-      "AND type=? AND checked=0;";
-    let results = await pool.query(sql, [planId, userId, type]);
+    // construct the new notification text based on
+    // the type, status, plan name, and actor name
+    let text;
+    if (type === 1) {
+
+      text = `${actorName} has added a new comment to the plan "${planName}".`;
+
+    } else {
+
+      const statusString = formatStatus(status);
+      text = `The plan "${planName}" has been set to "${statusString}" by ${actorName}.`;
+
+    }
+
+    // prevent duplicate notifications from being created by
+    // comparing notification messages
+    let sql = "SELECT text FROM Notification WHERE userId = ? " +
+      "AND text = ? AND checked = 0;";
+    let results = await pool.query(sql, [userId, text]);
 
     if (results[0].length) {
-      // we already have this notification, do not add a new one
       return;
     }
 
@@ -73,24 +87,37 @@ async function createNotification(planId, userId, text, type) {
 exports.createNotification = createNotification;
 
 // notify all users who are watching a plan
-async function planNotification(planId, userId, text, type) {
+async function planNotification(planId, userId, type) {
 
   try {
 
     // find all users who are interested in this plan
     // who are not the current user
-    const sql = "SELECT studentId AS userId FROM Plan WHERE planId=? AND studentId!=? " +
-     "UNION " +
-     "SELECT userId FROM Comment WHERE planId=? AND userId!=? " +
-     "UNION " +
-     "SELECT userId FROM PlanReview WHERE planId=? AND userId!=?;";
-    const results = await pool.query(sql, [planId, userId, planId, userId, planId, userId]);
+    let sql = "SELECT studentId AS userId FROM Plan WHERE planId=? AND studentId!=? " +
+      "UNION " +
+      "SELECT userId FROM Comment WHERE planId=? AND userId!=? " +
+      "UNION " +
+      "SELECT userId FROM PlanReview WHERE planId=? AND userId!=?;";
+    let results = await pool.query(sql, [planId, userId, planId, userId, planId, userId]);
     const userList = results[0];
+
+    // get the plan name and status
+    sql = "SELECT * " +
+      "FROM Plan WHERE planId = ?";
+    results = await pool.query(sql, planId);
+    const planName = results[0][0].planName;
+    const status = results[0][0].status;
+
+    // get the actor name (user who performed the action)
+    sql = "SELECT CONCAT(firstName, ' ', lastName) AS actorName " +
+      "FROM User WHERE userId = ?";
+    results = await pool.query(sql, userId);
+    const actorName = results[0][0].actorName;
 
     // send out the notifications (No need to wait)
     for (let i = 0; i < userList.length; i++) {
       console.log("Creating a notification for user", userList[i].userId);
-      createNotification(planId, userList[i].userId, text, type);
+      createNotification(planId, userList[i].userId, type, status, planName, actorName);
     }
 
     return;

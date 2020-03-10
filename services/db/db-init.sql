@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Mar 07, 2020 at 06:13 PM
+-- Generation Time: Mar 08, 2020 at 04:57 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -69,7 +69,8 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (121, 364, 82757579527, '2020-03-05 18:34:29', 'Newest comment yet.'),
 (122, 364, 82757579527, '2020-03-05 18:35:53', 'Even newer comment'),
 (123, 364, 82757579527, '2020-03-05 18:36:23', 'More comments'),
-(124, 405, 82757579527, '2020-03-06 02:48:23', 'This plan looks good. I am going to set it to awaiting final review.');
+(124, 405, 82757579527, '2020-03-06 02:48:23', 'This plan looks good. I am going to set it to awaiting final review.'),
+(125, 410, 82757579527, '2020-03-08 23:55:36', 'This plan doesn\'t have a clear focus. Create a plan that offers more attention to a specific field.');
 
 -- --------------------------------------------------------
 
@@ -162,7 +163,13 @@ INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`
 (30, 364, 40000000000, 'The plan \"Boba\'s Plan\" has a new status.', 2, 0),
 (31, 364, 10000000001, 'The plan \"Boba\'s Plan\" has a new status.', 2, 0),
 (32, 405, 19424289189, 'The plan \"Claire\'s plan\" has new comments.', 1, 1),
-(33, 405, 19424289189, 'The plan \"Claire\'s plan\" has a new status.', 2, 1);
+(33, 405, 19424289189, 'The plan \"Claire\'s plan\" has a new status.', 2, 1),
+(34, 406, 30000000000, 'The plan \"Same plan 1\" has a new status.', 2, 0),
+(35, 407, 30000000000, 'The plan \"Same plan 2\" has a new status.', 2, 0),
+(36, 409, 30000000000, 'The plan \"Same plan 4\" has a new status.', 2, 0),
+(37, 408, 30000000000, 'The plan \"Same plan 3\" has a new status.', 2, 0),
+(38, 410, 80000000000, 'The plan \"Mixed plan\" has new comments.', 1, 0),
+(39, 410, 80000000000, 'The plan \"Mixed plan\" has a new status.', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -196,7 +203,13 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 (375, 3, 'This is a great plan', 82757579527, '2020-02-23 19:26:36', '2020-02-25 04:46:55'),
 (376, 2, 'Some new plan', 82757579527, '2020-02-24 17:35:59', '2020-02-24 17:35:59'),
 (399, 0, 'No-CS plan', 82757579527, '2020-02-26 21:53:14', '2020-02-26 23:27:43'),
-(405, 3, 'Claire\'s plan', 19424289189, '2020-03-06 02:47:12', '2020-03-06 02:48:26');
+(405, 3, 'Claire\'s plan', 19424289189, '2020-03-06 02:47:12', '2020-03-06 02:48:26'),
+(406, 4, 'Same plan 1', 30000000000, '2020-03-08 19:03:39', '2020-03-08 19:06:45'),
+(407, 4, 'Same plan 2', 30000000000, '2020-03-08 19:04:14', '2020-03-08 19:06:59'),
+(408, 4, 'Same plan 3', 30000000000, '2020-03-08 19:04:41', '2020-03-08 22:02:33'),
+(409, 0, 'Same plan 4', 30000000000, '2020-03-08 19:05:20', '2020-03-08 19:07:11'),
+(410, 0, 'Mixed plan', 80000000000, '2020-03-08 23:51:34', '2020-03-08 23:55:43'),
+(411, 2, 'Random courses', 13000000000, '2020-03-08 23:52:31', '2020-03-08 23:54:31');
 
 -- --------------------------------------------------------
 
@@ -240,7 +253,13 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 (126, 364, 82757579527, 0, '2020-03-03 16:22:26'),
 (127, 364, 82757579527, 2, '2020-03-04 01:06:29'),
 (128, 364, 82757579527, 3, '2020-03-05 18:37:05'),
-(129, 405, 82757579527, 3, '2020-03-06 02:48:26');
+(129, 405, 82757579527, 3, '2020-03-06 02:48:26'),
+(130, 406, 82757579527, 4, '2020-03-08 19:06:45'),
+(131, 407, 82757579527, 4, '2020-03-08 19:06:59'),
+(132, 409, 82757579527, 0, '2020-03-08 19:07:11'),
+(133, 408, 82757579527, 0, '2020-03-08 19:07:29'),
+(134, 408, 82757579527, 4, '2020-03-08 22:02:33'),
+(135, 410, 82757579527, 0, '2020-03-08 23:55:43');
 
 -- --------------------------------------------------------
 
@@ -266,11 +285,11 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (56, 362, 19424289189, '2020-03-06 03:02:30'),
 (57, 359, 19424289189, '2020-03-06 03:02:33'),
 (58, 399, 19424289189, '2020-03-06 03:02:42'),
-(69, 308, 82757579527, '2020-03-06 10:37:52'),
-(70, 361, 82757579527, '2020-03-06 10:37:55'),
-(71, 376, 82757579527, '2020-03-06 10:38:13'),
-(75, 405, 82757579527, '2020-03-06 21:39:07'),
-(76, 310, 82757579527, '2020-03-06 21:39:21');
+(264, 362, 82757579527, '2020-03-08 22:13:12'),
+(267, 310, 82757579527, '2020-03-08 23:48:31'),
+(270, 410, 82757579527, '2020-03-08 23:55:49'),
+(272, 411, 82757579527, '2020-03-08 23:56:47'),
+(273, 399, 82757579527, '2020-03-08 23:57:09');
 
 -- --------------------------------------------------------
 
@@ -409,7 +428,73 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`) VALUES
 (405, 19),
 (405, 22),
 (405, 24),
-(405, 25);
+(405, 25),
+(406, 26),
+(406, 27),
+(406, 28),
+(406, 29),
+(406, 30),
+(406, 31),
+(406, 32),
+(406, 33),
+(406, 34),
+(406, 35),
+(406, 36),
+(406, 37),
+(407, 26),
+(407, 27),
+(407, 28),
+(407, 29),
+(407, 30),
+(407, 31),
+(407, 32),
+(407, 33),
+(407, 34),
+(407, 35),
+(407, 36),
+(407, 37),
+(408, 26),
+(408, 27),
+(408, 28),
+(408, 29),
+(408, 30),
+(408, 31),
+(408, 32),
+(408, 33),
+(408, 34),
+(408, 35),
+(408, 36),
+(408, 37),
+(409, 26),
+(409, 27),
+(409, 28),
+(409, 29),
+(409, 30),
+(409, 31),
+(409, 32),
+(409, 33),
+(409, 34),
+(409, 35),
+(409, 36),
+(409, 37),
+(410, 14),
+(410, 15),
+(410, 16),
+(410, 17),
+(410, 18),
+(410, 19),
+(410, 22),
+(410, 24),
+(410, 25),
+(411, 14),
+(411, 15),
+(411, 16),
+(411, 17),
+(411, 18),
+(411, 19),
+(411, 22),
+(411, 24),
+(411, 25);
 
 -- --------------------------------------------------------
 
@@ -445,7 +530,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (60000000000, 'Sheev', 'Palpatine', 'order66@gmail.com', 2),
 (60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 2),
 (70000000000, 'Lando', 'Calrissian', 'cloud_city@hotmail.com', 0),
-(80000000000, 'Ben', 'Kenobi', 'hello-there@hotmail.com', 1),
+(80000000000, 'Ben', 'Kenobi', 'hello-there@hotmail.com', 0),
 (82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2),
 (90000000000, 'Leia', 'Organa', 'CinnamonBuns@msn.com', 1);
 
@@ -496,7 +581,7 @@ ALTER TABLE `PlanReview`
 --
 ALTER TABLE `RecentPlan`
   ADD PRIMARY KEY (`recentId`),
-  ADD KEY `fk_planIdRecent` (`planId`),
+  ADD UNIQUE KEY `planId` (`planId`,`userId`),
   ADD KEY `fk_userIdRecent` (`userId`);
 
 --
@@ -521,7 +606,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -533,25 +618,25 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=406;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=412;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
 
 --
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=274;
 
 --
 -- Constraints for dumped tables
