@@ -4,6 +4,8 @@
 const {pool} = require("../db/mysqlPool");
 
 const CREDITS_MIN = 32;
+const CREDITS_MAX = 50;
+const PLANS_MAX = 5;
 
 // checks that the submitted data does not violate any constraints
 async function createEnforceConstraints(userId, planName, courses) {
@@ -18,6 +20,7 @@ async function createEnforceConstraints(userId, planName, courses) {
     await courseConstraint(courses);
     await restrictionConstraint(courses);
     await creditConstraint(courses);
+    await limitConstraint(userId);
     return "valid";
 
   } catch (err) {
@@ -40,7 +43,7 @@ async function patchEnforceConstraints(planId, planName, courses, userId) {
     await lockedConstraint(planId);
 
     if (planName !== 0) {
-      await nameConstraint(planName, userId);
+      await nameConstraint(planName, userId, planId);
     }
 
     if (courses !== 0) {
@@ -174,12 +177,26 @@ async function planConstraint(planId) {
 }
 
 // checks that the plan does not share a name with another plan by that user
-async function nameConstraint(planName, userId) {
+async function nameConstraint(planName, userId, planId) {
 
   const violation = "Invalid plan name:\nYou already have a plan with this name.";
 
   try {
 
+    // check to see if this is a new plan or one being edited
+    if (arguments.length > 2) {
+      const sql = "SELECT planName FROM Plan WHERE planId=?;";
+      const results = await pool.query(sql, planId);
+
+      // if the plan being edited already has this name
+      // we allow it to keep the same name
+      if (results[0][0].planName.toLowerCase() === planName.toLowerCase()) {
+        return;
+      }
+
+    }
+
+    // check to see if the user already has a plan with this name
     const sql = "SELECT planName FROM Plan WHERE studentId=? AND planName=?;";
     const results = await pool.query(sql, [userId, planName]);
 
@@ -416,10 +433,44 @@ async function restrictionConstraint(courses) {
 
 }
 
+// checks to see if the user is allowed to create any more plans
+async function limitConstraint(userId) {
+
+  const violation = `Plan limit exceeded:\n` +
+    `You may not have more than ${PLANS_MAX} plans that are still awaiting approval.`;
+  const sql = "SELECT * FROM Plan WHERE studentId = ? " +
+    "AND (status = 1 OR status = 2 OR status = 3);";
+
+  try {
+
+    // perform the query
+    const results = await pool.query(sql, userId);
+
+    // see if the plan limit is exceeded
+    if (results[0].length >= PLANS_MAX) {
+      throw violation;
+    } else {
+      return;
+    }
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking limit constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
 // checks that at least the minimum plan credits are selected
 async function creditConstraint(courses) {
 
-  const violation = `Invalid course selection:\nLess than ${CREDITS_MIN} credits selected.`;
+  const violationMin = `Invalid course selection:\n` +
+    `A plan must have at least ${CREDITS_MIN} credits selected.`;
+  const violationMax = `Invalid course selection:\n` +
+    `A plan must have no more than ${CREDITS_MAX} credits selected.`;
   let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
   const sqlArray = [];
 
@@ -433,17 +484,20 @@ async function creditConstraint(courses) {
 
   try {
 
+    // perform the sql query
     const results = await pool.query(sql, sqlArray);
 
-    // check if the sum of credits is less than the min
+    // check if the sum of credits is less than the min or greater than the max
     if (results[0][0].sumCredits < CREDITS_MIN) {
-      throw violation;
+      throw violationMin;
+    } else if (results[0][0].sumCredits > CREDITS_MAX) {
+      throw violationMax;
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
+    if (internalError(err, violationMin) && internalError(err, violationMax)) {
       console.log("Error checking credit constraint\n", err);
       throw ("Internal error");
     } else {

@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
+import ListSimilarPlans from "./ListSimilarPlans";
 import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
@@ -101,8 +102,8 @@ function ViewPlan(props) {
       }
 
       // get active user information
-      const profile = getProfile();
-      url = `http://${server}/user/${profile.sub}/` +
+      const profile = await getProfile();
+      url = `http://${server}/user/${profile.userId}/` +
         `?accessToken=${token}`;
       const response = await fetch(url);
       if (response.ok) {
@@ -189,7 +190,7 @@ function ViewPlan(props) {
     const opts = {
       pageTitle: `OSU CS Applied Plan Portal: Plan ${planId}`,
     };
-    PHE.printElement(document.getElementById("printable-content"), opts);
+    PHE.printElement(document.getElementById("view-plan-container"), opts);
   }
 
   async function handleDelete() {
@@ -230,15 +231,14 @@ function ViewPlan(props) {
 
   if (!pageError) {
     return (
-      <div className="view-plan" css={style}>
+      <div id="view-plan-container" css={style}>
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
-        <div id={"printable-content"}>
-          <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
-            planName={planName} status={status} currentUser={currentUser}
-            onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
-          <PlanTable courses={courses} />
-        </div>
+        <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
+          planName={planName} status={status} currentUser={currentUser}
+          onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
+        <PlanTable courses={courses} />
+        <ListSimilarPlans />
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
         <ActivityFeed activity={activity} currentUser={currentUser} status={status}
