@@ -22,7 +22,7 @@ function PlanMetadata(props) {
       padding: 10px;
       text-align: center;
       width: 100%;
-      background-color: #c0c0c0;
+      background: var(--color-gray-200);
       display: flex;
       align-items: stretch;
       justify-content: center;
@@ -57,6 +57,7 @@ function PlanMetadata(props) {
     .field-text {
       font-weight: normal;
       vertical-align: middle;
+      margin-bottom: 0;
     }
 
     #delete-plan-button, #edit-plan-button, #print-plan-button {

@@ -13,7 +13,7 @@ const globalStyles = css`
   body {
     font-family: 'Muli', sans-serif;
     margin: 0;
-    background: var(--color-lightgray-100);
+    background: var(--color-lightgray-200);
   }
   
   :root {

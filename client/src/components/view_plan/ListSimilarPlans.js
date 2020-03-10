@@ -41,7 +41,7 @@ function ListSimilarPlans() {
         -moz-border-radius: 25px;
         border-radius: 25px;
 
-        background-color: #b3b3b3;
+        background: var(--color-gray-200);
         color: black;
         text-align: center;
 

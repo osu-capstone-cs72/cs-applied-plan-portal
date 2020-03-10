@@ -175,17 +175,20 @@ export default class EditPlan extends React.Component {
   render() {
 
     const style = css`
-      border-right: 2px solid black;
-      flex: 50%;
-      height: 100vh;
-      position: relative;
+      flex: 80%;
       margin: 15px;
-      top: 40px;
-
+      margin-top: 65px;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      
+      .action-tray {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: flex-end;
+      }
+      
       .submit-button {
-        position: absolute;
-        bottom: 55px;
-        right: 30px;
       }
 
       .plan-header {
@@ -209,31 +212,76 @@ export default class EditPlan extends React.Component {
         position: relative;
         left: 50%;
       }
+      
+      #plan-name-input {
+        font-size: 23px;
+        border-radius: 0.5rem;
+        border: 2px solid var(--color-lightgray-500);
+        /*background: var(--color-lightgray-300);*/
+        color: var(--color-gray-800);
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        outline: none;
+      }
+      
+      .edit-plan-table {
+        flex: 100%;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        padding: 1rem;
+        background: var(--color-lightgray-50);
+        background: white;
+      }
+      
+      table.edit-plan-table thead tr th {
+        background: var(--color-lightgray-100);
+        color: var(--color-gray-400);
+        font-variant-caps: all-small-caps;
+        font-weight: 600;
+        font-size: 12pt;
+        border-bottom: none;
+        padding: 1rem 2rem;
+        /*padding: 10px;*/
+      }
+      
+      table.edit-plan-table tbody tr td {
+        vertical-align: middle;
+        padding: 1rem 2rem;
+      }
+      
+      .submit-button {
+        background: var(--color-blue-500);
+        color: var(--color-blue-50);
+        padding: 1rem 1rem;
+        border-radius: 0.5rem;
+        border: none;
+      }
     `;
 
     return (
       <div className="edit-plan" css={style}>
         <div className="header">
           <div className="plan-header">
-            <label className="plan-name">Plan name</label>
+            {/*<label className="plan-name">Plan name</label>*/}
             <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
               value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
-            <label className="credits">Total credits</label>
-            <p className="total-credits">{this.loadCredits()}</p>
+            {/*<label className="credits">Total credits</label>*/}
+            <p className="total-credits">{this.loadCredits()} credits</p>
           </div>
         </div>
         <div className="warning-box">
           {this.state.warning ? <p>{this.state.warning}</p> : null}
         </div>
-        <table className="table">
+        <table className="edit-plan-table">
           <thead>
             <tr>
-              <th scope="col">Code</th>
-              <th scope="col">Title</th>
-              <th scope="col">Credits</th>
-              <th scope="col"></th>
+              <th>Course</th>
+              <th>Credits</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody>
@@ -241,9 +289,11 @@ export default class EditPlan extends React.Component {
               courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
           </tbody>
         </table>
-        <button className="submit-button" onClick={this.submitPlan}>
-          {this.props.edit ? "Update" : "Submit"}
-        </button>
+        <div className="action-tray">
+          <button className="submit-button" onClick={this.submitPlan}>
+            {this.props.edit ? "Save Plan" : "Submit Plan"}
+          </button>
+        </div>
       </div>
     );
   }
