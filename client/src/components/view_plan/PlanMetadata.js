@@ -11,27 +11,36 @@ function PlanMetadata(props) {
 
   const style = css`
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     flex-direction: column;
-    height: 110px;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
 
     .plan-metadata {
       padding: 10px;
       text-align: center;
-      vertical-align: middle;
       width: 100%;
-      height: 75px;
       background-color: #c0c0c0;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-direction: row;
     }
 
     .metadata-field {
-      vertical-align: top;
-      display: inline-block;
-      width: 12%;
+      /*vertical-align: top;
+      display: inline-block;*/
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       height: 55px;
       word-wrap: break-word;
+      flex-grow: 1;
     }
-
+    
     .small-metadata-field {
       vertical-align: top;
       display: inline-block;
@@ -54,12 +63,19 @@ function PlanMetadata(props) {
       padding: 10px;
     }
 
-    #modify-button-container {
+    /*#modify-button-container {
       display: inline-block;
       text-align: center;
       vertical-align: middle;
       margin: 0;
-      width: 24%;
+    }*/
+    
+    button {
+      border: 1px solid black;
+      color: black;
+      border-radius: 0.25rem;
+      background: transparent;
+      margin-right: 0.5rem;
     }
 
     @media print {
@@ -106,23 +122,21 @@ function PlanMetadata(props) {
           </button>
         </div>
         {props.status === 1 || props.status === 2 ? (
-          <div id="modify-button-container">
-            <div className="small-metadata-field button-field">
+            <div className="metadata-field button-field">
               <Link to={`/editPlan/${planId}`} id="edit-plan-link">
                 <button id="edit-plan-button">
                     Edit Plan
                 </button>
               </Link>
             </div>
-            <div className="small-metadata-field button-field">
+        ) : (null)}
+        {props.status === 1 || props.status === 2 ? (
+            <div className="metadata-field button-field">
               <button id="delete-plan-button" onClick={() => props.onDelete()}>
                   Delete Plan
               </button>
             </div>
-          </div>
-        ) : (
-          null
-        )}
+        ) : (null)}
       </div>
     </div>
   );

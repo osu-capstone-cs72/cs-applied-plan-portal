@@ -26,7 +26,8 @@ function CreateComment(props) {
     #comment-input-container {
       display: inline-block;
       padding: 25px;
-      background-color: #b3b3b3;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     #comment-text-input {
@@ -38,6 +39,13 @@ function CreateComment(props) {
     #submit-comment-button {
       display: block;
       margin: auto;
+    }
+    
+    .toggle-creation-button {
+      background: none;
+      border: 1px solid black;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
     }
   `;
 
@@ -102,7 +110,7 @@ function CreateComment(props) {
       return (
         <div id="create-comment-container" css={style}>
           <button className="toggle-creation-button" onClick={() => toggle()}>
-            +
+            Add comment
           </button>
         </div>
       );
@@ -110,7 +118,7 @@ function CreateComment(props) {
       return (
         <div id="create-comment-container" css={style}>
           <button className="toggle-creation-button" onClick={() => toggle()}>
-          -
+            Cancel
           </button>
           <div id="comment-error-container">
             <p id="comment-error-message">{errorMessage}</p>
@@ -118,7 +126,7 @@ function CreateComment(props) {
           <div id="comment-input-container">
             <textarea id="comment-text-input" rows="5" cols="50"/>
             <button id="submit-comment-button" onClick={() => submit(planId)}>
-              Submit Comment
+              Submit
             </button>
           </div>
         </div>

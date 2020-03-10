@@ -24,6 +24,11 @@ function Notifications() {
 
     .drop-button {
       height: 35px;
+      border: 1px solid white;
+      color: white;
+      border-radius: 0.25rem;
+      background: transparent;
+      margin-right: 0.5rem;
     }
 
     .dropdown-content {
