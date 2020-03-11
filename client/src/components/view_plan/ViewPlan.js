@@ -133,7 +133,7 @@ function ViewPlan(props) {
       const initialReview =
       {
         id: "0r",
-        status: 2,
+        status: 5,
         planId: planId,
         userId: userId,
         time: created,

@@ -46,7 +46,11 @@ function Reviews(props) {
       <div className="review-container" css={style}>
         <div className="review-text-container">
           <p><span className="review-user">{props.userName}</span><span className="review-time">{formatTime(props.time)}</span></p>
-          <p className="review-status">Updated status to {renderStatus(props.status)}</p>
+          {props.status > 4 ? (
+            <p className="review-status">Created a new plan</p>
+          ) : (
+            <p className="review-status">Updated status to {renderStatus(props.status)}</p>
+          )}
         </div>
       </div>
     );
