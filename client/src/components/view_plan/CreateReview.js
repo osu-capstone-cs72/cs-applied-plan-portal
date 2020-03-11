@@ -16,7 +16,7 @@ function CreateReview(props) {
     text-align: center;
     width: 100%;
 
-      #review-error-container {
+    #review-error-container {
       display: block;
       width: auto;
       min-width: 100px;

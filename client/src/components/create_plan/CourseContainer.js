@@ -117,15 +117,14 @@ export default class CourseContainer extends React.Component {
 
     const style = css`
       flex: 50%;
-      margin: 10px;
-      position: relative;
-      top: 40px;
+      margin-top: 65px;
+      align-items: stretch;
+      justify-items: stretch;
+      display: flex;
+      flex-direction: column;
+
 
       .explore-courses {
-        margin: 10px;
-        padding: 8px;
-        height: 85vh;
-        overflow: scroll;
       }
 
       .search-container {
