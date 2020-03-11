@@ -71,13 +71,17 @@ async function searchUsers(text, role) {
     if (text !== "*") {
       sql += "AND (CONCAT(firstName , ' ' , lastName) LIKE CONCAT('%', ?, '%') " +
       "OR email LIKE CONCAT('%', ?, '%') " +
-      "OR userId LIKE CONCAT('%', ?, '%'));";
+      "OR userId LIKE CONCAT('%', ?, '%')) ";
       sqlArray.push(text);
       sqlArray.push(text);
       sqlArray.push(text);
     }
 
+    // sort search results by user name
+    sql += "ORDER BY CONCAT(firstName , ' ' , lastName) ASC;";
+
     // perform the query
+    console.log(sql);
     const results = await pool.query(sql, sqlArray);
 
     return results[0].length > 0 ? results[0] : null;

@@ -235,7 +235,7 @@ function ViewPlan(props) {
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
-          planName={planName} status={status} currentUser={currentUser}
+          planName={planName} status={status} currentUser={currentUser} courses={courses}
           onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
         <PlanTable courses={courses} />
         <ListSimilarPlans />

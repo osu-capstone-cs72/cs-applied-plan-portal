@@ -2,11 +2,9 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
-import {useState, useEffect} from "react";
+
 
 function PlanTable(props) {
-
-  const [creditSum, setCreditSum] = useState(0);
 
   const style = css`
     width: 100%;
@@ -63,14 +61,6 @@ function PlanTable(props) {
   
   `;
 
-  useEffect(() => {
-    let sum = 0;
-    for (let i = 0; i < props.courses.length; i++) {
-      sum += props.courses[i].credits;
-    }
-    setCreditSum(sum);
-  }, [props.courses]);
-
   return (
     <div id="table-container" css={style}>
       <table id="courses-table">
@@ -78,7 +68,7 @@ function PlanTable(props) {
           <tr>
             <th>Course</th>
             <th>Name</th>
-            <th>Credits ({creditSum})</th>
+            <th>Credit Hours</th>
             <th>Prerequisites</th>
           </tr>
         </thead>
@@ -108,6 +98,6 @@ function PlanTable(props) {
 export default PlanTable;
 
 PlanTable.propTypes = {
-  courses: PropTypes.any,
+  courses: PropTypes.array,
   loading: PropTypes.bool
 };
