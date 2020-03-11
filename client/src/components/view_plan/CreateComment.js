@@ -111,7 +111,7 @@ function CreateComment(props) {
       return (
         <div id="create-comment-container" css={style}>
           <button className="toggle-creation-button" onClick={() => toggle()}>
-            Add comment
+            Add Comment
           </button>
         </div>
       );
