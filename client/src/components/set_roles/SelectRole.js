@@ -13,6 +13,7 @@ function SelectRole(props) {
   const style = css`
   `;
 
+  // updates a user's role
   async function setNewRole() {
 
     const select = document.getElementById(`change-user-role-${props.userId}`);

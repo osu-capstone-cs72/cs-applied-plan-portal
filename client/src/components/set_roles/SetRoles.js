@@ -13,6 +13,14 @@ export default function SetRoles() {
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searchFields, setSearchFields] = useState({
+    textValue: "*",
+    roleValue: 3
+  });
+  const [cursor, setCursor] = useState({
+    primary: "null",
+    secondary: "null"
+  });
 
   const style = css`
 
@@ -85,59 +93,93 @@ export default function SetRoles() {
 
 `;
 
-  async function submitHandler(e) {
+
+  // search for users
+  async function searchUsers(cursor, newSearch) {
+    try {
+      setErrorMessage("");
+      setLoading(true);
+
+      // get the search text from the search field
+      let textValue = document.getElementById("input-search").value;
+
+      // if search text is empty we use a special char to represent
+      // any text response as valid
+      if (textValue === "") {
+        textValue = "*";
+      }
+
+      // get the role from the role select
+      const roleSelect = document.getElementById("select-role");
+      let roleValue = roleSelect.options[roleSelect.selectedIndex].value;
+
+      // only set the search values if we are performing a new search
+      if (newSearch) {
+
+        setSearchFields({
+          textValue: textValue,
+          roleValue: roleValue
+        });
+      } else {
+        textValue = searchFields.textValue;
+        roleValue = searchFields.roleValue;
+      }
+
+      // construct the request url
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const getUrl = `http://${server}/user/search/${textValue}/${roleValue}` +
+        `/${cursor.primary}/${cursor.secondary}?accessToken=${token}`;
+      let obj = [];
+
+      // get our search results
+      const results = await fetch(getUrl);
+
+      if (results.ok) {
+
+        // if the cursor is new then we will want to relist users
+        obj = await results.json();
+        if (cursor.primary === "null") {
+          setUsers([...obj.users]);
+        } else {
+          setUsers([...users, ...obj.users]);
+        }
+        setCursor(obj.nextCursor);
+
+      } else {
+        // we got a bad status code. Show the error
+        obj = await results.json();
+        setErrorMessage(obj.error);
+        if (results.status === 500) {
+          setErrorMessage("An internal server error occurred. Please try again later.");
+        }
+        setUsers([]);
+      }
+    } catch (err) {
+      // show error message if error while searching
+      setErrorMessage("An internal server error occurred. Please try again later.");
+    }
+    setLoading(false);
+  }
+
+  // perform a new user search when form is submitted
+  function submitHandler(e) {
 
     // prevent the default behavior of the form button
     e.preventDefault();
 
-    // get the search text from the search field
-    let text = document.getElementById("input-search").value;
+    // perform a new search for users
+    const newCursor = {
+      primary: "null",
+      secondary: "null"
+    };
+    searchUsers(newCursor, true);
 
-    // if search text is empty we use a special char to represent
-    // any text response as valid
-    if (text === "") {
-      text = "*";
-    }
+  }
 
-    // get the role from the role select
-    const roleSelect = document.getElementById("select-role");
-    const role = roleSelect.options[roleSelect.selectedIndex].value;
-
-    try {
-
-      setErrorMessage("");
-      setLoading(true);
-
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/user/search/${text}/${role}/?accessToken=${token}`;
-      let obj = [];
-
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setUsers(obj.users);
-
-      } else {
-        // we got a bad status code. Show the error
-        setUsers([]);
-        obj = await response.json();
-        setErrorMessage(obj.error);
-        if (response.status === 500) {
-          setErrorMessage("An internal server error occurred. Please try again later.");
-        }
-        if (response.status === 404) {
-          setErrorMessage("No users found.");
-        }
-      }
-    } catch (err) {
-      // this is a server error
-      setErrorMessage("An internal server error occurred. Please try again later.");
-    }
-
-    setLoading(false);
-
+  // perform a continued user search when the 'show more' button is pressed
+  function loadMore() {
+    searchUsers(cursor, false);
   }
 
   return (
@@ -200,6 +242,14 @@ export default function SetRoles() {
 
               </tbody>
             </table>
+            { cursor.primary === "null" ? (
+              null
+            ) : (
+              <button id="page-load-more-button"
+                onClick={() => loadMore() }>
+                Show More
+              </button>
+            )}
           </div>
         ) : (
           null

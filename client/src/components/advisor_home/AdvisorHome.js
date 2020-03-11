@@ -100,7 +100,6 @@ function AdvisorHome() {
 
       // get our search results
       const results = await fetch(getUrl);
-      setLoading(false);
       if (results.ok) {
 
         // if the cursor is new then we will want to relist plans
@@ -119,14 +118,13 @@ function AdvisorHome() {
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }
-        if (results.status === 404) {
-          setPlans([]);
-        }
+        setPlans([]);
       }
     } catch (err) {
       // show error message if error while searching
       setErrorMessage("An internal server error occurred. Please try again later.");
     }
+    setLoading(false);
   }
 
   // update the sorting rules

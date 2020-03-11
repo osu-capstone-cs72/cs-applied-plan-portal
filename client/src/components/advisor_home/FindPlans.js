@@ -45,6 +45,7 @@ function FindPlans(props) {
 
   `;
 
+  // performs a new plan search when the form is submitted
   function submitHandler(e) {
     e.preventDefault();
     props.onSearch({primary: "null", secondary: "null"});
