@@ -199,7 +199,7 @@ const searchUserSchema = {
     }
   },
   cursorPrimary: {
-    required: false,
+    required: true,
     type: Type.string,
     getErrorMessage: function() {
       return "Invalid primary cursor field:\n" +
@@ -207,7 +207,7 @@ const searchUserSchema = {
     }
   },
   cursorSecondary: {
-    required: false,
+    required: true,
     type: Type.string,
     getErrorMessage: function() {
       return "Invalid secondary cursor field:\n" +

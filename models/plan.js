@@ -155,7 +155,7 @@ async function searchPlans(text, status, sort, order, cursor) {
       // Depending on our search query the primary cursor value may
       // represent any number of values (ex: userId, status, etc...).
       // We select the correct value by using the value that we are sorting by.
-
+      //
       // Instances where the primary cursor value could have duplicate values
       // are handled by also sorting by plan ID.
 
@@ -296,10 +296,14 @@ async function searchPlans(text, status, sort, order, cursor) {
 
     }
 
-    return {
-      plans: plans,
-      nextCursor: nextCursor
-    };
+    if (plans.length) {
+      return {
+        plans: plans,
+        nextCursor: nextCursor
+      };
+    } else {
+      return null;
+    }
 
   } catch (err) {
     console.log("Error searching for plans");

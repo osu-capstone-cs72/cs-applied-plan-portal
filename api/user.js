@@ -23,7 +23,7 @@ const {
 const app = express();
 
 // Fetches a list of Users based on the search query.
-app.get("/search/:text/:role", requireAuth, async (req, res) => {
+app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request params
@@ -35,10 +35,10 @@ app.get("/search/:text/:role", requireAuth, async (req, res) => {
 
       const text = sanitizedBody.text;
       const role = sanitizedBody.role;
-      // const cursor = {
-      //  primary: sanitizedBody.cursorPrimary,
-      //  secondary: sanitizedBody.cursorSecondary
-      // };
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
 
       console.log("Searching for users");
 
@@ -48,11 +48,11 @@ app.get("/search/:text/:role", requireAuth, async (req, res) => {
       // only allow an Advisor or a Head Advisor to fetch Users
       if (authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor) {
-        const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10));
+        const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10), cursor);
 
         if (matchingUsers) {
           console.log("200: Matching Users found \n");
-          res.status(200).send({users: matchingUsers});
+          res.status(200).send(matchingUsers);
         } else {
           console.error("404: No matching Users found\n");
           res.status(404).send({error: "No matching Users found"});
