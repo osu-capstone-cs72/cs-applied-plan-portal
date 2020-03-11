@@ -109,11 +109,17 @@ function Notifications() {
       {notifications.length ?
         <span className="badge">{notifications.length}</span> : null }
       <div className="dropdown-content">
-        {notifications.map((item) => (
-          <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
-            {item.text}
+        {notifications.length ? (
+          notifications.map((item) => (
+            <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
+              {item.text}
+            </Link>
+          ))
+        ) : (
+          <Link>
+            <p>No new notifications.</p>
           </Link>
-        ))}
+        )}
       </div>
     </div>
   );
