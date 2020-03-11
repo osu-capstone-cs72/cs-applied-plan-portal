@@ -104,7 +104,9 @@ export default function SetRoles() {
     const role = roleSelect.options[roleSelect.selectedIndex].value;
 
     try {
+
       setErrorMessage("");
+      setLoading(true);
 
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
@@ -133,6 +135,8 @@ export default function SetRoles() {
       // this is a server error
       setErrorMessage("An internal server error occurred. Please try again later.");
     }
+
+    setLoading(false);
 
   }
 
