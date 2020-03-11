@@ -184,7 +184,7 @@ export default function SetRoles() {
                   <th className="user-data"> Email </th>
                   <th className="user-data"> Role </th>
                 </tr>
-                {users.map(user =>
+                {users.map((user, index) =>
                   <tr key={user.userId}>
                     <td className="user-data" key={user.userId + "a"}>
                       {user.firstName + " " + user.lastName}
@@ -192,8 +192,8 @@ export default function SetRoles() {
                     <td className="user-data" key={user.userId + "b"}>{user.userId}</td>
                     <td className="user-data" key={user.userId + "c"}>{user.email}</td>
                     <td className="user-data" key={user.userId + "d"}>
-                      <SelectRole role={user.role} userId={user.userId}
-                        userName={user.firstName + " " + user.lastName} onLoading={e => setLoading(e)}/>
+                      <SelectRole role={user.role} userId={user.userId} index={index}
+                        userName={user.firstName + " " + user.lastName} onLoading={e => setLoading(e)} />
                     </td>
                   </tr>
                 )}

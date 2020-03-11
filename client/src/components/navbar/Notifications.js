@@ -116,7 +116,7 @@ function Notifications() {
             </Link>
           ))
         ) : (
-          <Link>
+          <Link to={"/"}>
             <p>No new notifications.</p>
           </Link>
         )}
