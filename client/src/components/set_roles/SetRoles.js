@@ -16,6 +16,10 @@ export default function SetRoles() {
 
   const style = css`
 
+  h2 {
+    text-align: center;
+  }
+
   #user-manage-container {
     position: absolute;
     top: 75px;
@@ -141,6 +145,8 @@ export default function SetRoles() {
 
         <div id="user-search-container">
 
+          <h2>Search Users</h2>
+
           <form id="search-form" onSubmit={(e) => submitHandler(e)}>
             <input type="text" id="input-search" />
             <button id="search-user-button">
@@ -151,7 +157,7 @@ export default function SetRoles() {
           <div id="filter-container">
 
             <select id="select-role" className="user-filter" defaultValue={"3"}>
-              <option value="3">Any role</option>
+              <option value="3">Any Role</option>
               <option value="0">Student</option>
               <option value="1">Advisor</option>
               <option value="2">Head Advisor</option>
