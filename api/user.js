@@ -256,11 +256,11 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
           authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's plans
-        const plans = await userModel.getUserPlans(userId);
+        const results = await userModel.getUserPlans(userId);
 
-        if (plans.length > 0) {
+        if (results.plans.length > 0) {
           console.log("200: Plans found\n");
-          res.status(200).send(plans);
+          res.status(200).send(results);
         } else {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found"});

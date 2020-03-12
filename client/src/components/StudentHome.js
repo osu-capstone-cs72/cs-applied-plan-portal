@@ -46,9 +46,18 @@ export default class StudentHome extends React.Component {
       const results = await fetch(getUrl);
       if (results.ok) {
         obj = await results.json();
-        this.setState({
-          plans: obj
-        });
+
+        // modify how advisors are listed in our plans object
+        // we will convert advisors listed as a string into an array
+        // of objects
+        console.log(obj);
+        for (let i = 0; i < obj.plans.length; i++) {
+          // for (let i = 0; i < 5; i++) {
+          console.log(obj.plans[i].advisors);
+          // }
+        }
+        console.log(obj);
+        this.setState(obj);
       } else {
         // we got a bad status code
         if (results.status === 500) {
@@ -191,6 +200,7 @@ export default class StudentHome extends React.Component {
             <thead>
               <tr>
                 <th className="student-plans-data">Name</th>
+                <th className="student-plans-data">Advisors</th>
                 <th className="student-plans-data">Updated</th>
               </tr>
             </thead>
@@ -201,7 +211,12 @@ export default class StudentHome extends React.Component {
                     <div className="table-item-title">{p.planName}</div>
                     <div className="table-item-subtitle"><small>{renderStatus(p.status)}</small></div>
                   </td>
-                  <td className="student-plans-data" key={p.planId + "d"}>{formatTime(p.lastUpdated)}</td>
+                  <td className="student-plans-data" key={p.planId + "c"}>
+                    {p.advisors}
+                  </td>
+                  <td className="student-plans-data" key={p.planId + "d"}>
+                    {formatTime(p.lastUpdated)}
+                  </td>
                 </tr>) : null}
             </tbody>
           </table>

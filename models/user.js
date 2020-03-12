@@ -176,7 +176,7 @@ async function getUserPlans(userId) {
   try {
     const sql =
       "SELECT P.planId, P.status, planName, lastUpdated, " +
-      "GROUP_CONCAT(CAST(CONCAT(firstName, ' ', lastName) as CHAR)) AS advisors " +
+      "GROUP_CONCAT(DISTINCT CAST(CONCAT(firstName, ' ', lastName) as CHAR)) AS advisors " +
       "FROM Plan AS P " +
       "LEFT JOIN PlanReview AS R " +
       "ON P.planId = R.planId " +
@@ -187,7 +187,10 @@ async function getUserPlans(userId) {
 
     const results = await pool.query(sql, [userId]);
 
-    return results[0];
+    return {
+      plans: results[0]
+    };
+
   } catch (err) {
     console.error("Error fetching User's Plans");
     throw Error(err);  // bubble the error up
