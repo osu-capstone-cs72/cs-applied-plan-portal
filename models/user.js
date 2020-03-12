@@ -174,7 +174,17 @@ exports.getUserById = getUserById;
 // On failure, logs the error and bubbles it up.
 async function getUserPlans(userId) {
   try {
-    const sql = "SELECT * FROM Plan WHERE studentId = ?";
+    const sql =
+      "SELECT P.planId, P.status, planName, lastUpdated, " +
+      "GROUP_CONCAT(CAST(CONCAT(firstName, ' ', lastName) as CHAR)) AS advisors " +
+      "FROM Plan AS P " +
+      "LEFT JOIN PlanReview AS R " +
+      "ON P.planId = R.planId " +
+      "LEFT JOIN User AS U " +
+      "ON R.userId = U.userId " +
+      "WHERE studentId = ? " +
+      "GROUP BY P.planId;";
+
     const results = await pool.query(sql, [userId]);
 
     return results[0];
