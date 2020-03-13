@@ -2,6 +2,7 @@
 
 import React from "react";
 import PlanCourse from "./PlanCourse";
+import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {getToken} from "../../utils/authService";
 import {css, jsx} from "@emotion/core";
@@ -23,7 +24,7 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.state = {
-      warning: null,
+      warning: "",
     };
 
     this.submitPlan = this.submitPlan.bind(this);
@@ -36,8 +37,8 @@ export default class EditPlan extends React.Component {
 
   async submitPlan() {
     // get plan name from input field
-    const planname = document.getElementById("plan-name-input").value;
-    if (this.validatePlan(planname)) {
+    const planName = document.getElementById("plan-name-input").value;
+    if (this.validatePlan(planName)) {
 
       // create an array of strings containing course codes
       const courses = [];
@@ -47,7 +48,7 @@ export default class EditPlan extends React.Component {
 
       // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
-        this.editPlan(courses, planname, this.props.edit);
+        this.editPlan(courses, planName, this.props.edit);
       } else {
 
         // set up data for new plan to send to backend
@@ -55,7 +56,7 @@ export default class EditPlan extends React.Component {
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         const postURL = `http://${server}/plan/?accessToken=${token}`;
         const postObj = {
-          planName: planname,
+          planName: planName,
           courses: courses
         };
 
@@ -163,7 +164,7 @@ export default class EditPlan extends React.Component {
 
   clearWarning() {
     this.setState({
-      warning: null
+      warning: ""
     });
   }
 
@@ -273,9 +274,7 @@ export default class EditPlan extends React.Component {
             <p className="total-credits">{this.loadCredits()} credits</p>
           </div>
         </div>
-        <div className="warning-box">
-          {this.state.warning ? <p>{this.state.warning}</p> : null}
-        </div>
+        <ErrorMessage text={this.state.warning} />
         <table className="edit-plan-table">
           <thead>
             <tr>

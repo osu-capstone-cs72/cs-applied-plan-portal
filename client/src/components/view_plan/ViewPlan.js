@@ -44,6 +44,9 @@ function ViewPlan(props) {
   );
 
   const style = css`
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto;
   `;
 
   useEffect(() => {

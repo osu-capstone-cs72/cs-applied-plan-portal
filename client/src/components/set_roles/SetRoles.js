@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
+import ErrorMessage from "../general/ErrorMessage";
 import {getToken} from "../../utils/authService";
 import SelectRole from "./SelectRole";
 
@@ -214,7 +215,7 @@ export default function SetRoles() {
 
         </div>
 
-        <div className="user-error-message-container">{errorMessage}</div>
+        <ErrorMessage text={errorMessage} />
 
         {users.length > 0 ? (
           <div className="table-container" css={style}>
