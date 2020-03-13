@@ -41,6 +41,13 @@ function CreateReview(props) {
       display: block;
       margin: 10px auto;
     }
+
+    @media print {
+      & {
+        display: none;
+      }
+    }
+
   `;
 
   async function submit(planId) {

@@ -48,6 +48,13 @@ function CreateComment(props) {
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
     }
+
+    @media print {
+      & {
+        display: none;
+      }
+    }
+
   `;
 
   function toggle() {

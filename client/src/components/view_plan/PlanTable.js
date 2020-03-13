@@ -58,6 +58,20 @@ function PlanTable(props) {
     tbody tr td:nth-of-type(3) {
       text-align: right;
     }
+
+    @media print {
+
+      & {
+        margin-top: 0;
+      }
+
+      table, thead, tr, td, th {
+        border: 1px black solid;
+        border-bottom: 1px black solid;
+        border-radius: 0;
+      }
+
+    }
   
   `;
 

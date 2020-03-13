@@ -28,10 +28,10 @@ export function hashToColor(inputString) {
     }
   }
 
-  // use the new number to sudo randomly select a color
+  // use the new number to seed the random number generation
   Math.seed = Math.abs(number);
 
-  // sudo randomly select a number using the string we input as the seed
+  // sudo randomly select the index of the colors array
   Math.seededRandom = function(max, min) {
     max = max || 1;
     min = min || 0;
@@ -45,7 +45,6 @@ export function hashToColor(inputString) {
   // return the sudo random color from the colors array
   const selectedIndex = Math.seededRandom(colors.length - 1, 0);
   const selectedColor = colors[selectedIndex];
-  console.log(selectedIndex, "=", selectedColor);
-  console.log(colors);
+
   return selectedColor;
 }
