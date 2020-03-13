@@ -296,14 +296,10 @@ async function searchPlans(text, status, sort, order, cursor) {
 
     }
 
-    if (plans.length) {
-      return {
-        plans: plans,
-        nextCursor: nextCursor
-      };
-    } else {
-      return null;
-    }
+    return {
+      plans: plans,
+      nextCursor: nextCursor
+    };
 
   } catch (err) {
     console.log("Error searching for plans");
