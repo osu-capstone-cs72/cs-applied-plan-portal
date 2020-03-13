@@ -46,7 +46,7 @@ function PlanTable(props) {
       font-weight: 500;
       font-size: 12pt;
       border-bottom: none;
-      padding: 0.5rem 2rem;
+      padding: 1rem 2rem;
       /*padding: 10px;*/
       font-weight: bold;
       white-space: nowrap;

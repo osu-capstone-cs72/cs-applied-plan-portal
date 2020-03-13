@@ -199,20 +199,27 @@ export default class EditPlan extends React.Component {
         padding: 5px;
       }
 
-      .credits-header {
-        float: right;
-        margin-right: 15px;
-      }
-
       .credits {
-        display: block;
-      }
-
-      .total-credits {
-        position: relative;
-        left: 50%;
       }
       
+      .credits-label {
+        font-size: 14px;
+        margin-top: -5px;
+        margin-bottom: 5px;
+      }
+      
+      .credits-header {
+        display: flex;
+        align-items: space-around;
+        justify-content: center;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        margin-left: auto;
+        flex-direction: column;
+        margin-right: 1rem;
+      }
+
       #plan-name-input {
         font-size: 23px;
         border-radius: 0.5rem;
@@ -223,6 +230,11 @@ export default class EditPlan extends React.Component {
         font-weight: 500;
         margin-bottom: 1rem;
         outline: none;
+      }
+      
+      .header {
+        display: flex;
+        flex-direction: row;
       }
       
       .edit-plan-table {
@@ -270,7 +282,8 @@ export default class EditPlan extends React.Component {
           </div>
           <div className="credits-header">
             {/*<label className="credits">Total credits</label>*/}
-            <p className="total-credits">{this.loadCredits()} credits</p>
+            <div className="credits">{this.loadCredits()}</div>
+            <div className="credits-label">credits</div>
           </div>
         </div>
         <div className="warning-box">
