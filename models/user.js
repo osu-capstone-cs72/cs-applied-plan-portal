@@ -185,7 +185,7 @@ async function getUserPlans(userId) {
       "WHERE studentId = ? " +
       "GROUP BY P.planId;";
 
-    const results = await pool.query(sql, [userId]);
+    const results = await pool.query(sql, [userId, userId]);
 
     return {
       plans: results[0]
