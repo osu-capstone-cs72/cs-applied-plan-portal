@@ -59,16 +59,39 @@ function PlanTable(props) {
       text-align: right;
     }
 
+    #print-header {
+      display: none;
+    }
+
     @media print {
 
       & {
         margin-top: 0;
       }
 
-      table, thead, tr, td, th {
-        border: 1px black solid;
-        border-bottom: 1px black solid;
-        border-radius: 0;
+      th, td {
+        padding: 4px 4px 4px 4px ;
+        text-align: center ;
+      }
+
+      tr    {
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+      th {
+        border-bottom: 2px solid #333333 ;
+      }
+
+      td {
+        border-bottom: 1px dotted #999999 ;
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+
+      thead { display: none }
+
+      table, tr, td, th, tbody, thead, tfoot {
+        page-break-inside: avoid !important;
       }
 
     }
@@ -87,6 +110,14 @@ function PlanTable(props) {
           </tr>
         </thead>
         <tbody>
+          <div id={"print-header"}>
+            <tr>
+              <th>Course</th>
+              <th>Name</th>
+              <th>Credit Hours</th>
+              <th>Prerequisites</th>
+            </tr>
+          </div>
           {props.courses.map((course) => (
             <tr key={course.courseId}>
               <td key={course.courseId + "a"}>
