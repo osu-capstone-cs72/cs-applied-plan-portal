@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 function PageSpinner(props) {
 
   const style = css`
-      visibility: ${props.loading ? "visible" : "hidden"};
+      visibility: "visible";
       position: fixed;
       margin-left: -75px;
       margin-bottom: 75px;
@@ -19,18 +19,21 @@ function PageSpinner(props) {
   `;
 
   return (
-
-    <div className="loader-container" css={style}>
-      <BounceLoader
-        size={150}
-        color={"orange"}
-      />
-    </div>
-
+    (props.loading || props.subloading ? (
+      <div className="loader-container" css={style}>
+        <BounceLoader
+          size={150}
+          color={"orange"}
+        />
+      </div>
+    ) : (
+      null
+    ))
   );
 }
 export default PageSpinner;
 
 PageSpinner.propTypes = {
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  subloading: PropTypes.bool
 };

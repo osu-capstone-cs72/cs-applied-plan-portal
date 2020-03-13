@@ -135,7 +135,7 @@ async function searchPlans(text, status, sort, order, cursor) {
   try {
 
     const ASC = 1;
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let plans;
     const nextCursor = {
@@ -352,7 +352,7 @@ async function getPlanActivity(planId, cursor) {
   try {
 
     // list the activity for the plan
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let activity;
     const nextCursor = {

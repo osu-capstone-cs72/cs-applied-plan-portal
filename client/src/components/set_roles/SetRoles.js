@@ -13,6 +13,7 @@ export default function SetRoles() {
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [subloading, setSubloading] = useState(false);
   const [searchFields, setSearchFields] = useState({
     textValue: "*",
     roleValue: 3
@@ -184,7 +185,7 @@ export default function SetRoles() {
 
   return (
     <div css={style}>
-      <PageSpinner loading={loading} />
+      <PageSpinner loading={loading} subloading={subloading} />
       <Navbar />
 
       <div id="user-manage-container">
@@ -235,7 +236,7 @@ export default function SetRoles() {
                     <td className="user-data" key={user.userId + "c"}>{user.email}</td>
                     <td className="user-data" key={user.userId + "d"}>
                       <SelectRole role={user.role} userId={user.userId} index={index}
-                        userName={user.firstName + " " + user.lastName} onLoading={e => setLoading(e)} />
+                        userName={user.firstName + " " + user.lastName} onLoading={load => setSubloading(load)} />
                     </td>
                   </tr>
                 )}

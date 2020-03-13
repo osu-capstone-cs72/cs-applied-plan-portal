@@ -34,7 +34,7 @@ export default class EditPlan extends React.Component {
     this.updatePlanName = this.updatePlanName.bind(this);
   }
 
-  submitPlan() {
+  async submitPlan() {
     // get plan name from input field
     const planname = document.getElementById("plan-name-input").value;
     if (this.validatePlan(planname)) {
@@ -61,7 +61,7 @@ export default class EditPlan extends React.Component {
 
         try {
           this.props.onLoading(true);
-          fetch(postURL, {
+          await fetch(postURL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -89,7 +89,7 @@ export default class EditPlan extends React.Component {
     }
   }
 
-  editPlan(courses, planname, planId) {
+  async editPlan(courses, planname, planId) {
     // set up data for new plan to send to backend
     const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
@@ -102,7 +102,7 @@ export default class EditPlan extends React.Component {
 
     try {
       this.props.onLoading(true);
-      fetch(patchURL, {
+      await fetch(patchURL, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
@@ -264,12 +264,12 @@ export default class EditPlan extends React.Component {
       <div className="edit-plan" css={style}>
         <div className="header">
           <div className="plan-header">
-            {/*<label className="plan-name">Plan name</label>*/}
+            {/* <label className="plan-name">Plan name</label> */}
             <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
               value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
-            {/*<label className="credits">Total credits</label>*/}
+            {/* <label className="credits">Total credits</label> */}
             <p className="total-credits">{this.loadCredits()} credits</p>
           </div>
         </div>

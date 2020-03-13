@@ -35,7 +35,7 @@ function SelectRole(props) {
 
       try {
         props.onLoading(true);
-        fetch(patchURL, {
+        await fetch(patchURL, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
