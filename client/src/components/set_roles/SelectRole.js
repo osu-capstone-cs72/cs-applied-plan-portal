@@ -1,24 +1,31 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
+import {useState} from "react";
 import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
 import {getToken} from "../../utils/authService";
 
 function SelectRole(props) {
 
+  const [updatedRole, setUpdatedRole] = useState(-1);
+
   const style = css`
   `;
 
+  // updates a user's role
   async function setNewRole() {
 
     const select = document.getElementById(`change-user-role-${props.userId}`);
+    const newRole = parseInt(select.value, 10);
 
     const confirmMessage = `Are you sure you want to set ${props.userName}'s ` +
-      `role to "${formatRole(parseInt(select.value, 10))}?"`;
+      `role to "${formatRole(newRole)}?"`;
 
     if (window.confirm(confirmMessage)) {
 
+      // the user confirmed that they wanted to change the role
+      // so we will send a request to the API server
       const token = getToken();
       const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
       const patchURL = `http://${server}/user/${props.userId}/?accessToken=${token}`;
@@ -28,13 +35,14 @@ function SelectRole(props) {
 
       try {
         props.onLoading(true);
-        fetch(patchURL, {
+        await fetch(patchURL, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(patchObj),
         })
+          .then(() => setUpdatedRole(newRole))
           .catch((error) => alert("Error: " + error));
       } catch (err) {
         // this is a server error
@@ -44,8 +52,14 @@ function SelectRole(props) {
 
     } else {
 
-      const select = document.getElementById(`change-user-role-${props.userId}`);
-      select.value = props.role;
+      // the user declined to change the role
+      // so we need to revert the users role to the previous setting
+      if (updatedRole === -1) {
+        const select = document.getElementById(`change-user-role-${props.userId}`);
+        select.value = props.role;
+      } else {
+        select.value = updatedRole;
+      }
 
     }
 
@@ -69,5 +83,7 @@ SelectRole.propTypes = {
   role: PropTypes.number,
   userId: PropTypes.number,
   userName: PropTypes.string,
-  onLoading: PropTypes.func
+  index: PropTypes.number,
+  onLoading: PropTypes.func,
+  onNewRole: PropTypes.func
 };

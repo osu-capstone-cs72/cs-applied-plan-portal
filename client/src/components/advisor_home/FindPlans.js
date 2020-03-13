@@ -11,6 +11,10 @@ function FindPlans(props) {
     margin: 25px auto;
     width: 100%;
 
+    h2 {
+      text-align: center;
+    }
+
     #search-form {
       display: inline-block;
       margin: 0;
@@ -41,6 +45,7 @@ function FindPlans(props) {
 
   `;
 
+  // performs a new plan search when the form is submitted
   function submitHandler(e) {
     e.preventDefault();
     props.onSearch({primary: "null", secondary: "null"});
@@ -48,6 +53,8 @@ function FindPlans(props) {
 
   return (
     <div id="plan-search-container" css={style}>
+
+      <h2>Search Plans</h2>
 
       <form id="search-form" onSubmit={e => submitHandler(e)}>
         <input type="text" id="input-search" />
@@ -59,10 +66,10 @@ function FindPlans(props) {
       <div id="filter-container">
 
         <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
-          <option value="5">Any status</option>
+          <option value="5">Any Status</option>
           <option value="2">Awaiting Review</option>
-          <option value="3">Awaiting final review</option>
-          <option value="1">Awaiting student changes</option>
+          <option value="3">Awaiting Final Review</option>
+          <option value="1">Awaiting Student Changes</option>
           <option value="4">Accepted</option>
           <option value="0">Rejected</option>
         </select>

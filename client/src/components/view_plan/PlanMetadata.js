@@ -3,11 +3,13 @@
 import {css, jsx} from "@emotion/core";
 import {renderStatus} from "../../utils/renderStatus";
 import {Link, useParams, withRouter} from "react-router-dom";
+import {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
 
   const {planId} = useParams();
+  const [creditSum, setCreditSum] = useState(0);
 
   const style = css`
     display: flex;
@@ -81,6 +83,11 @@ function PlanMetadata(props) {
 
     @media print {
 
+      & {
+        position: static;
+        top: 0;
+      }
+
       .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button,
         #print-plan-button, #modify-button-container {
         display: none;
@@ -93,6 +100,14 @@ function PlanMetadata(props) {
 
     }
   `;
+
+  useEffect(() => {
+    let sum = 0;
+    for (let i = 0; i < props.courses.length; i++) {
+      sum += props.courses[i].credits;
+    }
+    setCreditSum(sum);
+  }, [props.courses]);
 
   return (
     <div id="metadata-container" css={style}>
@@ -110,8 +125,8 @@ function PlanMetadata(props) {
           <p className="field-text">{props.email}</p>
         </div>
         <div className="metadata-field">
-          <p className="field-type">User ID:</p>
-          <p className="field-text">{props.userId}</p>
+          <p className="field-type">Total Credits:</p>
+          <p className="field-text">{creditSum}</p>
         </div>
         <div className="metadata-field">
           <p className="field-type">Plan Status:</p>
@@ -123,20 +138,20 @@ function PlanMetadata(props) {
           </button>
         </div>
         {props.status === 1 || props.status === 2 ? (
-            <div className="metadata-field button-field">
-              <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-                <button id="edit-plan-button">
-                    Edit Plan
-                </button>
-              </Link>
-            </div>
+          <div className="metadata-field button-field">
+            <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+              <button id="edit-plan-button">
+                Edit Plan
+              </button>
+            </Link>
+          </div>
         ) : (null)}
         {props.status === 1 || props.status === 2 ? (
-            <div className="metadata-field button-field">
-              <button id="delete-plan-button" onClick={() => props.onDelete()}>
-                  Delete Plan
-              </button>
-            </div>
+          <div className="metadata-field button-field">
+            <button id="delete-plan-button" onClick={() => props.onDelete()}>
+              Delete Plan
+            </button>
+          </div>
         ) : (null)}
       </div>
     </div>
@@ -154,5 +169,6 @@ PlanMetadata.propTypes = {
   history: PropTypes.object,
   currentUser: PropTypes.object,
   onPrint: PropTypes.func,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  courses: PropTypes.array
 };

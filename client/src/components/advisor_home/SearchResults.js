@@ -33,10 +33,12 @@ function SearchResults(props) {
 
   `;
 
+  // redirects the user to the selected plan's 'view plan' page
   function goToPlan(plan) {
     window.location.href = `/viewPlan/${plan.planId}`;
   }
 
+  // updates the sorting order of the search results
   function changeSort(sortValue, alternateOrder) {
     if (alternateOrder) {
       props.onChangeSort(sortValue, 1 - props.searchFields.orderValue);

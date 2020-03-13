@@ -3,7 +3,7 @@
 
 const {pool} = require("../services/db/mysqlPool");
 
-// search for a course using text and a mode setting
+// search for courses using text and a mode setting
 // the mode can be courseId, courseCode, or courseName
 async function getCourse(searchText, mode) {
 
@@ -25,7 +25,7 @@ async function getCourse(searchText, mode) {
     };
 
   } catch (err) {
-    console.log("Error searching for course");
+    console.log("Error searching for courses");
     throw Error(err);
   }
 

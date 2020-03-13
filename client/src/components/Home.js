@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import PageSpinner from "./general/PageSpinner";
-import StudentHome from "./StudentHome";
+import StudentHome from "./student_home/StudentHome";
 import AdvisorHome from "./advisor_home/AdvisorHome";
 import {useEffect, useState} from "react";
 import {css, jsx} from "@emotion/core";
