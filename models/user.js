@@ -183,7 +183,8 @@ async function getUserPlans(userId) {
       "LEFT JOIN User AS U " +
       "ON R.userId = U.userId " +
       "WHERE studentId = ? " +
-      "GROUP BY P.planId;";
+      "GROUP BY P.planId " +
+      "ORDER BY lastUpdated DESC;";
 
     const results = await pool.query(sql, [userId, userId]);
 
