@@ -2,7 +2,7 @@
 // Description: data functions that handle courses
 
 const {pool} = require("../services/db/mysqlPool");
-const fetch = require("isomorphic-unfetch");
+const fetch = require("node-fetch");
 
 // search for courses using text and a mode setting
 // the mode can be courseId, courseCode, or courseName
@@ -47,21 +47,24 @@ async function getLiveCourses() {
     let obj = [];
 
     // create the request body
-    const body = JSON.stringify({
+    const body = {
       other: {
         srcdb: "999999"
       },
       criteria: [{
         field: "subject", value: "ENG"
       }]
-    });
+    };
 
     // perform the request
     const results = await fetch(getUrl, {
       method: "POST",
-      body: body
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: JSON.stringify(body)
     });
-
+    console.log(results);
     if (results.ok) {
       // we have gotten a valid response
       obj = await results.json();
