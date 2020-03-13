@@ -81,6 +81,12 @@ export default class Course extends React.Component {
         margin-right: 0;
         margin-left: 
       }
+      
+      .disabled {
+        background: var(--color-lightgray-700);
+        color: var(--color-gray-50);
+        cursor: default;
+      }
 
       .course-title {
         font-weight: 600;
@@ -110,7 +116,7 @@ export default class Course extends React.Component {
         <details>
           <summary>
             <div className="course-title">{this.props.courseName}<div className="course-code"><small>{this.props.courseCode.replace(/([A-z])(\d)/,"$1 $2")}</small></div></div>
-            <button className="add-button" onClick={this.addButton}>Add to plan</button>
+            <button className={`add-button ${this.props.restriction>0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
           </summary>
           <p>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</p>
           <p>{this.props.description}</p>

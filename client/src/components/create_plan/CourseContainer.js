@@ -123,9 +123,10 @@ export default class CourseContainer extends React.Component {
       display: grid;
       grid-gap: 1rem;
       grid-template-columns: auto auto;
-      grid-template-rows: 46px auto 1fr;
+      grid-template-rows: 46px auto auto 1fr;
       grid-template-areas:
       'title category'
+      'warn warn'
       'search search'
       'results results';
       
@@ -180,7 +181,20 @@ export default class CourseContainer extends React.Component {
         float: right;
         outline: none;
       }
-
+      
+      .warning-box {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        background: var(--color-yellow-50);
+        border: 1px solid var(--color-yellow-300);
+        color: var(--color-yellow-800);
+        grid-area: warn;
+      }
+      
+      .warning-box p {
+        margin-bottom: 0;
+      }
+      
       .form {
         display: inline;
       }
@@ -198,9 +212,7 @@ export default class CourseContainer extends React.Component {
           <form className="course-filter form-group">
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
           </form>
-        <div className="warning-box">
-          <p>{this.props.warning}</p>
-        </div>
+        {this.props.warning ? <div className="warning-box"><p>{this.props.warning}</p></div> : null}
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
             <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
