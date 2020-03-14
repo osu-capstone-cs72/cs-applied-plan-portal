@@ -16,7 +16,7 @@ function ErrorMessage(props) {
     }
 
     .hidden-error-message {
-      visibility: hidden;
+      display: none;
     }
 
   `;
