@@ -7,7 +7,9 @@ function FindPlans(props) {
 
   const style = css`
     padding: 10px;
-    border: 1px solid black;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: white;
     margin: 25px auto;
     width: 100%;
 
@@ -16,33 +18,47 @@ function FindPlans(props) {
     }
 
     #search-form {
-      display: inline-block;
+      display: flex;
       margin: 0;
       padding: 10px;
       width: 100%;
+      align-items: stretch;
+      justify-content: stretch;
     }
 
     #input-search {
-      width: 90%;
+      border: 1px solid var(--color-lightgray-600);
+      border-radius: 0.5rem;
+      padding: 0rem 1rem;
+      flex: 100%;
     }
 
     #search-plan-button {
-      width: 10%;
+      background: var(--color-orange-500);
+      color: var(--color-orange-50);
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      margin-left: 1rem;
     }
 
     #filter-container {
-      display: inline-block;
-      vertical-align: top;
+      display: flex;
       padding: 10px;
       width: 100%;
     }
 
     .advisor-plan-filter {
       display:inline-block;
-      margin-bottom: 10px;
       width: 100%;
     }
-
+    
+    #select-status {
+      border: 1px solid var(--color-lightgray-600);
+      border-radius: 0.5rem;
+      padding: 1rem 1rem;
+      flex: 100%;
+    }
   `;
 
   // performs a new plan search when the form is submitted

@@ -117,29 +117,85 @@ export default class CourseContainer extends React.Component {
   render() {
 
     const style = css`
-      flex: 50%;
+      flex: 33%;
       margin-top: 65px;
-      align-items: stretch;
-      justify-items: stretch;
-      display: flex;
-      flex-direction: column;
-
-
+      margin-right: 1rem;
+      margin-left: 30px;
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: auto auto;
+      grid-template-rows: 36px auto auto 1fr;
+      grid-template-areas:
+      'title category'
+      'warn warn'
+      'search search'
+      'results results';
+      
+      .search-title {
+        font-weight: 600;
+        font-size: 23px;
+        grid-area: title;
+        display: flex;
+        align-items: flex-end;
+      }
+      
+      .search-category {
+        grid-area: category;
+      }
+      
+      .search-button {
+        background: var(--color-orange-500);
+        color: var(--color-orange-50);
+        padding: 1rem 1rem;
+        border-radius: 0.5rem;
+        border: none;
+      }
+      
       .explore-courses {
+        grid-area: results;
       }
 
       .search-container {
-        margin: 10px;
-        padding: 8px;
-        display: inline-block;
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-gap: 1rem;
+        grid-template-rows: auto;
+        grid-area: search;
+      }
+      
+      #search-container {
+        padding: 2rem 1rem;
+        border: 0;
       }
 
       .course-filter {
-        float: right;
-        margin: 25px;
-        margin-right: 50px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        margin-bottom: 0;
       }
-
+      
+      .course-filter select {
+        text-align-last: right;
+        background: none;
+        border: none;
+        float: right;
+        outline: none;
+      }
+      
+      .warning-box {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        background: var(--color-yellow-50);
+        border: 1px solid var(--color-yellow-300);
+        color: var(--color-yellow-800);
+        grid-area: warn;
+      }
+      
+      .warning-box p {
+        margin-bottom: 0;
+      }
+      
       .form {
         display: inline;
       }
@@ -147,18 +203,17 @@ export default class CourseContainer extends React.Component {
 
     return (
       <div className="course-container" css={style}>
-        <div className="top-bar">
+          <div className="search-title">Search</div>
           <div className="search-container">
-            <form className="form form-inline my-2 my-lg-0" onSubmit={this.submitHandler}>
-              <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search.." name="search"/>
+            <form className="form my-2 my-lg-0" onSubmit={this.submitHandler}>
+              <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
             </form>
-            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onClick={this.filterSearch}><i className="fa fa-search"></i></button>
+            <button className="search-button" type="submit" onClick={this.filterSearch}>Search</button>
           </div>
           <form className="course-filter form-group">
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
           </form>
-        </div>
-        <ErrorMessage text={this.props.warning} />
+        {this.props.warning ? <div className="warning-box"><p>{this.props.warning}</p></div> : null}
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
             <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
