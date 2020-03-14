@@ -9,8 +9,11 @@ import PropTypes from "prop-types";
 function SearchResults(props) {
 
   const style = css`
-    text-align: center;
-    margin-top: 50px;
+
+    & {
+      text-align: center;
+      margin-top: 50px;
+    }
 
     .advisor-plans-table {
       table-layout:fixed;
