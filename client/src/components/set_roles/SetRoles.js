@@ -72,7 +72,6 @@ export default function SetRoles() {
 
   .user-filter {
       display:inline-block;
-      margin-bottom: 10px;
       width: 100%;
     }
 

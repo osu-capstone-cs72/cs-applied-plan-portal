@@ -10,7 +10,7 @@ function SearchResults(props) {
 
   const style = css`
     text-align: center;
-    border: 1px solid black;
+    margin-top: 50px;
 
     .advisor-plans-table {
       table-layout:fixed;
@@ -25,10 +25,44 @@ function SearchResults(props) {
 
     #page-load-more-button {
       margin: 25px;
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid black;
+      background: transparent;
+      margin-left: 1rem;
     }
 
     .active-sort { 
       color: #d73f09;
+    }
+    
+    table {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      padding: 1rem;
+      background: var(--color-lightgray-50);
+      background: white;
+    }
+    
+    table thead tr th {
+      background: var(--color-lightgray-100);
+      color: var(--color-gray-400);
+      font-variant-caps: all-small-caps;
+      font-weight: 500;
+      font-size: 12pt;
+      border-bottom: none;
+      padding: 1rem 2rem;
+      /*padding: 10px;*/
+      font-weight: bold;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    table tbody tr td {
+      vertical-align: middle;
+      padding: 1rem 2rem;
     }
 
   `;
@@ -49,63 +83,65 @@ function SearchResults(props) {
     <div className="table-container" css={style}>
       <h3>Search Results</h3>
       <table className="advisor-plans-table">
-        <tbody>
+        <thead>
           <tr>
             {props.searchFields.sortValue === 0 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(0, true)}>
-                  User Name {props.searchFields.orderValue ? "▲" : "▼" }
+                  User Name <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(0, false)}>
-                User Name ▼
+                User Name <small>▼</small>
               </th>
             )}
             {props.searchFields.sortValue === 1 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(1, true)}>
-                User ID {props.searchFields.orderValue ? "▲" : "▼" }
+                User ID <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(1, false)}>
-                User ID ▼
+                User ID <small>▼</small>
               </th>
             )}
             {props.searchFields.sortValue === 2 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(2, true)}>
-                Plan Name {props.searchFields.orderValue ? "▲" : "▼" }
+                Plan Name <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(2, false)}>
-                Plan Name ▼
+                Plan Name <small>▼</small>
               </th>
             )}
             {props.searchFields.sortValue === 3 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(3, true)}>
-                Status {props.searchFields.orderValue ? "▲" : "▼" }
+                Status <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(3, false)}>
-                Status ▼
+                Status <small>▼</small>
               </th>
             )}
             {props.searchFields.sortValue === 4 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(4, true)}>
-                Time Created {props.searchFields.orderValue ? "▲" : "▼" }
+                Time Created <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(4, false)}>
-                Time Created ▼
+                Time Created <small>▼</small>
               </th>
             )}
             {props.searchFields.sortValue === 5 ? (
               <th className="student-plans-data active-sort" onClick={() => changeSort(5, true)}>
-                Time Updated {props.searchFields.orderValue ? "▲" : "▼" }
+                Time Updated <small>{props.searchFields.orderValue ? "▲" : "▼" }</small>
               </th>
             ) : (
               <th className="student-plans-data" onClick={() => changeSort(5, false)}>
-                Time Updated ▼
+                Time Updated <small>▼</small>
               </th>
             )}
           </tr>
+        </thead>
+        <tbody>
           {props.plans.map(plan =>
             <tr key={plan.planId} onClick={() => goToPlan(plan)}>
               <td className="student-plans-data" key={plan.planId + "sa"}>
