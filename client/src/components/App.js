@@ -7,7 +7,7 @@ import PageInternalError from "./general/PageInternalError";
 import PageNotFound from "./general/PageNotFound";
 import Home from "./Home";
 import Login from "./Login";
-import ManageRoles from "./set_roles/ManageRoles";
+import ManageRoles from "./manage_roles/ManageRoles";
 
 const globalStyles = css`
   @import url('https://fonts.googleapis.com/css?family=Muli');
