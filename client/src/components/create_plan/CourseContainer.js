@@ -123,7 +123,7 @@ export default class CourseContainer extends React.Component {
       display: grid;
       grid-gap: 1rem;
       grid-template-columns: auto auto;
-      grid-template-rows: 46px auto auto 1fr;
+      grid-template-rows: 36px auto auto 1fr;
       grid-template-areas:
       'title category'
       'warn warn'

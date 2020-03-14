@@ -35,11 +35,20 @@ function CreateReview(props) {
     #review-select {
       display: block;
       margin: auto;
+      border: 1px solid var(--color-lightgray-600);
+      border-radius: 0.5rem;
+      padding: 1rem 1rem;
+      flex: 100%;
     }
 
     #submit-review-button {
       display: block;
       margin: 10px auto;
+      background: var(--color-blue-500);
+      color: var(--color-blue-50);
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
     }
   `;
 

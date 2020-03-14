@@ -35,6 +35,8 @@ function CreateComment(props) {
       display: inline;
       margin: 10px;
       resize: none;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-lightgray-600);
     }
 
     #submit-comment-button {
@@ -43,10 +45,30 @@ function CreateComment(props) {
     }
     
     .toggle-creation-button {
-      background: none;
-      border: 1px solid black;
+      /*background: none;*/
+      /*border: 1px solid black;*/
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
+      background: var(--color-green-500);
+      color: var(--color-green-50);
+      /*padding: 1rem 1rem;*/
+      border-radius: 0.5rem;
+      border: none;
+    }
+    
+    #submit-comment-button {
+      display: block;
+      margin: 10px auto;
+      background: var(--color-blue-500);
+      color: var(--color-blue-50);
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+    
+    .toggle-state-red {
+      background: var(--color-red-500);
+      color: var(--color-red-50);
     }
   `;
 
@@ -118,8 +140,8 @@ function CreateComment(props) {
     } else {
       return (
         <div id="create-comment-container" css={style}>
-          <button className="toggle-creation-button" onClick={() => toggle()}>
-            Cancel
+          <button className="toggle-creation-button toggle-state-red" onClick={() => toggle()}>
+            Discard
           </button>
           <div id="comment-error-container">
             <p id="comment-error-message">{errorMessage}</p>
