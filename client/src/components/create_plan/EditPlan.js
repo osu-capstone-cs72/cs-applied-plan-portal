@@ -2,6 +2,7 @@
 
 import React from "react";
 import PlanCourse from "./PlanCourse";
+import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {getToken} from "../../utils/authService";
 import {css, jsx} from "@emotion/core";
@@ -23,7 +24,7 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.state = {
-      warning: null,
+      warning: "",
     };
 
     this.submitPlan = this.submitPlan.bind(this);
@@ -34,10 +35,10 @@ export default class EditPlan extends React.Component {
     this.updatePlanName = this.updatePlanName.bind(this);
   }
 
-  submitPlan() {
+  async submitPlan() {
     // get plan name from input field
-    const planname = document.getElementById("plan-name-input").value;
-    if (this.validatePlan(planname)) {
+    const planName = document.getElementById("plan-name-input").value;
+    if (this.validatePlan(planName)) {
 
       // create an array of strings containing course codes
       const courses = [];
@@ -47,7 +48,7 @@ export default class EditPlan extends React.Component {
 
       // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
-        this.editPlan(courses, planname, this.props.edit);
+        this.editPlan(courses, planName, this.props.edit);
       } else {
 
         // set up data for new plan to send to backend
@@ -55,13 +56,13 @@ export default class EditPlan extends React.Component {
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         const postURL = `http://${server}/plan/?accessToken=${token}`;
         const postObj = {
-          planName: planname,
+          planName: planName,
           courses: courses
         };
 
         try {
           this.props.onLoading(true);
-          fetch(postURL, {
+          await fetch(postURL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -89,7 +90,7 @@ export default class EditPlan extends React.Component {
     }
   }
 
-  editPlan(courses, planname, planId) {
+  async editPlan(courses, planname, planId) {
     // set up data for new plan to send to backend
     const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
@@ -102,7 +103,7 @@ export default class EditPlan extends React.Component {
 
     try {
       this.props.onLoading(true);
-      fetch(patchURL, {
+      await fetch(patchURL, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
@@ -163,7 +164,7 @@ export default class EditPlan extends React.Component {
 
   clearWarning() {
     this.setState({
-      warning: null
+      warning: ""
     });
   }
 
@@ -276,7 +277,7 @@ export default class EditPlan extends React.Component {
       <div className="edit-plan" css={style}>
         <div className="header">
           <div className="plan-header">
-            {/*<label className="plan-name">Plan name</label>*/}
+            {/* <label className="plan-name">Plan name</label> */}
             <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
               value={this.props.planName} onChange={this.updatePlanName} />
           </div>
@@ -286,9 +287,7 @@ export default class EditPlan extends React.Component {
             <div className="credits-label">credits</div>
           </div>
         </div>
-        <div className="warning-box">
-          {this.state.warning ? <p>{this.state.warning}</p> : null}
-        </div>
+        <ErrorMessage text={this.state.warning} />
         <table className="edit-plan-table">
           <thead>
             <tr>

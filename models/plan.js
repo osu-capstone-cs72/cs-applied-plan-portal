@@ -135,7 +135,7 @@ async function searchPlans(text, status, sort, order, cursor) {
   try {
 
     const ASC = 1;
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let plans;
     const nextCursor = {
@@ -155,7 +155,7 @@ async function searchPlans(text, status, sort, order, cursor) {
       // Depending on our search query the primary cursor value may
       // represent any number of values (ex: userId, status, etc...).
       // We select the correct value by using the value that we are sorting by.
-
+      //
       // Instances where the primary cursor value could have duplicate values
       // are handled by also sorting by plan ID.
 
@@ -348,7 +348,7 @@ async function getPlanActivity(planId, cursor) {
   try {
 
     // list the activity for the plan
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let activity;
     const nextCursor = {

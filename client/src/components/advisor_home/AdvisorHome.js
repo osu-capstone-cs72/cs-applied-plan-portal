@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
+import ErrorMessage from "../general/ErrorMessage";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
@@ -100,7 +101,6 @@ function AdvisorHome() {
 
       // get our search results
       const results = await fetch(getUrl);
-      setLoading(false);
       if (results.ok) {
 
         // if the cursor is new then we will want to relist plans
@@ -119,14 +119,13 @@ function AdvisorHome() {
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }
-        if (results.status === 404) {
-          setPlans([]);
-        }
+        setPlans([]);
       }
     } catch (err) {
       // show error message if error while searching
       setErrorMessage("An internal server error occurred. Please try again later.");
     }
+    setLoading(false);
   }
 
   // update the sorting rules
@@ -150,7 +149,7 @@ function AdvisorHome() {
 
           <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
 
-          <div className="home-error-message-container">{errorMessage}</div>
+          <ErrorMessage text={errorMessage} />
 
           {plans.length ? (
             <SearchResults plans={plans} cursor={cursor} searchFields={searchFields}

@@ -2,11 +2,9 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
-import {useState, useEffect} from "react";
+
 
 function PlanTable(props) {
-
-  const [creditSum, setCreditSum] = useState(0);
 
   const style = css`
     width: 100%;
@@ -60,16 +58,45 @@ function PlanTable(props) {
     tbody tr td:nth-of-type(3) {
       text-align: right;
     }
+
+    #print-header {
+      display: none;
+    }
+
+    @media print {
+
+      & {
+        margin-top: 0;
+      }
+
+      th, td {
+        padding: 4px 4px 4px 4px ;
+        text-align: center ;
+      }
+
+      tr    {
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+      th {
+        border-bottom: 2px solid #333333 ;
+      }
+
+      td {
+        border-bottom: 1px dotted #999999 ;
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+
+      thead { display: none }
+
+      table, tr, td, th, tbody, thead, tfoot {
+        page-break-inside: avoid !important;
+      }
+
+    }
   
   `;
-
-  useEffect(() => {
-    let sum = 0;
-    for (let i = 0; i < props.courses.length; i++) {
-      sum += props.courses[i].credits;
-    }
-    setCreditSum(sum);
-  }, [props.courses]);
 
   return (
     <div id="table-container" css={style}>
@@ -78,11 +105,19 @@ function PlanTable(props) {
           <tr>
             <th>Course</th>
             <th>Name</th>
-            <th>Credits ({creditSum})</th>
+            <th>Credit Hours</th>
             <th>Prerequisites</th>
           </tr>
         </thead>
         <tbody>
+          <div id={"print-header"}>
+            <tr>
+              <th>Course</th>
+              <th>Name</th>
+              <th>Credit Hours</th>
+              <th>Prerequisites</th>
+            </tr>
+          </div>
           {props.courses.map((course) => (
             <tr key={course.courseId}>
               <td key={course.courseId + "a"}>
@@ -108,6 +143,6 @@ function PlanTable(props) {
 export default PlanTable;
 
 PlanTable.propTypes = {
-  courses: PropTypes.any,
+  courses: PropTypes.array,
   loading: PropTypes.bool
 };

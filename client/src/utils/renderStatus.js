@@ -4,11 +4,11 @@ export function renderStatus(status) {
     case 0:
       return "Rejected";
     case 1:
-      return "Awaiting student changes";
+      return "Awaiting Student Changes";
     case 2:
-      return "Awaiting review";
+      return "Awaiting Review";
     case 3:
-      return "Awaiting final review";
+      return "Awaiting Final Review";
     case 4:
       return "Accepted";
     default:

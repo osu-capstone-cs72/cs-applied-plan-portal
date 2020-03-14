@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
 import React from "react";
-import NavBar from "./navbar/Navbar";
-import {getToken, getProfile} from "../utils/authService";
-import {formatTime} from "../utils/formatTime";
-import PageSpinner from "./general/PageSpinner";
-import PageInternalError from "./general/PageInternalError";
-import {renderStatus} from "../utils/renderStatus";
+import NavBar from "../navbar/Navbar";
+import {getToken, getProfile} from "../../utils/authService";
+import {formatTime} from "../../utils/formatTime";
+import Advisor from "./Advisor";
+import PageSpinner from "../general/PageSpinner";
+import PageInternalError from "../general/PageInternalError";
+import {renderStatus} from "../../utils/renderStatus";
 
 import {css, jsx} from "@emotion/core";
 
@@ -46,9 +47,32 @@ export default class StudentHome extends React.Component {
       const results = await fetch(getUrl);
       if (results.ok) {
         obj = await results.json();
-        this.setState({
-          plans: obj
-        });
+
+        // modify how advisors are listed in our plans object
+        // we will convert advisors listed as a string into an array
+        // of objects
+        for (let i = 0; i < obj.plans.length; i++) {
+          if (obj.plans[i].advisors !== null) {
+
+            // split the advisor string into an array of full names
+            // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
+            const fullNames = obj.plans[i].advisors.split(",");
+            obj.plans[i].advisors = [];
+
+            // split the advisor full names into a first and last name
+            for (let j = 0; j < fullNames.length; j++) {
+              const splitName = fullNames[j].split(" ");
+              if (splitName.length >= 2) {
+                obj.plans[i].advisors.push({
+                  firstName: splitName[0],
+                  lastName: splitName[1]
+                });
+              }
+            }
+          }
+        }
+
+        this.setState(obj);
       } else {
         // we got a bad status code
         if (results.status === 500) {
@@ -164,22 +188,6 @@ export default class StudentHome extends React.Component {
         font-weight: 500;
       }
       
-      .table-plan-contributor {
-        height: 3rem;
-        width: 3rem;
-        border: 3px solid white;
-        border-radius: 50%;
-        background: var(--color-gray-100);
-        display: inline-block;
-      }
-
-      .table-plan-contributor:not(:first-of-type) {
-        margin-left: -1.5rem;
-      }
-
-      .table-plan-contributor:not(:last-of-type):not(:first-of-type) {
-        margin-right: 0.5rem;
-      }
     `;
 
     if (!this.state.pageError) {
@@ -191,17 +199,28 @@ export default class StudentHome extends React.Component {
             <thead>
               <tr>
                 <th className="student-plans-data">Name</th>
+                <th className="student-plans-data">Reviewers</th>
                 <th className="student-plans-data">Updated</th>
               </tr>
             </thead>
             <tbody>
-              {this.state.plans ? this.state.plans.map(p =>
-                <tr key={p.planId + "a"} onClick={() => this.goToPlan(p)}>
-                  <td className="student-plans-data" key={p.planId + "b"}>
-                    <div className="table-item-title">{p.planName}</div>
-                    <div className="table-item-subtitle"><small>{renderStatus(p.status)}</small></div>
+              {this.state.plans ? this.state.plans.map(plan =>
+                <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
+                  <td className="student-plans-data" key={plan.planId + "b"}>
+                    <div className="table-item-title">{plan.planName}</div>
+                    <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
                   </td>
-                  <td className="student-plans-data" key={p.planId + "d"}>{formatTime(p.lastUpdated)}</td>
+                  <td className="student-plans-data" key={plan.planId + "c"}>
+                    {plan.advisors ? (plan.advisors.map(advisor =>
+                      <Advisor key={advisor.firstName + advisor.lastName}
+                        firstName={advisor.firstName} lastName={advisor.lastName} />
+                    )) : (
+                      null
+                    )}
+                  </td>
+                  <td className="student-plans-data" key={plan.planId + "d"}>
+                    {formatTime(plan.lastUpdated)}
+                  </td>
                 </tr>) : null}
             </tbody>
           </table>

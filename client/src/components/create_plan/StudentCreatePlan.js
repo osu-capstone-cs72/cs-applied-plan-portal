@@ -14,6 +14,7 @@ import {css, jsx} from "@emotion/core";
 export default function StudentCreatePlan() {
 
   const [loading, setLoading] = useState(false);
+  const [subloading, setSubloading] = useState(false);
   const [pageError, setPageError] = useState(0);
   const [planName, setPlanName] = useState("");
   const [courses, setCourses] = useState([]);
@@ -95,9 +96,9 @@ export default function StudentCreatePlan() {
   if (!pageError) {
     return (
       <div className="student-create-plan" css={style}>
-        <PageSpinner loading={loading} />
+        <PageSpinner loading={loading} subloading={subloading}/>
         <Navbar showSearch={false} searchContent={null}/>
-        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={e => setLoading(e)}
+        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubloading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
         <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
           onNewWarning={e => setWarning(e)}/>

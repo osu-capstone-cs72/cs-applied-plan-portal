@@ -44,6 +44,9 @@ function ViewPlan(props) {
   );
 
   const style = css`
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto;
   `;
 
   useEffect(() => {
@@ -133,7 +136,7 @@ function ViewPlan(props) {
       const initialReview =
       {
         id: "0r",
-        status: 2,
+        status: 5,
         planId: planId,
         userId: userId,
         time: created,
@@ -235,7 +238,7 @@ function ViewPlan(props) {
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
-          planName={planName} status={status} currentUser={currentUser}
+          planName={planName} status={status} currentUser={currentUser} courses={courses}
           onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
         <PlanTable courses={courses} />
         <ListSimilarPlans />

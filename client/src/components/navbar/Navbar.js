@@ -44,11 +44,11 @@ function Navbar() {
       z-index: 9;
     }
     
-    & a:first-child:hover {
+    & a:first-of-type:hover {
       text-decoration: none;
     }
     
-    & a:first-child {
+    & a:first-of-type {
       text-decoration-color: transparent !important;
     }
 

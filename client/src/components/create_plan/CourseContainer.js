@@ -3,6 +3,7 @@
 import React from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
+import ErrorMessage from "../general/ErrorMessage";
 import filters from "./FilterList";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
@@ -212,7 +213,9 @@ export default class CourseContainer extends React.Component {
           <form className="course-filter form-group">
             <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
           </form>
-        {this.props.warning ? <div className="warning-box"><p>{this.props.warning}</p></div> : null}
+          {this.props.warning ? <div className="warning-box"><p>{this.props.warning}</p></div> : null}
+        </div>
+        {/*<ErrorMessage text={this.props.warning} />*/}
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
             <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
