@@ -183,19 +183,6 @@ export default class CourseContainer extends React.Component {
         outline: none;
       }
       
-      .warning-box {
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        background: var(--color-yellow-50);
-        border: 1px solid var(--color-yellow-300);
-        color: var(--color-yellow-800);
-        grid-area: warn;
-      }
-      
-      .warning-box p {
-        margin-bottom: 0;
-      }
-      
       .form {
         display: inline;
       }
@@ -203,17 +190,17 @@ export default class CourseContainer extends React.Component {
 
     return (
       <div className="course-container" css={style}>
-          <div className="search-title">Search</div>
-          <div className="search-container">
-            <form className="form my-2 my-lg-0" onSubmit={this.submitHandler}>
-              <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
-            </form>
-            <button className="search-button" type="submit" onClick={this.filterSearch}>Search</button>
-          </div>
-          <form className="course-filter form-group">
-            <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
+        <div className="search-title">Search</div>
+        <div className="search-container">
+          <form className="form my-2 my-lg-0" onSubmit={this.submitHandler}>
+            <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
           </form>
-        {this.props.warning ? <div className="warning-box"><p>{this.props.warning}</p></div> : null}
+          <button className="search-button" type="submit" onClick={this.filterSearch}>Search</button>
+        </div>
+        <form className="course-filter form-group">
+          <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
+        </form>
+        <ErrorMessage text={this.props.warning} />
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
             <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
