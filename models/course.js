@@ -11,10 +11,12 @@ async function getCourse(searchText, mode) {
   let sql = "SELECT * FROM Course WHERE courseId = ?;";
   switch (mode) {
     case "courseCode":
-      sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT('%', ?, '%');";
+      sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT('%', ?, '%') " +
+        "ORDER BY courseCode;";
       break;
     case "courseName":
-      sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT('%', ?, '%');";
+      sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT('%', ?, '%') " +
+        "ORDER BY courseCode;";
       break;
   }
 
