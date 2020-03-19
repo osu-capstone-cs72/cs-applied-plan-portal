@@ -41,11 +41,12 @@ async function getLiveCourses() {
   try {
 
     // set the subject we are searching for
-    const subject = "ENG";
+    const subject = "CS";
+    const courses = [];
 
-    // fetch all courses from the OSU Course API
+    // fetch a list of courses for the current subject
     const server = "classes.oregonstate.edu";
-    const getUrl = `http://${server}/api/?page=fose&route=search&subject=${subject}`;
+    const getUrl = `https://${server}/api/?page=fose&route=search&subject=${subject}`;
     let obj = [];
 
     // create the request body
@@ -54,11 +55,11 @@ async function getLiveCourses() {
         srcdb: "999999"
       },
       criteria: [{
-        field: "subject", value: "ENG"
+        field: "subject", value: subject
       }]
     };
 
-    // perform the request
+    // perform the request to get the list
     const results = await fetch(getUrl, {
       method: "POST",
       headers: {
@@ -66,14 +67,16 @@ async function getLiveCourses() {
       },
       body: JSON.stringify(body)
     });
-    console.log(results);
+
     if (results.ok) {
+
       // we have gotten a valid response
       obj = await results.json();
-      console.log(obj);
-      console.log(body);
+      const course = obj.results[0];
+      const detailed = await getCourseDetails(course.crn, course.title, course.code);
+      courses.push(detailed);
       return {
-        courses: obj.results
+        courses: courses
       };
 
     } else {
@@ -91,3 +94,55 @@ async function getLiveCourses() {
 
 }
 exports.getLiveCourses = getLiveCourses;
+
+// fetch detailed info for a specific course
+async function getCourseDetails(crn, title, code) {
+
+  try {
+
+    const server = "classes.oregonstate.edu";
+    const getUrl = `https://${server}/api/?page=fose&route=details`;
+    let obj = [];
+
+    // create the request body
+    const body = {
+      group: `code:${code}`,
+      key: `crn:${crn}`,
+      srcdb: "999999",
+      matched: `title:${title}`
+    };
+
+    // perform the request to get the detailed info
+    const results = await fetch(getUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (results.ok) {
+
+      // we have gotten a valid response
+      obj = await results.json();
+      return {
+        courseName: title,
+        courseCode: code,
+        description: obj.description,
+        Prerequisites: obj.registration_restrictions
+      };
+
+    } else {
+
+      // we have gotten a response with a bad status
+      obj = await results.json();
+      throw Error(obj.error);
+
+    }
+
+  } catch (err) {
+    console.log("Error getting detailed course data");
+    throw Error(err);
+  }
+
+}
