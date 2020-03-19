@@ -3,7 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
-function FindPlans(props) {
+function FindUsers(props) {
 
   const style = css`
 
@@ -36,7 +36,7 @@ function FindPlans(props) {
       flex: 100%;
     }
 
-    #search-plan-button {
+    #search-user-button {
       background: var(--color-orange-500);
       color: var(--color-orange-50);
       padding: 1rem 1rem;
@@ -51,7 +51,7 @@ function FindPlans(props) {
       width: 100%;
     }
 
-    .advisor-plan-filter {
+    .user-filter {
       display:inline-block;
       width: 100%;
       border: 1px solid var(--color-lightgray-600);
@@ -59,56 +59,53 @@ function FindPlans(props) {
       padding: 1rem 1rem;
       flex: 100%;
     }
-    
-  `;
 
-  // performs a new plan search when the form is submitted
+`;
+
+  // perform a new user search when form is submitted
   function submitHandler(e) {
 
     // prevent the default behavior of the form button
     e.preventDefault();
 
-    // perform a new search for plans
+    // perform a new search for users
     const newCursor = {
       primary: "null",
       secondary: "null"
     };
 
     props.onSearch(newCursor);
+
   }
 
   return (
-    <div id="plan-search-container" css={style}>
+    <div id="user-search-container" css={style}>
 
-      <h2>Search Plans</h2>
+      <h2>Search Users</h2>
 
-      <form id="search-form" onSubmit={e => submitHandler(e)}>
+      <form id="search-form" onSubmit={(e) => submitHandler(e)}>
         <input type="text" id="input-search" />
-        <button id="search-plan-button">
+        <button id="search-user-button">
           Search
         </button>
       </form>
 
       <div id="filter-container">
 
-        <select id="select-status" className="advisor-plan-filter" defaultValue={"5"}>
-          <option value="5">Any Status</option>
-          <option value="2">Awaiting Review</option>
-          <option value="3">Awaiting Final Review</option>
-          <option value="1">Awaiting Student Changes</option>
-          <option value="4">Accepted</option>
-          <option value="0">Rejected</option>
+        <select id="select-role" className="user-filter" defaultValue={"3"}>
+          <option value="3">Any Role</option>
+          <option value="0">Student</option>
+          <option value="1">Advisor</option>
+          <option value="2">Head Advisor</option>
         </select>
 
       </div>
 
     </div>
   );
-
 }
-export default FindPlans;
+export default FindUsers;
 
-FindPlans.propTypes = {
-  history: PropTypes.object,
+FindUsers.propTypes = {
   onSearch: PropTypes.func
 };

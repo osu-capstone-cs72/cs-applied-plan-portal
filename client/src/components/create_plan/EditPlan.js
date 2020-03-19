@@ -282,7 +282,7 @@ export default class EditPlan extends React.Component {
               value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
-            {/*<label className="credits">Total credits</label>*/}
+            {/* <label className="credits">Total credits</label> */}
             <div className="credits">{this.loadCredits()}</div>
             <div className="credits-label">credits</div>
           </div>

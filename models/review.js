@@ -15,16 +15,18 @@ async function createReview(planId, userId, status) {
     let results = await pool.query(sql, [planId, userId, status, status, planId]);
     const reviewId = results[0][1].insertId;
 
+    // get the time that the review was created
     sql = "SELECT time FROM PlanReview WHERE reviewId=?;";
     results = await pool.query(sql, reviewId);
-
-    const obj = {
-      insertId: reviewId,
-      time: results[0][0].time
-    };
+    const time = results[0][0].time;
 
     // send out notifications about the new status
     planNotification(planId, userId, 2);
+
+    const obj = {
+      insertId: reviewId,
+      time: time
+    };
 
     return obj;
 

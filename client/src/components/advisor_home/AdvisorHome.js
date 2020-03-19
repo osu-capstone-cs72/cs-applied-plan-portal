@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
 
 function AdvisorHome() {
 
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -40,20 +41,22 @@ function AdvisorHome() {
       width: 50%;
     }
 
-    .home-error-message-container {
-      text-align: center;
-      margin: 0 auto;
-    }
-
   `;
 
   // if the sorting order changes perform a new search
   useEffect(() => {
-    const newCursor = {
-      primary: "null",
-      secondary: "null"
-    };
-    searchPlans(newCursor, false);
+
+    // don't load search results on the initial mount
+    if (mounted) {
+      const newCursor = {
+        primary: "null",
+        secondary: "null"
+      };
+      searchPlans(newCursor, false);
+    } else {
+      setMounted(true);
+    }
+
     // eslint-disable-next-line
   }, [searchFields.orderValue, searchFields.sortValue]);
 
@@ -144,6 +147,7 @@ function AdvisorHome() {
     <div css={style}>
       <PageSpinner loading={loading} />
       <NavBar />
+
       <div id="advisor-home-container">
         <div id="advisor-home-contents-container">
 
@@ -161,6 +165,7 @@ function AdvisorHome() {
 
         </div>
       </div>
+
     </div>
   );
 

@@ -125,7 +125,7 @@ exports.searchPlanSchema = searchPlanSchema;
 const userSchema = {
   userId: {
     required: true,
-    typee: Type.integer,
+    type: Type.integer,
     minValue: 10000000000,
     maxValue: 99999999999,
     getErrorMessage: function() {

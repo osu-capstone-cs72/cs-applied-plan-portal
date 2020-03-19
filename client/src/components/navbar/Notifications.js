@@ -59,7 +59,7 @@ function Notifications() {
       right: 80px;
       padding: 5px 10px;
       border-radius: 50%;
-      background-color: red;
+      background-color: black;
       color: white;
     }
   `;
