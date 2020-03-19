@@ -50,7 +50,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
           authenticatedUser.role === Role.headAdvisor) {
         const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10), cursor);
 
-        if (matchingUsers) {
+        if (matchingUsers.users.length) {
           console.log("200: Matching Users found \n");
           res.status(200).send(matchingUsers);
         } else {

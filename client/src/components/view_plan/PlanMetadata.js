@@ -83,6 +83,11 @@ function PlanMetadata(props) {
 
     @media print {
 
+      & {
+        position: static;
+        top: 0;
+      }
+
       .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button,
         #print-plan-button, #modify-button-container {
         display: none;

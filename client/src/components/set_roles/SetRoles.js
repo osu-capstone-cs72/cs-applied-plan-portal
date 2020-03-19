@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
+import ErrorMessage from "../general/ErrorMessage";
 import {getToken} from "../../utils/authService";
 import SelectRole from "./SelectRole";
 
@@ -13,6 +14,7 @@ export default function SetRoles() {
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [subloading, setSubloading] = useState(false);
   const [searchFields, setSearchFields] = useState({
     textValue: "*",
     roleValue: 3
@@ -37,36 +39,53 @@ export default function SetRoles() {
 
   #user-search-container {
     padding: 10px;
-    border: 1px solid black;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: white;
     margin: 25px auto;
     width: 100%;
   }
 
   #search-form {
-    display: inline-block;
+    display: flex;
     margin: 0;
     padding: 10px;
     width: 100%;
+    align-items: stretch;
+    justify-content: stretch;
   }
 
   #input-search {
-    width: 90%;
+    border: 1px solid var(--color-lightgray-600);
+    border-radius: 0.5rem;
+    padding: 0rem 1rem;
+    flex: 100%;
   }
 
   #search-user-button {
-    width: 10%;
+    background: var(--color-orange-500);
+    color: var(--color-orange-50);
+    padding: 1rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    margin-left: 1rem;
   }
 
   #filter-container {
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
     padding: 10px;
     width: 100%;
+  }
+  
+  #select-role {
+    border: 1px solid var(--color-lightgray-600);
+    border-radius: 0.5rem;
+    padding: 1rem 1rem;
+    flex: 100%;
   }
 
   .user-filter {
       display:inline-block;
-      margin-bottom: 10px;
       width: 100%;
     }
 
@@ -77,20 +96,54 @@ export default function SetRoles() {
 
   .table-container {
     text-align: center;
-    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
   }
 
   .user-table {
-      table-layout:fixed;
-      text-align: left;
-      margin: 0 auto;
-    }
+    table-layout: fixed;
+    text-align: left;
+  }
 
   th, td {
     padding: 10px;
     min-width: 150px;
   }
-
+  
+  .change-user-role {
+    width: 100%;
+    border: 1px solid var(--color-lightgray-600);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    flex: 100%;
+  }
+  
+  table {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    padding: 1rem;
+    background: var(--color-lightgray-50);
+    background: white;
+  }
+  
+  table thead tr th {
+    background: var(--color-lightgray-100);
+    color: var(--color-gray-400);
+    font-variant-caps: all-small-caps;
+    font-weight: 500;
+    font-size: 12pt;
+    border-bottom: none;
+    padding: 1rem 2rem;
+    /*padding: 10px;*/
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  
+  table tbody tr td {
+    vertical-align: middle;
+    padding: 1rem 2rem;
+  }
 `;
 
 
@@ -184,7 +237,7 @@ export default function SetRoles() {
 
   return (
     <div css={style}>
-      <PageSpinner loading={loading} />
+      <PageSpinner loading={loading} subloading={subloading} />
       <Navbar />
 
       <div id="user-manage-container">
@@ -213,19 +266,21 @@ export default function SetRoles() {
 
         </div>
 
-        <div className="user-error-message-container">{errorMessage}</div>
+        <ErrorMessage text={errorMessage} />
 
         {users.length > 0 ? (
           <div className="table-container" css={style}>
             <h3>Search Results</h3>
             <table className="user-table">
-              <tbody>
+              <thead>
                 <tr>
-                  <th className="user-data"> User Name </th>
-                  <th className="user-data"> User ID </th>
-                  <th className="user-data"> Email </th>
-                  <th className="user-data"> Role </th>
+                  <th className="user-data">User Name</th>
+                  <th className="user-data">User ID</th>
+                  <th className="user-data">Email</th>
+                  <th className="user-data">Role</th>
                 </tr>
+              </thead>
+              <tbody>
                 {users.map((user, index) =>
                   <tr key={user.userId}>
                     <td className="user-data" key={user.userId + "a"}>
@@ -235,11 +290,10 @@ export default function SetRoles() {
                     <td className="user-data" key={user.userId + "c"}>{user.email}</td>
                     <td className="user-data" key={user.userId + "d"}>
                       <SelectRole role={user.role} userId={user.userId} index={index}
-                        userName={user.firstName + " " + user.lastName} onLoading={e => setLoading(e)} />
+                        userName={user.firstName + " " + user.lastName} onLoading={load => setSubloading(load)} />
                     </td>
                   </tr>
                 )}
-
               </tbody>
             </table>
             { cursor.primary === "null" ? (

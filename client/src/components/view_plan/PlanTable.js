@@ -44,7 +44,7 @@ function PlanTable(props) {
       font-weight: 500;
       font-size: 12pt;
       border-bottom: none;
-      padding: 0.5rem 2rem;
+      padding: 1rem 2rem;
       /*padding: 10px;*/
       font-weight: bold;
       white-space: nowrap;
@@ -57,6 +57,43 @@ function PlanTable(props) {
     
     tbody tr td:nth-of-type(3) {
       text-align: right;
+    }
+
+    #print-header {
+      display: none;
+    }
+
+    @media print {
+
+      & {
+        margin-top: 0;
+      }
+
+      th, td {
+        padding: 4px 4px 4px 4px ;
+        text-align: center ;
+      }
+
+      tr    {
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+      th {
+        border-bottom: 2px solid #333333 ;
+      }
+
+      td {
+        border-bottom: 1px dotted #999999 ;
+        page-break-inside:avoid; page-break-after:auto 
+      }
+
+
+      thead { display: none }
+
+      table, tr, td, th, tbody, thead, tfoot {
+        page-break-inside: avoid !important;
+      }
+
     }
   
   `;
@@ -73,6 +110,14 @@ function PlanTable(props) {
           </tr>
         </thead>
         <tbody>
+          <div id={"print-header"}>
+            <tr>
+              <th>Course</th>
+              <th>Name</th>
+              <th>Credit Hours</th>
+              <th>Prerequisites</th>
+            </tr>
+          </div>
           {props.courses.map((course) => (
             <tr key={course.courseId}>
               <td key={course.courseId + "a"}>

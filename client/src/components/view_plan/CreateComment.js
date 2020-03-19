@@ -4,6 +4,7 @@ import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
 import {getToken} from "../../utils/authService";
+import ErrorMessage from "../general/ErrorMessage";
 
 function CreateComment(props) {
 
@@ -12,15 +13,9 @@ function CreateComment(props) {
   const {planId} = useParams();
 
   const style = css`
-    #comment-error-container {
-      display: block;
-      width: auto;
-      min-width: 100px;
-    }
 
-    #comment-error-message {
-      display:inline-block;
-      min-height:15px;
+    & {
+      display: inline-block;
     }
 
     #comment-input-container {
@@ -35,6 +30,8 @@ function CreateComment(props) {
       display: inline;
       margin: 10px;
       resize: none;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-lightgray-600);
     }
 
     #submit-comment-button {
@@ -43,11 +40,38 @@ function CreateComment(props) {
     }
     
     .toggle-creation-button {
-      background: none;
-      border: 1px solid black;
+      /*background: none;*/
+      /*border: 1px solid black;*/
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
+      background: var(--color-green-500);
+      color: var(--color-green-50);
+      /*padding: 1rem 1rem;*/
+      border-radius: 0.5rem;
+      border: none;
     }
+    
+    #submit-comment-button {
+      display: block;
+      margin: 10px auto;
+      background: var(--color-blue-500);
+      color: var(--color-blue-50);
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+    
+    .toggle-state-red {
+      background: var(--color-red-500);
+      color: var(--color-red-50);
+    }
+
+    @media print {
+      & {
+        display: none;
+      }
+    }
+
   `;
 
   function toggle() {
@@ -118,12 +142,12 @@ function CreateComment(props) {
     } else {
       return (
         <div id="create-comment-container" css={style}>
-          <button className="toggle-creation-button" onClick={() => toggle()}>
-            Cancel
+          <button className="toggle-creation-button toggle-state-red" onClick={() => toggle()}>
+            Discard
           </button>
-          <div id="comment-error-container">
-            <p id="comment-error-message">{errorMessage}</p>
-          </div>
+
+          <ErrorMessage text={errorMessage} />
+
           <div id="comment-input-container">
             <textarea id="comment-text-input" rows="5" cols="50"/>
             <button id="submit-comment-button" onClick={() => submit(planId)}>

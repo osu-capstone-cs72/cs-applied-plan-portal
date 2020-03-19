@@ -60,6 +60,16 @@ function Navbar() {
       margin-right: 1rem;
       color: white;
     }
+    
+    /* Don't style the last item, but in a way that's safe for SSR. */
+    .right-container > * > button {
+      height: 35px;
+      border: 1px solid white;
+      color: white;
+      border-radius: 0.25rem;
+      background: transparent;
+      margin-right: 0.5rem; 
+    }
 
     .right-container {
       margin-left: auto;

@@ -53,7 +53,7 @@ exports.updateUserPartial = updateUserPartial;
 async function searchUsers(text, role, cursor) {
   try {
 
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let users;
     const nextCursor = {
@@ -183,7 +183,8 @@ async function getUserPlans(userId) {
       "LEFT JOIN User AS U " +
       "ON R.userId = U.userId " +
       "WHERE studentId = ? " +
-      "GROUP BY P.planId;";
+      "GROUP BY P.planId " +
+      "ORDER BY lastUpdated DESC;";
 
     const results = await pool.query(sql, [userId, userId]);
 

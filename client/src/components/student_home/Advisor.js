@@ -8,7 +8,7 @@ import {hashToColor} from "../../utils/hashToColor";
 function Advisor(props) {
 
   const [initials, setInitials] = useState("");
-  const iconColor = hashToColor(props.firstName, props.lastName);
+  const iconColor = hashToColor(props.firstName + " " + props.lastName);
 
   const style = css`
 

@@ -1,5 +1,5 @@
 export const filters = {
-  none: "",
+  none: "All subjects",
   CS: "Computer Science",
   ECE: "Electrical and Computer Engineering",
   BI: "Biology",
