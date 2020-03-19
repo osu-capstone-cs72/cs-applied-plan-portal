@@ -72,9 +72,21 @@ async function getLiveCourses() {
 
       // we have gotten a valid response
       obj = await results.json();
-      const course = obj.results[0];
-      const detailed = await getCourseDetails(course.crn, course.title, course.code);
-      courses.push(detailed);
+
+      // for each listed course get the details of that course
+      let course;
+      let previousTitle = "";
+
+      for (let i = 0; i < obj.results.length; i++) {
+        course = obj.results[i];
+        if (course.title !== previousTitle) {
+          previousTitle = course.title;
+          const detailed = await getCourseDetails(course.crn, course.title, course.code);
+          courses.push(detailed);
+          console.log("Got course:", course.title);
+        }
+      }
+
       return {
         courses: courses
       };
