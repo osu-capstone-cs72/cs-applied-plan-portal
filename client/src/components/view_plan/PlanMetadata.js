@@ -104,7 +104,7 @@ function PlanMetadata(props) {
   useEffect(() => {
     let sum = 0;
     for (let i = 0; i < props.courses.length; i++) {
-      sum += props.courses[i].credits;
+      sum += parseInt(props.courses[i].credits, 10);
     }
     setCreditSum(sum);
   }, [props.courses]);
