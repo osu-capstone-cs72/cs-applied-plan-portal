@@ -1,13 +1,10 @@
 // File: format.js
 // Description: handles formatting for various data types
 
-// takes an array of strings and makes them uppercase,
-// removes empty strings, and non-string values from the array
+// takes an array and removes empty strings from it
 function formatStringArray(stringArray) {
 
-  return stringArray
-    .filter(value => value !== "" && typeof value === "string")
-    .map(string => string.toUpperCase());
+  return stringArray.filter(value => value !== "");
 
 }
 exports.formatStringArray = formatStringArray;

@@ -26,7 +26,7 @@ async function createPlan(userId, planName, courses) {
 
     // expand the sql string and array based on the number of courses
     courses.forEach((currentValue) => {
-      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+      sql += "(?, ?),";
       sqlArray.push(planId);
       sqlArray.push(currentValue);
     });
@@ -100,7 +100,7 @@ async function updatePlan(planId, planName, courses) {
 
       // expand the sql string and array based on the number of courses
       courses.forEach((currentValue) => {
-        sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+        sql += "(?, ?),";
         sqlArray.push(planId);
         sqlArray.push(currentValue);
       });

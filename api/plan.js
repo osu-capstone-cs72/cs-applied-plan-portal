@@ -57,7 +57,7 @@ app.post("/", requireAuth, async (req, res) => {
 
         // create the plan
         const results = await createPlan(userId, planName, courses);
-        console.log("201: Submited plan has been created\n");
+        console.log("201: Submitted plan has been created\n");
         res.status(201).send(results);
 
       } else {

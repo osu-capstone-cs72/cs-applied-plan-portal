@@ -344,11 +344,11 @@ async function duplicateCourseConstraint(courses) {
   const seenCourses = Object.create(null);
 
   for (let i = 0; i < courses.length; ++i) {
-    const courseCode = courses[i];
-    if (courseCode in seenCourses) {
+    const courseId = courses[i];
+    if (courseId in seenCourses) {
       throw "Invalid course selection:\nA course was selected more than once.";
     }
-    seenCourses[courseCode] = true;
+    seenCourses[courseId] = true;
   }
   return;
 
@@ -358,7 +358,7 @@ async function duplicateCourseConstraint(courses) {
 async function courseConstraint(courses) {
 
   const violation = "Invalid course selection:\nAt least one selected course is invalid.";
-  let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
+  let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseId IN (";
   const sqlArray = [];
 
   // expand the sql string and array based on the number of courses
@@ -396,7 +396,7 @@ async function restrictionConstraint(courses) {
 
   const violationReq = "Invalid course selection:\nA required course was selected.";
   const violationGrad = "Invalid course selection:\nA graduate or professional course was selected.";
-  let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
+  let sql = "SELECT restriction FROM Course WHERE courseId IN (";
   const sqlArray = [];
 
   // expand the sql string and array based on the number of courses
@@ -471,7 +471,7 @@ async function creditConstraint(courses) {
     `A plan must have at least ${CREDITS_MIN} credits selected.`;
   const violationMax = `Invalid course selection:\n` +
     `A plan must have no more than ${CREDITS_MAX} credits selected.`;
-  let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
+  let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseId IN (";
   const sqlArray = [];
 
   // expand the sql string and array based on the number of courses

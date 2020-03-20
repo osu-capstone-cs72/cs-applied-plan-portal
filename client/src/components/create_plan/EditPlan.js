@@ -40,10 +40,10 @@ export default class EditPlan extends React.Component {
     const planName = document.getElementById("plan-name-input").value;
     if (this.validatePlan(planName)) {
 
-      // create an array of strings containing course codes
+      // create an array of strings containing course IDs
       const courses = [];
       for (let i = 0; i < this.props.courses.length; i++) {
-        courses.push(this.props.courses[i].courseCode);
+        courses.push(this.props.courses[i].courseId);
       }
 
       // check to see if we should perform a POST request or a PATCH request
@@ -90,14 +90,14 @@ export default class EditPlan extends React.Component {
     }
   }
 
-  async editPlan(courses, planname, planId) {
+  async editPlan(courses, planName, planId) {
     // set up data for new plan to send to backend
     const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const patchURL = `http://${server}/plan/?accessToken=${token}`;
     const patchObj = {
       planId: planId,
-      planName: planname,
+      planName: planName,
       courses: courses
     };
 
@@ -129,13 +129,13 @@ export default class EditPlan extends React.Component {
     this.props.onLoading(false);
   }
 
-  validatePlan(planname) {
+  validatePlan(planName) {
     const NAME_MIN = 5;
     const NAME_MAX = 50;
     const CREDITS_MIN = 32;
 
     // check that plan name has a valid length
-    if (planname.length < NAME_MIN || planname.length > NAME_MAX) {
+    if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
       this.setState({
         warning: `Plan name must be between ${NAME_MIN} and ${NAME_MAX} characters.`
       });
