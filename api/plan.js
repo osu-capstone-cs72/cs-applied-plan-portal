@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const {formatStringArray} = require("../services/format/format");
+const {formatCourseArray} = require("../services/format/format");
 const {
   createEnforceConstraints,
   patchEnforceConstraints,
@@ -49,7 +49,7 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("Submit a plan");
       const userId = req.auth.userId;
       const planName = sanitizedBody.planName;
-      const courses = formatStringArray(sanitizedBody.courses);
+      const courses = formatCourseArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
       const violation = await createEnforceConstraints(userId, planName, courses);
@@ -106,7 +106,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
       if (req.body.courses !== undefined) {
         if (Array.isArray(req.body.courses)) {
-          courses = formatStringArray(sanitizedBody.courses);
+          courses = formatCourseArray(sanitizedBody.courses);
         }
       }
 

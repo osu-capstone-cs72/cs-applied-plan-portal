@@ -206,7 +206,7 @@ export default class CourseContainer extends React.Component {
         <ErrorMessage text={this.props.warning} />
         <div className="explore-courses">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
-            <Course key={c.courseCode} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+            <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
               description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => this.props.onAddCourse(e)}/>
           ) : (
             <div>Search for courses...</div>

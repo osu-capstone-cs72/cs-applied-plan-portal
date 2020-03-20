@@ -43,7 +43,10 @@ export default class EditPlan extends React.Component {
       // create an array of strings containing course IDs
       const courses = [];
       for (let i = 0; i < this.props.courses.length; i++) {
-        courses.push(this.props.courses[i].courseId);
+        courses.push({
+          courseId: this.props.courses[i].courseId,
+          credits: this.props.courses[i].credits
+        });
       }
 
       // check to see if we should perform a POST request or a PATCH request

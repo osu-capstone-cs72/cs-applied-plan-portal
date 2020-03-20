@@ -1,13 +1,14 @@
 // File: format.js
 // Description: handles formatting for various data types
 
-// takes an array and removes empty strings from it
-function formatStringArray(stringArray) {
+// takes an array and keep only objects
+function formatCourseArray(stringArray) {
 
-  return stringArray.filter(value => value !== "");
+  return stringArray
+    .filter(course => typeof course === "object" && course !== null);
 
 }
-exports.formatStringArray = formatStringArray;
+exports.formatCourseArray = formatCourseArray;
 
 function formatStatus(status) {
   switch (status) {

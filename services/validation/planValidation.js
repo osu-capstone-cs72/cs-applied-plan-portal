@@ -344,7 +344,7 @@ async function duplicateCourseConstraint(courses) {
   const seenCourses = Object.create(null);
 
   for (let i = 0; i < courses.length; ++i) {
-    const courseId = courses[i];
+    const courseId = courses[i].courseId;
     if (courseId in seenCourses) {
       throw "Invalid course selection:\nA course was selected more than once.";
     }
@@ -364,7 +364,7 @@ async function courseConstraint(courses) {
   // expand the sql string and array based on the number of courses
   courses.forEach((currentValue) => {
     sql += "?,";
-    sqlArray.push(currentValue);
+    sqlArray.push(currentValue.courseId);
   });
   // replace the last character of the sql query with );
   sql = sql.replace(/.$/, ");");
@@ -402,7 +402,7 @@ async function restrictionConstraint(courses) {
   // expand the sql string and array based on the number of courses
   courses.forEach((currentValue) => {
     sql += "?,";
-    sqlArray.push(currentValue);
+    sqlArray.push(currentValue.courseId);
   });
   // replace the last character of the sql query with the end of the query
   sql = sql.replace(/.$/, ") AND restriction > 0 ORDER BY restriction;");
@@ -471,26 +471,32 @@ async function creditConstraint(courses) {
     `A plan must have at least ${CREDITS_MIN} credits selected.`;
   const violationMax = `Invalid course selection:\n` +
     `A plan must have no more than ${CREDITS_MAX} credits selected.`;
-  let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseId IN (";
-  const sqlArray = [];
 
-  // expand the sql string and array based on the number of courses
-  courses.forEach((currentValue) => {
-    sql += "?,";
-    sqlArray.push(currentValue);
-  });
-  // replace the last character of the sql query with );
-  sql = sql.replace(/.$/, ");");
+  let sql;
+  let creditSum = 0;
 
   try {
 
-    // perform the sql query
-    const results = await pool.query(sql, sqlArray);
+    // find the number of credits in the plan
+    for (let i = 0; i < courses.length; i++) {
+
+      // get credits for current course
+      sql  = "SELECT credits FROM Course WHERE courseId = ?;";
+      const results = await pool.query(sql, courses[i].courseId);
+
+      // check if credits is a value or a range and then add the credits to sum
+      if (isNaN(results[0][0].credits)) {
+        creditSum += parseInt(courses[i].credits, 10);
+      } else {
+        creditSum += parseInt(results[0][0].credits, 10);
+      }
+
+    }
 
     // check if the sum of credits is less than the min or greater than the max
-    if (results[0][0].sumCredits < CREDITS_MIN) {
+    if (creditSum < CREDITS_MIN) {
       throw violationMin;
-    } else if (results[0][0].sumCredits > CREDITS_MAX) {
+    } else if (creditSum > CREDITS_MAX) {
       throw violationMax;
     } else {
       return;

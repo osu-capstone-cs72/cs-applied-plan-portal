@@ -10,7 +10,7 @@ export default class Course extends React.Component {
       courseId: PropTypes.number,
       courseCode: PropTypes.string,
       courseName: PropTypes.string,
-      credits: PropTypes.number,
+      credits: PropTypes.string,
       description: PropTypes.string,
       prerequisites: PropTypes.string,
       restriction: PropTypes.number,

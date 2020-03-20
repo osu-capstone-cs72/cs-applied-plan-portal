@@ -77,17 +77,43 @@ export default function StudentCreatePlan() {
     }
     // check for required courses
     if (course.restriction === 1) {
-      setWarning("You've selected a required course.");
+      setWarning("Required courses are not allowed.");
       return;
     }
     // check for graduate courses
     if (course.restriction === 2) {
-      setWarning("You've selected a graduate course.");
+      setWarning("Graduate courses are not allowed.");
       return;
     }
-    // add the new course
-    setCourses(prev => [...prev, course]);
-    setWarning("");
+    // see if the course has a defined number of credits
+    if (isNaN(course.credits)) {
+
+      // check with the user to see how many credits should be applied
+      const creditArray = course.credits.split(" to ");
+      if (creditArray.length >= 2) {
+
+        // prompt the user to enter the credits
+        let credits = prompt(
+          `Please select between ${creditArray[0]} and ${creditArray[1]} credits`, ""
+        );
+        credits = parseInt(credits, 10);
+
+        // see if the user entered a valid number of credits
+        if (credits >= creditArray[0] && credits <= creditArray[1]) {
+          course.credits = credits;
+          setCourses(prev => [...prev, course]);
+          setWarning("");
+        } else {
+          setWarning("Invalid credit hours selected for course.");
+        }
+
+      }
+
+    } else {
+      // add the new course
+      setCourses(prev => [...prev, course]);
+      setWarning("");
+    }
   }
 
   // removes a course from the courses array
