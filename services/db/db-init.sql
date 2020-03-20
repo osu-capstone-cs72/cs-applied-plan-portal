@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Mar 20, 2020 at 01:05 AM
+-- Generation Time: Mar 20, 2020 at 09:59 AM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -35,6 +35,26 @@ CREATE TABLE `Comment` (
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
   `text` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Comment`
+--
+
+INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
+(1, 1, 82757579527, '2020-03-20 08:34:54', 'This is my forestry plan.'),
+(2, 2, 82757579527, '2020-03-20 13:03:52', 'I am focusing on selected topics.'),
+(3, 17, 82757579527, '2020-03-20 16:29:20', 'Nice idea for a plan. I will go ahead and pass it on to the head advisor.'),
+(4, 17, 80612566209, '2020-03-20 16:29:50', 'I will approve this plan.'),
+(5, 8, 77768733898, '2020-03-20 16:31:47', 'This is too broad of a plan. Try to focus on a couple similar subjects.'),
+(6, 26, 15999951730, '2020-03-20 16:33:41', 'Good plan!'),
+(7, 11, 77768733898, '2020-03-20 16:35:26', 'Good plan. I will pass this along to the head advisor.'),
+(8, 13, 82757579527, '2020-03-20 16:38:02', 'Good plan. Kevin would be proud.'),
+(9, 9, 82757579527, '2020-03-20 16:38:50', 'Nice plan!'),
+(10, 9, 80612566209, '2020-03-20 16:39:07', 'Good plan. Approved.'),
+(11, 10, 15999951730, '2020-03-20 16:41:18', 'Good plan.'),
+(12, 27, 61846240923, '2020-03-20 16:46:38', 'This plan has too many 100 level courses.'),
+(13, 28, 97689531333, '2020-03-20 16:48:06', 'Hello there!\nThis plan has too many credits focused on research, add something else instead.'),
+(14, 16, 97689531333, '2020-03-20 16:58:18', 'Hello there!\nI don\'t think focusing on birds is really a valid strategy for a plan. Possibly rework this plan a bit to focus on general nature studies?');
 
 -- --------------------------------------------------------
 
@@ -6899,6 +6919,29 @@ CREATE TABLE `Notification` (
   `checked` tinyint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `Notification`
+--
+
+INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`, `checked`) VALUES
+(1, 17, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Language Plan\".', 1, 0),
+(2, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
+(3, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2, 0),
+(4, 26, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Geology Focused Plan\".', 1, 0),
+(5, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
+(6, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2, 0),
+(7, 11, 19424289189, 'Leia Organa has added a new comment to the plan \"Math Plan\".', 1, 0),
+(8, 11, 19424289189, 'The plan \"Math Plan\" has been set to \"Awaiting final review\" by Leia Organa.', 2, 0),
+(9, 13, 60535363653, 'Zachary Thomas has added a new comment to the plan \"Business Plan\".', 1, 0),
+(10, 13, 60535363653, 'The plan \"Business Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
+(11, 9, 84979840992, 'Zachary Thomas has added a new comment to the plan \"Music Plan\".', 1, 0),
+(12, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
+(13, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Accepted\" by Sheev Palpatine.', 2, 0),
+(14, 10, 84979840992, 'Anakin Skywalker has added a new comment to the plan \"Chemistry Plan\".', 1, 0),
+(15, 10, 84979840992, 'The plan \"Chemistry Plan\" has been set to \"Awaiting final review\" by Anakin Skywalker.', 2, 0),
+(16, 16, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Bird Plan\".', 1, 0),
+(17, 16, 14278597767, 'The plan \"Bird Plan\" has been set to \"Awaiting student changes\" by Zachary Thomas.', 2, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -6914,6 +6957,35 @@ CREATE TABLE `Plan` (
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `Plan`
+--
+
+INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
+(1, 2, 'Forestry Focused Plan', 10157289101, '2020-03-20 08:33:50', '2020-03-20 16:11:59'),
+(2, 2, 'CS Plan', 82757579527, '2020-03-20 13:03:03', '2020-03-20 13:03:29'),
+(8, 0, 'Research Plan', 82757579527, '2020-03-20 15:16:32', '2020-03-20 16:31:51'),
+(9, 4, 'Music Plan', 84979840992, '2020-03-20 15:53:41', '2020-03-20 16:39:11'),
+(10, 3, 'Chemistry Plan', 84979840992, '2020-03-20 15:54:54', '2020-03-20 16:41:22'),
+(11, 3, 'Math Plan', 19424289189, '2020-03-20 15:56:45', '2020-03-20 16:35:38'),
+(12, 2, 'Art Plan', 19424289189, '2020-03-20 15:57:15', '2020-03-20 15:57:44'),
+(13, 3, 'Business Plan', 60535363653, '2020-03-20 16:00:28', '2020-03-20 16:38:06'),
+(14, 2, 'Finance Plan', 60535363653, '2020-03-20 16:01:47', '2020-03-20 16:02:14'),
+(15, 2, 'Family Plan', 14278597767, '2020-03-20 16:03:31', '2020-03-20 16:05:00'),
+(16, 1, 'Bird Plan', 14278597767, '2020-03-20 16:04:36', '2020-03-20 16:58:20'),
+(17, 4, 'Language Plan', 86725657261, '2020-03-20 16:06:18', '2020-03-20 16:29:53'),
+(18, 2, 'Farm Plan', 12002489701, '2020-03-20 16:07:20', '2020-03-20 16:08:53'),
+(19, 2, 'Robotics Plan', 12002489701, '2020-03-20 16:08:35', '2020-03-20 16:08:53'),
+(20, 2, 'Economics Plan', 96734244380, '2020-03-20 16:13:39', '2020-03-20 16:13:55'),
+(21, 2, 'Law Plan', 19654375695, '2020-03-20 16:15:25', '2020-03-20 16:15:36'),
+(22, 2, 'Map Plan', 50734529811, '2020-03-20 16:17:13', '2020-03-20 16:18:23'),
+(23, 2, 'Astronomy Plan', 74237743225, '2020-03-20 16:18:06', '2020-03-20 16:18:23'),
+(24, 2, 'Agriculture Plan', 73611589202, '2020-03-20 16:20:14', '2020-03-20 16:20:29'),
+(25, 2, 'Geology Plan', 73611589202, '2020-03-20 16:26:47', '2020-03-20 16:27:44'),
+(26, 4, 'Geology Focused Plan', 86725657261, '2020-03-20 16:27:15', '2020-03-20 16:33:50'),
+(27, 0, 'Computer and Math Plan', 82757579527, '2020-03-20 16:46:09', '2020-03-20 16:54:48'),
+(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-03-20 16:48:57');
+
 -- --------------------------------------------------------
 
 --
@@ -6928,6 +7000,25 @@ CREATE TABLE `PlanReview` (
   `time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `PlanReview`
+--
+
+INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALUES
+(1, 17, 82757579527, 3, '2020-03-20 16:29:33'),
+(2, 17, 80612566209, 4, '2020-03-20 16:29:53'),
+(3, 8, 77768733898, 0, '2020-03-20 16:31:51'),
+(4, 26, 82757579527, 3, '2020-03-20 16:33:45'),
+(5, 26, 80612566209, 4, '2020-03-20 16:33:50'),
+(6, 11, 77768733898, 3, '2020-03-20 16:35:38'),
+(7, 13, 82757579527, 3, '2020-03-20 16:38:06'),
+(8, 9, 82757579527, 3, '2020-03-20 16:38:54'),
+(9, 9, 80612566209, 4, '2020-03-20 16:39:11'),
+(10, 10, 15999951730, 3, '2020-03-20 16:41:22'),
+(11, 28, 97689531333, 1, '2020-03-20 16:48:57'),
+(12, 27, 61846240923, 0, '2020-03-20 16:54:48'),
+(13, 16, 97689531333, 1, '2020-03-20 16:58:20');
+
 -- --------------------------------------------------------
 
 --
@@ -6941,6 +7032,17 @@ CREATE TABLE `RecentPlan` (
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `RecentPlan`
+--
+
+INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
+(20, 27, 82757579527, '2020-03-20 16:55:59'),
+(22, 9, 82757579527, '2020-03-20 16:56:37'),
+(23, 10, 82757579527, '2020-03-20 16:56:45'),
+(24, 15, 82757579527, '2020-03-20 16:57:07'),
+(26, 16, 82757579527, '2020-03-20 16:58:40');
+
 -- --------------------------------------------------------
 
 --
@@ -6949,8 +7051,245 @@ CREATE TABLE `RecentPlan` (
 
 CREATE TABLE `SelectedCourse` (
   `planId` int(11) NOT NULL,
-  `courseId` int(11) NOT NULL
+  `courseId` int(11) NOT NULL,
+  `credits` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `SelectedCourse`
+--
+
+INSERT INTO `SelectedCourse` (`planId`, `courseId`, `credits`) VALUES
+(1, 2679, 3),
+(1, 2680, 4),
+(1, 2681, 3),
+(1, 2682, 3),
+(1, 2683, 3),
+(1, 2684, 3),
+(1, 2685, 3),
+(1, 2686, 3),
+(1, 2687, 2),
+(1, 2690, 3),
+(1, 2698, 3),
+(2, 24, 4),
+(2, 35, 4),
+(2, 36, 4),
+(2, 37, 4),
+(2, 38, 4),
+(2, 39, 4),
+(2, 40, 4),
+(2, 42, 4),
+(2, 43, 3),
+(8, 154, 3),
+(8, 306, 1),
+(8, 358, 5),
+(8, 501, 4),
+(8, 510, 2),
+(8, 598, 5),
+(8, 1863, 4),
+(8, 2229, 10),
+(9, 2220, 4),
+(9, 3165, 4),
+(9, 3330, 2),
+(9, 3332, 1),
+(9, 4331, 3),
+(9, 4332, 3),
+(9, 4333, 3),
+(9, 4334, 3),
+(9, 4554, 1),
+(9, 4562, 3),
+(9, 4563, 1),
+(9, 4564, 1),
+(9, 4573, 3),
+(10, 1323, 3),
+(10, 1324, 4),
+(10, 1325, 5),
+(10, 1326, 5),
+(10, 1327, 4),
+(10, 1328, 6),
+(10, 1329, 3),
+(10, 1330, 1),
+(10, 1331, 3),
+(11, 3966, 4),
+(11, 3967, 4),
+(11, 3968, 4),
+(11, 3970, 4),
+(11, 3971, 4),
+(11, 3974, 4),
+(11, 3975, 4),
+(11, 3976, 4),
+(11, 3977, 4),
+(12, 666, 1),
+(12, 667, 3),
+(12, 668, 4),
+(12, 669, 4),
+(12, 670, 4),
+(12, 671, 4),
+(12, 672, 1),
+(12, 673, 4),
+(12, 674, 4),
+(12, 675, 3),
+(13, 1115, 6),
+(13, 1116, 2),
+(13, 1117, 3),
+(13, 1118, 3),
+(13, 1119, 3),
+(13, 1120, 3),
+(13, 1121, 3),
+(13, 1122, 3),
+(13, 1123, 4),
+(13, 1125, 4),
+(14, 2411, 4),
+(14, 2412, 4),
+(14, 2413, 4),
+(14, 2414, 2),
+(14, 2415, 1),
+(14, 2416, 1),
+(14, 2417, 4),
+(14, 2418, 4),
+(14, 2419, 4),
+(14, 2420, 4),
+(14, 2421, 4),
+(14, 2422, 4),
+(15, 1160, 4),
+(15, 1194, 4),
+(15, 1612, 3),
+(15, 3472, 3),
+(15, 3483, 4),
+(15, 3484, 4),
+(15, 3500, 3),
+(15, 3504, 4),
+(15, 3505, 4),
+(15, 3506, 4),
+(16, 1669, 3),
+(16, 2433, 1),
+(16, 2444, 2),
+(16, 2456, 4),
+(16, 2497, 3),
+(16, 2517, 3),
+(16, 2704, 3),
+(16, 2981, 4),
+(16, 2982, 4),
+(16, 3309, 2),
+(16, 4600, 3),
+(16, 6608, 2),
+(17, 2881, 4),
+(17, 2882, 4),
+(17, 2883, 3),
+(17, 3048, 4),
+(17, 3049, 4),
+(17, 3050, 3),
+(17, 6067, 4),
+(17, 6068, 4),
+(17, 6082, 3),
+(18, 305, 3),
+(18, 418, 3),
+(18, 3285, 2),
+(18, 3388, 3),
+(18, 3423, 16),
+(18, 6024, 2),
+(18, 6030, 2),
+(18, 6037, 2),
+(19, 2029, 3),
+(19, 2030, 3),
+(19, 2031, 3),
+(19, 2035, 4),
+(19, 2037, 3),
+(19, 2038, 3),
+(19, 2039, 3),
+(19, 3314, 2),
+(19, 3315, 2),
+(19, 5890, 4),
+(19, 5891, 4),
+(20, 1841, 4),
+(20, 1842, 4),
+(20, 1843, 4),
+(20, 1844, 4),
+(20, 1845, 4),
+(20, 1846, 4),
+(20, 1847, 4),
+(20, 1848, 4),
+(21, 590, 4),
+(21, 596, 4),
+(21, 1128, 4),
+(21, 5441, 4),
+(21, 5947, 3),
+(21, 5948, 3),
+(21, 5949, 3),
+(21, 5982, 4),
+(21, 5983, 4),
+(22, 2844, 3),
+(22, 2903, 4),
+(22, 2916, 4),
+(22, 2917, 4),
+(22, 2920, 4),
+(22, 2932, 4),
+(22, 3016, 3),
+(22, 3416, 6),
+(23, 237, 3),
+(23, 238, 4),
+(23, 243, 1),
+(23, 244, 1),
+(23, 245, 1),
+(23, 1060, 1),
+(23, 2993, 3),
+(23, 3234, 4),
+(23, 4158, 4),
+(23, 5319, 4),
+(23, 5324, 4),
+(23, 5331, 1),
+(23, 5360, 3),
+(24, 282, 1),
+(24, 283, 3),
+(24, 284, 1),
+(24, 285, 1),
+(24, 286, 3),
+(24, 287, 1),
+(24, 288, 3),
+(24, 289, 4),
+(24, 290, 1),
+(24, 291, 1),
+(24, 292, 3),
+(24, 293, 2),
+(24, 299, 3),
+(24, 305, 3),
+(24, 313, 3),
+(25, 2979, 4),
+(25, 2980, 4),
+(25, 2981, 4),
+(25, 2982, 4),
+(25, 2983, 4),
+(25, 2984, 3),
+(25, 2985, 3),
+(25, 2986, 3),
+(25, 2987, 3),
+(26, 2979, 4),
+(26, 2980, 4),
+(26, 2981, 4),
+(26, 2982, 4),
+(26, 2983, 4),
+(26, 2984, 3),
+(26, 2985, 3),
+(26, 2986, 3),
+(26, 2987, 3),
+(27, 1, 4),
+(27, 2029, 3),
+(27, 2030, 3),
+(27, 3954, 3),
+(27, 3955, 4),
+(27, 3956, 3),
+(27, 3957, 4),
+(27, 3958, 4),
+(27, 3959, 1),
+(27, 3960, 1),
+(27, 3961, 1),
+(27, 3962, 1),
+(28, 2300, 4),
+(28, 2301, 4),
+(28, 2302, 16),
+(28, 2307, 3),
+(28, 2308, 4),
+(28, 2309, 4);
 
 -- --------------------------------------------------------
 
@@ -6974,7 +7313,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (10157289101, 'Wicket', 'Warrick', 'sell-toys@yahoo.com', 0),
 (12002489701, 'Luke', 'Skywalker', 'usetheforce@gmail.com', 0),
 (14278597767, 'San', 'Holo', 'vibrant@birbspotters.nl', 0),
-(15999951730, 'Anakin', 'Skywalker', 'darth-vader@gmail.com', 0),
+(15999951730, 'Anakin', 'Skywalker', 'darth-vader@gmail.com', 1),
 (19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 2),
 (19654375695, 'Boba', 'Fett', 'bounty-hunter@yahoo.com', 0),
 (50734529811, 'R2', 'D2', 'artoo@gmail.com', 0),
@@ -7063,7 +7402,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -7075,25 +7414,25 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables
