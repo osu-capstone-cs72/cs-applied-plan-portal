@@ -21,7 +21,7 @@ function ErrorMessage(props) {
     }
 
     .hidden-error-message {
-      display: none;
+      visibility: hidden;
     }
 
   `;

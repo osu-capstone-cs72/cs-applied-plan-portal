@@ -152,14 +152,19 @@ async function getCourseDetails(crn, title, code) {
       // see if the course should be restricted
       const restriction = getRestrictionValue(code);
 
+      // clean up description to not include HTML elements
+      let description = obj.description.replace(/(<([^>]+)>)/ig, "");
+      description = description.replace(/&quot;/g, '"');
+
       // clean up the prerequisites string to not include HTML elements
-      const prerequisites = obj.registration_restrictions.replace(/(<([^>]+)>)/ig, "");
+      let prerequisites = obj.registration_restrictions.replace(/(<([^>]+)>)/ig, "");
+      prerequisites = prerequisites.replace("&quot", `"`);
 
       // create the course object
       const course = {
         courseName: title,
         courseCode: code,
-        description: obj.description,
+        description: description,
         prerequisites: prerequisites,
         credits: obj.hours_html,
         restriction: restriction

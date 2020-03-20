@@ -38,6 +38,9 @@ export default class CourseContainer extends React.Component {
   async filterSearch() {
     this.changeWarning("");
 
+    this.setState({
+      courses: []
+    });
     const token = getToken();
     const value = document.getElementById("search-container").value;
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;

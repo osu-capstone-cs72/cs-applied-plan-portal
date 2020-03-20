@@ -65,6 +65,7 @@ export default function StudentCreatePlan() {
 
   }, [planId]);
 
+  // adds a new course to the courses array
   function handleAddCourse(course) {
     // check that new course isn't already in array
     for (let i = 0; i < courses.length; i++) {
@@ -89,6 +90,7 @@ export default function StudentCreatePlan() {
     setWarning("");
   }
 
+  // removes a course from the courses array
   function handleRemoveCourse(course) {
     setCourses(courses.filter(prev => prev.courseId !== course.courseId));
   }
