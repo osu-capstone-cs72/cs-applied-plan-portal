@@ -106,7 +106,7 @@ function PlanTable(props) {
             <th>Course</th>
             <th>Name</th>
             <th>Credit Hours</th>
-            <th>Prerequisites</th>
+            <th>Registration Restrictions</th>
           </tr>
         </thead>
         <tbody>

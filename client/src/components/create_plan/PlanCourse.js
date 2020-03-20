@@ -28,11 +28,8 @@ export default class PlanCourse extends React.Component {
   }
 
   render() {
-    
+
     const style = css`
-      & {
-      
-      }
       
       .remove-button {
         display: inline-block;
@@ -53,13 +50,14 @@ export default class PlanCourse extends React.Component {
         font-weight: normal;
         color: var(--color-gray-400);
       }
+
     `;
-    
+
     return (
       <tr css={style}>
         <td>
           <div className="table-item-title">{this.props.courseName}</div>
-          <div className="table-item-subtitle"><small>{this.props.courseCode.replace(/([A-z])(\d)/,"$1 $2")}</small></div>
+          <div className="table-item-subtitle"><small>{this.props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}</small></div>
         </td>
         <td>{this.props.credits}</td>
         <td><button className="remove-button" onClick={this.removeButton}>Remove</button></td>

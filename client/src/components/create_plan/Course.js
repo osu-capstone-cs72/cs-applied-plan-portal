@@ -118,9 +118,21 @@ export default class Course extends React.Component {
             <div className="course-title">{this.props.courseName}<div className="course-code"><small>{this.props.courseCode.replace(/([A-z])(\d)/,"$1 $2")}</small></div></div>
             <button className={`add-button ${this.props.restriction>0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
           </summary>
-          <p>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</p>
-          <p>{this.props.description}</p>
-          { this.props.prerequisites !== "" && <p>Prerequisites: {this.props.prerequisites}</p>}
+          <h4>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</h4>
+          { this.props.description !== "" &&
+            <div>
+              <br></br>
+              <h4>Description</h4>
+              <p>{this.props.description}</p>
+            </div>
+          }
+          { this.props.prerequisites !== "" &&
+            <div>
+              <br></br>
+              <h4>Registration Restrictions</h4>
+              <p>{this.props.prerequisites}</p>
+            </div>
+          }
         </details>
       </div>
     );

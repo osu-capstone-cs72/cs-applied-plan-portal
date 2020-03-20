@@ -157,7 +157,7 @@ export default class EditPlan extends React.Component {
     // sum all the credits from the courses, return an int
     let totalCreds = 0;
     for (let i = 0; i < this.props.courses.length; i++) {
-      totalCreds += this.props.courses[i].credits;
+      totalCreds += parseInt(this.props.courses[i].credits, 10);
     }
     return totalCreds;
   }
