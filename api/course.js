@@ -34,8 +34,11 @@ app.get("/:mode/:searchText", requireAuth, async (req, res) => {
 
 });
 
-// get all live course data from the Course API server
-app.get("/live", requireAuth, async (req, res) => {
+// Get all courses from the Course API server,
+// then process the collected so that it conforms with our database.
+// Then add each course to the database that doesn't already exist.
+// If the course already exists we update it instead.
+app.get("/updateDatabase", requireAuth, async (req, res) => {
 
   try {
 
@@ -46,7 +49,6 @@ app.get("/live", requireAuth, async (req, res) => {
 
     // due to the computational cost of this action,
     // only the head advisor can perform this action
-    // only allow an Advisor or a Head Advisor to fetch Users
     if (authenticatedUser.role === Role.advisor ||
         authenticatedUser.role === Role.headAdvisor) {
 
@@ -61,7 +63,7 @@ app.get("/live", requireAuth, async (req, res) => {
     } else {
       console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
       res.status(403).send({
-        error: "Only head advisors can get courses from the OSU course API"
+        error: "Only head advisors can update the courses in the database"
       });
     }
 
