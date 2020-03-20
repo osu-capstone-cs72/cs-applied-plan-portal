@@ -79,7 +79,7 @@ export default class Course extends React.Component {
 
       .add-button {
         margin-right: 0;
-        margin-left: 
+        margin-left: auto;
       }
       
       .disabled {
@@ -115,8 +115,14 @@ export default class Course extends React.Component {
       <div className="course" css={style}>
         <details>
           <summary>
-            <div className="course-title">{this.props.courseName}<div className="course-code"><small>{this.props.courseCode.replace(/([A-z])(\d)/,"$1 $2")}</small></div></div>
-            <button className={`add-button ${this.props.restriction>0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
+            <div className="course-title">{this.props.courseName}
+              <div className="course-code">
+                <small>
+                  {this.props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}
+                </small>
+              </div>
+            </div>
+            <button className={`add-button ${this.props.restriction > 0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
           </summary>
           <h4>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</h4>
           { this.props.description !== "" &&
