@@ -10,15 +10,14 @@ const {Role} = require("../entities/role");
 const {requireAuth} = require("../services/auth/auth");
 
 // search for course data
-app.get("/:mode/:searchText", requireAuth, async (req, res) => {
+app.get("/:searchText", requireAuth, async (req, res) => {
 
   console.log("Search for course data");
   const searchText = req.params.searchText;
-  const mode = req.params.mode;
 
   try {
 
-    const results = await getCourse(searchText, mode);
+    const results = await getCourse(searchText);
     if (results.courses.length === 0) {
       console.error("404: No courses found\n");
       res.status(404).send({error: "No courses found."});

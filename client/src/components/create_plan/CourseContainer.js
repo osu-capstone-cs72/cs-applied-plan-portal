@@ -44,31 +44,22 @@ export default class CourseContainer extends React.Component {
     const token = getToken();
     const value = document.getElementById("search-container").value;
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const codeUrl = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
-    const nameUrl = `http://${server}/course/courseName/${value}/?accessToken=${token}`;
+    const getUrl = `http://${server}/course/${value}/?accessToken=${token}`;
     let obj = [];
     try {
-      const results = await fetch(codeUrl);
+      const results = await fetch(getUrl);
       if (results.ok) {
         obj = await results.json();
         this.setState({
           courses: obj.courses
         });
       } else {
-        const results = await fetch(nameUrl);
-        if (results.ok) {
-          obj = await results.json();
-          this.setState({
-            courses: obj.courses
-          });
-        } else {
-          // we got a bad status code
-          obj = await results.json();
-          this.changeWarning(obj.error);
-          this.setState({
-            courses: []
-          });
-        }
+        // we got a bad status code
+        obj = await results.json();
+        this.changeWarning(obj.error);
+        this.setState({
+          courses: []
+        });
       }
     } catch (err) {
       alert("An internal server error occurred. Please try again later.");

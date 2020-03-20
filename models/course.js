@@ -6,25 +6,38 @@ const fetch = require("node-fetch");
 const {Required} = require("../entities/required");
 const {Subject} = require("../entities/subject");
 
-// search for courses using text and a mode setting
-// the mode can be courseId, courseCode, or courseName
-async function getCourse(searchText, mode) {
-
-  // set sql query based on mode
-  let sql = "SELECT * FROM Course WHERE courseId = ?;";
-  switch (mode) {
-    case "courseCode":
-      sql = "SELECT * FROM Course WHERE courseCode LIKE CONCAT('%', ?, '%') " +
-        "ORDER BY courseCode;";
-      break;
-    case "courseName":
-      sql = "SELECT * FROM Course WHERE courseName LIKE CONCAT('%', ?, '%') " +
-        "ORDER BY courseCode;";
-      break;
-  }
+// Search for courses using text.
+// The text is used to search by
+// courseCode and courseName.
+async function getCourse(searchText) {
 
   try {
-    const results = await pool.query(sql, [searchText]);
+
+    // search for courses by subject
+    let sql = "SELECT * " +
+    "FROM Course " +
+    "WHERE courseCode LIKE CONCAT('%', ?, '%') " +
+    "ORDER BY courseCode;";
+
+    // perform the query
+    let results = await pool.query(sql, searchText);
+
+    // if there are no results then search by course name
+    if (results[0].length) {
+      return {
+        courses: results[0]
+      };
+    }
+
+    // search for courses by course name
+    sql = "SELECT * " +
+    "FROM Course " +
+    "WHERE courseName LIKE CONCAT('%', ?, '%') " +
+    "ORDER BY courseCode;";
+
+    // perform the query
+    results = await pool.query(sql, searchText);
+
     return {
       courses: results[0]
     };
