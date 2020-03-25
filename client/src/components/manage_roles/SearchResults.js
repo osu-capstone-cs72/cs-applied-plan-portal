@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import SelectRole from "./SelectRole";
 import PropTypes from "prop-types";
+import LoadMoreButton from "../general/LoadMoreButton";
 
 function SearchResults(props) {
 
@@ -96,10 +97,8 @@ function SearchResults(props) {
       {props.cursor.primary === "null" ? (
         null
       ) : (
-        <button id="page-load-more-button"
-          onClick={() => props.onLoadMore(props.cursor) }>
-          Show More
-        </button>
+        <LoadMoreButton onUpdate={() => props.onLoadMore(props.cursor)}
+          loading={props.loading} />
       )}
     </div>
   );
@@ -107,6 +106,7 @@ function SearchResults(props) {
 export default withRouter(SearchResults);
 
 SearchResults.propTypes = {
+  loading: PropTypes.bool,
   history: PropTypes.object,
   users: PropTypes.array,
   cursor: PropTypes.object,

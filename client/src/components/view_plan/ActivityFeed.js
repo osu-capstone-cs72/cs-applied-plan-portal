@@ -5,6 +5,7 @@ import Review from "./Review";
 import CreateComment from "./CreateComment";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import LoadMoreButton from "../general/LoadMoreButton";
 
 function ActivityFeed(props) {
 
@@ -43,7 +44,8 @@ function ActivityFeed(props) {
       { props.cursor.primary === "null" ? (
         null
       ) : (
-        <button id="page-load-more-button" onClick={() => props.onShowMore(props.cursor)}>Show More</button>
+        <LoadMoreButton onUpdate={() => props.onShowMore(props.cursor)}
+          loading={props.loading} />
       )}
     </div>
   );
@@ -52,6 +54,7 @@ function ActivityFeed(props) {
 export default ActivityFeed;
 
 ActivityFeed.propTypes = {
+  loading: PropTypes.bool,
   status: PropTypes.number,
   onUpdate: PropTypes.any,
   activity: PropTypes.array,

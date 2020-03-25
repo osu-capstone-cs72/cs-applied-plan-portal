@@ -244,7 +244,8 @@ function ViewPlan(props) {
         <ListSimilarPlans />
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
-        <ActivityFeed activity={activity} currentUser={currentUser} status={status}
+        <ActivityFeed activity={activity} currentUser={currentUser}
+          status={status} loading={loading}
           cursor={cursor} onNewComment={e => handleAddComment(e)}
           onShowMore={cursor => fetchActivity(planId, cursor)}/>
       </div>

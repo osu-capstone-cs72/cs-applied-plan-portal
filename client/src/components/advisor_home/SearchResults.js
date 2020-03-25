@@ -5,6 +5,7 @@ import {formatTime} from "../../utils/formatTime";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
+import LoadMoreButton from "../general/LoadMoreButton";
 
 function SearchResults(props) {
 
@@ -24,15 +25,6 @@ function SearchResults(props) {
     th, td {
       padding: 10px;
       min-width: 150px;
-    }
-
-    #page-load-more-button {
-      margin: 25px;
-      padding: 1rem 1rem;
-      border-radius: 0.5rem;
-      border: 1px solid black;
-      background: transparent;
-      margin-left: 1rem;
     }
 
     .active-sort { 
@@ -165,10 +157,8 @@ function SearchResults(props) {
       { props.cursor.primary === "null" ? (
         null
       ) : (
-        <button id="page-load-more-button"
-          onClick={() => props.onLoadMore(props.cursor) }>
-          Show More
-        </button>
+        <LoadMoreButton onUpdate={() => props.onLoadMore(props.cursor)}
+          loading={props.loading} />
       )}
     </div>
   );
@@ -178,6 +168,7 @@ export default withRouter(SearchResults);
 
 SearchResults.propTypes = {
   history: PropTypes.object,
+  loading: PropTypes.bool,
   plans: PropTypes.array,
   cursor: PropTypes.object,
   searchFields: PropTypes.object,
