@@ -28,8 +28,8 @@ function LoadMoreButton(props) {
     }
   }, [props.loading]);
 
-  // checks to see if the user has reached the bottom of the page so that
-  // we can load more results
+  // checks to see if the user has reached the bottom of the page
+  // so that we can load more results
   window.onscroll = function() {
     if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 2) {
       checkLoading();
@@ -41,6 +41,7 @@ function LoadMoreButton(props) {
   function checkLoading() {
 
     if (!props.loading) {
+      console.log("LOADED");
       props.onUpdate();
     }
 

@@ -28,9 +28,7 @@ export default function ManageRoles() {
   const style = css`
 
     #user-manage-container {
-      position: absolute;
-      top: 75px;
-      margin: 0 auto;
+      margin: 100px 0 auto;
       width: 100%;
     }
 

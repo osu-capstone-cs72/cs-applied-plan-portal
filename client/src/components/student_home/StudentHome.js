@@ -104,9 +104,7 @@ export default class StudentHome extends React.Component {
     const style = css`
 
       .student-plans-table {
-        margin: 0 auto;
-        position: relative;
-        top: 65px;
+        margin: 100px 0 auto;
         width: 60%;
       }
 
@@ -192,7 +190,7 @@ export default class StudentHome extends React.Component {
 
     if (!this.state.pageError) {
       return (
-        <div css={style}>
+        <div id="student-home-page" css={style}>
           <PageSpinner loading={this.state.loading} />
           <NavBar />
           <table className="student-plans-table">

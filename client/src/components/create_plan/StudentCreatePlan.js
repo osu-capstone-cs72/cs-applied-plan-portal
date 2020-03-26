@@ -99,7 +99,7 @@ export default function StudentCreatePlan() {
         credits = parseInt(credits, 10);
 
         // see if the user entered a valid number of credits
-        if (credits >= creditArray[0] && credits <= creditArray[1]) {
+        if (credits >= creditArray[0] && credits <= creditArray[1] && !isNaN(credits)) {
           course.credits = credits;
           setCourses(prev => [...prev, course]);
           setWarning("");

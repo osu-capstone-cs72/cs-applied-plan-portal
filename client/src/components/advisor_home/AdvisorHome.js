@@ -30,9 +30,7 @@ function AdvisorHome() {
   const style = css`
 
     #advisor-home-container {
-      position: absolute;
-      top: 75px;
-      margin: 0 auto;
+      margin: 100px 0 auto;
       width: 100%;
     }
 
@@ -144,7 +142,7 @@ function AdvisorHome() {
   }
 
   return (
-    <div css={style}>
+    <div id="advisor-home-page" css={style}>
       <PageSpinner loading={loading} />
       <NavBar />
 

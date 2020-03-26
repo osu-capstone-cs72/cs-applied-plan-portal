@@ -19,7 +19,8 @@ async function createEnforceConstraints(userId, planName, courses) {
     await duplicateCourseConstraint(courses);
     await courseConstraint(courses);
     await restrictionConstraint(courses);
-    await creditConstraint(courses);
+    await courseCreditConstraint(courses);
+    await planCreditConstraint(courses);
     await limitConstraint(userId);
     return "valid";
 
@@ -51,7 +52,8 @@ async function patchEnforceConstraints(planId, planName, courses, userId) {
       await duplicateCourseConstraint(courses);
       await courseConstraint(courses);
       await restrictionConstraint(courses);
-      await creditConstraint(courses);
+      await courseCreditConstraint(courses);
+      await planCreditConstraint(courses);
       await ownerConstraint(planId, userId);
     }
 
@@ -409,6 +411,7 @@ async function restrictionConstraint(courses) {
 
   try {
 
+    // perform the query
     const results = await pool.query(sql, sqlArray);
 
     // check if there were any restrictions and if so, which ones
@@ -425,6 +428,88 @@ async function restrictionConstraint(courses) {
   } catch (err) {
     if (internalError(err, violationReq) && internalError(err, violationGrad)) {
       console.log("Error checking restriction constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+// checks that the submitted credit value of each course
+// matches the valid range from the courses in the database
+async function courseCreditConstraint(courses) {
+
+  const violation = "Invalid course selection:\nA selected course has an invalid number of credits.";
+  let sql = "SELECT credits FROM Course WHERE courseId IN (";
+  const sqlArray = [];
+
+  // expand the sql string and array based on the number of courses
+  courses.forEach((currentValue) => {
+    sql += "?,";
+    sqlArray.push(currentValue.courseId);
+  });
+  // replace the last character of the sql query with the end of the query
+  sql = sql.replace(/.$/, ");");
+
+  try {
+
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
+
+    // check each course to ensure that it matches the submitted credits
+    console.log("DB:", results[0]);
+    console.log("Courses:", courses);
+    for (let i = 0; i < results[0].length; i++) {
+
+      const credits = results[0][i].credits;
+
+      // check if the current course has a set credit value or a range
+      if (isNaN(credits)) {
+
+        // split the credit range into two separate numbers (min and max)
+        const creditArray = credits.split(" to ");
+        if (creditArray.length >= 2) {
+
+          console.log("DB credits", credits, typeof credits);
+          console.log("submitted credits", courses[i].credits, typeof courses[i].credits);
+          console.log(courses[i].credits >= creditArray[0] &&
+            courses[i].credits <= creditArray[1] && !isNaN(courses[i].credits));
+          // this credit value is a range
+          // ensure that the given credit value is in range
+          if (courses[i].credits >= creditArray[0] &&
+            courses[i].credits <= creditArray[1] && !isNaN(courses[i].credits)) {
+            continue;
+          } else {
+            throw violation;
+          }
+
+        } else {
+          throw violation;
+        }
+
+      } else {
+
+        console.log("DB credits", credits, typeof credits);
+        console.log("submitted credits", courses[i].credits, typeof courses[i].credits);
+        console.log(parseInt(credits, 10) === courses[i].credits);
+        // ensure that the database and submitted credits match
+        if (parseInt(credits, 10) === courses[i].credits) {
+          continue;
+        } else {
+          throw violation;
+        }
+
+      }
+
+    }
+
+    // all credits are valid
+    return;
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking course credit constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
@@ -465,7 +550,7 @@ async function limitConstraint(userId) {
 }
 
 // checks that at least the minimum plan credits are selected
-async function creditConstraint(courses) {
+async function planCreditConstraint(courses) {
 
   const violationMin = `Invalid course selection:\n` +
     `A plan must have at least ${CREDITS_MIN} credits selected.`;
@@ -504,7 +589,7 @@ async function creditConstraint(courses) {
 
   } catch (err) {
     if (internalError(err, violationMin) && internalError(err, violationMax)) {
-      console.log("Error checking credit constraint\n", err);
+      console.log("Error checking plan credit constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
@@ -513,7 +598,7 @@ async function creditConstraint(courses) {
 
 }
 
-//  checks that the user owns the plan or is an advisor
+// checks that the user owns the plan or is an advisor
 async function ownerConstraint(planId, userId) {
 
   const violation = "Invalid user ID:\nThis user is not allowed perform this action on this plan.";
