@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Mar 20, 2020 at 09:59 AM
+-- Generation Time: Mar 26, 2020 at 08:42 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.0.33
 
@@ -54,7 +54,23 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (11, 10, 15999951730, '2020-03-20 16:41:18', 'Good plan.'),
 (12, 27, 61846240923, '2020-03-20 16:46:38', 'This plan has too many 100 level courses.'),
 (13, 28, 97689531333, '2020-03-20 16:48:06', 'Hello there!\nThis plan has too many credits focused on research, add something else instead.'),
-(14, 16, 97689531333, '2020-03-20 16:58:18', 'Hello there!\nI don\'t think focusing on birds is really a valid strategy for a plan. Possibly rework this plan a bit to focus on general nature studies?');
+(14, 16, 97689531333, '2020-03-20 16:58:18', 'Hello there!\nI don\'t think focusing on birds is really a valid strategy for a plan. Possibly rework this plan a bit to focus on general nature studies?'),
+(15, 29, 82757579527, '2020-03-21 03:36:13', 'I really really like minerals.'),
+(16, 21, 82757579527, '2020-03-25 19:22:40', 'Comment #1'),
+(17, 21, 82757579527, '2020-03-25 19:22:43', 'Comment #2'),
+(18, 21, 82757579527, '2020-03-25 19:22:47', 'Comment #3'),
+(19, 21, 82757579527, '2020-03-25 19:22:51', 'Comment #4'),
+(20, 21, 82757579527, '2020-03-25 19:22:54', 'Comment #5'),
+(21, 21, 82757579527, '2020-03-25 19:22:59', 'Comment #6'),
+(22, 21, 82757579527, '2020-03-25 19:23:02', 'Comment #7'),
+(23, 21, 82757579527, '2020-03-25 19:23:08', 'Comment #8'),
+(24, 21, 82757579527, '2020-03-25 19:23:13', 'Comment #9'),
+(25, 21, 82757579527, '2020-03-25 19:23:18', 'Comment #10'),
+(26, 21, 82757579527, '2020-03-25 19:23:24', 'Comment #11'),
+(27, 21, 82757579527, '2020-03-25 19:23:40', 'Comment #12'),
+(28, 21, 82757579527, '2020-03-25 19:23:46', 'Comment #13'),
+(29, 21, 82757579527, '2020-03-25 19:23:52', 'Comment #14'),
+(30, 21, 82757579527, '2020-03-25 19:23:56', 'Comment #15');
 
 -- --------------------------------------------------------
 
@@ -6940,7 +6956,8 @@ INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`
 (14, 10, 84979840992, 'Anakin Skywalker has added a new comment to the plan \"Chemistry Plan\".', 1, 0),
 (15, 10, 84979840992, 'The plan \"Chemistry Plan\" has been set to \"Awaiting final review\" by Anakin Skywalker.', 2, 0),
 (16, 16, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Bird Plan\".', 1, 0),
-(17, 16, 14278597767, 'The plan \"Bird Plan\" has been set to \"Awaiting student changes\" by Zachary Thomas.', 2, 0);
+(17, 16, 14278597767, 'The plan \"Bird Plan\" has been set to \"Awaiting student changes\" by Zachary Thomas.', 2, 0),
+(18, 21, 82757579527, 'Zachary Thomas has added a new comment to the plan \"Law Plan\".', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -6974,17 +6991,22 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 (15, 2, 'Family Plan', 14278597767, '2020-03-20 16:03:31', '2020-03-20 16:05:00'),
 (16, 1, 'Bird Plan', 14278597767, '2020-03-20 16:04:36', '2020-03-20 16:58:20'),
 (17, 4, 'Language Plan', 86725657261, '2020-03-20 16:06:18', '2020-03-20 16:29:53'),
-(18, 2, 'Farm Plan', 12002489701, '2020-03-20 16:07:20', '2020-03-20 16:08:53'),
+(18, 2, 'Farm Plan', 12002489701, '2020-03-20 16:07:20', '2020-03-26 05:24:44'),
 (19, 2, 'Robotics Plan', 12002489701, '2020-03-20 16:08:35', '2020-03-20 16:08:53'),
 (20, 2, 'Economics Plan', 96734244380, '2020-03-20 16:13:39', '2020-03-20 16:13:55'),
-(21, 2, 'Law Plan', 19654375695, '2020-03-20 16:15:25', '2020-03-20 16:15:36'),
+(21, 2, 'Law Plan', 19654375695, '2020-03-20 16:15:25', '2020-03-26 05:18:39'),
 (22, 2, 'Map Plan', 50734529811, '2020-03-20 16:17:13', '2020-03-20 16:18:23'),
 (23, 2, 'Astronomy Plan', 74237743225, '2020-03-20 16:18:06', '2020-03-20 16:18:23'),
 (24, 2, 'Agriculture Plan', 73611589202, '2020-03-20 16:20:14', '2020-03-20 16:20:29'),
 (25, 2, 'Geology Plan', 73611589202, '2020-03-20 16:26:47', '2020-03-20 16:27:44'),
 (26, 4, 'Geology Focused Plan', 86725657261, '2020-03-20 16:27:15', '2020-03-20 16:33:50'),
 (27, 0, 'Computer and Math Plan', 82757579527, '2020-03-20 16:46:09', '2020-03-20 16:54:48'),
-(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-03-20 16:48:57');
+(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-03-20 16:48:57'),
+(29, 2, 'Earth Plan', 82757579527, '2020-03-21 03:35:55', '2020-03-25 16:01:02'),
+(30, 2, 'Computer Plan', 50734529811, '2020-03-21 20:01:46', '2020-03-27 03:23:17'),
+(31, 2, 'Space & Earth Plan', 96734244380, '2020-03-27 03:02:57', '2020-03-27 03:23:17'),
+(32, 2, 'Bio-Health Plan', 74237743225, '2020-03-27 03:23:23', '2020-03-27 03:36:39'),
+(33, 2, 'Civil Engineering Plan', 74237743225, '2020-03-27 03:36:02', '2020-03-27 03:36:39');
 
 -- --------------------------------------------------------
 
@@ -7037,11 +7059,11 @@ CREATE TABLE `RecentPlan` (
 --
 
 INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
-(20, 27, 82757579527, '2020-03-20 16:55:59'),
-(22, 9, 82757579527, '2020-03-20 16:56:37'),
-(23, 10, 82757579527, '2020-03-20 16:56:45'),
-(24, 15, 82757579527, '2020-03-20 16:57:07'),
-(26, 16, 82757579527, '2020-03-20 16:58:40');
+(85, 11, 82757579527, '2020-03-26 19:09:08'),
+(86, 21, 82757579527, '2020-03-26 19:09:17'),
+(87, 10, 82757579527, '2020-03-26 19:09:31'),
+(88, 2, 82757579527, '2020-03-26 19:09:43'),
+(93, 1, 82757579527, '2020-03-27 02:26:57');
 
 -- --------------------------------------------------------
 
@@ -7289,7 +7311,60 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`, `credits`) VALUES
 (28, 2302, 16),
 (28, 2307, 3),
 (28, 2308, 4),
-(28, 2309, 4);
+(28, 2309, 4),
+(29, 2978, 4),
+(29, 2979, 4),
+(29, 2980, 4),
+(29, 2981, 4),
+(29, 2982, 4),
+(29, 2983, 4),
+(29, 2986, 3),
+(29, 2987, 3),
+(29, 2990, 4),
+(30, 1, 4),
+(30, 6, 3),
+(30, 7, 4),
+(30, 8, 2),
+(30, 9, 2),
+(30, 2679, 3),
+(30, 2689, 5),
+(30, 2694, 3),
+(30, 2695, 4),
+(30, 2696, 4),
+(30, 2697, 1),
+(30, 2698, 3),
+(31, 789, 4),
+(31, 1060, 1),
+(31, 2979, 4),
+(31, 2981, 4),
+(31, 2982, 4),
+(31, 2988, 3),
+(31, 2990, 4),
+(31, 2993, 3),
+(31, 5324, 4),
+(31, 5331, 1),
+(31, 5360, 3),
+(32, 888, 1),
+(32, 889, 1),
+(32, 890, 1),
+(32, 891, 4),
+(32, 892, 3),
+(32, 893, 4),
+(32, 894, 3),
+(32, 895, 3),
+(32, 896, 4),
+(32, 897, 10),
+(33, 1432, 2),
+(33, 1433, 3),
+(33, 1434, 3),
+(33, 1435, 3),
+(33, 1436, 1),
+(33, 1437, 4),
+(33, 1438, 3),
+(33, 1439, 4),
+(33, 1451, 4),
+(33, 1452, 4),
+(33, 1470, 2);
 
 -- --------------------------------------------------------
 
@@ -7402,7 +7477,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -7414,13 +7489,13 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
@@ -7432,7 +7507,7 @@ ALTER TABLE `PlanReview`
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- Constraints for dumped tables
