@@ -450,7 +450,7 @@ async function courseCreditConstraint(courses) {
     sqlArray.push(currentValue.courseId);
   });
   // replace the last character of the sql query with the end of the query
-  sql = sql.replace(/.$/, ");");
+  sql = sql.replace(/.$/, ") ORDER BY courseId;");
 
   try {
 
@@ -471,10 +471,6 @@ async function courseCreditConstraint(courses) {
         const creditArray = credits.split(" to ");
         if (creditArray.length >= 2) {
 
-          console.log("DB credits", credits, typeof credits);
-          console.log("submitted credits", courses[i].credits, typeof courses[i].credits);
-          console.log(courses[i].credits >= creditArray[0] &&
-            courses[i].credits <= creditArray[1] && !isNaN(courses[i].credits));
           // this credit value is a range
           // ensure that the given credit value is in range
           if (courses[i].credits >= creditArray[0] &&
@@ -490,11 +486,8 @@ async function courseCreditConstraint(courses) {
 
       } else {
 
-        console.log("DB credits", credits, typeof credits);
-        console.log("submitted credits", courses[i].credits, typeof courses[i].credits);
-        console.log(parseInt(credits, 10) === courses[i].credits);
         // ensure that the database and submitted credits match
-        if (parseInt(credits, 10) === courses[i].credits) {
+        if (credits === courses[i].credits) {
           continue;
         } else {
           throw violation;

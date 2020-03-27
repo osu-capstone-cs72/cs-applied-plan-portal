@@ -83,10 +83,14 @@ export default class EditPlan extends React.Component {
               }
             });
           })
-            .catch((error) => alert("Error: " + error));
+            .catch(() => this.setState({
+              warning: "An internal server error occurred. Please try again later."
+            }));
         } catch (err) {
           // this is a server error
-          alert("An internal server error occurred. Please try again later.");
+          this.setState({
+            warning: "An internal server error occurred. Please try again later."
+          });
         }
         this.props.onLoading(false);
       }
@@ -124,10 +128,14 @@ export default class EditPlan extends React.Component {
           }
         });
       })
-        .catch((error) => alert("Error: " + error));
+        .catch(() => this.setState({
+          warning: "An internal server error occurred. Please try again later."
+        }));
     } catch (err) {
       // this is a server error
-      alert("An internal server error occurred. Please try again later.");
+      this.setState({
+        warning: "An internal server error occurred. Please try again later."
+      });
     }
     this.props.onLoading(false);
   }

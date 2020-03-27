@@ -26,6 +26,7 @@ function LoadMoreButton(props) {
       && !props.loading) {
       checkLoading();
     }
+    // eslint-disable-next-line
   }, [props.loading]);
 
   // checks to see if the user has reached the bottom of the page
@@ -41,7 +42,6 @@ function LoadMoreButton(props) {
   function checkLoading() {
 
     if (!props.loading) {
-      console.log("LOADED");
       props.onUpdate();
     }
 

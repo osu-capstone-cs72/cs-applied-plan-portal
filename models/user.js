@@ -53,7 +53,7 @@ exports.updateUserPartial = updateUserPartial;
 async function searchUsers(text, role, cursor) {
   try {
 
-    const RESULTS_PER_PAGE = 10;
+    const RESULTS_PER_PAGE = 25;
     const sqlArray = [];
     let users;
     const nextCursor = {

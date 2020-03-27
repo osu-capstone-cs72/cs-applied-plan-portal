@@ -103,126 +103,143 @@ export default class StudentHome extends React.Component {
 
     const style = css`
 
-      .student-plans-table {
-        margin: 100px 0 auto;
-        width: 60%;
-      }
+    #student-home-container {
+      margin: 100px 0 auto;
+      width: 100%;
+    }
 
-      .student-plans-data {
-        padding: 1rem 2rem;
-      }
+    #student-home-contents-container {
+      margin: 25px auto;
+      width: 60%;
+    }
 
-      .new-plan-button {
-        position: fixed;
-        bottom: 3rem;
-        right: 3rem;
-        width: 6rem;
-        height: 6rem;
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M23 10h-9V1h-4v9H1v4h9v9h4v-9h9v-4z"></path></svg>'), var(--color-orange-500);
-        border-radius: 50%;
-        border: none;
-        font-size: 36px;
-        font-weight: bold;
-        background-size: 3rem 3rem;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-      
-      .table-item-title {
-        font-weight: 600;
-      }
+    .student-plans-table {
+      margin: 0 auto;
+    }
 
-      .table-item-subtitle {
-        font-weight: normal;
-        color: var(--color-gray-400);
-      }
-      
-      table {
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        overflow: hidden;
-        padding: 1rem;
-        background: var(--color-lightgray-50);
-        background: white;
-      }
+    .student-plans-data {
+      padding: 1rem 2rem;
+    }
 
-      table thead tr th {
-        background: var(--color-lightgray-100);
-        color: var(--color-gray-400);
-        font-variant-caps: all-small-caps;
-        font-weight: 500;
-        font-size: 12pt;
-        border-bottom: none;
-        padding: 1rem 2rem;
-        /*padding: 10px;*/
-        font-weight: bold;
-        white-space: nowrap;
-      }
+    .new-plan-button {
+      position: fixed;
+      bottom: 3rem;
+      right: 3rem;
+      width: 6rem;
+      height: 6rem;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M23 10h-9V1h-4v9H1v4h9v9h4v-9h9v-4z"></path></svg>'), var(--color-orange-500);
+      border-radius: 50%;
+      border: none;
+      font-size: 36px;
+      font-weight: bold;
+      background-size: 3rem 3rem;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    
+    .table-item-title {
+      font-weight: 600;
+    }
 
-      table.student-plans-table  thead tr th:nth-child(2) {
-        /*width: -webkit-fill-available;*/
-        width: 30%;
-      }
+    .table-item-subtitle {
+      font-weight: normal;
+      color: var(--color-gray-400);
+    }
+    
+    table {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      padding: 1rem;
+      background: var(--color-lightgray-50);
+      background: white;
+    }
 
-      table tbody tr td {
-        vertical-align: middle;
-        padding: 1rem 2rem;
-      }
-      
-      table tbody tr {
-        cursor: pointer;
-      }
+    table thead tr th {
+      background: var(--color-lightgray-100);
+      color: var(--color-gray-400);
+      font-variant-caps: all-small-caps;
+      font-weight: 500;
+      font-size: 12pt;
+      border-bottom: none;
+      padding: 1rem 2rem;
+      /*padding: 10px;*/
+      font-weight: bold;
+      white-space: nowrap;
+    }
 
-      table.student-plans-table tbody tr td {
-        cursor: pointer;
-      }
+    table.student-plans-table  thead tr th:nth-child(2) {
+      /*width: -webkit-fill-available;*/
+      width: 30%;
+    }
 
-      table.student-plans-table tbody tr:hover td .table-item-title {
-        text-decoration: underline;
-      }
+    table tbody tr td {
+      vertical-align: middle;
+      padding: 1rem 2rem;
+    }
+    
+    table tbody tr {
+      cursor: pointer;
+    }
 
-      table.student-plans-table tbody tr td:nth-of-type(1) {
-        width: 50%;
-        font-weight: 500;
-      }
-      
-    `;
+    table.student-plans-table tbody tr td {
+      cursor: pointer;
+    }
+
+    table.student-plans-table tbody tr:hover td .table-item-title {
+      text-decoration: underline;
+    }
+
+    table.student-plans-table tbody tr td:nth-of-type(1) {
+      width: 50%;
+      font-weight: 500;
+    }
+    
+  `;
 
     if (!this.state.pageError) {
       return (
         <div id="student-home-page" css={style}>
           <PageSpinner loading={this.state.loading} />
           <NavBar />
-          <table className="student-plans-table">
-            <thead>
-              <tr>
-                <th className="student-plans-data">Name</th>
-                <th className="student-plans-data">Reviewers</th>
-                <th className="student-plans-data">Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.plans ? this.state.plans.map(plan =>
-                <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
-                  <td className="student-plans-data" key={plan.planId + "b"}>
-                    <div className="table-item-title">{plan.planName}</div>
-                    <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
-                  </td>
-                  <td className="student-plans-data" key={plan.planId + "c"}>
-                    {plan.advisors ? (plan.advisors.map(advisor =>
-                      <Advisor key={advisor.firstName + advisor.lastName}
-                        firstName={advisor.firstName} lastName={advisor.lastName} />
-                    )) : (
-                      null
-                    )}
-                  </td>
-                  <td className="student-plans-data" key={plan.planId + "d"}>
-                    {formatTime(plan.lastUpdated)}
-                  </td>
-                </tr>) : null}
-            </tbody>
-          </table>
-          <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+
+          <div id="student-home-container">
+            <div id="student-home-contents-container">
+
+              <table className="student-plans-table">
+                <thead>
+                  <tr>
+                    <th className="student-plans-data">Name</th>
+                    <th className="student-plans-data">Reviewers</th>
+                    <th className="student-plans-data">Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.plans ? this.state.plans.map(plan =>
+                    <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
+                      <td className="student-plans-data" key={plan.planId + "b"}>
+                        <div className="table-item-title">{plan.planName}</div>
+                        <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
+                      </td>
+                      <td className="student-plans-data" key={plan.planId + "c"}>
+                        {plan.advisors ? (plan.advisors.map(advisor =>
+                          <Advisor key={advisor.firstName + advisor.lastName}
+                            firstName={advisor.firstName} lastName={advisor.lastName} />
+                        )) : (
+                          null
+                        )}
+                      </td>
+                      <td className="student-plans-data" key={plan.planId + "d"}>
+                        {formatTime(plan.lastUpdated)}
+                      </td>
+                    </tr>) : null}
+                </tbody>
+              </table>
+              <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+
+            </div>
+          </div>
+
         </div>
       );
     } else {

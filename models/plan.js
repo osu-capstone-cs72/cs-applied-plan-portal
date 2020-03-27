@@ -173,7 +173,7 @@ async function searchPlans(text, status, sort, order, cursor) {
   try {
 
     const ASC = 1;
-    const RESULTS_PER_PAGE = 10;
+    const RESULTS_PER_PAGE = 25;
     const sqlArray = [];
     let plans;
     const nextCursor = {
