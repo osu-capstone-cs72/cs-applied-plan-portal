@@ -151,16 +151,10 @@ function AdvisorHome() {
 
           <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
 
-          <ErrorMessage text={errorMessage} />
-
-          {plans.length ? (
-            <SearchResults plans={plans} cursor={cursor}
-              searchFields={searchFields} loading={loading}
-              onChangeSort={(sort, order) => handleChangeSort(sort, order)}
-              onLoadMore={cursor => searchPlans(cursor, false)} />
-          ) : (
-            null
-          )}
+          <SearchResults plans={plans} cursor={cursor} error={errorMessage}
+            searchFields={searchFields} loading={loading}
+            onChangeSort={(sort, order) => handleChangeSort(sort, order)}
+            onLoadMore={cursor => searchPlans(cursor, false)} />
 
         </div>
       </div>
