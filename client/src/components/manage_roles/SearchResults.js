@@ -44,6 +44,15 @@ function SearchResults(props) {
       background: white;
     }
     
+    .prompt-container {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      padding: 10rem;
+      background: var(--color-lightgray-50);
+      background: white;
+    }
+
     table thead tr th {
       background: var(--color-lightgray-100);
       color: var(--color-gray-400);
@@ -65,47 +74,62 @@ function SearchResults(props) {
     }
 
 `;
-
-  return (
-    <div className="table-container" css={style}>
-      <h3>Search Results</h3>
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th className="user-data">User Name</th>
-            <th className="user-data">User ID</th>
-            <th className="user-data">Email</th>
-            <th className="user-data">Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {props.users.map((user, index) =>
-            <tr key={user.userId}>
-              <td className="user-data" key={user.userId + "a"}>
-                {user.firstName + " " + user.lastName}
-              </td>
-              <td className="user-data" key={user.userId + "b"}>{user.userId}</td>
-              <td className="user-data" key={user.userId + "c"}>{user.email}</td>
-              <td className="user-data" key={user.userId + "d"}>
-                <SelectRole role={user.role} userId={user.userId} index={index}
-                  userName={user.firstName + " " + user.lastName} onLoading={load => props.onLoading(load)} />
-              </td>
+  if (props.users.length) {
+    return (
+      <div className="table-container" css={style}>
+        <h3>Search Results</h3>
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th className="user-data">User Name</th>
+              <th className="user-data">User ID</th>
+              <th className="user-data">Email</th>
+              <th className="user-data">Role</th>
             </tr>
+          </thead>
+          <tbody>
+            {props.users.map((user, index) =>
+              <tr key={user.userId}>
+                <td className="user-data" key={user.userId + "a"}>
+                  {user.firstName + " " + user.lastName}
+                </td>
+                <td className="user-data" key={user.userId + "b"}>{user.userId}</td>
+                <td className="user-data" key={user.userId + "c"}>{user.email}</td>
+                <td className="user-data" key={user.userId + "d"}>
+                  <SelectRole role={user.role} userId={user.userId} index={index}
+                    userName={user.firstName + " " + user.lastName} onLoading={load => props.onLoading(load)} />
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        {props.cursor.primary === "null" ? (
+          null
+        ) : (
+          <LoadMoreButton onUpdate={() => props.onLoadMore(props.cursor)}
+            loading={props.loading} />
+        )}
+      </div>
+    );
+  } else {
+    return (
+      <div css={style}>
+        <div className="prompt-container">
+          { props.error === "" ? (
+            <h3>Search for users...</h3>
+          ) : (
+            <h3>{props.error}</h3>
           )}
-        </tbody>
-      </table>
-      {props.cursor.primary === "null" ? (
-        null
-      ) : (
-        <LoadMoreButton onUpdate={() => props.onLoadMore(props.cursor)}
-          loading={props.loading} />
-      )}
-    </div>
-  );
+        </div>
+      </div>
+    );
+  }
+
 }
 export default withRouter(SearchResults);
 
 SearchResults.propTypes = {
+  error: PropTypes.string,
   loading: PropTypes.bool,
   history: PropTypes.object,
   users: PropTypes.array,

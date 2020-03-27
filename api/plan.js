@@ -151,8 +151,8 @@ app.get("/recent", requireAuth, async (req, res) => {
 
     const results = await getRecentPlans(userId);
     if (results.plans.length === 0) {
-      console.error("404: No plans found\n");
-      res.status(404).send({error: "No plans found."});
+      console.error("404: No matching plans found.\n");
+      res.status(404).send({error: "No matching plans found."});
     } else {
       console.log("200: Plans found\n");
       res.status(200).send(results);
@@ -253,8 +253,8 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
         const results = await searchPlans(text, parseInt(status, 10),
           parseInt(sort, 10), parseInt(order, 10), cursor);
         if (results.plans.length === 0) {
-          console.error("404: No plans found\n");
-          res.status(404).send({error: "No plans found."});
+          console.error("404: No matching plans found.\n");
+          res.status(404).send({error: "No matching plans found."});
         } else {
           console.log("200: Plans found\n");
           res.status(200).send(results);

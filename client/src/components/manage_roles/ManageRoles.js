@@ -117,15 +117,10 @@ export default function ManageRoles() {
 
           <FindUsers onSearch={cursor => searchUsers(cursor, true)}/>
 
-          <ErrorMessage text={errorMessage} />
+          <SearchResults users={users} cursor={cursor} loading={loading}
+            onLoading={load => setSubloading(load)} error={errorMessage}
+            onLoadMore={cursor => searchUsers(cursor, false)} />
 
-          {users.length ? (
-            <SearchResults users={users} cursor={cursor} loading={loading}
-              onLoading={load => setSubloading(load)}
-              onLoadMore={cursor => searchUsers(cursor, false)} />
-          ) : (
-            null
-          )}
         </div>
       </div>
 
