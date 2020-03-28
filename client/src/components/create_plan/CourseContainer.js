@@ -44,7 +44,7 @@ export default class CourseContainer extends React.Component {
     const token = getToken();
     const value = document.getElementById("search-container").value;
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/course/${value}/?accessToken=${token}`;
+    const getUrl = `http://${server}/course/search/${value}/?accessToken=${token}`;
     let obj = [];
     try {
       const results = await fetch(getUrl);

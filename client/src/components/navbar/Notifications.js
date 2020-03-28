@@ -111,12 +111,13 @@ function Notifications() {
       <div className="dropdown-content">
         {notifications.length ? (
           notifications.map((item) => (
-            <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
+            <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}
+              onClick={item.planId ? null : (event) => event.preventDefault()}>
               {item.text}
             </Link>
           ))
         ) : (
-          <Link to={"/"}>
+          <Link onClick={(event) => event.preventDefault()}>
             <p>No new notifications.</p>
           </Link>
         )}

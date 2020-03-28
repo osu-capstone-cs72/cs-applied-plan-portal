@@ -3,6 +3,7 @@
 
 const {pool} = require("../services/db/mysqlPool");
 const fetch = require("node-fetch");
+const {courseUpdateNotification} = require("./notification");
 const {Required} = require("../entities/required");
 const {Subject} = require("../entities/subject");
 
@@ -52,9 +53,12 @@ exports.getCourse = getCourse;
 
 // get all of the courses from the OSU Course API and submit the courses to
 // the courses table of the application database
-async function getLiveCourses() {
+async function getLiveCourses(userId) {
 
   try {
+
+    // start by making a notification that the update process has begun
+    await courseUpdateNotification(userId, 1);
 
     // set the subject we are searching for
     let subject;
@@ -119,12 +123,17 @@ async function getLiveCourses() {
 
     }
 
+    // the courses have been updated successfully,
+    // send a notification to the head advisor
+    courseUpdateNotification(userId, 2);
+
     return {
       courses: courses
     };
 
   } catch (err) {
     console.log("Error searching for live OSU courses");
+    courseUpdateNotification(userId, 3);
     throw Error(err);
   }
 
