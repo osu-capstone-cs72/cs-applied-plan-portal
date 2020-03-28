@@ -5,7 +5,6 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
-import ErrorMessage from "../general/ErrorMessage";
 import FindUsers from "./FindUsers";
 import SearchResults from "./SearchResults";
 import {getToken} from "../../utils/authService";

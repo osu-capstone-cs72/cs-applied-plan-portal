@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import {getToken} from "../../utils/authService";
+import { patch } from "needle";
 
 function Notifications() {
 
@@ -64,8 +65,8 @@ function Notifications() {
     }
   `;
 
+  // when the page first loads, show the list of unseen notifications
   useEffect(() => {
-
     fetchNotifications();
     // eslint-disable-next-line
   }, []);
@@ -88,7 +89,7 @@ function Notifications() {
         obj = await response.json();
         setNotifications(obj.notifications);
       } else {
-        setNotifications([]);
+        setNotifications(...notifications);
       }
 
     } catch (err) {
@@ -101,6 +102,48 @@ function Notifications() {
 
   }
 
+  // clear a specific notification
+  async function clearNotification(notificationId, index) {
+
+    try {
+
+      // set the notification to checked
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/notification/${notificationId}` +
+        `?accessToken=${token}`;
+      await fetch(url, {
+        method: "PATCH"
+      });
+
+      // delete the notification on the client-side
+      const newNotifications = notifications.slice();
+      newNotifications.splice(index, 1);
+      console.log("newNotifications:", newNotifications, "\nnotifications:", notifications);
+      setNotifications(newNotifications);
+
+    } catch (err) {
+      // log server error, if it happens while fetching notifications
+      console.log("An internal server error occurred. Please try again later.");
+    }
+
+  }
+
+  // handle clicking on a notification
+  function handleClick(event, item, index) {
+
+    // only link to another page if the notification is
+    // intended to be used as a link
+    if (!item.planId) {
+      event.preventDefault();
+    }
+
+    // remove the notification from the drop down
+    // menu of unseen notifications
+    clearNotification(item.notificationId, index);
+
+  }
+
   return (
     <div className="notification-dropdown" css={style}>
       <button className="drop-button">Notifications
@@ -110,14 +153,14 @@ function Notifications() {
         <span className="badge">{notifications.length}</span> : null }
       <div className="dropdown-content">
         {notifications.length ? (
-          notifications.map((item) => (
+          notifications.map((item, index) => (
             <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}
-              onClick={item.planId ? null : (event) => event.preventDefault()}>
+              onClick={(event) => handleClick(event, item, index)}>
               {item.text}
             </Link>
           ))
         ) : (
-          <Link onClick={(event) => event.preventDefault()}>
+          <Link to={`.`} onClick={(event) => event.preventDefault()}>
             <p>No new notifications.</p>
           </Link>
         )}

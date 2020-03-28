@@ -6,7 +6,6 @@ import {useEffect, useState} from "react";
 import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
-import ErrorMessage from "../general/ErrorMessage";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
