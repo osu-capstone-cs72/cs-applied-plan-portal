@@ -5,7 +5,6 @@ import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import {getToken} from "../../utils/authService";
-import { patch } from "needle";
 
 function Notifications() {
 

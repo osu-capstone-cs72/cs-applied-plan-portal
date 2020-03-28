@@ -90,6 +90,8 @@ function Navbar() {
         <p className="osu-logo">OSU CS Applied Plan Portal</p>
       </Link>
       <div className="right-container">
+        {role ? <History /> : null}
+        <Notifications />
         {role === 2 ? (
           <Link to={"/manageRoles"}>
             <button id="manage-roles-button">Manage Roles</button>
@@ -102,8 +104,6 @@ function Navbar() {
         ) : (
           null
         )}
-        {role ? <History /> : null}
-        <Notifications />
         <Logout />
       </div>
     </div>
