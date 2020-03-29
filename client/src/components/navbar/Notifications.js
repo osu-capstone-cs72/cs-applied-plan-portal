@@ -22,13 +22,29 @@ function Notifications() {
       display: block;
     }
 
-    .drop-button {
+    .drop-button-notification {
       height: 35px;
       border: 1px solid white;
       color: white;
       border-radius: 0.25rem;
       background: transparent;
       margin-right: 0.5rem;
+    }
+
+    .badge {
+      margin: 0 5px;
+      background: black;
+      color: white;
+    }
+
+    .drop-button-notification:before {
+      position: absolute;
+      top: 5px;
+      right: 0px;
+      padding: 5px 10px;
+      border-radius: 50%;
+      background-color: black;
+      color: white;
     }
 
     .dropdown-content {
@@ -53,15 +69,6 @@ function Notifications() {
       background-color: #ddd;
     }
 
-    .badge {
-      position: absolute;
-      top: 5px;
-      right: 80px;
-      padding: 5px 10px;
-      border-radius: 50%;
-      background-color: black;
-      color: white;
-    }
   `;
 
   // when the page first loads, show the list of unseen notifications
@@ -88,7 +95,7 @@ function Notifications() {
         obj = await response.json();
         setNotifications(obj.notifications);
       } else {
-        setNotifications(...notifications);
+        setNotifications([]);
       }
 
     } catch (err) {
@@ -145,11 +152,13 @@ function Notifications() {
 
   return (
     <div className="notification-dropdown" css={style}>
-      <button className="drop-button">Notifications
+      <button className="drop-button-notification" data-count={notifications.length}>
+        Notifications
+        <span className="badge" >
+          {notifications.length ? notifications.length : null }
+        </span>
         <i className="fa fa-caret-down" />
       </button>
-      {notifications.length ?
-        <span className="badge">{notifications.length}</span> : null }
       <div className="dropdown-content">
         {notifications.length ? (
           notifications.map((item, index) => (
