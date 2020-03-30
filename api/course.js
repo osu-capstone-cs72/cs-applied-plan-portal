@@ -46,14 +46,21 @@ app.get("/updateDatabase", requireAuth, async (req, res) => {
 });
 
 // search for course data
-app.get("/search/:searchText", requireAuth, async (req, res) => {
+app.get("/search/:searchText/:filterValue", requireAuth, async (req, res) => {
 
   console.log("Search for course data");
   const searchText = req.params.searchText;
+  const filterValue = req.params.filterValue;
 
   try {
 
-    const results = await getCourse(searchText);
+    // don't allow a search to return all possible courses
+    if (searchText === "*" && filterValue === "*") {
+      console.error("400: Search too broad, please use the subject filter or search bar to narrow your results.\n");
+      res.status(404).send({error: "Search too broad, please use the subject filter or search bar to narrow your results."});
+    }
+
+    const results = await getCourse(searchText, filterValue);
     if (results.courses.length === 0) {
       console.error("404: No courses found\n");
       res.status(404).send({error: "No courses found."});

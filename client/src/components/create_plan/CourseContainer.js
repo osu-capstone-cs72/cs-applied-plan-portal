@@ -41,9 +41,12 @@ export default class CourseContainer extends React.Component {
       courses: []
     });
     const token = getToken();
-    const value = document.getElementById("search-container").value;
+    let value = document.getElementById("search-container").value;
+    if (value === "") {
+      value = "*";
+    }
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/course/search/${value}/?accessToken=${token}`;
+    const getUrl = `http://${server}/course/search/${value}/${this.state.filter}/?accessToken=${token}`;
     let obj = [];
     try {
       const results = await fetch(getUrl);
@@ -70,32 +73,6 @@ export default class CourseContainer extends React.Component {
     this.setState({
       filter: value
     });
-    if (value !== "none") {
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/course/courseCode/${value}/?accessToken=${token}`;
-      let obj = [];
-
-      try {
-        const results = await fetch(url);
-        if (results.ok) {
-          obj = await results.json();
-          this.setState({
-            courses: obj.courses
-          });
-        } else {
-          // we got a bad status code
-          obj = await results.json();
-          this.changeWarning(obj.error);
-        }
-      } catch (err) {
-        alert("An internal server error occurred. Please try again later.");
-      }
-    } else {
-      this.setState({
-        courses: []
-      });
-    }
   }
 
   submitHandler(e) {

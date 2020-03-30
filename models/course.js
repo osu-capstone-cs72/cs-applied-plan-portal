@@ -10,18 +10,30 @@ const {Subject} = require("../entities/subject");
 // Search for courses using text.
 // The text is used to search by
 // courseCode and courseName.
-async function getCourse(searchText) {
+async function getCourse(searchText, filterValue) {
 
   try {
 
     // search for courses by subject
+    let sqlArray = [];
     let sql = "SELECT * " +
     "FROM Course " +
-    "WHERE courseCode LIKE CONCAT('%', ?, '%') " +
-    "ORDER BY courseCode;";
+    "WHERE True ";
+
+    if (searchText !== "*") {
+      sql += "AND courseCode LIKE CONCAT('%', ?, '%')";
+      sqlArray.push(searchText);
+    }
+
+    if (filterValue !== "*") {
+      sql += "AND courseCode LIKE CONCAT('%', ?, ' ', '%')";
+      sqlArray.push(filterValue);
+    }
+
+    sql += "ORDER BY courseCode, courseName;";
 
     // perform the query
-    let results = await pool.query(sql, searchText);
+    let results = await pool.query(sql, sqlArray);
 
     // if there are no results then search by course name
     if (results[0].length) {
@@ -31,13 +43,25 @@ async function getCourse(searchText) {
     }
 
     // search for courses by course name
+    sqlArray = [];
     sql = "SELECT * " +
     "FROM Course " +
-    "WHERE courseName LIKE CONCAT('%', ?, '%') " +
-    "ORDER BY courseCode;";
+    "WHERE True ";
+
+    if (searchText !== "*") {
+      sql += "AND courseName LIKE CONCAT('%', ?, '%')";
+      sqlArray.push(searchText);
+    }
+
+    if (filterValue !== "*") {
+      sql += "AND courseCode LIKE CONCAT('%', ?, ' ', '%')";
+      sqlArray.push(filterValue);
+    }
+
+    sql += "ORDER BY courseCode, courseName;";
 
     // perform the query
-    results = await pool.query(sql, searchText);
+    results = await pool.query(sql, sqlArray);
 
     return {
       courses: results[0]
