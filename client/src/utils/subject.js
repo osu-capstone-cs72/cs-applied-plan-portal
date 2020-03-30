@@ -2,7 +2,6 @@
 // Description: Provides all course subjects.
 
 const Subject = Object.freeze([
-  {code: "*", name: "Any Subject"},
   {code: "ALS", name: "Academic Learning Services"},
   {code: "ACTG", name: "Accounting"},
   {code: "AHE", name: "Adult Ed & Higher Ed Leadershp"},

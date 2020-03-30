@@ -88,7 +88,7 @@ app.patch("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
-    const errorMessage = getSchemaViolations(req.body, patchPlanSchema);
+    const errorMessage = getSchemaViolations(req.body, patchPlanSchema, true);
 
     if (!errorMessage) {
 
@@ -100,6 +100,13 @@ app.patch("/", requireAuth, async (req, res) => {
       const planId = sanitizedBody.planId;
       let planName = 0;
       let courses = 0;
+
+      // see if the planId was submitted in the request body
+      if (req.body.planId === undefined) {
+        console.error("400: No plan ID submitted with the request\n");
+        res.status(400).send({error: "No plan ID submitted with the request"});
+        return;
+      }
 
       if (req.body.planName !== undefined) {
         planName = sanitizedBody.planName;

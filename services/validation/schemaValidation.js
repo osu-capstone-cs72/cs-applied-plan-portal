@@ -41,7 +41,7 @@ const patchPlanSchema = {
     }
   },
   planName: {
-    required: false,
+    required: true,
     type: Type.string,
     minLength: 5,
     maxLength: 50,
@@ -52,7 +52,7 @@ const patchPlanSchema = {
     }
   },
   courses: {
-    required: false,
+    required: true,
     type: Type.courseArray,
     getErrorMessage: function() {
       return "Invalid courses:\n" +

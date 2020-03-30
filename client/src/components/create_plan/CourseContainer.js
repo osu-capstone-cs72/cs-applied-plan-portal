@@ -4,7 +4,6 @@ import React from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
 import ErrorMessage from "../general/ErrorMessage";
-import filters from "./FilterList";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 import {getToken} from "../../utils/authService";
@@ -192,7 +191,7 @@ export default class CourseContainer extends React.Component {
           <button className="search-button" type="submit" onClick={this.filterSearch}>Search</button>
         </div>
         <form className="course-filter form-group">
-          <FilterBar options={filters} value={this.state.filter} onValueChange={this.handleFilterChange}/>
+          <FilterBar value={this.state.filter} onValueChange={this.handleFilterChange}/>
         </form>
         <ErrorMessage text={this.props.warning} />
         <div className="explore-courses">

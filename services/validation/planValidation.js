@@ -458,11 +458,9 @@ async function courseCreditConstraint(courses) {
     const results = await pool.query(sql, sqlArray);
 
     // check each course to ensure that it matches the submitted credits
-    console.log("DB:", results[0]);
-    console.log("Courses:", courses);
     for (let i = 0; i < results[0].length; i++) {
 
-      const credits = results[0][i].credits;
+      const credits = parseInt(results[0][i].credits, 10);
 
       // check if the current course has a set credit value or a range
       if (isNaN(credits)) {
@@ -473,8 +471,11 @@ async function courseCreditConstraint(courses) {
 
           // this credit value is a range
           // ensure that the given credit value is in range
-          if (courses[i].credits >= creditArray[0] &&
-            courses[i].credits <= creditArray[1] && !isNaN(courses[i].credits)) {
+          const submittedCredits = parseInt(courses[i].credits, 10);
+          const minCredits = parseInt(creditArray[0], 10);
+          const maxCredits = parseInt(creditArray[1], 10);
+          if (submittedCredits >= minCredits &&
+            submittedCredits <= maxCredits && !isNaN(submittedCredits)) {
             continue;
           } else {
             throw violation;
@@ -487,7 +488,8 @@ async function courseCreditConstraint(courses) {
       } else {
 
         // ensure that the database and submitted credits match
-        if (credits === courses[i].credits) {
+        const submittedCredits = parseInt(courses[i].credits, 10);
+        if (submittedCredits === credits) {
           continue;
         } else {
           throw violation;
