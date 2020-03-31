@@ -1,5 +1,5 @@
 // File: required.js
-// Description: Provides all course subjects.
+// Description: Lists all of the required courses in the CS applied option.
 
 const Required = Object.freeze({
   courses: ["HHS 231", "HHS 241", "COMM 111", "COMM 114", "CS 160", "CS 161",
