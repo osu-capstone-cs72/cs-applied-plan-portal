@@ -47,6 +47,8 @@ function SearchResults(props) {
       padding: 10rem;
       background: var(--color-lightgray-50);
       background: white;
+      margin: auto;
+      width: 50%;
     }
     
     table thead tr th {

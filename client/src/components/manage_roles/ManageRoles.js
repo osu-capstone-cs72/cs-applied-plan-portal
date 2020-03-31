@@ -33,7 +33,7 @@ export default function ManageRoles() {
 
     #user-manage-contents-container {
       margin: 25px auto;
-      width: 50%;
+      width: 100%;
     }
 
 `;

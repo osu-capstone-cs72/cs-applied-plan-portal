@@ -35,7 +35,7 @@ function AdvisorHome() {
 
     #advisor-home-contents-container {
       margin: 25px auto;
-      width: 50%;
+      width: 100%;
     }
 
   `;
