@@ -25,7 +25,7 @@ export default class CourseContainer extends React.Component {
     this.state = {
       courses: [],
       addCourses: [],
-      filter: ""
+      filter: "*"
     };
 
     this.filterSearch = this.filterSearch.bind(this);
