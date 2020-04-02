@@ -24,8 +24,7 @@ app.get("/updateDatabase", requireAuth, async (req, res) => {
 
     // due to the computational cost of this action,
     // only the head advisor can perform this action
-    if (authenticatedUser.role === Role.advisor ||
-        authenticatedUser.role === Role.headAdvisor) {
+    if (authenticatedUser.role === Role.headAdvisor) {
 
       // start course update
       getLiveCourses(req.auth.userId);
