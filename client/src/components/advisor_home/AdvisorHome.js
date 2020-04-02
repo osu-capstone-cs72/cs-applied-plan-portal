@@ -6,12 +6,12 @@ import {useEffect, useState} from "react";
 import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
-import ErrorMessage from "../general/ErrorMessage";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
 function AdvisorHome() {
 
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,31 +29,31 @@ function AdvisorHome() {
   const style = css`
 
     #advisor-home-container {
-      position: absolute;
-      top: 75px;
-      margin: 0 auto;
+      margin: 100px 0 auto;
       width: 100%;
     }
 
     #advisor-home-contents-container {
       margin: 25px auto;
-      width: 50%;
-    }
-
-    .home-error-message-container {
-      text-align: center;
-      margin: 0 auto;
+      width: 100%;
     }
 
   `;
 
   // if the sorting order changes perform a new search
   useEffect(() => {
-    const newCursor = {
-      primary: "null",
-      secondary: "null"
-    };
-    searchPlans(newCursor, false);
+
+    // don't load search results on the initial mount
+    if (mounted) {
+      const newCursor = {
+        primary: "null",
+        secondary: "null"
+      };
+      searchPlans(newCursor, false);
+    } else {
+      setMounted(true);
+    }
+
     // eslint-disable-next-line
   }, [searchFields.orderValue, searchFields.sortValue]);
 
@@ -141,26 +141,23 @@ function AdvisorHome() {
   }
 
   return (
-    <div css={style}>
+    <div id="advisor-home-page" css={style}>
       <PageSpinner loading={loading} />
       <NavBar />
+
       <div id="advisor-home-container">
         <div id="advisor-home-contents-container">
 
           <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
 
-          <ErrorMessage text={errorMessage} />
-
-          {plans.length ? (
-            <SearchResults plans={plans} cursor={cursor} searchFields={searchFields}
-              onChangeSort={(sort, order) => handleChangeSort(sort, order)}
-              onLoadMore={cursor => searchPlans(cursor, false)} />
-          ) : (
-            null
-          )}
+          <SearchResults plans={plans} cursor={cursor} error={errorMessage}
+            searchFields={searchFields} loading={loading}
+            onChangeSort={(sort, order) => handleChangeSort(sort, order)}
+            onLoadMore={cursor => searchPlans(cursor, false)} />
 
         </div>
       </div>
+
     </div>
   );
 

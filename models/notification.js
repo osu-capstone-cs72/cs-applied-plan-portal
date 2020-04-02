@@ -129,3 +129,39 @@ async function planNotification(planId, userId, type) {
 
 }
 exports.planNotification = planNotification;
+
+
+// add a notification for the current head advisor for when the
+// database of courses starts and finishes being updated
+async function courseUpdateNotification(userId, state) {
+
+  try {
+
+    // get the current time
+    const time = new Date().toLocaleTimeString("en-US", {dateStyle: "medium", timeStyle: "short"});
+
+    // create a different message based on if the course update process
+    // is just starting, finishing, or has an error
+    let notificationText;
+    if (state === 1) {
+      notificationText = `Began updating courses at ${time}.`;
+    } else if (state === 2) {
+      notificationText = `Finished updating courses at ${time}.`;
+    } else {
+      notificationText = `Error completing course update at ${time}`;
+    }
+
+    const sql = "INSERT INTO Notification (planId, userId, text, type, checked) " +
+      "VALUES (0, ?, ?, 3, 0)";
+    const results = await pool.query(sql, [userId, notificationText]);
+    return {
+      affectedRows: results[0].affectedRows
+    };
+
+  } catch (err) {
+    console.log("Error checking notification");
+    throw Error(err);
+  }
+
+}
+exports.courseUpdateNotification = courseUpdateNotification;

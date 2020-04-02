@@ -11,6 +11,15 @@ function SelectRole(props) {
   const [updatedRole, setUpdatedRole] = useState(-1);
 
   const style = css`
+
+    .change-user-role {
+      width: 100%;
+      border: 1px solid var(--color-lightgray-600);
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.5rem;
+      flex: 100%;
+    }
+
   `;
 
   // updates a user's role

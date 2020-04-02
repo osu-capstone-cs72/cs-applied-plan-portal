@@ -8,15 +8,20 @@ function ErrorMessage(props) {
   const style = css`
 
     .error-message, .hidden-error-message {
-      margin: 5px;
-      padding: 5px;
-      border: 1px solid var(--color-red-200);;
-      background: var(--color-red-100);
-      color: black;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      background: var(--color-yellow-50);
+      border: 1px solid var(--color-yellow-300);
+      color: var(--color-yellow-800);
+      grid-area: warn;
+    }
+
+    .error-message p, .hidden-error-message p {
+      margin-bottom: 0;
     }
 
     .hidden-error-message {
-      display: none;
+      visibility: hidden;
     }
 
   `;
@@ -28,7 +33,7 @@ function ErrorMessage(props) {
 
       <div css={style}>
         <div className="error-message" css={style}>
-          {props.text}
+          <p>{props.text}</p>
         </div>
       </div>
 
@@ -36,7 +41,7 @@ function ErrorMessage(props) {
 
       <div css={style}>
         <div className="hidden-error-message" css={style}>
-          No Error
+          <p>No Error</p>
         </div>
       </div>
 

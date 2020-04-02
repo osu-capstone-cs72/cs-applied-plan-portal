@@ -3,6 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
+import UpdateCourses from "./UpdateCourses";
 import Notifications from "./Notifications";
 import History from "./History";
 import Logout from "./Logout";
@@ -68,15 +69,11 @@ function Navbar() {
       color: white;
       border-radius: 0.25rem;
       background: transparent;
-      margin-right: 0.5rem; 
+      margin-right: 0.5rem;
     }
 
     .right-container {
       margin-left: auto;
-    }
-
-    #logout-button, #manage-roles-button {
-      height: 35px;
     }
 
     @media print {
@@ -93,6 +90,8 @@ function Navbar() {
         <p className="osu-logo">OSU CS Applied Plan Portal</p>
       </Link>
       <div className="right-container">
+        {role ? <History /> : null}
+        <Notifications />
         {role === 2 ? (
           <Link to={"/manageRoles"}>
             <button id="manage-roles-button">Manage Roles</button>
@@ -100,8 +99,11 @@ function Navbar() {
         ) : (
           null
         )}
-        {role ? <History /> : null}
-        <Notifications />
+        {role === 2 ? (
+          <UpdateCourses />
+        ) : (
+          null
+        )}
         <Logout />
       </div>
     </div>

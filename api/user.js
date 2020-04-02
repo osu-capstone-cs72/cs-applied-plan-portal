@@ -55,7 +55,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
           res.status(200).send(matchingUsers);
         } else {
           console.error("404: No matching Users found\n");
-          res.status(404).send({error: "No matching Users found"});
+          res.status(404).send({error: "No matching users found."});
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);

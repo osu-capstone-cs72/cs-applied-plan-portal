@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Subject from "../../utils/subject";
 
 export default class FilterBar extends React.Component {
   static get propTypes() {
@@ -24,9 +25,12 @@ export default class FilterBar extends React.Component {
     return (
       <div>
         <select value={this.props.value} onChange={this.handleChange}>
-          {Object.keys(this.props.options).map(key => (
-            <option className="form-control" key={key} value={key}>
-              {this.props.options[key]}
+          <option className="form-control" key={0} value={"*"}>
+            Any Subject
+          </option>
+          {Subject.Subject.map((subject) => (
+            <option className="form-control" key={subject.code} value={subject.code}>
+              {subject.code} - {subject.name}
             </option>
           ))}
         </select>
