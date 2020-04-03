@@ -23,7 +23,7 @@ const {
 const app = express();
 
 // Fetches a list of Users based on the search query.
-app.get("/search/:text/:role", requireAuth, async (req, res) => {
+app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request params
@@ -35,10 +35,10 @@ app.get("/search/:text/:role", requireAuth, async (req, res) => {
 
       const text = sanitizedBody.text;
       const role = sanitizedBody.role;
-      // const cursor = {
-      //  primary: sanitizedBody.cursorPrimary,
-      //  secondary: sanitizedBody.cursorSecondary
-      // };
+      const cursor = {
+        primary: sanitizedBody.cursorPrimary,
+        secondary: sanitizedBody.cursorSecondary
+      };
 
       console.log("Searching for users");
 
@@ -48,14 +48,14 @@ app.get("/search/:text/:role", requireAuth, async (req, res) => {
       // only allow an Advisor or a Head Advisor to fetch Users
       if (authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor) {
-        const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10));
+        const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10), cursor);
 
-        if (matchingUsers) {
+        if (matchingUsers.users.length) {
           console.log("200: Matching Users found \n");
-          res.status(200).send({users: matchingUsers});
+          res.status(200).send(matchingUsers);
         } else {
           console.error("404: No matching Users found\n");
-          res.status(404).send({error: "No matching Users found"});
+          res.status(404).send({error: "No matching users found."});
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -256,11 +256,11 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
           authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's plans
-        const plans = await userModel.getUserPlans(userId);
+        const results = await userModel.getUserPlans(userId);
 
-        if (plans.length > 0) {
+        if (results.plans.length > 0) {
           console.log("200: Plans found\n");
-          res.status(200).send(plans);
+          res.status(200).send(results);
         } else {
           console.error("404: No plans found\n");
           res.status(404).send({error: "No plans found"});

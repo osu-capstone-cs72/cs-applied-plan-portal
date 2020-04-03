@@ -14,6 +14,7 @@ import {css, jsx} from "@emotion/core";
 export default function StudentCreatePlan() {
 
   const [loading, setLoading] = useState(false);
+  const [subloading, setSubloading] = useState(false);
   const [pageError, setPageError] = useState(0);
   const [planName, setPlanName] = useState("");
   const [courses, setCourses] = useState([]);
@@ -64,6 +65,7 @@ export default function StudentCreatePlan() {
 
   }, [planId]);
 
+  // adds a new course to the courses array
   function handleAddCourse(course) {
     // check that new course isn't already in array
     for (let i = 0; i < courses.length; i++) {
@@ -75,19 +77,46 @@ export default function StudentCreatePlan() {
     }
     // check for required courses
     if (course.restriction === 1) {
-      setWarning("You've selected a required course.");
+      setWarning("Required courses are not allowed.");
       return;
     }
     // check for graduate courses
     if (course.restriction === 2) {
-      setWarning("You've selected a graduate course.");
+      setWarning("Graduate courses are not allowed.");
       return;
     }
-    // add the new course
-    setCourses(prev => [...prev, course]);
-    setWarning("");
+    // see if the course has a defined number of credits
+    if (isNaN(course.credits)) {
+
+      // check with the user to see how many credits should be applied
+      const creditArray = course.credits.split(" to ");
+      if (creditArray.length >= 2) {
+
+        // prompt the user to enter the credits
+        let credits = prompt(
+          `Please select between ${creditArray[0]} and ${creditArray[1]} credits`, ""
+        );
+        credits = parseInt(credits, 10);
+
+        // see if the user entered a valid number of credits
+        if (credits >= creditArray[0] && credits <= creditArray[1] && !isNaN(credits)) {
+          course.credits = credits;
+          setCourses(prev => [...prev, course]);
+          setWarning("");
+        } else {
+          setWarning("Invalid credit hours selected for course.");
+        }
+
+      }
+
+    } else {
+      // add the new course
+      setCourses(prev => [...prev, course]);
+      setWarning("");
+    }
   }
 
+  // removes a course from the courses array
   function handleRemoveCourse(course) {
     setCourses(courses.filter(prev => prev.courseId !== course.courseId));
   }
@@ -95,9 +124,9 @@ export default function StudentCreatePlan() {
   if (!pageError) {
     return (
       <div className="student-create-plan" css={style}>
-        <PageSpinner loading={loading} />
+        <PageSpinner loading={loading} subloading={subloading}/>
         <Navbar showSearch={false} searchContent={null}/>
-        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={e => setLoading(e)}
+        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubloading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
         <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
           onNewWarning={e => setWarning(e)}/>

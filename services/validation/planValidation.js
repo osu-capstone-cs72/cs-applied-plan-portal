@@ -19,7 +19,8 @@ async function createEnforceConstraints(userId, planName, courses) {
     await duplicateCourseConstraint(courses);
     await courseConstraint(courses);
     await restrictionConstraint(courses);
-    await creditConstraint(courses);
+    await courseCreditConstraint(courses);
+    await planCreditConstraint(courses);
     await limitConstraint(userId);
     return "valid";
 
@@ -51,7 +52,8 @@ async function patchEnforceConstraints(planId, planName, courses, userId) {
       await duplicateCourseConstraint(courses);
       await courseConstraint(courses);
       await restrictionConstraint(courses);
-      await creditConstraint(courses);
+      await courseCreditConstraint(courses);
+      await planCreditConstraint(courses);
       await ownerConstraint(planId, userId);
     }
 
@@ -344,11 +346,11 @@ async function duplicateCourseConstraint(courses) {
   const seenCourses = Object.create(null);
 
   for (let i = 0; i < courses.length; ++i) {
-    const courseCode = courses[i];
-    if (courseCode in seenCourses) {
+    const courseId = courses[i].courseId;
+    if (courseId in seenCourses) {
       throw "Invalid course selection:\nA course was selected more than once.";
     }
-    seenCourses[courseCode] = true;
+    seenCourses[courseId] = true;
   }
   return;
 
@@ -358,13 +360,13 @@ async function duplicateCourseConstraint(courses) {
 async function courseConstraint(courses) {
 
   const violation = "Invalid course selection:\nAt least one selected course is invalid.";
-  let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseCode IN (";
+  let sql = "SELECT COUNT(*) AS valid FROM Course WHERE courseId IN (";
   const sqlArray = [];
 
   // expand the sql string and array based on the number of courses
   courses.forEach((currentValue) => {
     sql += "?,";
-    sqlArray.push(currentValue);
+    sqlArray.push(currentValue.courseId);
   });
   // replace the last character of the sql query with );
   sql = sql.replace(/.$/, ");");
@@ -396,19 +398,20 @@ async function restrictionConstraint(courses) {
 
   const violationReq = "Invalid course selection:\nA required course was selected.";
   const violationGrad = "Invalid course selection:\nA graduate or professional course was selected.";
-  let sql = "SELECT restriction FROM Course WHERE courseCode IN (";
+  let sql = "SELECT restriction FROM Course WHERE courseId IN (";
   const sqlArray = [];
 
   // expand the sql string and array based on the number of courses
   courses.forEach((currentValue) => {
     sql += "?,";
-    sqlArray.push(currentValue);
+    sqlArray.push(currentValue.courseId);
   });
   // replace the last character of the sql query with the end of the query
   sql = sql.replace(/.$/, ") AND restriction > 0 ORDER BY restriction;");
 
   try {
 
+    // perform the query
     const results = await pool.query(sql, sqlArray);
 
     // check if there were any restrictions and if so, which ones
@@ -425,6 +428,83 @@ async function restrictionConstraint(courses) {
   } catch (err) {
     if (internalError(err, violationReq) && internalError(err, violationGrad)) {
       console.log("Error checking restriction constraint\n", err);
+      throw ("Internal error");
+    } else {
+      throw err;
+    }
+  }
+
+}
+
+// checks that the submitted credit value of each course
+// matches the valid range from the courses in the database
+async function courseCreditConstraint(courses) {
+
+  const violation = "Invalid course selection:\nA selected course has an invalid number of credits.";
+  let sql = "SELECT credits FROM Course WHERE courseId IN (";
+  const sqlArray = [];
+
+  // expand the sql string and array based on the number of courses
+  courses.forEach((currentValue) => {
+    sql += "?,";
+    sqlArray.push(currentValue.courseId);
+  });
+  // replace the last character of the sql query with the end of the query
+  sql = sql.replace(/.$/, ") ORDER BY courseId;");
+
+  try {
+
+    // perform the query
+    const results = await pool.query(sql, sqlArray);
+
+    // check each course to ensure that it matches the submitted credits
+    for (let i = 0; i < results[0].length; i++) {
+
+      const credits = parseInt(results[0][i].credits, 10);
+
+      // check if the current course has a set credit value or a range
+      if (isNaN(credits)) {
+
+        // split the credit range into two separate numbers (min and max)
+        const creditArray = credits.split(" to ");
+        if (creditArray.length >= 2) {
+
+          // this credit value is a range
+          // ensure that the given credit value is in range
+          const submittedCredits = parseInt(courses[i].credits, 10);
+          const minCredits = parseInt(creditArray[0], 10);
+          const maxCredits = parseInt(creditArray[1], 10);
+          if (submittedCredits >= minCredits &&
+            submittedCredits <= maxCredits && !isNaN(submittedCredits)) {
+            continue;
+          } else {
+            throw violation;
+          }
+
+        } else {
+          throw violation;
+        }
+
+      } else {
+
+        // ensure that the database and submitted credits match
+        const submittedCredits = parseInt(courses[i].credits, 10);
+        if (submittedCredits === credits) {
+          continue;
+        } else {
+          throw violation;
+        }
+
+      }
+
+    }
+
+    // all credits are valid
+    return;
+
+  } catch (err) {
+    if (internalError(err, violation)) {
+      console.log("Error checking course credit constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
@@ -465,32 +545,38 @@ async function limitConstraint(userId) {
 }
 
 // checks that at least the minimum plan credits are selected
-async function creditConstraint(courses) {
+async function planCreditConstraint(courses) {
 
   const violationMin = `Invalid course selection:\n` +
     `A plan must have at least ${CREDITS_MIN} credits selected.`;
   const violationMax = `Invalid course selection:\n` +
     `A plan must have no more than ${CREDITS_MAX} credits selected.`;
-  let sql = "SELECT SUM(credits) AS sumCredits FROM Course WHERE courseCode IN (";
-  const sqlArray = [];
 
-  // expand the sql string and array based on the number of courses
-  courses.forEach((currentValue) => {
-    sql += "?,";
-    sqlArray.push(currentValue);
-  });
-  // replace the last character of the sql query with );
-  sql = sql.replace(/.$/, ");");
+  let sql;
+  let creditSum = 0;
 
   try {
 
-    // perform the sql query
-    const results = await pool.query(sql, sqlArray);
+    // find the number of credits in the plan
+    for (let i = 0; i < courses.length; i++) {
+
+      // get credits for current course
+      sql  = "SELECT credits FROM Course WHERE courseId = ?;";
+      const results = await pool.query(sql, courses[i].courseId);
+
+      // check if credits is a value or a range and then add the credits to sum
+      if (isNaN(results[0][0].credits)) {
+        creditSum += parseInt(courses[i].credits, 10);
+      } else {
+        creditSum += parseInt(results[0][0].credits, 10);
+      }
+
+    }
 
     // check if the sum of credits is less than the min or greater than the max
-    if (results[0][0].sumCredits < CREDITS_MIN) {
+    if (creditSum < CREDITS_MIN) {
       throw violationMin;
-    } else if (results[0][0].sumCredits > CREDITS_MAX) {
+    } else if (creditSum > CREDITS_MAX) {
       throw violationMax;
     } else {
       return;
@@ -498,7 +584,7 @@ async function creditConstraint(courses) {
 
   } catch (err) {
     if (internalError(err, violationMin) && internalError(err, violationMax)) {
-      console.log("Error checking credit constraint\n", err);
+      console.log("Error checking plan credit constraint\n", err);
       throw ("Internal error");
     } else {
       throw err;
@@ -507,7 +593,7 @@ async function creditConstraint(courses) {
 
 }
 
-//  checks that the user owns the plan or is an advisor
+// checks that the user owns the plan or is an advisor
 async function ownerConstraint(planId, userId) {
 
   const violation = "Invalid user ID:\nThis user is not allowed perform this action on this plan.";

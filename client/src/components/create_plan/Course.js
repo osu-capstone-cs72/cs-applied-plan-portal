@@ -10,7 +10,7 @@ export default class Course extends React.Component {
       courseId: PropTypes.number,
       courseCode: PropTypes.string,
       courseName: PropTypes.string,
-      credits: PropTypes.number,
+      credits: PropTypes.string,
       description: PropTypes.string,
       prerequisites: PropTypes.string,
       restriction: PropTypes.number,
@@ -51,33 +51,95 @@ export default class Course extends React.Component {
   render() {
 
     const style = css`
-
-      border: 1px solid black;
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: #f2f2f2;
-
-      .btn.btn-add {
-        background-color: #b3b3b3;
+      margin-bottom: 1rem;
+      background: var(--color-lightgray-50);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      
+      .add-button {
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1rem 1rem;
+        background: var(--color-green-500);
+        color: var(--color-green-50);
+        border-radius: 0.5rem;
+        border: none;
       }
 
-      .expand-btn {
-        float: right;
+      details summary {
+        cursor: pointer;
+        height: unset;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        user-select: none;
       }
 
+      .add-button {
+        margin-right: 0;
+        margin-left: auto;
+      }
+      
+      .disabled {
+        background: var(--color-lightgray-700);
+        color: var(--color-gray-50);
+        cursor: default;
+      }
+
+      .course-title {
+        font-weight: 600;
+      }
+      
+      .course-title {
+        display: inline-block;
+        vertical-align: bottom;
+      }
+
+      .course-code {
+        color: var(--color-gray-400);
+        font-weight: normal;
+      }
+
+      summary+p {
+        margin-top: 1rem;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     `;
 
     return (
       <div className="course" css={style}>
-        <p>{this.props.courseCode} - {this.props.courseName}</p>
-        {this.state.full && <p>Credit hours: {this.props.credits}</p>}
-        {this.state.full && <p>{this.props.description}</p>}
-        {this.state.full && <p>Prerequisites: {this.props.prerequisites}</p>}
-        <div className="course-btn-container">
-          <button className="btn btn-add" onClick={this.addButton}>+ Add to plan</button>
-          {this.state.full ? <button className="expand-btn" onClick={this.arrowButton}><i className="fad fa-angle-double-up"></i>-</button>
-            : <button className="expand-btn" onClick={this.arrowButton}><i className="fad fa-angle-double-down"></i>+</button>}
-        </div>
+        <details>
+          <summary>
+            <div className="course-title">{this.props.courseName}
+              <div className="course-code">
+                <small>
+                  {this.props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}
+                </small>
+              </div>
+            </div>
+            <button className={`add-button ${this.props.restriction > 0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
+          </summary>
+          <h4>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</h4>
+          { this.props.description !== "" &&
+            <div>
+              <br></br>
+              <h4>Description</h4>
+              <p>{this.props.description}</p>
+            </div>
+          }
+          { this.props.prerequisites !== "" &&
+            <div>
+              <br></br>
+              <h4>Registration Restrictions</h4>
+              <p>{this.props.prerequisites}</p>
+            </div>
+          }
+        </details>
       </div>
     );
   }

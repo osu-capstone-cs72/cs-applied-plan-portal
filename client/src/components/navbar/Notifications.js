@@ -22,8 +22,29 @@ function Notifications() {
       display: block;
     }
 
-    .drop-button {
+    .drop-button-notification {
       height: 35px;
+      border: 1px solid white;
+      color: white;
+      border-radius: 0.25rem;
+      background: transparent;
+      margin-right: 0.5rem;
+    }
+
+    .badge {
+      margin: 0 5px;
+      background: black;
+      color: white;
+    }
+
+    .drop-button-notification:before {
+      position: absolute;
+      top: 5px;
+      right: 0px;
+      padding: 5px 10px;
+      border-radius: 50%;
+      background-color: black;
+      color: white;
     }
 
     .dropdown-content {
@@ -48,19 +69,10 @@ function Notifications() {
       background-color: #ddd;
     }
 
-    .badge {
-      position: absolute;
-      top: 5px;
-      right: 80px;
-      padding: 5px 10px;
-      border-radius: 50%;
-      background-color: red;
-      color: white;
-    }
   `;
 
+  // when the page first loads, show the list of unseen notifications
   useEffect(() => {
-
     fetchNotifications();
     // eslint-disable-next-line
   }, []);
@@ -96,19 +108,70 @@ function Notifications() {
 
   }
 
+  // clear a specific notification
+  async function clearNotification(notificationId, index) {
+
+    try {
+
+      // set the notification to checked
+      const token = getToken();
+      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+      const url = `http://${server}/notification/${notificationId}` +
+        `?accessToken=${token}`;
+      await fetch(url, {
+        method: "PATCH"
+      });
+
+      // delete the notification on the client-side
+      const newNotifications = notifications.slice();
+      newNotifications.splice(index, 1);
+      console.log("newNotifications:", newNotifications, "\nnotifications:", notifications);
+      setNotifications(newNotifications);
+
+    } catch (err) {
+      // log server error, if it happens while fetching notifications
+      console.log("An internal server error occurred. Please try again later.");
+    }
+
+  }
+
+  // handle clicking on a notification
+  function handleClick(event, item, index) {
+
+    // only link to another page if the notification is
+    // intended to be used as a link
+    if (!item.planId) {
+      event.preventDefault();
+    }
+
+    // remove the notification from the drop down
+    // menu of unseen notifications
+    clearNotification(item.notificationId, index);
+
+  }
+
   return (
     <div className="notification-dropdown" css={style}>
-      <button className="drop-button">Notifications
+      <button className="drop-button-notification" data-count={notifications.length}>
+        Notifications
+        <span className="badge" >
+          {notifications.length ? notifications.length : null }
+        </span>
         <i className="fa fa-caret-down" />
       </button>
-      {notifications.length ?
-        <span className="badge">{notifications.length}</span> : null }
       <div className="dropdown-content">
-        {notifications.map((item) => (
-          <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}>
-            {item.text}
+        {notifications.length ? (
+          notifications.map((item, index) => (
+            <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}
+              onClick={(event) => handleClick(event, item, index)}>
+              {item.text}
+            </Link>
+          ))
+        ) : (
+          <Link to={`.`} onClick={(event) => event.preventDefault()}>
+            <p>No new notifications.</p>
           </Link>
-        ))}
+        )}
       </div>
     </div>
   );

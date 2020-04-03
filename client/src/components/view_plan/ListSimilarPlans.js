@@ -17,19 +17,21 @@ function ListSimilarPlans() {
   const style = css`
 
     & {
-      width: 100%;
+      display: flex;
     }
   
     #similar-plans {
-      width: 15%;
       text-align: center;
-      border: 1px solid black;
-      padding-bottom: 30px;
+      padding: 30px;
+      padding-bottom: 20px;
       margin: 0 auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      background: white;
     }
 
     abbr {
-        margin: 5px 5px 5px auto;
+        margin: -25px -25px 5px auto;
         display: block;
         height: 25px;
         width: 25px;
@@ -39,7 +41,7 @@ function ListSimilarPlans() {
         -moz-border-radius: 25px;
         border-radius: 25px;
 
-        background-color: #b3b3b3;
+        background: var(--color-gray-200);
         color: black;
         text-align: center;
 

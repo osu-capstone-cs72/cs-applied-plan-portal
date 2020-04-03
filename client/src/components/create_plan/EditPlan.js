@@ -2,6 +2,7 @@
 
 import React from "react";
 import PlanCourse from "./PlanCourse";
+import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {getToken} from "../../utils/authService";
 import {css, jsx} from "@emotion/core";
@@ -23,7 +24,7 @@ export default class EditPlan extends React.Component {
     super(props);
 
     this.state = {
-      warning: null,
+      warning: "",
     };
 
     this.submitPlan = this.submitPlan.bind(this);
@@ -34,20 +35,23 @@ export default class EditPlan extends React.Component {
     this.updatePlanName = this.updatePlanName.bind(this);
   }
 
-  submitPlan() {
+  async submitPlan() {
     // get plan name from input field
-    const planname = document.getElementById("plan-name-input").value;
-    if (this.validatePlan(planname)) {
+    const planName = document.getElementById("plan-name-input").value;
+    if (this.validatePlan(planName)) {
 
-      // create an array of strings containing course codes
+      // create an array of strings containing course IDs
       const courses = [];
       for (let i = 0; i < this.props.courses.length; i++) {
-        courses.push(this.props.courses[i].courseCode);
+        courses.push({
+          courseId: this.props.courses[i].courseId,
+          credits: this.props.courses[i].credits
+        });
       }
 
       // check to see if we should perform a POST request or a PATCH request
       if (this.props.edit) {
-        this.editPlan(courses, planname, this.props.edit);
+        this.editPlan(courses, planName, this.props.edit);
       } else {
 
         // set up data for new plan to send to backend
@@ -55,13 +59,13 @@ export default class EditPlan extends React.Component {
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         const postURL = `http://${server}/plan/?accessToken=${token}`;
         const postObj = {
-          planName: planname,
+          planName: planName,
           courses: courses
         };
 
         try {
           this.props.onLoading(true);
-          fetch(postURL, {
+          await fetch(postURL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -79,30 +83,34 @@ export default class EditPlan extends React.Component {
               }
             });
           })
-            .catch((error) => alert("Error: " + error));
+            .catch(() => this.setState({
+              warning: "An internal server error occurred. Please try again later."
+            }));
         } catch (err) {
           // this is a server error
-          alert("An internal server error occurred. Please try again later.");
+          this.setState({
+            warning: "An internal server error occurred. Please try again later."
+          });
         }
         this.props.onLoading(false);
       }
     }
   }
 
-  editPlan(courses, planname, planId) {
+  async editPlan(courses, planName, planId) {
     // set up data for new plan to send to backend
     const token = getToken();
     const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
     const patchURL = `http://${server}/plan/?accessToken=${token}`;
     const patchObj = {
       planId: planId,
-      planName: planname,
+      planName: planName,
       courses: courses
     };
 
     try {
       this.props.onLoading(true);
-      fetch(patchURL, {
+      await fetch(patchURL, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
@@ -120,21 +128,25 @@ export default class EditPlan extends React.Component {
           }
         });
       })
-        .catch((error) => alert("Error: " + error));
+        .catch(() => this.setState({
+          warning: "An internal server error occurred. Please try again later."
+        }));
     } catch (err) {
       // this is a server error
-      alert("An internal server error occurred. Please try again later.");
+      this.setState({
+        warning: "An internal server error occurred. Please try again later."
+      });
     }
     this.props.onLoading(false);
   }
 
-  validatePlan(planname) {
+  validatePlan(planName) {
     const NAME_MIN = 5;
     const NAME_MAX = 50;
     const CREDITS_MIN = 32;
 
     // check that plan name has a valid length
-    if (planname.length < NAME_MIN || planname.length > NAME_MAX) {
+    if (planName.length < NAME_MIN || planName.length > NAME_MAX) {
       this.setState({
         warning: `Plan name must be between ${NAME_MIN} and ${NAME_MAX} characters.`
       });
@@ -156,14 +168,14 @@ export default class EditPlan extends React.Component {
     // sum all the credits from the courses, return an int
     let totalCreds = 0;
     for (let i = 0; i < this.props.courses.length; i++) {
-      totalCreds += this.props.courses[i].credits;
+      totalCreds += parseInt(this.props.courses[i].credits, 10);
     }
     return totalCreds;
   }
 
   clearWarning() {
     this.setState({
-      warning: null
+      warning: ""
     });
   }
 
@@ -175,17 +187,20 @@ export default class EditPlan extends React.Component {
   render() {
 
     const style = css`
-      border-right: 2px solid black;
-      flex: 50%;
-      height: 100vh;
-      position: relative;
+      flex: 80%;
       margin: 15px;
-      top: 40px;
-
+      margin-top: 65px;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      
+      .action-tray {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: flex-end;
+      }
+      
       .submit-button {
-        position: absolute;
-        bottom: 55px;
-        right: 30px;
       }
 
       .plan-header {
@@ -196,18 +211,76 @@ export default class EditPlan extends React.Component {
         padding: 5px;
       }
 
-      .credits-header {
-        float: right;
-        margin-right: 15px;
-      }
-
       .credits {
-        display: block;
+      }
+      
+      .credits-label {
+        font-size: 14px;
+        margin-top: -5px;
+        margin-bottom: 5px;
+      }
+      
+      .credits-header {
+        display: flex;
+        align-items: space-around;
+        justify-content: center;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        margin-left: auto;
+        flex-direction: column;
+        margin-right: 1rem;
       }
 
-      .total-credits {
-        position: relative;
-        left: 50%;
+      #plan-name-input {
+        font-size: 23px;
+        border-radius: 0.5rem;
+        border: 2px solid var(--color-lightgray-500);
+        /*background: var(--color-lightgray-300);*/
+        color: var(--color-gray-800);
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        outline: none;
+      }
+      
+      .header {
+        display: flex;
+        flex-direction: row;
+      }
+      
+      .edit-plan-table {
+        flex: 100%;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        padding: 1rem;
+        background: var(--color-lightgray-50);
+        background: white;
+      }
+      
+      table.edit-plan-table thead tr th {
+        background: var(--color-lightgray-100);
+        color: var(--color-gray-400);
+        font-variant-caps: all-small-caps;
+        font-weight: 600;
+        font-size: 12pt;
+        border-bottom: none;
+        padding: 1rem 2rem;
+        /*padding: 10px;*/
+      }
+      
+      table.edit-plan-table tbody tr td {
+        vertical-align: middle;
+        padding: 1rem 2rem;
+      }
+      
+      .submit-button {
+        background: var(--color-blue-500);
+        color: var(--color-blue-50);
+        padding: 1rem 1rem;
+        border-radius: 0.5rem;
+        border: none;
       }
     `;
 
@@ -215,25 +288,23 @@ export default class EditPlan extends React.Component {
       <div className="edit-plan" css={style}>
         <div className="header">
           <div className="plan-header">
-            <label className="plan-name">Plan name</label>
+            {/* <label className="plan-name">Plan name</label> */}
             <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
               value={this.props.planName} onChange={this.updatePlanName} />
           </div>
           <div className="credits-header">
-            <label className="credits">Total credits</label>
-            <p className="total-credits">{this.loadCredits()}</p>
+            {/* <label className="credits">Total credits</label> */}
+            <div className="credits">{this.loadCredits()}</div>
+            <div className="credits-label">credits</div>
           </div>
         </div>
-        <div className="warning-box">
-          {this.state.warning ? <p>{this.state.warning}</p> : null}
-        </div>
-        <table className="table">
+        <ErrorMessage text={this.state.warning} />
+        <table className="edit-plan-table">
           <thead>
             <tr>
-              <th scope="col">Code</th>
-              <th scope="col">Title</th>
-              <th scope="col">Credits</th>
-              <th scope="col"></th>
+              <th>Course</th>
+              <th>Credits</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody>
@@ -241,9 +312,11 @@ export default class EditPlan extends React.Component {
               courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
           </tbody>
         </table>
-        <button className="submit-button" onClick={this.submitPlan}>
-          {this.props.edit ? "Update" : "Submit"}
-        </button>
+        <div className="action-tray">
+          <button className="submit-button" onClick={this.submitPlan}>
+            {this.props.edit ? "Save Plan" : "Submit Plan"}
+          </button>
+        </div>
       </div>
     );
   }

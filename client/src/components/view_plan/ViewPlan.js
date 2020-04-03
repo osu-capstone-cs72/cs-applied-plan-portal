@@ -44,22 +44,35 @@ function ViewPlan(props) {
   );
 
   const style = css`
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto;
   `;
 
+  // get primary plan data
   useEffect(() => {
     fetchPlan(planId);
     // eslint-disable-next-line
   }, [planId]);
 
+  // get activity feed data for plan
   useEffect(() => {
-    // fetch the plan activity if the activity feed is empty
-    // and the plan metadata has fully loaded
-    if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
-      fetchActivity(planId, cursor);
+    // fetch the plan activity if the plan has loaded
+    // or if the plan ID or plan info has changed
+    if (created !== "" && studentFirstName !== "" && studentLastName !== "") {
+
+      const newCursor = {
+        primary: "null",
+        secondary: "null"
+      };
+
+      fetchActivity(planId, newCursor);
+
     }
     // eslint-disable-next-line
   }, [planId, created, studentFirstName, studentLastName]);
 
+  // get plan data based on the plan ID
   async function fetchPlan(planId) {
     setLoading(true);
     try {
@@ -126,6 +139,7 @@ function ViewPlan(props) {
     setLoading(false);
   }
 
+  // get the activity feed for the plan that matches the given plan ID
   async function fetchActivity(planId, cursor) {
     setLoading(true);
     try {
@@ -133,7 +147,7 @@ function ViewPlan(props) {
       const initialReview =
       {
         id: "0r",
-        status: 2,
+        status: 5,
         planId: planId,
         userId: userId,
         time: created,
@@ -154,11 +168,18 @@ function ViewPlan(props) {
         // get data from the response
         obj = await response.json();
 
+        // if this is the first fetch for the current plan
+        // then ensure that the activity feed is empty to start
+        let pastActivity = activity;
+        if (cursor.primary === "null" && cursor.secondary === "null") {
+          pastActivity = [];
+        }
+
         // if we are showing all activity then show the initial review
         if (obj.nextCursor.primary === "null") {
-          setActivity([...activity, ...obj.activity, initialReview]);
+          setActivity([...pastActivity, ...obj.activity, initialReview]);
         } else {
-          setActivity([...activity, ...obj.activity]);
+          setActivity([...pastActivity, ...obj.activity]);
         }
         setCursor(obj.nextCursor);
 
@@ -177,15 +198,18 @@ function ViewPlan(props) {
     setLoading(false);
   }
 
+  // add a new comment to the activity feed
   function handleAddComment(e) {
     setActivity(prev => [e, ...prev]);
   }
 
+  // add a new review to the activity feed and update the metadata
   function handleChangeStatus(e) {
     setActivity(prev => [e, ...prev]);
     setStatus(parseInt(e.status));
   }
 
+  // show a prompt for printing a plan
   function handlePrint() {
     const opts = {
       pageTitle: `OSU CS Applied Plan Portal: Plan ${planId}`,
@@ -193,6 +217,7 @@ function ViewPlan(props) {
     PHE.printElement(document.getElementById("view-plan-container"), opts);
   }
 
+  // handle a user request to delete the current plan
   async function handleDelete() {
 
     if (window.confirm("Are you sure that you want to delete this plan?")) {
@@ -235,13 +260,14 @@ function ViewPlan(props) {
         <PageSpinner loading={loading} />
         <NavBar showSearch={false} />
         <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
-          planName={planName} status={status} currentUser={currentUser}
+          planName={planName} status={status} currentUser={currentUser} courses={courses}
           onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
         <PlanTable courses={courses} />
         <ListSimilarPlans />
         <CreateReview currentUser={currentUser} status={status}
           onNewStatus={e => handleChangeStatus(e)} />
-        <ActivityFeed activity={activity} currentUser={currentUser} status={status}
+        <ActivityFeed activity={activity} currentUser={currentUser}
+          status={status} loading={loading}
           cursor={cursor} onNewComment={e => handleAddComment(e)}
           onShowMore={cursor => fetchActivity(planId, cursor)}/>
       </div>

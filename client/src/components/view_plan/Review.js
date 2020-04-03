@@ -10,28 +10,34 @@ function Reviews(props) {
   const style = css`
     text-align: center;
     margin: 25px auto;
-    padding: 5px;
-    width: 175px;
-    height: 175px;
-    border-radius: 50%;
-    background-color: #b3b3b3;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 350px;
+    max-width: 33%;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: white;
 
     .review-text-container {
-      position: relative;
-      top: 30px;
     }
 
-    .review-status-text {
-      font-weight: bold;
-      font-size: medium;
+    .review-status {
+      font-style: italic;
+      font-size: larger;
+      color: #333;
     }
 
     .review-time {
-      font-style: italic;
+      font-size: small;
+      color: #555;
     }
 
     .review-user {
-      font-size: medium;
+      font-weight: bold;
+      font-size: large;
+      display: block;
     }
   `;
 
@@ -39,9 +45,12 @@ function Reviews(props) {
     return (
       <div className="review-container" css={style}>
         <div className="review-text-container">
-          <p className="review-status-text">{renderStatus(props.status)}</p>
-          <p className="review-user">{props.userName}</p>
-          <p className="review-time">{formatTime(props.time)}</p>
+          <p><span className="review-user">{props.userName}</span><span className="review-time">{formatTime(props.time)}</span></p>
+          {props.status > 4 ? (
+            <p className="review-status">Created a new plan</p>
+          ) : (
+            <p className="review-status">Updated status to {renderStatus(props.status)}</p>
+          )}
         </div>
       </div>
     );

@@ -1,17 +1,17 @@
 // File: format.js
 // Description: handles formatting for various data types
 
-// takes an array of strings and makes them uppercase, free of white space,
-// removes empty strings, and non-string values from the array
-function formatStringArray(stringArray) {
+// takes an array and keep only objects while sorting by course ID
+function formatCourseArray(stringArray) {
 
   return stringArray
-    .filter(value => value !== "" && typeof value === "string")
-    .map(string => string.toUpperCase().replace(/\s+/g, ""));
+    .filter(course => typeof course === "object" && course !== null)
+    .sort((a, b) => a.courseId - b.courseId);
 
 }
-exports.formatStringArray = formatStringArray;
+exports.formatCourseArray = formatCourseArray;
 
+// takes a status number and returns a status string
 function formatStatus(status) {
   switch (status) {
     case 0:

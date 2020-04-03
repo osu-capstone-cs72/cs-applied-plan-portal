@@ -8,10 +8,28 @@ async function createPlan(userId, planName, courses) {
 
   try {
 
+    // start by figuring out the credits required for each course
+    const courseCredits = [];
+    for (let i = 0; i < courses.length; i++) {
+
+      // get credits for current course
+      const sql  = "SELECT credits FROM Course WHERE courseId = ?;";
+      const results = await pool.query(sql, courses[i].courseId);
+
+      // check if credits is a value or a range and then add the credits
+      // to the courseCredits array
+      if (isNaN(results[0][0].credits)) {
+        courseCredits[i] = parseInt(courses[i].credits, 10);
+      } else {
+        courseCredits[i] = parseInt(results[0][0].credits, 10);
+      }
+
+    }
+
     // hold on to a single connection
     const conn = await pool.getConnection();
 
-    // construct the first SQL query
+    // construct the insertion SQL query
     let sql = "BEGIN; " +
       "INSERT INTO Plan (studentId, planName, status) VALUES (?, ?, 2); " +
       "SELECT LAST_INSERT_ID();";
@@ -22,13 +40,14 @@ async function createPlan(userId, planName, courses) {
 
     // construct the second SQL query
     const sqlArray = [];
-    sql = "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+    sql = "INSERT INTO SelectedCourse (planId, courseId, credits) VALUES ";
 
     // expand the sql string and array based on the number of courses
-    courses.forEach((currentValue) => {
-      sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+    courses.forEach((currentValue, index) => {
+      sql += "(?, ?, ?),";
       sqlArray.push(planId);
-      sqlArray.push(currentValue);
+      sqlArray.push(currentValue.courseId);
+      sqlArray.push(courseCredits[index]);
     });
 
     // add the last line of the SQL query
@@ -54,6 +73,24 @@ exports.createPlan = createPlan;
 async function updatePlan(planId, planName, courses) {
 
   try {
+
+    // start by figuring out the credits required for each course
+    const courseCredits = [];
+    for (let i = 0; i < courses.length; i++) {
+
+      // get credits for current course
+      const sql  = "SELECT credits FROM Course WHERE courseId = ?;";
+      const results = await pool.query(sql, courses[i].courseId);
+
+      // check if credits is a value or a range and then add the credits
+      // to the courseCredits array
+      if (isNaN(results[0][0].credits)) {
+        courseCredits[i] = parseInt(courses[i].credits, 10);
+      } else {
+        courseCredits[i] = parseInt(results[0][0].credits, 10);
+      }
+
+    }
 
     // get the owner and status from the current plan
     let sql = "SELECT * FROM Plan WHERE planId=?;";
@@ -96,13 +133,14 @@ async function updatePlan(planId, planName, courses) {
       sql += "DELETE FROM SelectedCourse WHERE planId=?;";
       sqlArray.push(planId);
 
-      sql += "INSERT INTO SelectedCourse (planId, courseId) VALUES ";
+      sql += "INSERT INTO SelectedCourse (planId, courseId, credits) VALUES ";
 
       // expand the sql string and array based on the number of courses
-      courses.forEach((currentValue) => {
-        sql += "(?, (SELECT courseId FROM Course WHERE courseCode=?)),";
+      courses.forEach((currentValue, index) => {
+        sql += "(?, ?, ?),";
         sqlArray.push(planId);
-        sqlArray.push(currentValue);
+        sqlArray.push(currentValue.courseId);
+        sqlArray.push(courseCredits[index]);
       });
 
       // replace the final comma with a semicolon
@@ -135,7 +173,7 @@ async function searchPlans(text, status, sort, order, cursor) {
   try {
 
     const ASC = 1;
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 25;
     const sqlArray = [];
     let plans;
     const nextCursor = {
@@ -155,7 +193,7 @@ async function searchPlans(text, status, sort, order, cursor) {
       // Depending on our search query the primary cursor value may
       // represent any number of values (ex: userId, status, etc...).
       // We select the correct value by using the value that we are sorting by.
-
+      //
       // Instances where the primary cursor value could have duplicate values
       // are handled by also sorting by plan ID.
 
@@ -320,14 +358,22 @@ async function getPlan(planId, userId) {
     // add plan to recently viewed
     addRecentPlan(planId, userId);
 
-    let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email FROM Plan LEFT JOIN User ON User.userId=Plan.studentId WHERE planId=?;";
+    let sql = "SELECT Plan.*, User.firstName, User.lastName, User.email " +
+      "FROM Plan " +
+      "LEFT JOIN User ON User.userId=Plan.studentId " +
+      "WHERE planId=?;";
+
     const result1 = await pool.query(sql, planId);
 
     if (!result1[0].length) {
       return {planId: 0};
     }
 
-    sql = "SELECT * FROM Course NATURAL JOIN SelectedCourse WHERE planId = ? " +
+    sql = "SELECT C.courseId, C.courseName, C.courseCode, C.prerequisites, S.credits " +
+      "FROM Course AS C " +
+      "LEFT JOIN SelectedCourse AS S " +
+      "ON C.courseId = S.courseId " +
+      "WHERE planId = ? " +
       "ORDER BY courseCode ASC;";
 
     const result2 = await pool.query(sql, planId);
@@ -348,7 +394,7 @@ async function getPlanActivity(planId, cursor) {
   try {
 
     // list the activity for the plan
-    const RESULTS_PER_PAGE = 5;
+    const RESULTS_PER_PAGE = 10;
     const sqlArray = [];
     let activity;
     const nextCursor = {

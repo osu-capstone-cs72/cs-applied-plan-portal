@@ -3,35 +3,46 @@
 import {css, jsx} from "@emotion/core";
 import {renderStatus} from "../../utils/renderStatus";
 import {Link, useParams, withRouter} from "react-router-dom";
+import {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 
 function PlanMetadata(props) {
 
   const {planId} = useParams();
+  const [creditSum, setCreditSum] = useState(0);
 
   const style = css`
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     flex-direction: column;
-    height: 110px;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
 
     .plan-metadata {
       padding: 10px;
       text-align: center;
-      vertical-align: middle;
       width: 100%;
-      height: 75px;
-      background-color: #c0c0c0;
+      background: var(--color-gray-200);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-direction: row;
     }
 
     .metadata-field {
-      vertical-align: top;
-      display: inline-block;
-      width: 12%;
+      /*vertical-align: top;
+      display: inline-block;*/
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       height: 55px;
       word-wrap: break-word;
+      flex-grow: 1;
     }
-
+    
     .small-metadata-field {
       vertical-align: top;
       display: inline-block;
@@ -48,21 +59,34 @@ function PlanMetadata(props) {
     .field-text {
       font-weight: normal;
       vertical-align: middle;
+      margin-bottom: 0;
     }
 
     #delete-plan-button, #edit-plan-button, #print-plan-button {
       padding: 10px;
     }
 
-    #modify-button-container {
+    /*#modify-button-container {
       display: inline-block;
       text-align: center;
       vertical-align: middle;
       margin: 0;
-      width: 24%;
+    }*/
+    
+    button {
+      border: 1px solid black;
+      color: black;
+      border-radius: 0.25rem;
+      background: transparent;
+      margin-right: 0.5rem;
     }
 
     @media print {
+
+      & {
+        position: static;
+        top: 0;
+      }
 
       .button-field, #edit-plan-link, #delete-plan-button, #edit-plan-button,
         #print-plan-button, #modify-button-container {
@@ -76,6 +100,14 @@ function PlanMetadata(props) {
 
     }
   `;
+
+  useEffect(() => {
+    let sum = 0;
+    for (let i = 0; i < props.courses.length; i++) {
+      sum += parseInt(props.courses[i].credits, 10);
+    }
+    setCreditSum(sum);
+  }, [props.courses]);
 
   return (
     <div id="metadata-container" css={style}>
@@ -93,8 +125,8 @@ function PlanMetadata(props) {
           <p className="field-text">{props.email}</p>
         </div>
         <div className="metadata-field">
-          <p className="field-type">User ID:</p>
-          <p className="field-text">{props.userId}</p>
+          <p className="field-type">Total Credits:</p>
+          <p className="field-text">{creditSum}</p>
         </div>
         <div className="metadata-field">
           <p className="field-type">Plan Status:</p>
@@ -106,23 +138,21 @@ function PlanMetadata(props) {
           </button>
         </div>
         {props.status === 1 || props.status === 2 ? (
-          <div id="modify-button-container">
-            <div className="small-metadata-field button-field">
-              <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-                <button id="edit-plan-button">
-                    Edit Plan
-                </button>
-              </Link>
-            </div>
-            <div className="small-metadata-field button-field">
-              <button id="delete-plan-button" onClick={() => props.onDelete()}>
-                  Delete Plan
+          <div className="metadata-field button-field">
+            <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+              <button id="edit-plan-button">
+                Edit Plan
               </button>
-            </div>
+            </Link>
           </div>
-        ) : (
-          null
-        )}
+        ) : (null)}
+        {props.status === 1 || props.status === 2 ? (
+          <div className="metadata-field button-field">
+            <button id="delete-plan-button" onClick={() => props.onDelete()}>
+              Delete Plan
+            </button>
+          </div>
+        ) : (null)}
       </div>
     </div>
   );
@@ -139,5 +169,6 @@ PlanMetadata.propTypes = {
   history: PropTypes.object,
   currentUser: PropTypes.object,
   onPrint: PropTypes.func,
-  onDelete: PropTypes.func
+  onDelete: PropTypes.func,
+  courses: PropTypes.array
 };

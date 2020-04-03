@@ -4,6 +4,7 @@ import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
 import {getToken} from "../../utils/authService";
+import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 
 function CreateReview(props) {
@@ -12,19 +13,12 @@ function CreateReview(props) {
   const {planId} = useParams();
 
   const style = css`
-    margin: 50px auto;
-    text-align: center;
-    width: 100%;
 
-      #review-error-container {
+    & {
       display: block;
-      width: auto;
-      min-width: 100px;
-    }
-
-    #review-error-message {
-      display:inline-block;
-      min-height:15px;
+      text-align: center;
+      margin: 0 auto;
+      width: 35%;
     }
 
     #review-input-container {
@@ -35,12 +29,28 @@ function CreateReview(props) {
     #review-select {
       display: block;
       margin: auto;
+      border: 1px solid var(--color-lightgray-600);
+      border-radius: 0.5rem;
+      padding: 1rem 1rem;
+      flex: 100%;
     }
 
     #submit-review-button {
       display: block;
       margin: 10px auto;
+      background: var(--color-blue-500);
+      color: var(--color-blue-50);
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
     }
+
+    @media print {
+      & {
+        display: none;
+      }
+    }
+
   `;
 
   async function submit(planId) {
@@ -118,9 +128,9 @@ function CreateReview(props) {
     return (
       <div id="create-review-container" css={style}>
         <h2>Set Plan Status</h2>
-        <div id="review-error-container">
-          <p id="review-error-message">{errorMessage}</p>
-        </div>
+
+        <ErrorMessage text={errorMessage} />
+
         <div id="review-input-container">
           <select id="review-select" defaultValue={"2"}>
             {props.status === 0 ? (

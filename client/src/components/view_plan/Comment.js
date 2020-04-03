@@ -10,29 +10,33 @@ function Comment(props) {
     text-align: center;
     margin: 25px auto;
     padding: 25px;
-    width: 350px;
-    background-color: #b3b3b3;
+    min-width: 350px;
+    max-width: 33%;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: white;
 
     .comment-user {
       font-weight: bold;
       font-size: large;
+      display: block;
     }
 
     .comment-time {
-      font-style: italic;
+      font-size: small;
+      color: #555;
     }
 
-    comment-text {
-      font-size: large;
+    .comment-text {
+      font-size: larger;
     }
   `;
 
   return (
     <div className="comment-container" css={style}>
-      <p className="comment-user">{props.firstName + " " + props.lastName}</p>
-      <p className="comment-time">{formatTime(props.time)}</p>
+      <p><span className="comment-user">{props.firstName + " " + props.lastName}</span><span className="comment-time">{formatTime(props.time)}</span></p>
       <p className="comment-text">{props.text}</p>
     </div>
   );

@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const {formatStringArray} = require("../services/format/format");
+const {formatCourseArray} = require("../services/format/format");
 const {
   createEnforceConstraints,
   patchEnforceConstraints,
@@ -49,7 +49,7 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("Submit a plan");
       const userId = req.auth.userId;
       const planName = sanitizedBody.planName;
-      const courses = formatStringArray(sanitizedBody.courses);
+      const courses = formatCourseArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
       const violation = await createEnforceConstraints(userId, planName, courses);
@@ -57,7 +57,7 @@ app.post("/", requireAuth, async (req, res) => {
 
         // create the plan
         const results = await createPlan(userId, planName, courses);
-        console.log("201: Submited plan has been created\n");
+        console.log("201: Submitted plan has been created\n");
         res.status(201).send(results);
 
       } else {
@@ -88,7 +88,7 @@ app.patch("/", requireAuth, async (req, res) => {
   try {
 
     // use schema validation to ensure valid request body
-    const errorMessage = getSchemaViolations(req.body, patchPlanSchema);
+    const errorMessage = getSchemaViolations(req.body, patchPlanSchema, true);
 
     if (!errorMessage) {
 
@@ -101,12 +101,19 @@ app.patch("/", requireAuth, async (req, res) => {
       let planName = 0;
       let courses = 0;
 
+      // see if the planId was submitted in the request body
+      if (req.body.planId === undefined) {
+        console.error("400: No plan ID submitted with the request\n");
+        res.status(400).send({error: "No plan ID submitted with the request"});
+        return;
+      }
+
       if (req.body.planName !== undefined) {
         planName = sanitizedBody.planName;
       }
       if (req.body.courses !== undefined) {
         if (Array.isArray(req.body.courses)) {
-          courses = formatStringArray(sanitizedBody.courses);
+          courses = formatCourseArray(sanitizedBody.courses);
         }
       }
 
@@ -151,8 +158,8 @@ app.get("/recent", requireAuth, async (req, res) => {
 
     const results = await getRecentPlans(userId);
     if (results.plans.length === 0) {
-      console.error("404: No plans found\n");
-      res.status(404).send({error: "No plans found."});
+      console.error("404: No matching plans found.\n");
+      res.status(404).send({error: "No matching plans found."});
     } else {
       console.log("200: Plans found\n");
       res.status(200).send(results);
@@ -253,8 +260,8 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
         const results = await searchPlans(text, parseInt(status, 10),
           parseInt(sort, 10), parseInt(order, 10), cursor);
         if (results.plans.length === 0) {
-          console.error("404: No plans found\n");
-          res.status(404).send({error: "No plans found."});
+          console.error("404: No matching plans found.\n");
+          res.status(404).send({error: "No matching plans found."});
         } else {
           console.log("200: Plans found\n");
           res.status(200).send(results);

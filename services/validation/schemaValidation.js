@@ -41,7 +41,7 @@ const patchPlanSchema = {
     }
   },
   planName: {
-    required: false,
+    required: true,
     type: Type.string,
     minLength: 5,
     maxLength: 50,
@@ -52,7 +52,7 @@ const patchPlanSchema = {
     }
   },
   courses: {
-    required: false,
+    required: true,
     type: Type.courseArray,
     getErrorMessage: function() {
       return "Invalid courses:\n" +
@@ -125,7 +125,7 @@ exports.searchPlanSchema = searchPlanSchema;
 const userSchema = {
   userId: {
     required: true,
-    typee: Type.integer,
+    type: Type.integer,
     minValue: 10000000000,
     maxValue: 99999999999,
     getErrorMessage: function() {
@@ -199,7 +199,7 @@ const searchUserSchema = {
     }
   },
   cursorPrimary: {
-    required: false,
+    required: true,
     type: Type.string,
     getErrorMessage: function() {
       return "Invalid primary cursor field:\n" +
@@ -207,7 +207,7 @@ const searchUserSchema = {
     }
   },
   cursorSecondary: {
-    required: false,
+    required: true,
     type: Type.string,
     getErrorMessage: function() {
       return "Invalid secondary cursor field:\n" +
