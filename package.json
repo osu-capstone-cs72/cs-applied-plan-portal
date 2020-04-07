@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "concurrently": "^5.1.0",
+    "cookie": "^0.4.0",
     "cors": "^2.8.5",
     "css-loader": "^3.4.2",
     "dotenv": "^8.2.0",
