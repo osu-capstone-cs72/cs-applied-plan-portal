@@ -31,8 +31,7 @@ export default function StudentCreatePlan() {
       setLoading(true);
       try {
         const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/plan/${planId}/?accessToken=${token}`;
+        const url = `/plan/${planId}/?accessToken=${token}`;
         let obj = [];
 
         const response = await fetch(url);

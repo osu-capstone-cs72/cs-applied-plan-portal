@@ -56,8 +56,7 @@ export default class EditPlan extends React.Component {
 
         // set up data for new plan to send to backend
         const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const postURL = `http://${server}/plan/?accessToken=${token}`;
+        const postURL = `/plan/?accessToken=${token}`;
         const postObj = {
           planName: planName,
           courses: courses
@@ -100,8 +99,7 @@ export default class EditPlan extends React.Component {
   async editPlan(courses, planName, planId) {
     // set up data for new plan to send to backend
     const token = getToken();
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const patchURL = `http://${server}/plan/?accessToken=${token}`;
+    const patchURL = `/plan/?accessToken=${token}`;
     const patchObj = {
       planId: planId,
       planName: planName,

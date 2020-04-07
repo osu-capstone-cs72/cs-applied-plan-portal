@@ -36,8 +36,7 @@ function SelectRole(props) {
       // the user confirmed that they wanted to change the role
       // so we will send a request to the API server
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const patchURL = `http://${server}/user/${props.userId}/?accessToken=${token}`;
+      const patchURL = `/user/${props.userId}/?accessToken=${token}`;
       const patchObj = {
         role: select.value
       };

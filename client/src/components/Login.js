@@ -34,8 +34,7 @@ function Login(props) {
         const accessToken = queryObj.accessToken;
 
         // set the base url for our request
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        let getUrl = `http://${server}/user/authenticated/`;
+        let getUrl = `/user/authenticated/`;
 
         // Add access token to url
         const parsedGetUrl = url.parse(getUrl, true);

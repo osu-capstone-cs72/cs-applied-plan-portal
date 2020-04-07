@@ -71,8 +71,7 @@ export default function ManageRoles() {
 
       // construct the request url
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/user/search/${textValue}/${roleValue}` +
+      const getUrl = `/user/search/${textValue}/${roleValue}` +
         `/${cursor.primary}/${cursor.secondary}?accessToken=${token}`;
       let obj = [];
 

@@ -86,8 +86,7 @@ function CreateComment(props) {
       const text = document.getElementById("comment-text-input").value;
 
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/comment/?accessToken=${token}`;
+      const url = `/comment/?accessToken=${token}`;
       let obj = [];
 
       const postObj = {

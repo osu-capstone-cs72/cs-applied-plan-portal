@@ -83,8 +83,7 @@ function Notifications() {
     try {
 
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/notification` +
+      const url = `/notification` +
         `?accessToken=${token}`;
       let obj = [];
 
@@ -115,8 +114,7 @@ function Notifications() {
 
       // set the notification to checked
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/notification/${notificationId}` +
+      const url = `/notification/${notificationId}` +
         `?accessToken=${token}`;
       await fetch(url, {
         method: "PATCH"

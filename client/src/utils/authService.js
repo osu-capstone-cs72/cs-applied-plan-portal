@@ -53,8 +53,7 @@ export async function getProfile() {
     const token = getToken();
 
     // find the User associated with the payload subject
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/idRole?accessToken=${token}`;
+    const getUrl = `/user/idRole?accessToken=${token}`;
 
     const results = await fetch(getUrl);
     const user = await results.json();

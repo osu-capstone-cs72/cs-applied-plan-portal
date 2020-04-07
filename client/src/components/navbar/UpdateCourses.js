@@ -41,8 +41,7 @@ function UpdateCourses() {
 
         // request that all courses are updated
         const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/course/updateDatabase?accessToken=${token}`;
+        const url = `/course/updateDatabase?accessToken=${token}`;
 
         // perform the query
         const response = await fetch(url);

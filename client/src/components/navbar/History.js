@@ -67,8 +67,7 @@ function History() {
   async function getRecentPlans() {
     try {
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/recent/?accessToken=${token}`;
+      const getUrl = `/plan/recent/?accessToken=${token}`;
       let obj = {};
 
       const results = await fetch(getUrl);

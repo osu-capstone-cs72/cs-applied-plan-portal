@@ -78,8 +78,7 @@ function ViewPlan(props) {
     try {
 
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      let url = `http://${server}/plan/${planId}` +
+      let url = `/plan/${planId}` +
         `?accessToken=${token}`;
       let obj = [];
 
@@ -116,7 +115,7 @@ function ViewPlan(props) {
 
       // get active user information
       const profile = await getProfile();
-      url = `http://${server}/user/${profile.userId}/` +
+      url = `/user/${profile.userId}/` +
         `?accessToken=${token}`;
       const response = await fetch(url);
       if (response.ok) {
@@ -155,8 +154,7 @@ function ViewPlan(props) {
         lastName: studentLastName
       };
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/plan/${planId}/activity/${cursor.primary}/` +
+      const url = `/plan/${planId}/activity/${cursor.primary}/` +
       `${cursor.secondary}/?accessToken=${token}`;
       let obj = [];
 
@@ -224,8 +222,7 @@ function ViewPlan(props) {
       setLoading(true);
       try {
         const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/plan/${planId}` +
+        const url = `/plan/${planId}` +
           `?accessToken=${token}`;
 
         // delete plan data

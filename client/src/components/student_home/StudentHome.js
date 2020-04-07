@@ -37,8 +37,7 @@ export default class StudentHome extends React.Component {
     });
     const profile = await getProfile();
     const token = getToken();
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/${profile.userId}/plans/` +
+    const getUrl = `/user/${profile.userId}/plans/` +
       `?accessToken=${token}`;
 
     let obj = [];

@@ -94,8 +94,7 @@ function AdvisorHome() {
 
       // construct the request url
       const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/search/${textValue}/${statusValue}/` +
+      const getUrl = `/plan/search/${textValue}/${statusValue}/` +
         `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}/?accessToken=${token}`;
       let obj = {};
 
