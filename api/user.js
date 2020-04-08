@@ -17,7 +17,8 @@ const {
 const {
   casValidateUser,
   generateAuthToken,
-  requireAuth
+  requireAuth,
+  setAuthCookie
 } = require("../services/auth/auth");
 
 const app = express();
@@ -189,17 +190,19 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId);
 
-      // include this token in the redirect URL
+      // create redirect URL
       const parsedTargetUrl = url.parse(targetUrl, true);
       parsedTargetUrl.query.accessToken = token;
 
       // finalize the redirect URL
-      const targetUrlWithToken = url.format(parsedTargetUrl);
+      const finalTargetUrl = url.format(parsedTargetUrl);
 
       console.log(`200: User authenticated: ${user.userId} (${user.email})`);
-      console.log(`Redirecting to ${targetUrlWithToken}\n`);
-      // redirect to the target URL with the token
-      res.status(200).redirect(targetUrlWithToken);
+      console.log(`Redirecting to ${finalTargetUrl}\n`);
+
+      // redirect to the target URL and set an auth cookie
+      setAuthCookie(res, token);
+      res.status(200).redirect(finalTargetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});

@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const needle = require("needle");
 const validator = require("validator");
 const xml2js = require("xml2js");
+const {serialize} = require("cookie");
 
 const {userSchema} = require("../validation/schemaValidation");
 
@@ -130,3 +131,23 @@ function casValidateUser(casValidationUrl) {
   );
 }
 exports.casValidateUser = casValidateUser;
+
+// sets an authentication cookie
+// Source: "Authenticating Users" by Rob Hess,
+// https://docs.google.com/document/d/17zERsoO6i5MMQjVfDsb_OKo2MopVV4Jn8Q8qbo8bFFI
+const setAuthCookie = (res, token) => {
+  res.setHeader("Set-Cookie", [
+    serialize("auth", token, {
+      path: "/",
+      httpOnly: true,
+      sameSite: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+    }),
+    serialize("csrf", token, {
+      path: "/",
+      sameSite: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+    })
+  ]);
+};
+exports.setAuthCookie = setAuthCookie;
