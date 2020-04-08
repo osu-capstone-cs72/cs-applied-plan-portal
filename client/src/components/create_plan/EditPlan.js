@@ -282,6 +282,11 @@ export default class EditPlan extends React.Component {
         border-radius: 0.5rem;
         border: none;
       }
+
+      .table-container {
+        display: flex;
+        flex-direction: column;
+      }
     `;
 
     return (
@@ -299,24 +304,30 @@ export default class EditPlan extends React.Component {
           </div>
         </div>
         <ErrorMessage text={this.state.warning} />
-        <table className="edit-plan-table">
-          <thead>
-            <tr>
-              <th>Course</th>
-              <th>Credits</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
-              courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
-          </tbody>
-        </table>
-        <div className="action-tray">
-          <button className="submit-button" onClick={this.submitPlan}>
-            {this.props.edit ? "Save Plan" : "Submit Plan"}
-          </button>
-        </div>
+        {this.props.courses.length > 0 ?
+          <div className="table-container">
+            <table className="edit-plan-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Credits</th>
+                  <th>Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
+                  courseName={c.courseName} credits={c.credits} onRemoveCourse={e => this.props.onRemoveCourse(e)}/>)}
+              </tbody>
+            </table>
+            <div className="action-tray">
+              <button className="submit-button" onClick={this.submitPlan}>
+                {this.props.edit ? "Save Plan" : "Submit Plan"}
+              </button>
+            </div>
+          </div>
+          : <div className="no-courses-msg">
+            <p>Use the search bar to find and select classes.</p>
+          </div>}
       </div>
     );
   }
