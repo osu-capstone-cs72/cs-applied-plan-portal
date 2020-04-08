@@ -25,7 +25,7 @@ function Home(props) {
       if (validToken) {
 
         // render a page based on the users role
-        const profile = await getProfile();
+        const profile = getProfile();
         if (!profile.role) {
           setPageState(1);
         } else {

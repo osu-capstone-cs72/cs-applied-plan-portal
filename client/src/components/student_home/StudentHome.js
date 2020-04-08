@@ -35,7 +35,7 @@ export default class StudentHome extends React.Component {
     this.setState({
       loading: true
     });
-    const profile = await getProfile();
+    const profile = getProfile();
     const token = getToken();
     const getUrl = `/user/${profile.userId}/plans/` +
       `?accessToken=${token}`;

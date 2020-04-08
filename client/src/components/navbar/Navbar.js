@@ -17,7 +17,7 @@ function Navbar() {
 
   useEffect(() => {
     async function checkRole() {
-      const profile = await getProfile();
+      const profile = getProfile();
       if (!profile.role) {
         setRole(0);
       } else {

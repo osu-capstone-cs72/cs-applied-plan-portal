@@ -114,7 +114,7 @@ function ViewPlan(props) {
       }
 
       // get active user information
-      const profile = await getProfile();
+      const profile = getProfile();
       url = `/user/${profile.userId}/` +
         `?accessToken=${token}`;
       const response = await fetch(url);

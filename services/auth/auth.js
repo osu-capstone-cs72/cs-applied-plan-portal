@@ -133,10 +133,22 @@ function casValidateUser(casValidationUrl) {
 exports.casValidateUser = casValidateUser;
 
 // sets an authentication cookie
-// Source: "Authenticating Users" by Rob Hess,
+// Based on "Authenticating Users" by Rob Hess,
 // https://docs.google.com/document/d/17zERsoO6i5MMQjVfDsb_OKo2MopVV4Jn8Q8qbo8bFFI
-const setAuthCookie = (res, token) => {
+const setAuthCookie = (res, token, userId, role) => {
   res.setHeader("Set-Cookie", [
+    serialize("userId", userId, {
+      path: "/",
+      httpOnly: false,
+      sameSite: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+    }),
+    serialize("role", role, {
+      path: "/",
+      httpOnly: false,
+      sameSite: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+    }),
     serialize("auth", token, {
       path: "/",
       httpOnly: true,

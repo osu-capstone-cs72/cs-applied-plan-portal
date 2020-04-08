@@ -48,21 +48,36 @@ export function logout() {
 
 // get the user associated with the JWT payload, or return an empty object `{}`
 // if the user cannot be found or on error
-export async function getProfile() {
-  try {
-    const token = getToken();
+export function getProfile() {
 
-    // find the User associated with the payload subject
-    const getUrl = `/user/idRole?accessToken=${token}`;
+  // establish the default user
+  const user = {
+    userId: 0,
+    role: 0
+  };
 
-    const results = await fetch(getUrl);
-    const user = await results.json();
-    if (results.ok && user) {
-      return user;
-    } else {
-      return {};
+  // get user info from cookies
+  const userId = "userId=";
+  const role = "role=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookieArray = decodedCookie.split(";");
+  for (let i = 0; i < cookieArray.length; i++) {
+
+    let cookie = cookieArray[i];
+
+    while (cookie.charAt(0) === " ") {
+      cookie = cookie.substring(1);
     }
-  } catch (err) {
-    return {};
+
+    // if we find a cookie that we are looking for, then update the user object
+    if (cookie.indexOf(userId) === 0) {
+      user.userId = cookie.substring(userId.length, cookie.length);
+    }
+    if (cookie.indexOf(role) === 0) {
+      user.role = cookie.substring(role.length, cookie.length);
+    }
   }
+
+  return user;
+
 }

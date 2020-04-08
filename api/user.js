@@ -201,7 +201,7 @@ app.get("/login", async (req, res) => {
       console.log(`Redirecting to ${finalTargetUrl}\n`);
 
       // redirect to the target URL and set an auth cookie
-      setAuthCookie(res, token);
+      setAuthCookie(res, token, user.userId, user.role);
       res.status(200).redirect(finalTargetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
