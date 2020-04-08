@@ -206,35 +206,39 @@ export default class StudentHome extends React.Component {
           <div id="student-home-container">
             <div id="student-home-contents-container">
 
-              <table className="student-plans-table">
-                <thead>
-                  <tr>
-                    <th className="student-plans-data">Name</th>
-                    <th className="student-plans-data">Reviewers</th>
-                    <th className="student-plans-data">Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.plans ? this.state.plans.map(plan =>
-                    <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
-                      <td className="student-plans-data" key={plan.planId + "b"}>
-                        <div className="table-item-title">{plan.planName}</div>
-                        <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
-                      </td>
-                      <td className="student-plans-data" key={plan.planId + "c"}>
-                        {plan.advisors ? (plan.advisors.map(advisor =>
-                          <Advisor key={advisor.firstName + advisor.lastName}
-                            firstName={advisor.firstName} lastName={advisor.lastName} />
-                        )) : (
-                          null
-                        )}
-                      </td>
-                      <td className="student-plans-data" key={plan.planId + "d"}>
-                        {formatTime(plan.lastUpdated)}
-                      </td>
-                    </tr>) : null}
-                </tbody>
-              </table>
+              {this.state.plans ?
+
+                <table className="student-plans-table">
+                  <thead>
+                    <tr>
+                      <th className="student-plans-data">Name</th>
+                      <th className="student-plans-data">Reviewers</th>
+                      <th className="student-plans-data">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.plans ? this.state.plans.map(plan =>
+                      <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
+                        <td className="student-plans-data" key={plan.planId + "b"}>
+                          <div className="table-item-title">{plan.planName}</div>
+                          <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "c"}>
+                          {plan.advisors ? (plan.advisors.map(advisor =>
+                            <Advisor key={advisor.firstName + advisor.lastName}
+                              firstName={advisor.firstName} lastName={advisor.lastName} />
+                          )) : (
+                            null
+                          )}
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "d"}>
+                          {formatTime(plan.lastUpdated)}
+                        </td>
+                      </tr>) : null}
+                  </tbody>
+                </table>
+                : <div><p>Click the + button to create a plan.</p></div>
+              }
               <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
 
             </div>
