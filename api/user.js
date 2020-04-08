@@ -192,7 +192,6 @@ app.get("/login", async (req, res) => {
 
       // create redirect URL
       const parsedTargetUrl = url.parse(targetUrl, true);
-      parsedTargetUrl.query.accessToken = token;
 
       // finalize the redirect URL
       const finalTargetUrl = url.format(parsedTargetUrl);

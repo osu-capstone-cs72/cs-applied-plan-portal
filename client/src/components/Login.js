@@ -20,33 +20,15 @@ function Login(props) {
 
   useEffect(() => {
 
+    // attempt to login and then redirect based on results
     async function fetchLogin() {
+
       setLoading(true);
 
       try {
 
-        // retrieve the query string from the address bar and parse the queries
-        // in the string to an object
-        const queryObj = url.parse(props.location.search, true).query;
-
-        // retrieve access token from the query
-        const accessToken = queryObj.accessToken;
-
-        // set the base url for our request
-        let getUrl = `/user/authenticated/`;
-
-        // Add access token to url
-        const parsedGetUrl = url.parse(getUrl, true);
-        if (accessToken) {
-          parsedGetUrl.query.accessToken = accessToken;
-        }
-
-        // get the final URL used in the request
-        getUrl = url.format(parsedGetUrl);
-        console.log(getUrl);
-
-        // check if access token is valid
-        const results = await fetch(getUrl);
+        // attempt to login
+        const results = await fetch(`/user/authenticated/`);
 
         if (results.ok) {
 
@@ -65,13 +47,22 @@ function Login(props) {
         // send to 500 page if we have a server error while trying to login
         setPageError(500);
       }
+
       setLoading(false);
+
     }
 
+    // redirect to a different page
     function redirectUrl(target) {
+
       if (target === 1) {
+
+        // redirect to homepage
         props.history.push("/");
+
       } else if (target === 2) {
+
+        // redirect to OSU login page
         const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
         window.location.href = url.format({
           protocol: "https",
@@ -85,14 +76,17 @@ function Login(props) {
               pathname: "/user/login",
               // callback URL has its own query string
               query: {
-                target: "http://localhost:3000/login"
+                target: "http://localhost:3000/"
               }
             })
           }
         });
+
       }
+
     }
 
+    // check to see if we need to redirect to another page
     if (!redirect) {
       fetchLogin();
     } else {

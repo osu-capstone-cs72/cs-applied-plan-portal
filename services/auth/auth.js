@@ -43,6 +43,7 @@ function requireAuth(req, res, next) {
     console.log("COOKIES:", req.cookies);
 
     // ensure that authentication cookies are sent with the request
+    assert(req.cookies, "No cookies provided with request");
     assert(req.cookies["auth"], "No auth cookie provided with request");
     // assert(req.cookies["csrf"], "No CSRF cookie provided with request");
     // assert(req.cookies["auth"] === req.cookies["csrf"], "Auth and CSRF cookies do not match");

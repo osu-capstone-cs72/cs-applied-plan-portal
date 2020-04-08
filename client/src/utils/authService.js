@@ -3,11 +3,35 @@ import url from "url";
 // check if the current user is logged in
 export function loggedIn() {
 
-  return true;
+  // get user info from cookies
+  const userId = "userId=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookieArray = decodedCookie.split(";");
+  for (let i = 0; i < cookieArray.length; i++) {
+
+    let cookie = cookieArray[i];
+
+    while (cookie.charAt(0) === " ") {
+      cookie = cookie.substring(1);
+    }
+
+    // if we find the user ID in a cookie then we are still logged in
+    if (cookie.indexOf(userId) === 0) {
+      return true;
+    }
+  }
+
+  // if we never found the user ID we must be logged out
+  return false;
+
 }
 
 // log the current user out
 export function logout() {
+
+  // remove the user cookies
+  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to the CAS logout page
   window.location.href = url.format({
