@@ -3,7 +3,6 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 
@@ -62,8 +61,7 @@ function CreateReview(props) {
     if (window.confirm(`Are you sure that you want to set this plans status to "${statusMessage}"?`)) {
       try {
 
-        const token = getToken();
-        const url = `/review/?accessToken=${token}`;
+        const url = `/review`;
         let obj = [];
 
         const postObj = {

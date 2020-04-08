@@ -2,7 +2,7 @@
 
 import React from "react";
 import NavBar from "../navbar/Navbar";
-import {getToken, getProfile} from "../../utils/authService";
+import {getProfile} from "../../utils/authService";
 import {formatTime} from "../../utils/formatTime";
 import Advisor from "./Advisor";
 import PageSpinner from "../general/PageSpinner";
@@ -36,9 +36,7 @@ export default class StudentHome extends React.Component {
       loading: true
     });
     const profile = getProfile();
-    const token = getToken();
-    const getUrl = `/user/${profile.userId}/plans/` +
-      `?accessToken=${token}`;
+    const getUrl = `/user/${profile.userId}/plans`;
 
     let obj = [];
 

@@ -3,7 +3,6 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 import ErrorMessage from "../general/ErrorMessage";
 
 function CreateComment(props) {
@@ -85,8 +84,7 @@ function CreateComment(props) {
 
       const text = document.getElementById("comment-text-input").value;
 
-      const token = getToken();
-      const url = `/comment/?accessToken=${token}`;
+      const url = `/comment`;
       let obj = [];
 
       const postObj = {

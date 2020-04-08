@@ -3,7 +3,6 @@
 import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
-import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
 import {css, jsx} from "@emotion/core";
@@ -93,9 +92,8 @@ function AdvisorHome() {
       }
 
       // construct the request url
-      const token = getToken();
       const getUrl = `/plan/search/${textValue}/${statusValue}/` +
-        `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}/?accessToken=${token}`;
+        `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}`;
       let obj = {};
 
       // get our search results

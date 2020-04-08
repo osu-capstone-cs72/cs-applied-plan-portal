@@ -1,41 +1,13 @@
-import jwtDecode from "jwt-decode";
 import url from "url";
 
-// check if there is a valid saved token
+// check if the current user is logged in
 export function loggedIn() {
-  const token = getToken();
-  return !!token && !isTokenExpired(token);
+
+  return true;
 }
 
-// check if token is expired
-export function isTokenExpired(token) {
-  try {
-    const decoded = jwtDecode(token);
-    if (decoded.exp < Date.now() / 1000) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    return false;
-  }
-}
-
-// save user token to local storage
-export function setToken(idToken) {
-  localStorage.setItem("id_token", idToken);
-}
-
-// get token from local storage
-export function getToken() {
-  return localStorage.getItem("id_token");
-}
-
-// clear token from local storage
+// log the current user out
 export function logout() {
-
-  // remove the JWT
-  localStorage.removeItem("id_token");
 
   // redirect to the CAS logout page
   window.location.href = url.format({
@@ -46,11 +18,10 @@ export function logout() {
 
 }
 
-// get the user associated with the JWT payload, or return an empty object `{}`
-// if the user cannot be found or on error
+// get info about the current user
 export function getProfile() {
 
-  // establish the default user
+  // set the default user
   const user = {
     userId: 0,
     role: 0

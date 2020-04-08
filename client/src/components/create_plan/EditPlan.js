@@ -4,7 +4,6 @@ import React from "react";
 import PlanCourse from "./PlanCourse";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
-import {getToken} from "../../utils/authService";
 import {css, jsx} from "@emotion/core";
 
 export default class EditPlan extends React.Component {
@@ -55,8 +54,7 @@ export default class EditPlan extends React.Component {
       } else {
 
         // set up data for new plan to send to backend
-        const token = getToken();
-        const postURL = `/plan/?accessToken=${token}`;
+        const postURL = `/plan`;
         const postObj = {
           planName: planName,
           courses: courses
@@ -98,8 +96,7 @@ export default class EditPlan extends React.Component {
 
   async editPlan(courses, planName, planId) {
     // set up data for new plan to send to backend
-    const token = getToken();
-    const patchURL = `/plan/?accessToken=${token}`;
+    const patchURL = `/plan`;
     const patchObj = {
       planId: planId,
       planName: planName,

@@ -7,7 +7,6 @@ import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
 import PropTypes from "prop-types";
 import url from "url";
-import {setToken} from "../utils/authService";
 
 function Login(props) {
 
@@ -51,8 +50,7 @@ function Login(props) {
 
         if (results.ok) {
 
-          // save the token and return to the homepage
-          setToken(accessToken);
+          // return to the homepage
           setRedirect(1);
 
         } else if (results.status === 401 || results.status === 404) {

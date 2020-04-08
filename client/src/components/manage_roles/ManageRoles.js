@@ -7,7 +7,6 @@ import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
 import SearchResults from "./SearchResults";
-import {getToken} from "../../utils/authService";
 
 export default function ManageRoles() {
 
@@ -70,9 +69,8 @@ export default function ManageRoles() {
       }
 
       // construct the request url
-      const token = getToken();
       const getUrl = `/user/search/${textValue}/${roleValue}` +
-        `/${cursor.primary}/${cursor.secondary}?accessToken=${token}`;
+        `/${cursor.primary}/${cursor.secondary}`;
       let obj = [];
 
       // get our search results

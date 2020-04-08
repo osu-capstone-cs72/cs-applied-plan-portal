@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
-import {getToken} from "../../utils/authService";
 
 function UpdateCourses() {
 
@@ -40,8 +39,7 @@ function UpdateCourses() {
       try {
 
         // request that all courses are updated
-        const token = getToken();
-        const url = `/course/updateDatabase?accessToken=${token}`;
+        const url = `/course/updateDatabase`;
 
         // perform the query
         const response = await fetch(url);

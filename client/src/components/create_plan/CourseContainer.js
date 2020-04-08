@@ -6,7 +6,6 @@ import FilterBar from "./FilterBar";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
-import {getToken} from "../../utils/authService";
 
 export default class CourseContainer extends React.Component {
 
@@ -40,12 +39,11 @@ export default class CourseContainer extends React.Component {
     this.setState({
       courses: []
     });
-    const token = getToken();
     let value = document.getElementById("search-container").value;
     if (value === "") {
       value = "*";
     }
-    const getUrl = `/course/search/${value}/${this.state.filter}/?accessToken=${token}`;
+    const getUrl = `/course/search/${value}/${this.state.filter}`;
     let obj = [];
     try {
       const results = await fetch(getUrl);

@@ -4,7 +4,6 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 
 function ListSimilarPlans() {
 
@@ -64,9 +63,7 @@ function ListSimilarPlans() {
   async function fetchSimilar(planId) {
     try {
 
-      const token = getToken();
-      const url = `/plan/${planId}/similar` +
-        `?accessToken=${token}`;
+      const url = `/plan/${planId}/similar`;
       let obj = [];
 
       // get similar plan data

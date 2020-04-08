@@ -39,12 +39,18 @@ function requireAuth(req, res, next) {
   req.auth = {};
 
   try {
-    // ensure that the cookie has the JWT field
-    assert(req.query.accessToken, "No access token in request");
+
+    console.log("COOKIES:", req.cookies);
+
+    // ensure that authentication cookies are sent with the request
+    assert(req.cookies["auth"], "No auth cookie provided with request");
+    // assert(req.cookies["csrf"], "No CSRF cookie provided with request");
+    // assert(req.cookies["auth"] === req.cookies["csrf"], "Auth and CSRF cookies do not match");
+    const token = req.cookies["auth"];
 
     // use the jwt service to verify the token
     // this function call throws an error if token is invalid
-    const payload = jwt.verify(req.query.accessToken, JWT_SECRET_KEY);
+    const payload = jwt.verify(token, JWT_SECRET_KEY);
 
     // ensure the retrieved `sub` (i.e. User's ID) satisfies the schema or
     // throw a schema validation error otherwise
@@ -133,30 +139,28 @@ function casValidateUser(casValidationUrl) {
 exports.casValidateUser = casValidateUser;
 
 // sets an authentication cookie
-// Based on "Authenticating Users" by Rob Hess,
+// based on "Authenticating Users" by Rob Hess,
 // https://docs.google.com/document/d/17zERsoO6i5MMQjVfDsb_OKo2MopVV4Jn8Q8qbo8bFFI
 const setAuthCookie = (res, token, userId, role) => {
   res.setHeader("Set-Cookie", [
     serialize("userId", userId, {
       path: "/",
-      httpOnly: false,
       sameSite: true,
       expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
     }),
     serialize("role", role, {
       path: "/",
-      httpOnly: false,
+      sameSite: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+    }),
+    serialize("csrf", token, {
+      path: "/",
       sameSite: true,
       expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
     }),
     serialize("auth", token, {
       path: "/",
       httpOnly: true,
-      sameSite: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
-    }),
-    serialize("csrf", token, {
-      path: "/",
       sameSite: true,
       expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
     })

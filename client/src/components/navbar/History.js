@@ -4,7 +4,6 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 
 function History() {
 
@@ -66,8 +65,7 @@ function History() {
   // get the current users most recently viewed plans
   async function getRecentPlans() {
     try {
-      const token = getToken();
-      const getUrl = `/plan/recent/?accessToken=${token}`;
+      const getUrl = `/plan/recent`;
       let obj = {};
 
       const results = await fetch(getUrl);

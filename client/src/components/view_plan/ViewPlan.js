@@ -10,7 +10,7 @@ import CreateReview from "./CreateReview";
 import PlanMetadata from "./PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
 import {useParams, withRouter} from "react-router-dom";
-import {getToken, getProfile} from "../../utils/authService";
+import {getProfile} from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
@@ -77,9 +77,7 @@ function ViewPlan(props) {
     setLoading(true);
     try {
 
-      const token = getToken();
-      let url = `/plan/${planId}` +
-        `?accessToken=${token}`;
+      let url = `/plan/${planId}`;
       let obj = [];
 
       try {
@@ -115,8 +113,7 @@ function ViewPlan(props) {
 
       // get active user information
       const profile = getProfile();
-      url = `/user/${profile.userId}/` +
-        `?accessToken=${token}`;
+      url = `/user/${profile.userId}`;
       const response = await fetch(url);
       if (response.ok) {
         // get data from the response
@@ -153,9 +150,8 @@ function ViewPlan(props) {
         firstName: studentFirstName,
         lastName: studentLastName
       };
-      const token = getToken();
       const url = `/plan/${planId}/activity/${cursor.primary}/` +
-      `${cursor.secondary}/?accessToken=${token}`;
+      `${cursor.secondary}`;
       let obj = [];
 
       // get plan activity
@@ -221,9 +217,7 @@ function ViewPlan(props) {
     if (window.confirm("Are you sure that you want to delete this plan?")) {
       setLoading(true);
       try {
-        const token = getToken();
-        const url = `/plan/${planId}` +
-          `?accessToken=${token}`;
+        const url = `/plan/${planId}`;
 
         // delete plan data
         const response = await fetch(url, {

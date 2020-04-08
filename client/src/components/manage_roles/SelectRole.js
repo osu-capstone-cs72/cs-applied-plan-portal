@@ -4,7 +4,6 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
-import {getToken} from "../../utils/authService";
 
 function SelectRole(props) {
 
@@ -35,8 +34,7 @@ function SelectRole(props) {
 
       // the user confirmed that they wanted to change the role
       // so we will send a request to the API server
-      const token = getToken();
-      const patchURL = `/user/${props.userId}/?accessToken=${token}`;
+      const patchURL = `/user/${props.userId}`;
       const patchObj = {
         role: select.value
       };
