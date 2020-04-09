@@ -98,11 +98,13 @@ function casValidateUser(casValidationUrl) {
           // resolve with the logged in User's information
           resolve(serviceResponse["cas:authenticationSuccess"][0]);
         } else {
+
           if (serviceResponse &&
               Array.isArray(serviceResponse["cas:authenticationFailure"]) &&
               serviceResponse["cas:authenticationFailure"].length > 0) {
             // when authentication fails due to invalid credential
             console.error("CAS authentication rejected\n");
+
             reject({
               code: 401,
               error: serviceResponse["cas:authenticationFailure"]  // array
@@ -111,6 +113,7 @@ function casValidateUser(casValidationUrl) {
             // fail-safe case, when failed to authenticate via CAS but CAS
             // doesn't return a proper failure object
             console.error("Unspecified error returned from CAS\n");
+
             reject({
               code: 500,
               error: null
@@ -121,6 +124,7 @@ function casValidateUser(casValidationUrl) {
       .catch(err => {
         // when parsing the response from CAS via XML2JS fails
         console.error("Error parsing CAS result\n");
+
         reject({
           code: 500,
           error: err
@@ -130,6 +134,7 @@ function casValidateUser(casValidationUrl) {
     .catch(err => {
       // when sending request to CAS via Needle fails
       console.error("Error sending request to CAS\n");
+
       reject({
         code: 500,
         error: err
