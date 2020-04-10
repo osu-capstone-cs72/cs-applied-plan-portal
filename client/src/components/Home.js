@@ -3,33 +3,48 @@
 import PageSpinner from "./general/PageSpinner";
 import StudentHome from "./student_home/StudentHome";
 import AdvisorHome from "./advisor_home/AdvisorHome";
-import {useState} from "react";
-import {css, jsx} from "@emotion/core";
+import {useEffect, useState} from "react";
+import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
-import {getProfile} from "../utils/authService";
+import {loggedIn, getProfile} from "../utils/authService";
 
 function Home(props) {
 
   const [loading] = useState(true);
-  let pageState = 0;
+  const [pageState, setPageState] = useState(0);
 
-  const style = css`
-  `;
+  useEffect(() => {
 
-  // render a page based on the users role
-  const loggedInUser = getProfile();
-  if (!loggedInUser) {
-    // go to the login page
-    props.history.push("/login");
-  } else if (loggedInUser.role > 0) {
-    pageState = 2;
-  } else {
-    pageState = 1;
-  }
+    async function checkLoggedIn () {
+
+      // check to see if the user is logged in
+      const validToken = loggedIn();
+
+      if (validToken) {
+
+        // render a page based on the users role
+        const profile = getProfile();
+        if (!profile.role) {
+          setPageState(1);
+        } else {
+          setPageState(2);
+        }
+
+      } else {
+
+        // go to the login page
+        props.history.push("/login");
+
+      }
+    }
+
+    checkLoggedIn();
+    // eslint-disable-next-line
+  }, []);
 
   if (!pageState) {
     return (
-      <div id="home-container" css={style}>
+      <div id="home-container">
         <PageSpinner loading={loading} />
       </div>
     );

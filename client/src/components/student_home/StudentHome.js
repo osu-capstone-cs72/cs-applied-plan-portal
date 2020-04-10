@@ -36,13 +36,10 @@ export default class StudentHome extends React.Component {
       loading: true
     });
 
-    // retrieve the logged in user and set userId accordingly
-    // if user cannot be retrieved, use the a bogus userId value
-    let userId = -1;
-    const loggedInUser = getProfile();
-    if (loggedInUser) {
-      userId = loggedInUser.userId;
-    }
+    // retrieve the logged in user and set user ID accordingly
+    // if user cannot be retrieved, we will get an invalid user ID (0)
+    const profile = getProfile();
+    const userId = profile.userId;
 
     const getUrl = `/user/${userId}/plans`;
 

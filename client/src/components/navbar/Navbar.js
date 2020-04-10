@@ -8,18 +8,25 @@ import Notifications from "./Notifications";
 import History from "./History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
+import {useEffect, useState} from "react";
 
 function Navbar() {
 
-  // role default to 0 (Student)
-  let role = 0;
+  // role and function to set role, default to 0 (Student)
+  const [role, setRole] = useState(0);
 
   // retrieve the logged in user and set role accordingly
-  // if user cannot be retrieved, use default role value
-  const loggedInUser = getProfile();
-  if (loggedInUser) {
-    role = loggedInUser.role;
-  }
+  // if user cannot be retrieved, default to the student role
+  useEffect(() => {
+
+    async function checkRole() {
+      const profile = getProfile();
+      setRole(profile.role);
+    }
+
+    checkRole();
+
+  }, []);
 
   const style = css`
 
