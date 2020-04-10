@@ -2,15 +2,16 @@
 // Description: Provides functions that handle the authentication process.
 
 const assert = require("assert");
+const cookie = require("cookie");
 const jwt = require("jsonwebtoken");
 const needle = require("needle");
 const validator = require("validator");
 const xml2js = require("xml2js");
-const {serialize} = require("cookie");
 
 const {userSchema} = require("../validation/schemaValidation");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
 
 // Generates an auth token for a specific User with the provided ID.
 // Token is a JSON Web Token which expires in 24 hours.
@@ -39,15 +40,16 @@ function requireAuth(req, res, next) {
   req.auth = {};
 
   try {
-
-    console.log("COOKIES:", req.cookies);
+    // parse the cookie included in the request; must string-coerce it because
+    // cookie.parse() throws on non-string arguments
+    const reqCookie = cookie.parse(`${req.headers.cookie}`);
 
     // ensure that authentication cookies are sent with the request
-    assert(req.cookies, "No cookies provided with request");
-    assert(req.cookies["auth"], "No auth cookie provided with request");
-    // assert(req.cookies["csrf"], "No CSRF cookie provided with request");
-    // assert(req.cookies["auth"] === req.cookies["csrf"], "Auth and CSRF cookies do not match");
-    const token = req.cookies["auth"];
+    assert(reqCookie.auth, "No auth cookie provided with request");
+    // assert(reqCookie.csrf, "No CSRF cookie provided with request");
+    // assert(reqCookie.csrf === reqCookie.csrf, "Auth and CSRF cookies do not match");
+
+    const token = reqCookie.auth;
 
     // use the jwt service to verify the token
     // this function call throws an error if token is invalid
@@ -147,29 +149,29 @@ exports.casValidateUser = casValidateUser;
 // sets an authentication cookie
 // based on "Authenticating Users" by Rob Hess,
 // https://docs.google.com/document/d/17zERsoO6i5MMQjVfDsb_OKo2MopVV4Jn8Q8qbo8bFFI
-const setAuthCookie = (res, token, userId, role) => {
+function setAuthCookie(res, token, userId, role) {
   res.setHeader("Set-Cookie", [
-    serialize("userId", userId, {
+    cookie.serialize("userId", userId, {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     }),
-    serialize("role", role, {
+    cookie.serialize("role", role, {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     }),
-    serialize("csrf", token, {
+    cookie.serialize("csrf", token, {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     }),
-    serialize("auth", token, {
+    cookie.serialize("auth", token, {
       path: "/",
       httpOnly: true,
       sameSite: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 8)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     })
   ]);
-};
+}
 exports.setAuthCookie = setAuthCookie;
