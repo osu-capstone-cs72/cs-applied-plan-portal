@@ -190,18 +190,12 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId);
 
-      // create redirect URL
-      const parsedTargetUrl = url.parse(targetUrl, true);
-
-      // finalize the redirect URL
-      const finalTargetUrl = url.format(parsedTargetUrl);
-
       console.log(`200: User authenticated: ${user.userId} (${user.email})`);
-      console.log(`Redirecting to ${finalTargetUrl}\n`);
+      console.log(`Redirecting to ${targetUrl}\n`);
 
       // redirect to the target URL and set an auth cookie
       setAuthCookie(res, token, user.userId, user.role);
-      res.status(200).redirect(finalTargetUrl);
+      res.status(200).redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});
