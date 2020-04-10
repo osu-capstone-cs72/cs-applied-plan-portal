@@ -195,6 +195,9 @@ app.get("/login", async (req, res) => {
 
       // redirect to the target URL and set an auth cookie
       setAuthCookie(res, token, user.userId, user.role);
+
+      console.log("SERVER: res.getHeaders()", res.getHeaders());
+
       res.status(200).redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
@@ -203,31 +206,6 @@ app.get("/login", async (req, res) => {
   } catch (err) {
     console.error(`${err.code}:`, err.error);
     res.status(err.code).send({error: err.error});
-  }
-});
-
-// Fetches only ID and role of the User whose `userId` is provided by the JWT.
-app.get("/idRole", requireAuth, async (req, res) => {
-  try {
-    // attempt to fetch the user from the database
-    const authenticatedUser = await userModel.getUserById(req.auth.userId);
-
-    // if the authenticated user exists and has a valid role, return the role
-    if (authenticatedUser) {
-      console.log("200: Authenticated user's ID and role\n");
-      res.status(200).send({
-        userId: authenticatedUser.userId,
-        role: authenticatedUser.role
-      });
-    } else {
-      console.log("404: No matching User or invalid role\n");
-      res.status(404).send({error: "No matching User or invalid role"});
-    }
-  } catch (err) {
-    console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({
-      error: "An internal server error occurred. Please try again later."
-    });
   }
 });
 

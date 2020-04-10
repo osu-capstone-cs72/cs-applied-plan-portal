@@ -35,8 +35,16 @@ export default class StudentHome extends React.Component {
     this.setState({
       loading: true
     });
-    const profile = getProfile();
-    const getUrl = `/user/${profile.userId}/plans`;
+
+    // retrieve the logged in user and set userId accordingly
+    // if user cannot be retrieved, use the a bogus userId value
+    let userId = -1;
+    const loggedInUser = getProfile();
+    if (loggedInUser) {
+      userId = loggedInUser.userId;
+    }
+
+    const getUrl = `/user/${userId}/plans`;
 
     let obj = [];
 
@@ -133,7 +141,7 @@ export default class StudentHome extends React.Component {
       background-repeat: no-repeat;
       background-position: center;
     }
-    
+
     .table-item-title {
       font-weight: 600;
     }
@@ -142,7 +150,7 @@ export default class StudentHome extends React.Component {
       font-weight: normal;
       color: var(--color-gray-400);
     }
-    
+
     table {
       border-radius: 0.5rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -174,7 +182,7 @@ export default class StudentHome extends React.Component {
       vertical-align: middle;
       padding: 1rem 2rem;
     }
-    
+
     table tbody tr {
       cursor: pointer;
     }
@@ -191,7 +199,7 @@ export default class StudentHome extends React.Component {
       width: 50%;
       font-weight: 500;
     }
-    
+
   `;
 
     if (!this.state.pageError) {

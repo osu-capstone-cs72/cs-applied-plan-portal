@@ -111,9 +111,15 @@ function ViewPlan(props) {
         return;
       }
 
-      // get active user information
-      const profile = getProfile();
-      url = `/user/${profile.userId}`;
+      // retrieve the logged in user and set userId accordingly
+      // if user cannot be retrieved, use the a bogus userId value
+      let userId = -1;
+      const loggedInUser = getProfile();
+      if (loggedInUser) {
+        userId = loggedInUser.userId;
+      }
+
+      url = `/user/${userId}`;
       const response = await fetch(url);
       if (response.ok) {
         // get data from the response

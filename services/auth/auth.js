@@ -39,17 +39,22 @@ function requireAuth(req, res, next) {
   // first of all, clear the field that will be used for holding the payload
   req.auth = {};
 
+  console.log("SERVER: req.headers.cookie =", req.headers.cookie);
+  console.log("SERVER: req.cookies =", req.cookies);
+
   try {
     // parse the cookie included in the request; must string-coerce it because
     // cookie.parse() throws on non-string arguments
-    const reqCookie = cookie.parse(`${req.headers.cookie}`);
+    const cookieObj = cookie.parse(`${req.headers.cookie}`);
 
+    // ensure the parsed cookie is a JS object (it should always be after parse)
+    assert(cookieObj === Object(cookieObj), "No cookie provided with request");
     // ensure that authentication cookies are sent with the request
-    assert(reqCookie.auth, "No auth cookie provided with request");
+    assert(cookieObj.auth, "No auth cookie provided with request");
     // assert(reqCookie.csrf, "No CSRF cookie provided with request");
     // assert(reqCookie.csrf === reqCookie.csrf, "Auth and CSRF cookies do not match");
 
-    const token = reqCookie.auth;
+    const token = cookieObj.auth;
 
     // use the jwt service to verify the token
     // this function call throws an error if token is invalid
@@ -168,7 +173,7 @@ function setAuthCookie(res, token, userId, role) {
     }),
     cookie.serialize("auth", token, {
       path: "/",
-      httpOnly: true,
+      // httpOnly: true,
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     })

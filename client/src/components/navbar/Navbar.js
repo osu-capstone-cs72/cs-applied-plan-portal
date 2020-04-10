@@ -8,24 +8,18 @@ import Notifications from "./Notifications";
 import History from "./History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
-import {useEffect, useState} from "react";
 
 function Navbar() {
 
-  // role and function to set role, default to 0 (Student)
-  const [role, setRole] = useState(0);
+  // role default to 0 (Student)
+  let role = 0;
 
-  useEffect(() => {
-    async function checkRole() {
-      const profile = getProfile();
-      if (!profile.role) {
-        setRole(0);
-      } else {
-        setRole(profile.role);
-      }
-    }
-    checkRole();
-  }, []);
+  // retrieve the logged in user and set role accordingly
+  // if user cannot be retrieved, use default role value
+  const loggedInUser = getProfile();
+  if (loggedInUser) {
+    role = loggedInUser.role;
+  }
 
   const style = css`
 
@@ -44,11 +38,11 @@ function Navbar() {
       right: 0;
       z-index: 9;
     }
-    
+
     & a:first-of-type:hover {
       text-decoration: none;
     }
-    
+
     & a:first-of-type {
       text-decoration-color: transparent !important;
     }
@@ -61,7 +55,7 @@ function Navbar() {
       margin-right: 1rem;
       color: white;
     }
-    
+
     /* Don't style the last item, but in a way that's safe for SSR. */
     .right-container > * > button {
       height: 35px;
