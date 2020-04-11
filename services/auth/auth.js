@@ -173,7 +173,7 @@ function setAuthCookie(res, token, userId, role) {
     }),
     cookie.serialize("auth", token, {
       path: "/",
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     })

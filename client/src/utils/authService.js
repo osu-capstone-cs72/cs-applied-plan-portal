@@ -38,7 +38,11 @@ export function getProfile() {
 
   } catch (err) {
 
-    // if an error throws during this process, return an invalid user
+    // on error ensure that the user cookies are removed
+    document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // return an invalid user
     console.error(err);
     return {
       userId: 0,

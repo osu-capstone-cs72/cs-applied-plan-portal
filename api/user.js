@@ -145,7 +145,7 @@ app.get("/login", async (req, res) => {
     }
   });
 
-  // send the ticket to this URL to validate the it against CAS
+  // send the ticket to this URL to validate it against CAS
   const casValidationUrl = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
