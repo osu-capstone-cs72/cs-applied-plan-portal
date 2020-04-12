@@ -22,7 +22,7 @@ async function userConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking user constraint\n", err);
+    console.log("Error checking user constraint\n");
     throw err;
   }
 
@@ -50,7 +50,7 @@ async function planConstraint(planId, status) {
     }
 
   } catch (err) {
-    console.log("Error checking plan constraint\n", err);
+    console.log("Error checking plan constraint\n");
     throw err;
   }
 
@@ -83,7 +83,7 @@ async function roleConstraint(role, status, planStatus) {
     }
 
   } catch (err) {
-    console.log("Error checking role constraint\n", err);
+    console.log("Error checking role constraint\n");
     throw err;
   }
 

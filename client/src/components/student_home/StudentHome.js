@@ -170,7 +170,7 @@ export default class StudentHome extends React.Component {
       white-space: nowrap;
     }
 
-    table.student-plans-table  thead tr th:nth-child(2) {
+    table.student-plans-table  thead tr th:nth-of-type(2) {
       /*width: -webkit-fill-available;*/
       width: 30%;
     }

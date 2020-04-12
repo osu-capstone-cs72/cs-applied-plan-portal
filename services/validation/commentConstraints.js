@@ -20,7 +20,7 @@ async function userConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking user constraint\n", err);
+    console.log("Error checking user constraint\n");
     throw err;
   }
 
@@ -44,7 +44,7 @@ async function planConstraint(planId) {
     }
 
   } catch (err) {
-    console.log("Error checking plan constraint\n", err);
+    console.log("Error checking plan constraint\n");
     throw err;
   }
 
@@ -78,7 +78,7 @@ async function ownerConstraint(planId, userId) {
     }
 
   } catch (err) {
-    console.log("Error checking owner constraint\n", err);
+    console.log("Error checking owner constraint\n");
     throw err;
   }
 
@@ -103,7 +103,7 @@ async function historicalConstraint(planId) {
     }
 
   } catch (err) {
-    console.log("Error checking historical constraint\n", err);
+    console.log("Error checking historical constraint\n");
     throw err;
   }
 

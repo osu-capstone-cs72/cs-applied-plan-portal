@@ -24,7 +24,7 @@ async function planConstraint(planId) {
     }
 
   } catch (err) {
-    console.log("Error checking plan constraint\n", err);
+    console.log("Error checking plan constraint\n");
     throw err;
   }
 
@@ -62,7 +62,7 @@ async function nameConstraint(planName, userId, planId) {
     }
 
   } catch (err) {
-    console.log("Error checking name constraint\n", err);
+    console.log("Error checking name constraint\n");
     throw err;
   }
 
@@ -88,7 +88,7 @@ async function lockedConstraint(planId) {
     }
 
   } catch (err) {
-    console.log("Error checking locked constraint\n", err);
+    console.log("Error checking locked constraint\n");
     throw err;
   }
 
@@ -112,7 +112,7 @@ async function userConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking user constraint\n", err);
+    console.log("Error checking user constraint\n");
     throw err;
   }
 
@@ -136,7 +136,7 @@ async function studentConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking student constraint\n", err);
+    console.log("Error checking student constraint\n");
     throw err;
   }
 
@@ -160,7 +160,7 @@ async function advisorConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking student constraint\n", err);
+    console.log("Error checking student constraint\n");
     throw err;
   }
 
@@ -226,7 +226,7 @@ async function courseConstraint(courses) {
     }
 
   } catch (err) {
-    console.log("Error checking course constraint\n", err);
+    console.log("Error checking course constraint\n");
     throw err;
   }
 
@@ -266,7 +266,7 @@ async function restrictionConstraint(courses) {
     }
 
   } catch (err) {
-    console.log("Error checking restriction constraint\n", err);
+    console.log("Error checking restriction constraint\n");
     throw err;
   }
 
@@ -340,7 +340,7 @@ async function courseCreditConstraint(courses) {
     return;
 
   } catch (err) {
-    console.log("Error checking course credit constraint\n", err);
+    console.log("Error checking course credit constraint\n");
     throw err;
   }
 
@@ -368,7 +368,7 @@ async function limitConstraint(userId) {
     }
 
   } catch (err) {
-    console.log("Error checking limit constraint\n", err);
+    console.log("Error checking limit constraint\n");
     throw err;
   }
 
@@ -414,7 +414,7 @@ async function planCreditConstraint(courses) {
     }
 
   } catch (err) {
-    console.log("Error checking plan credit constraint\n", err);
+    console.log("Error checking plan credit constraint\n");
     throw err;
   }
 
@@ -453,7 +453,7 @@ async function ownerConstraint(planId, userId) {
     }
 
   } catch (err) {
-    console.log("Error checking owner constraint\n", err);
+    console.log("Error checking owner constraint\n");
     throw err;
   }
 
@@ -499,7 +499,7 @@ async function deleteConstraint(planId, userId) {
     }
 
   } catch (err) {
-    console.log("Error checking delete constraint\n", err);
+    console.log("Error checking delete constraint\n");
     throw err;
   }
 

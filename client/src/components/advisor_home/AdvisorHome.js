@@ -7,6 +7,7 @@ import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {login} from "../../utils/authService";
 
 function AdvisorHome() {
 
@@ -113,6 +114,11 @@ function AdvisorHome() {
         // we got a bad status code. Show the error
         obj = await results.json();
         setErrorMessage(obj.error);
+        if (results.status === 403) {
+          // if the user is not allowed to search plans,
+          // redirect to login to allow updating of user info
+          login();
+        }
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }

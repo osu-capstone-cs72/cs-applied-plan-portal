@@ -7,6 +7,7 @@ import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
 import SearchResults from "./SearchResults";
+import {login} from "../../utils/authService";
 
 export default function ManageRoles() {
 
@@ -91,6 +92,11 @@ export default function ManageRoles() {
         // we got a bad status code. Show the error
         obj = await results.json();
         setErrorMessage(obj.error);
+        if (results.status === 403) {
+          // if the user is not allowed to search users,
+          // redirect to login to allow updating of user info
+          login();
+        }
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }
