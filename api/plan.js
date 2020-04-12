@@ -52,8 +52,8 @@ app.post("/", requireAuth, async (req, res) => {
       const courses = formatCourseArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
-      const violation = await createPlanValidation(userId, planName, courses);
-      if (violation === "valid") {
+      const validation = await createPlanValidation(userId, planName, courses);
+      if (validation === "valid") {
 
         // create the plan
         const results = await createPlan(userId, planName, courses);
@@ -63,8 +63,8 @@ app.post("/", requireAuth, async (req, res) => {
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 
@@ -118,8 +118,8 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
       // only update a plan if it does not violate any constraints
-      const violation = await patchPlanValidation(planId, planName, courses, userId);
-      if (violation === "valid") {
+      const validation = await patchPlanValidation(planId, planName, courses, userId);
+      if (validation === "valid") {
 
         // update the plan
         const results = await updatePlan(planId, planName, courses);
@@ -129,8 +129,8 @@ app.patch("/", requireAuth, async (req, res) => {
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 
@@ -182,8 +182,8 @@ app.get("/:planId", requireAuth, async (req, res) => {
     console.log("View plan", planId);
 
     // only view a plan if it does not violate any constraints
-    const violation = await viewPlanValidation(planId, userId);
-    if (violation === "valid") {
+    const validation = await viewPlanValidation(planId, userId);
+    if (validation === "valid") {
 
       const results = await getPlan(planId, userId);
       if (results.planId === 0) {
@@ -197,8 +197,8 @@ app.get("/:planId", requireAuth, async (req, res) => {
     } else {
 
       // send an error that explains the violated constraint
-      console.error("400:", violation, "\n");
-      res.status(400).send({error: violation});
+      console.error(`${validation.status}:`, validation.message, "\n");
+      res.status(validation.status).send({error: validation.message});
 
     }
 
@@ -254,8 +254,8 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
       console.log("Searching for plans");
 
       // only search plans if they do not violate any constraints
-      const violation = await searchPlanValidation(userId);
-      if (violation === "valid") {
+      const validation = await searchPlanValidation(userId);
+      if (validation === "valid") {
 
         const results = await searchPlans(text, parseInt(status, 10),
           parseInt(sort, 10), parseInt(order, 10), cursor);
@@ -270,8 +270,8 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 
@@ -299,8 +299,8 @@ app.delete("/:planId", requireAuth, async (req, res) => {
     console.log("Delete plan", planId);
 
     // only delete a plan if it does not violate any constraints
-    const violation = await deletePlanValidation(planId, userId);
-    if (violation === "valid") {
+    const validation = await deletePlanValidation(planId, userId);
+    if (validation === "valid") {
 
       const results = await deletePlan(planId);
       if (results.affectedRows === 0) {
@@ -314,8 +314,8 @@ app.delete("/:planId", requireAuth, async (req, res) => {
     } else {
 
       // send an error that explains the violated constraint
-      console.error("400:", violation, "\n");
-      res.status(400).send({error: violation});
+      console.error(`${validation.status}:`, validation.message, "\n");
+      res.status(validation.status).send({error: validation.message});
 
     }
 
@@ -348,8 +348,8 @@ app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async 
       };
 
       // only view plan activity if it does not violate any constraints
-      const violation = await viewPlanActivityValidation(planId, userId);
-      if (violation === "valid") {
+      const validation = await viewPlanActivityValidation(planId, userId);
+      if (validation === "valid") {
 
         const results = await getPlanActivity(planId, cursor);
         if (results.activity.length === 0) {
@@ -363,8 +363,8 @@ app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async 
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 

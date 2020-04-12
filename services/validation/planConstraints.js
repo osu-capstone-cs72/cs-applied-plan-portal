@@ -18,18 +18,14 @@ async function planConstraint(planId) {
     const results = await pool.query(sql, planId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 404);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking plan constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking plan constraint\n", err);
+    throw err;
   }
 
 }
@@ -62,16 +58,12 @@ async function nameConstraint(planName, userId, planId) {
     if (results[0].length === 0) {
       return;
     } else {
-      throw violation;
+      throw  ConstraintViolation(violation, 400);
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking name constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking name constraint\n", err);
+    throw err;
   }
 
 }
@@ -90,18 +82,14 @@ async function lockedConstraint(planId) {
     const results = await pool.query(sql, planId);
 
     if (results[0].length > 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking locked constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking locked constraint\n", err);
+    throw err;
   }
 
 }
@@ -118,18 +106,14 @@ async function userConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking user constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking user constraint\n", err);
+    throw err;
   }
 
 }
@@ -146,18 +130,14 @@ async function studentConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 403);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking student constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking student constraint\n", err);
+    throw err;
   }
 
 }
@@ -174,18 +154,14 @@ async function advisorConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 403);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking student constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking student constraint\n", err);
+    throw err;
   }
 
 }
@@ -194,8 +170,10 @@ exports.advisorConstraint = advisorConstraint;
 // checks to see if any courses are selected
 async function zeroCourseConstraint(courses) {
 
+  const violation = "Invalid course selection:\nNo courses selected.";
+
   if (courses.length === 0) {
-    throw "Invalid course selection:\nNo courses selected.";
+    throw ConstraintViolation(violation, 400);
   } else {
     return;
   }
@@ -207,11 +185,12 @@ exports.zeroCourseConstraint = zeroCourseConstraint;
 async function duplicateCourseConstraint(courses) {
 
   const seenCourses = Object.create(null);
+  const violation = "Invalid course selection:\nA course was selected more than once.";
 
   for (let i = 0; i < courses.length; ++i) {
     const courseId = courses[i].courseId;
     if (courseId in seenCourses) {
-      throw "Invalid course selection:\nA course was selected more than once.";
+      throw ConstraintViolation(violation, 400);
     }
     seenCourses[courseId] = true;
   }
@@ -241,18 +220,14 @@ async function courseConstraint(courses) {
 
     // find the number of valid courses and check it against the course array
     if (results[0][0].valid !== courses.length) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking course constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking course constraint\n", err);
+    throw err;
   }
 
 }
@@ -282,21 +257,17 @@ async function restrictionConstraint(courses) {
     // check if there were any restrictions and if so, which ones
     if (results[0].length !== 0) {
       if (results[0][0].restriction === 1) {
-        throw violationReq;
+        throw ConstraintViolation(violationReq, 400);
       } else {
-        throw violationGrad;
+        throw ConstraintViolation(violationGrad, 400);
       }
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violationReq) && internalError(err, violationGrad)) {
-      console.log("Error checking restriction constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking restriction constraint\n", err);
+    throw err;
   }
 
 }
@@ -344,11 +315,11 @@ async function courseCreditConstraint(courses) {
             submittedCredits <= maxCredits && !isNaN(submittedCredits)) {
             continue;
           } else {
-            throw violation;
+            throw ConstraintViolation(violation, 400);
           }
 
         } else {
-          throw violation;
+          throw ConstraintViolation(violation, 400);
         }
 
       } else {
@@ -358,7 +329,7 @@ async function courseCreditConstraint(courses) {
         if (submittedCredits === credits) {
           continue;
         } else {
-          throw violation;
+          throw ConstraintViolation(violation, 400);
         }
 
       }
@@ -369,12 +340,8 @@ async function courseCreditConstraint(courses) {
     return;
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking course credit constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking course credit constraint\n", err);
+    throw err;
   }
 
 }
@@ -395,18 +362,14 @@ async function limitConstraint(userId) {
 
     // see if the plan limit is exceeded
     if (results[0].length >= PLANS_MAX) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking limit constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking limit constraint\n", err);
+    throw err;
   }
 
 }
@@ -443,20 +406,16 @@ async function planCreditConstraint(courses) {
 
     // check if the sum of credits is less than the min or greater than the max
     if (creditSum < CREDITS_MIN) {
-      throw violationMin;
+      throw ConstraintViolation(violationMin, 400);
     } else if (creditSum > CREDITS_MAX) {
-      throw violationMax;
+      throw ConstraintViolation(violationMax, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violationMin) && internalError(err, violationMax)) {
-      console.log("Error checking plan credit constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking plan credit constraint\n", err);
+    throw err;
   }
 
 }
@@ -474,7 +433,7 @@ async function ownerConstraint(planId, userId) {
 
     // first ensure that the user exists
     if (results[0].length  === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     }
 
     // if the user is a student they must be the plan owner
@@ -486,7 +445,7 @@ async function ownerConstraint(planId, userId) {
       if (results[0][0].studentId === userId) {
         return;
       } else {
-        throw violation;
+        throw ConstraintViolation(violation, 400);
       }
 
     } else {
@@ -494,12 +453,8 @@ async function ownerConstraint(planId, userId) {
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking owner constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking owner constraint\n", err);
+    throw err;
   }
 
 }
@@ -517,7 +472,7 @@ async function deleteConstraint(planId, userId) {
 
     // first ensure that the user exists
     if (results[0].length  === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     }
 
     // if the user is a student they must be the plan owner
@@ -529,7 +484,7 @@ async function deleteConstraint(planId, userId) {
       if (results[0][0].studentId === userId) {
         return;
       } else {
-        throw violation;
+        throw ConstraintViolation(violation, 400);
       }
 
     } else {
@@ -538,28 +493,25 @@ async function deleteConstraint(planId, userId) {
       if (results[0][0].role === 2) {
         return;
       } else {
-        throw violation;
+        throw ConstraintViolation(violation, 400);
       }
 
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking delete constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking delete constraint\n", err);
+    throw err;
   }
 
 }
 exports.deleteConstraint = deleteConstraint;
 
-// checks to see if an error is a violation or an internal error
-function internalError (err, violation) {
-  if (err !== violation) {
-    return true;
-  } else {
-    return false;
-  }
+// Error that is given when a constraint is violated.
+// Includes a status code.
+function ConstraintViolation(message, status) {
+  return {
+    name: "ConstraintViolation",
+    message: message,
+    status: status
+  };
 }

@@ -37,10 +37,10 @@ async function createPlanValidation(userId, planName, courses) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
@@ -72,10 +72,10 @@ async function patchPlanValidation(planId, planName, courses, userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
@@ -92,10 +92,10 @@ async function viewPlanValidation(planId, userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
@@ -112,10 +112,10 @@ async function searchPlanValidation(userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
@@ -133,10 +133,10 @@ async function deletePlanValidation(planId, userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
@@ -153,10 +153,10 @@ async function viewPlanActivityValidation(planId, userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 
