@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
+import {login} from "../../utils/authService";
 
 function CreateReview(props) {
 
@@ -90,6 +91,10 @@ function CreateReview(props) {
             userId: props.currentUser.id,
             status: parseInt(statusValue)
           });
+        } else if (response.status === 403) {
+          // if the user is not allowed to create a review on this plan,
+          // redirect to login to allow updating of user info
+          login();
         } else {
           // we got a bad status code. Show the error
           obj = await response.json();

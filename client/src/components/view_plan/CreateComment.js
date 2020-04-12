@@ -4,6 +4,7 @@ import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
 import ErrorMessage from "../general/ErrorMessage";
+import {login} from "../../utils/authService";
 
 function CreateComment(props) {
 
@@ -114,6 +115,10 @@ function CreateComment(props) {
           userId: props.currentUser.id,
           text: text
         });
+      } else if (response.status === 403) {
+        // if the user is not allowed to create a comment on this plan,
+        // redirect to login to allow updating of user info
+        login();
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();
