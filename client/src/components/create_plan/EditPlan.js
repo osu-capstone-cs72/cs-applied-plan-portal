@@ -5,6 +5,7 @@ import PlanCourse from "./PlanCourse";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
+import {login} from "../../utils/authService";
 
 export default class EditPlan extends React.Component {
 
@@ -62,27 +63,31 @@ export default class EditPlan extends React.Component {
 
         try {
           this.props.onLoading(true);
-          await fetch(postURL, {
+
+          const results = await fetch(postURL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify(postObj),
-          }).then((data) => {
-            data.text().then(res => {
-              if (data.status === 201) {
-              // redirect to the view plan of newly submitted plan,else give the user a warning with backend error message
-                window.location.href = `/viewPlan/${JSON.parse(res).insertId}`;
-              } else {
-                this.setState({
-                  warning: JSON.parse(res).error
-                });
-              }
+            body: JSON.stringify(postObj)
+          });
+
+          if (results.ok) {
+            // redirect to the view plan of the newly submitted plan,
+            // else give the user a warning with backend error message
+            const obj = await results.json();
+            window.location.href = `/viewPlan/${obj.insertId}`;
+          } else if (results.status === 403) {
+            // if the user is not allowed to create a plan,
+            // redirect to login to allow updating of user info
+            login();
+          } else {
+            const obj = await results.json();
+            this.setState({
+              warning: obj.error
             });
-          })
-            .catch(() => this.setState({
-              warning: "An internal server error occurred. Please try again later."
-            }));
+          }
+
         } catch (err) {
           // this is a server error
           this.setState({
@@ -105,27 +110,25 @@ export default class EditPlan extends React.Component {
 
     try {
       this.props.onLoading(true);
-      await fetch(patchURL, {
+
+      const results = await fetch(patchURL, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(patchObj),
-      }).then((data) => {
-        data.text().then(res => {
-          if (data.status === 200) {
-            // redirect to the view plan of updated plan
-            window.location.href = `/viewPlan/${planId}`;
-          } else {
-            this.setState({
-              warning: JSON.parse(res).error
-            });
-          }
+        body: JSON.stringify(patchObj)
+      });
+
+      if (results.ok) {
+        // redirect to the view plan of updated plan
+        window.location.href = `/viewPlan/${planId}`;
+      } else {
+        const obj = await results.json();
+        this.setState({
+          warning: obj.error
         });
-      })
-        .catch(() => this.setState({
-          warning: "An internal server error occurred. Please try again later."
-        }));
+      }
+
     } catch (err) {
       // this is a server error
       this.setState({

@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
+import {login} from "../../utils/authService";
 
 function SelectRole(props) {
 
@@ -41,15 +42,22 @@ function SelectRole(props) {
 
       try {
         props.onLoading(true);
-        await fetch(patchURL, {
+        const results = await fetch(patchURL, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(patchObj),
-        })
-          .then(() => setUpdatedRole(newRole))
-          .catch((error) => alert("Error: " + error));
+        });
+
+        if (results.ok) {
+          setUpdatedRole(newRole);
+
+        } else if (results.status === 403) {
+          // if the user is not allowed to change user roles,
+          // redirect to login to allow updating of user info
+          login();
+        }
       } catch (err) {
         // this is a server error
         alert("An internal server error occurred. Please try again later.");
