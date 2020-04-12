@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 
-const {enforceConstraints} = require("../services/validation/reviewValidation");
+const {createReviewValidation} = require("../services/validation/reviewValidation");
 const {createReview} = require("../models/review");
 const {requireAuth} = require("../services/auth/auth");
 const {
@@ -33,7 +33,7 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("User", userId, "creating a review on plan", planId);
 
       // only save a review if it does not violate any constraints
-      const violation = await enforceConstraints(planId, userId, status);
+      const violation = await createReviewValidation(planId, userId, status);
       if (violation === "valid") {
 
         const results = await createReview(planId, userId, status);
