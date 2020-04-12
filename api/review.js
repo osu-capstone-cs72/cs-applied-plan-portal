@@ -33,8 +33,8 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("User", userId, "creating a review on plan", planId);
 
       // only save a review if it does not violate any constraints
-      const violation = await createReviewValidation(planId, userId, status);
-      if (violation === "valid") {
+      const validation = await createReviewValidation(planId, userId, status);
+      if (validation === "valid") {
 
         const results = await createReview(planId, userId, status);
         console.log("201: Review created\n");
@@ -43,8 +43,8 @@ app.post("/", requireAuth, async (req, res) => {
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 

@@ -14,20 +14,16 @@ async function userConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 403);
     } else if (results[0][0].role === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 403);
     } else {
       return results[0][0].role.toString(10);
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking user constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking user constraint\n", err);
+    throw err;
   }
 
 }
@@ -46,20 +42,16 @@ async function planConstraint(planId, status) {
     const results = await pool.query(sql, planId);
 
     if (results[0].length === 0) {
-      throw violationPlan;
+      throw ConstraintViolation(violationPlan, 400);
     } else if (results[0][0].status === parseInt(status)) {
-      throw violationStatus;
+      throw ConstraintViolation(violationStatus, 400);
     } else {
       return results[0][0].status.toString(10);
     }
 
   } catch (err) {
-    if (internalError(err, violationPlan) && internalError(err, violationStatus)) {
-      console.log("Error checking plan constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking plan constraint\n", err);
+    throw err;
   }
 
 }
@@ -78,35 +70,32 @@ async function roleConstraint(role, status, planStatus) {
 
     if (role === "2") {
       if (status !== "0" && status !== "1" && status !== "2" && status !== "3" && status !== "4") {
-        throw violationSet;
+        throw ConstraintViolation(violationSet, 400);
       }
     } else if (role === "1") {
       if (status !== "0" && status !== "1" && status !== "2" && status !== "3") {
-        throw violationSet;
+        throw ConstraintViolation(violationSet, 400);
       } else if (planStatus === "0" || planStatus === "4") {
-        throw violationChange;
+        throw ConstraintViolation(violationChange, 400);
       }
     } else {
-      throw violationSet;
+      throw ConstraintViolation(violationSet, 400);
     }
 
   } catch (err) {
-    if (internalError(err, violationSet) && internalError(err, violationChange)) {
-      console.log("Error checking role constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking role constraint\n", err);
+    throw err;
   }
 
 }
 exports.roleConstraint = roleConstraint;
 
-// checks to see if an error is a violation or an internal error
-function internalError (err, violation) {
-  if (err !== violation) {
-    return true;
-  } else {
-    return false;
-  }
+// Error that is given when a constraint is violated.
+// Includes a status code.
+function ConstraintViolation(message, status) {
+  return {
+    name: "ConstraintViolation",
+    message: message,
+    status: status
+  };
 }

@@ -126,11 +126,12 @@ async function historicalConstraint(planId) {
 }
 exports.historicalConstraint = historicalConstraint;
 
-// checks to see if an error is a violation or an internal error
-function internalError (err, violation) {
-  if (err !== violation) {
-    return true;
-  } else {
-    return false;
-  }
+// Error that is given when a constraint is violated.
+// Includes a status code.
+function ConstraintViolation(message, status) {
+  return {
+    name: "ConstraintViolation",
+    message: message,
+    status: status
+  };
 }
