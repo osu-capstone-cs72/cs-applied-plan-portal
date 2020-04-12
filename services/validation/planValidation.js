@@ -1,5 +1,5 @@
 // File: planValidation.js
-// Description: validates a submitted plan against a list of constraints
+// Description: validates plan operations against a list of constraints
 
 const {
   nameConstraint,

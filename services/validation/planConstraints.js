@@ -1,5 +1,5 @@
 // File: planConstraints.js
-// Description: all possible constraints used when validating plan operations
+// Description: constraints that are used when validating plan operations
 
 const {pool} = require("../db/mysqlPool");
 
