@@ -61,10 +61,6 @@ function requireAuth(req, res, next) {
     const bytes  = CryptoJS.AES.decrypt(cookieObj.csrf, CSRF_SECRET_KEY);
     const originalCsrf = bytes.toString(CryptoJS.enc.Utf8);
 
-    console.log("AUTH:", cookieObj.auth);
-    console.log("CSRF:", cookieObj.csrf);
-    console.log("originalCsrf:", originalCsrf);
-
     // ensure that the auth and decrypted CSRF match
     assert(cookieObj.auth === originalCsrf, "Auth and CSRF cookies conflict");
 
@@ -165,8 +161,9 @@ function casValidateUser(casValidationUrl) {
 }
 exports.casValidateUser = casValidateUser;
 
-// sets an authentication cookie
-// based on "Authenticating Users" by Rob Hess,
+// Sets cookies for authentication, to protect against cross-site scripting
+// attacks, and to store basic user info.
+// Based on "Authenticating Users" by Rob Hess,
 // https://docs.google.com/document/d/17zERsoO6i5MMQjVfDsb_OKo2MopVV4Jn8Q8qbo8bFFI
 function setAuthCookie(res, token, userId, role) {
   res.setHeader("Set-Cookie", [

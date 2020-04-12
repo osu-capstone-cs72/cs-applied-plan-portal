@@ -2,21 +2,17 @@
 
 import PageSpinner from "./general/PageSpinner";
 import {useEffect, useState} from "react";
-import {css, jsx} from "@emotion/core";
+import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PageInternalError from "./general/PageInternalError";
 import PropTypes from "prop-types";
-import url from "url";
+import {login} from "../utils/authService";
 
 function Login(props) {
 
   const [redirect, setRedirect] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(0);
-
-  const style = css`
-    margin: 0;
-  `;
 
   useEffect(() => {
 
@@ -56,32 +52,11 @@ function Login(props) {
     function redirectUrl(target) {
 
       if (target === 1) {
-
         // redirect to homepage
         props.history.push("/");
-
       } else if (target === 2) {
-
         // redirect to OSU login page
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        window.location.href = url.format({
-          protocol: "https",
-          hostname: "login.oregonstate.edu",
-          pathname: "/idp-dev/profile/cas/login",
-          // callback URL for CAS
-          query: {
-            service: url.format({
-              protocol: "http",
-              host: server,
-              pathname: "/user/login",
-              // callback URL has its own query string
-              query: {
-                target: "http://localhost:3000/"
-              }
-            })
-          }
-        });
-
+        login();
       }
 
     }
@@ -98,7 +73,7 @@ function Login(props) {
 
   if (!pageError) {
     return (
-      <div id={"page-container"} css={style}>
+      <div id={"page-container"}>
         <PageSpinner loading={loading} />
       </div>
     );

@@ -62,7 +62,7 @@ export function loggedIn() {
 
 }
 
-// log the current user out
+// clear user cookies then redirect the user to the OSU logout page
 export function logout() {
 
   // remove the user cookies
@@ -74,6 +74,35 @@ export function logout() {
     protocol: "https",
     hostname: "login.oregonstate.edu",
     pathname: "/idp-dev/profile/cas/logout",
+  });
+
+}
+
+// clear user cookies and then redirect the user to the OSU login page
+export function login() {
+
+  // remove the user cookies
+  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+  // redirect to OSU login page
+  const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+  window.location.href = url.format({
+    protocol: "https",
+    hostname: "login.oregonstate.edu",
+    pathname: "/idp-dev/profile/cas/login",
+    // callback URL for CAS
+    query: {
+      service: url.format({
+        protocol: "http",
+        host: server,
+        pathname: "/user/login",
+        // callback URL has its own query string
+        query: {
+          target: "http://localhost:3000/"
+        }
+      })
+    }
   });
 
 }

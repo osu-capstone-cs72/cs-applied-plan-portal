@@ -7,12 +7,12 @@ const app = express();
 const {requireAuth} = require("../services/auth/auth");
 const {formatCourseArray} = require("../services/format/format");
 const {
-  createEnforceConstraints,
-  patchEnforceConstraints,
-  viewEnforceConstraints,
-  searchEnforceConstraints,
-  deleteEnforceConstraints,
-  activityEnforceConstraints
+  createPlanValidation,
+  patchPlanValidation,
+  viewPlanValidation,
+  searchPlanValidation,
+  deletePlanValidation,
+  viewPlanActivityValidation
 } = require("../services/validation/planValidation");
 const {
   createPlan,
@@ -52,7 +52,7 @@ app.post("/", requireAuth, async (req, res) => {
       const courses = formatCourseArray(sanitizedBody.courses);
 
       // only create a plan if it does not violate any constraints
-      const violation = await createEnforceConstraints(userId, planName, courses);
+      const violation = await createPlanValidation(userId, planName, courses);
       if (violation === "valid") {
 
         // create the plan
@@ -118,7 +118,7 @@ app.patch("/", requireAuth, async (req, res) => {
       }
 
       // only update a plan if it does not violate any constraints
-      const violation = await patchEnforceConstraints(planId, planName, courses, userId);
+      const violation = await patchPlanValidation(planId, planName, courses, userId);
       if (violation === "valid") {
 
         // update the plan
@@ -182,7 +182,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
     console.log("View plan", planId);
 
     // only view a plan if it does not violate any constraints
-    const violation = await viewEnforceConstraints(planId, userId);
+    const violation = await viewPlanValidation(planId, userId);
     if (violation === "valid") {
 
       const results = await getPlan(planId, userId);
@@ -254,7 +254,7 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
       console.log("Searching for plans");
 
       // only search plans if they do not violate any constraints
-      const violation = await searchEnforceConstraints(userId);
+      const violation = await searchPlanValidation(userId);
       if (violation === "valid") {
 
         const results = await searchPlans(text, parseInt(status, 10),
@@ -299,7 +299,7 @@ app.delete("/:planId", requireAuth, async (req, res) => {
     console.log("Delete plan", planId);
 
     // only delete a plan if it does not violate any constraints
-    const violation = await deleteEnforceConstraints(planId, userId);
+    const violation = await deletePlanValidation(planId, userId);
     if (violation === "valid") {
 
       const results = await deletePlan(planId);
@@ -348,7 +348,7 @@ app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async 
       };
 
       // only view plan activity if it does not violate any constraints
-      const violation = await activityEnforceConstraints(planId, userId);
+      const violation = await viewPlanActivityValidation(planId, userId);
       if (violation === "valid") {
 
         const results = await getPlanActivity(planId, cursor);
