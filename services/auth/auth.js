@@ -7,10 +7,12 @@ const jwt = require("jsonwebtoken");
 const needle = require("needle");
 const validator = require("validator");
 const xml2js = require("xml2js");
+const CryptoJS = require("crypto-js");
 
 const {userSchema} = require("../validation/schemaValidation");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const CSRF_SECRET_KEY = process.env.CSRF_SECRET_KEY;
 const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
 
 // Generates an auth token for a specific User with the provided ID.
@@ -46,13 +48,25 @@ function requireAuth(req, res, next) {
 
     // ensure the parsed cookie is a JS object (it should always be after parse)
     assert(cookieObj === Object(cookieObj), "No cookie provided with request");
-    // ensure that authentication cookies are sent with the request
-    assert(cookieObj.auth, "No auth cookie provided with request");
+
     // ensure that the user is aware of their role and user ID
     assert(cookieObj.role, "No role cookie provided with request");
     assert(cookieObj.userId, "No userId cookie provided with request");
-    // assert(reqCookie.csrf, "No CSRF cookie provided with request");
-    // assert(reqCookie.csrf === reqCookie.csrf, "Auth and CSRF cookies do not match");
+
+    // ensure that authentication cookies are sent with the request
+    assert(cookieObj.auth, "No auth cookie provided with request");
+    assert(cookieObj.csrf, "No CSRF cookie provided with request");
+
+    // decrypt the CSRF
+    const bytes  = CryptoJS.AES.decrypt(cookieObj.csrf, CSRF_SECRET_KEY);
+    const originalCsrf = bytes.toString(CryptoJS.enc.Utf8);
+
+    console.log("AUTH:", cookieObj.auth);
+    console.log("CSRF:", cookieObj.csrf);
+    console.log("originalCsrf:", originalCsrf);
+
+    // ensure that the auth and decrypted CSRF match
+    assert(cookieObj.auth === originalCsrf, "Auth and CSRF cookies conflict");
 
     const token = cookieObj.auth;
 
@@ -166,7 +180,7 @@ function setAuthCookie(res, token, userId, role) {
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
     }),
-    cookie.serialize("csrf", token, {
+    cookie.serialize("csrf", CryptoJS.AES.encrypt(token, CSRF_SECRET_KEY).toString(), {
       path: "/",
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS)

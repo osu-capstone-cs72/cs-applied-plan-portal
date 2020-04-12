@@ -196,8 +196,6 @@ app.get("/login", async (req, res) => {
       // redirect to the target URL and set an auth cookie
       setAuthCookie(res, token, user.userId, user.role);
 
-      console.log("SERVER: res.getHeaders()", res.getHeaders());
-
       res.status(200).redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
