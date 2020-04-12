@@ -19,10 +19,10 @@ async function createCommentValidation(planId, userId) {
     return "valid";
 
   } catch (err) {
-    if (err === "Internal error") {
-      throw err;
-    } else {
+    if (err.name === "ConstraintViolation") {
       return err;
+    } else {
+      throw err;
     }
   }
 

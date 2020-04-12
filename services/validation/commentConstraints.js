@@ -14,18 +14,14 @@ async function userConstraint(userId) {
     const results = await pool.query(sql, userId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking user constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking user constraint\n", err);
+    throw err;
   }
 
 }
@@ -42,18 +38,14 @@ async function planConstraint(planId) {
     const results = await pool.query(sql, planId);
 
     if (results[0].length === 0) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking plan constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking plan constraint\n", err);
+    throw err;
   }
 
 }
@@ -78,7 +70,7 @@ async function ownerConstraint(planId, userId) {
       if (results[0][0].studentId === userId) {
         return;
       } else {
-        throw violation;
+        throw ConstraintViolation(violation, 403);
       }
 
     } else {
@@ -86,12 +78,8 @@ async function ownerConstraint(planId, userId) {
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking owner constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking owner constraint\n", err);
+    throw err;
   }
 
 }
@@ -109,18 +97,14 @@ async function historicalConstraint(planId) {
     const results = await pool.query(sql, planId);
 
     if (results[0][0].status === 0 || results[0][0].status === 4) {
-      throw violation;
+      throw ConstraintViolation(violation, 400);
     } else {
       return;
     }
 
   } catch (err) {
-    if (internalError(err, violation)) {
-      console.log("Error checking historical constraint\n", err);
-      throw ("Internal error");
-    } else {
-      throw err;
-    }
+    console.log("Error checking historical constraint\n", err);
+    throw err;
   }
 
 }
