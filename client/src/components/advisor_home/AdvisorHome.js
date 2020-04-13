@@ -93,7 +93,7 @@ function AdvisorHome() {
       }
 
       // construct the request url
-      const getUrl = `api/plan/search/${textValue}/${statusValue}/` +
+      const getUrl = `/api/plan/search/${textValue}/${statusValue}/` +
         `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}`;
       let obj = {};
 

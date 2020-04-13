@@ -65,7 +65,7 @@ function History() {
   // get the current users most recently viewed plans
   async function getRecentPlans() {
     try {
-      const getUrl = `api/plan/recent`;
+      const getUrl = `/api/plan/recent`;
       let obj = {};
 
       const results = await fetch(getUrl);

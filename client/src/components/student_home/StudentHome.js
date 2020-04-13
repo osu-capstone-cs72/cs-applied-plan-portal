@@ -41,7 +41,7 @@ export default class StudentHome extends React.Component {
     const profile = getProfile();
     const userId = profile.userId;
 
-    const getUrl = `api/user/${userId}/plans`;
+    const getUrl = `/api/user/${userId}/plans`;
 
     let obj = [];
 

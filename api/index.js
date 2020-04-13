@@ -23,7 +23,7 @@ app.use(cors());
 
 // log incoming requests
 app.all("/api/*", (req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}\n`);
+  console.log(`Request: ${req.method} ${req.url}`);
   next();
 });
 

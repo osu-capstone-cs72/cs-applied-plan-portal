@@ -43,7 +43,7 @@ export default class CourseContainer extends React.Component {
     if (value === "") {
       value = "*";
     }
-    const getUrl = `api/course/search/${value}/${this.state.filter}`;
+    const getUrl = `/api/course/search/${value}/${this.state.filter}`;
     let obj = [];
     try {
       const results = await fetch(getUrl);

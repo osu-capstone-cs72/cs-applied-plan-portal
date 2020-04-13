@@ -70,7 +70,7 @@ export default function ManageRoles() {
       }
 
       // construct the request url
-      const getUrl = `api/user/search/${textValue}/${roleValue}` +
+      const getUrl = `/api/user/search/${textValue}/${roleValue}` +
         `/${cursor.primary}/${cursor.secondary}`;
       let obj = [];
 

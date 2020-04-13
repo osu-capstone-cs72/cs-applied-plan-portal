@@ -85,7 +85,7 @@ function CreateComment(props) {
 
       const text = document.getElementById("comment-text-input").value;
 
-      const url = `api/comment`;
+      const url = `/api/comment`;
       let obj = [];
 
       const postObj = {

@@ -29,7 +29,7 @@ export default function StudentCreatePlan() {
     async function fetchPlan(planId) {
       setLoading(true);
       try {
-        const url = `api/plan/${planId}`;
+        const url = `/api/plan/${planId}`;
         let obj = [];
 
         const response = await fetch(url);

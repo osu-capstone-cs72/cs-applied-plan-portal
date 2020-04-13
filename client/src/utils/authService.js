@@ -96,7 +96,7 @@ export function login() {
       service: url.format({
         protocol: "http",
         host: server,
-        pathname: "/user/login",
+        pathname: "/api/user/login",
         // callback URL has its own query string
         query: {
           target: "http://localhost:3000/"

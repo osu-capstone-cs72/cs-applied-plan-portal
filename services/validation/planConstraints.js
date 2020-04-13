@@ -297,10 +297,10 @@ async function courseCreditConstraint(courses) {
     // check each course to ensure that it matches the submitted credits
     for (let i = 0; i < results[0].length; i++) {
 
-      const credits = parseInt(results[0][i].credits, 10);
+      let credits = results[0][i].credits;
 
       // check if the current course has a set credit value or a range
-      if (isNaN(credits)) {
+      if (/[^$,.\d]/.test(credits)) {
 
         // split the credit range into two separate numbers (min and max)
         const creditArray = credits.split(" to ");
@@ -326,6 +326,7 @@ async function courseCreditConstraint(courses) {
 
         // ensure that the database and submitted credits match
         const submittedCredits = parseInt(courses[i].credits, 10);
+        credits = parseInt(credits, 10);
         if (submittedCredits === credits) {
           continue;
         } else {

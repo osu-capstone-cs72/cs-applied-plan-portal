@@ -55,7 +55,7 @@ export default class EditPlan extends React.Component {
       } else {
 
         // set up data for new plan to send to backend
-        const postURL = `api/plan`;
+        const postURL = `/api/plan`;
         const postObj = {
           planName: planName,
           courses: courses
@@ -101,7 +101,7 @@ export default class EditPlan extends React.Component {
 
   async editPlan(courses, planName, planId) {
     // set up data for new plan to send to backend
-    const patchURL = `api/plan`;
+    const patchURL = `/api/plan`;
     const patchObj = {
       planId: planId,
       planName: planName,

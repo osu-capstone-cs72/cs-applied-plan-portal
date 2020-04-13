@@ -77,7 +77,7 @@ function ViewPlan(props) {
     setLoading(true);
     try {
 
-      let url = `api/plan/${planId}`;
+      let url = `/api/plan/${planId}`;
       let obj = [];
 
       try {
@@ -115,7 +115,7 @@ function ViewPlan(props) {
       // if user cannot be retrieved, we will get an invalid user ID (0)
       const profile = getProfile();
 
-      url = `api/user/${profile.userId}`;
+      url = `/api/user/${profile.userId}`;
       const response = await fetch(url);
       if (response.ok) {
         // get data from the response
@@ -152,7 +152,7 @@ function ViewPlan(props) {
         firstName: studentFirstName,
         lastName: studentLastName
       };
-      const url = `api/plan/${planId}/activity/${cursor.primary}/` +
+      const url = `/api/plan/${planId}/activity/${cursor.primary}/` +
       `${cursor.secondary}`;
       let obj = [];
 
@@ -219,7 +219,7 @@ function ViewPlan(props) {
     if (window.confirm("Are you sure that you want to delete this plan?")) {
       setLoading(true);
       try {
-        const url = `api/plan/${planId}`;
+        const url = `/api/plan/${planId}`;
 
         // delete plan data
         const response = await fetch(url, {
