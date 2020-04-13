@@ -63,7 +63,7 @@ function ListSimilarPlans() {
   async function fetchSimilar(planId) {
     try {
 
-      const url = `/plan/${planId}/similar`;
+      const url = `api/plan/${planId}/similar`;
       let obj = [];
 
       // get similar plan data

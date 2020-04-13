@@ -22,23 +22,23 @@ app.use((req, res, next) => {
 app.use(cors());
 
 // log incoming requests
-app.all("*", (req, res, next) => {
+app.all("/api/*", (req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}\n`);
   next();
 });
 
-app.use("/notification", require("./notification"));
-app.use("/review", require("./review"));
-app.use("/comment", require("./comment"));
-app.use("/course", require("./course"));
-app.use("/plan", require("./plan"));
-app.use("/user", require("./user"));
+app.use("/api/notification", require("./notification"));
+app.use("/api/review", require("./review"));
+app.use("/api/comment", require("./comment"));
+app.use("/api/course", require("./course"));
+app.use("/api/plan", require("./plan"));
+app.use("/api/user", require("./user"));
 
 // statically serve files from the public directory
 app.use(express.static("src/public"));
 
 // everything else gets a 404 error
-app.get("*", (req, res) => {
+app.get("/api/*", (req, res) => {
   console.error("404: File not found\n");
   res.status(404).send({error: "Not Found"});
 });

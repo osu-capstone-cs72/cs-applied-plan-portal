@@ -24,7 +24,7 @@ function Login(props) {
       try {
 
         // attempt to login
-        const results = await fetch(`/user/authenticated/`);
+        const results = await fetch(`api/user/authenticated/`);
 
         if (results.ok) {
 

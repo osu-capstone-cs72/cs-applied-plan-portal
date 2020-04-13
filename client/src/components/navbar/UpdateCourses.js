@@ -39,7 +39,7 @@ function UpdateCourses() {
       try {
 
         // request that all courses are updated
-        const url = `/course/updateDatabase`;
+        const url = `api/course/updateDatabase`;
 
         // perform the query
         const response = await fetch(url);

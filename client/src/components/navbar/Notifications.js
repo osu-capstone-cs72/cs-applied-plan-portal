@@ -81,7 +81,7 @@ function Notifications() {
 
     try {
 
-      const url = `/notification`;
+      const url = `api/notification`;
       let obj = [];
 
       // get notifications data
@@ -110,7 +110,7 @@ function Notifications() {
     try {
 
       // set the notification to checked
-      const url = `/notification/${notificationId}`;
+      const url = `api/notification/${notificationId}`;
       await fetch(url, {
         method: "PATCH"
       });

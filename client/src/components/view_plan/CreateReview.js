@@ -62,7 +62,7 @@ function CreateReview(props) {
     if (window.confirm(`Are you sure that you want to set this plans status to "${statusMessage}"?`)) {
       try {
 
-        const url = `/review`;
+        const url = `api/review`;
         let obj = [];
 
         const postObj = {
