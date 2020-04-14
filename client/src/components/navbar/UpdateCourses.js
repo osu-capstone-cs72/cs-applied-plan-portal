@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
+import {login} from "../../utils/authService";
 
 function UpdateCourses() {
 
@@ -44,8 +45,16 @@ function UpdateCourses() {
         // perform the query
         const response = await fetch(url);
         if (!response.ok) {
-          // note that there was an error trying to start the update
-          alert("Internal server error. Unable to update courses.");
+
+          if (response.status === 403) {
+            // if the user is not allowed to update courses,
+            // redirect to login to allow updating of user info
+            login();
+          } else {
+            // note that there was an error trying to start the update
+            alert("Internal server error. Unable to update courses.");
+          }
+
         }
 
       } catch (err) {
