@@ -12,7 +12,8 @@ const {
   viewPlanValidation,
   searchPlanValidation,
   deletePlanValidation,
-  viewPlanActivityValidation
+  viewPlanActivityValidation,
+  recentPlanValidation
 } = require("../services/validation/planValidation");
 const {
   createPlan,
@@ -156,14 +157,27 @@ app.get("/recent", requireAuth, async (req, res) => {
     const userId = req.auth.userId;
     console.log("View a list of plans recently viewed by", userId);
 
-    const results = await getRecentPlans(userId);
-    if (results.plans.length === 0) {
-      console.error("404: No matching plans found.\n");
-      res.status(404).send({error: "No matching plans found."});
+    // only view a list of recent plans if it does not violate any constraints
+    const validation = await recentPlanValidation(userId);
+    if (validation === "valid") {
+
+      const results = await getRecentPlans(userId);
+      if (results.planId === 0) {
+        console.error("404: No matching plans found\n");
+        res.status(404).send({error: "No plan found."});
+      } else {
+        console.log("200: Plans found\n");
+        res.status(200).send(results);
+      }
+
     } else {
-      console.log("200: Plans found\n");
-      res.status(200).send(results);
+
+      // send an error that explains the violated constraint
+      console.error(`${validation.status}:`, validation.message, "\n");
+      res.status(validation.status).send({error: validation.message});
+
     }
+
 
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);

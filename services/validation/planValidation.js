@@ -162,3 +162,22 @@ async function viewPlanActivityValidation(planId, userId) {
 
 }
 exports.viewPlanActivityValidation = viewPlanActivityValidation;
+
+// checks that no constraints are violated when trying to view the list of recently viewed plans
+async function recentPlanValidation(userId) {
+
+  try {
+
+    await advisorConstraint(userId);
+    return "valid";
+
+  } catch (err) {
+    if (err.name === "ConstraintViolation") {
+      return err;
+    } else {
+      throw err;
+    }
+  }
+
+}
+exports.recentPlanValidation = recentPlanValidation;

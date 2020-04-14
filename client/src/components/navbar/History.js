@@ -90,12 +90,18 @@ function History() {
         <i className="fa fa-caret-down" />
       </button>
       <div className="dropdown-content">
-        {recentPlans.map((item) => (
-          <Link key={item.planId} to={`/viewPlan/${item.planId}`}>
-            {item.planName} <br/>
-            {item.firstName + " " + item.lastName}
+        {recentPlans.length ? (
+          recentPlans.map((item) => (
+            <Link key={item.planId} to={`/viewPlan/${item.planId}`}>
+              {item.planName} <br/>
+              {item.firstName + " " + item.lastName}
+            </Link>
+          ))
+        ) : (
+          <Link to={`.`} onClick={(event) => event.preventDefault()}>
+            <p>No recently visited plans.</p>
           </Link>
-        ))}
+        )}
       </div>
     </div>
   );
