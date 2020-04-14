@@ -170,23 +170,27 @@ function setAuthCookie(res, token, userId, role) {
     cookie.serialize("userId", userId, {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
+      maxAge: COOKIE_EXPIRES_MS / 1000
     }),
     cookie.serialize("role", role, {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
+      maxAge: COOKIE_EXPIRES_MS / 1000
     }),
     cookie.serialize("csrf", CryptoJS.AES.encrypt(token, CSRF_SECRET_KEY).toString(), {
       path: "/",
       sameSite: true,
-      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
+      maxAge: COOKIE_EXPIRES_MS / 1000
     }),
     cookie.serialize("auth", token, {
       path: "/",
       httpOnly: true,
       sameSite: true,
-      expires: new Date(Date.now() + COOKIE_EXPIRES_MS)
+      expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
+      maxAge: COOKIE_EXPIRES_MS / 1000
     })
   ]);
 }

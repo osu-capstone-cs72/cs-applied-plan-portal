@@ -8,7 +8,7 @@ import PageInternalError from "./general/PageInternalError";
 import PropTypes from "prop-types";
 import {login} from "../utils/authService";
 
-function Login(props) {
+function Login() {
 
   const [redirect, setRedirect] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ function Login(props) {
 
       if (target === 1) {
         // redirect to homepage
-        props.history.push("/");
+        document.location.href = "../";
       } else if (target === 2) {
         // redirect to OSU login page
         login();

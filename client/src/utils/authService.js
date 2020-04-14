@@ -38,10 +38,6 @@ export function getProfile() {
 
   } catch (err) {
 
-    // on error ensure that the user cookies are removed
-    document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
     // return an invalid user
     console.error(err);
     return {
@@ -80,10 +76,6 @@ export function logout() {
 
 // clear user cookies and then redirect the user to the OSU login page
 export function login() {
-
-  // remove the user cookies
-  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to OSU login page
   const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;

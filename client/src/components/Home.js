@@ -18,9 +18,7 @@ function Home(props) {
     async function checkLoggedIn () {
 
       // check to see if the user is logged in
-      const validToken = loggedIn();
-
-      if (validToken) {
+      if (loggedIn()) {
 
         // render a page based on the users role
         const profile = getProfile();
@@ -39,6 +37,7 @@ function Home(props) {
     }
 
     checkLoggedIn();
+
     // eslint-disable-next-line
   }, []);
 
