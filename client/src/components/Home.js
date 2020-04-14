@@ -4,7 +4,7 @@ import PageSpinner from "./general/PageSpinner";
 import StudentHome from "./student_home/StudentHome";
 import AdvisorHome from "./advisor_home/AdvisorHome";
 import {useEffect, useState} from "react";
-import {css, jsx} from "@emotion/core";
+import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import {loggedIn, getProfile} from "../utils/authService";
 
@@ -13,19 +13,15 @@ function Home(props) {
   const [loading] = useState(true);
   const [pageState, setPageState] = useState(0);
 
-  const style = css`
-  `;
-
   useEffect(() => {
+
     async function checkLoggedIn () {
 
       // check to see if the user is logged in
-      const validToken = loggedIn();
-
-      if (validToken) {
+      if (loggedIn()) {
 
         // render a page based on the users role
-        const profile = await getProfile();
+        const profile = getProfile();
         if (!profile.role) {
           setPageState(1);
         } else {
@@ -39,13 +35,15 @@ function Home(props) {
 
       }
     }
+
     checkLoggedIn();
+
     // eslint-disable-next-line
   }, []);
 
   if (!pageState) {
     return (
-      <div id="home-container" css={style}>
+      <div id="home-container">
         <PageSpinner loading={loading} />
       </div>
     );

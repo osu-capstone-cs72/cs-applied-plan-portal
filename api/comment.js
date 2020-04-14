@@ -5,7 +5,7 @@ require("path");
 const express = require("express");
 const app = express();
 const {requireAuth} = require("../services/auth/auth");
-const {enforceConstraints} = require("../services/validation/commentValidation");
+const {createCommentValidation} = require("../services/validation/commentValidation");
 const {createComment} = require("../models/comment");
 const {
   commentSchema,
@@ -32,8 +32,8 @@ app.post("/", requireAuth, async (req, res) => {
       console.log("User ", userId, "creating a comment on plan", planId);
 
       // only save a comment if it does not violate any constraints
-      const violation = await enforceConstraints(planId, userId);
-      if (violation === "valid") {
+      const validation = await createCommentValidation(planId, userId);
+      if (validation === "valid") {
 
         const results = await createComment(planId, userId, text);
         console.log("201: Comment created\n");
@@ -42,8 +42,8 @@ app.post("/", requireAuth, async (req, res) => {
       } else {
 
         // send an error that explains the violated constraint
-        console.error("400:", violation, "\n");
-        res.status(400).send({error: violation});
+        console.error(`${validation.status}:`, validation.message, "\n");
+        res.status(validation.status).send({error: validation.message});
 
       }
 

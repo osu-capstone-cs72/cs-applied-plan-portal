@@ -17,7 +17,8 @@ const {
 const {
   casValidateUser,
   generateAuthToken,
-  requireAuth
+  requireAuth,
+  setAuthCookie
 } = require("../services/auth/auth");
 
 const app = express();
@@ -144,7 +145,7 @@ app.get("/login", async (req, res) => {
     }
   });
 
-  // send the ticket to this URL to validate the it against CAS
+  // send the ticket to this URL to validate it against CAS
   const casValidationUrl = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
@@ -189,17 +190,13 @@ app.get("/login", async (req, res) => {
       // sign this User with a JWT
       const token = generateAuthToken(user.userId);
 
-      // include this token in the redirect URL
-      const parsedTargetUrl = url.parse(targetUrl, true);
-      parsedTargetUrl.query.accessToken = token;
-
-      // finalize the redirect URL
-      const targetUrlWithToken = url.format(parsedTargetUrl);
-
       console.log(`200: User authenticated: ${user.userId} (${user.email})`);
-      console.log(`Redirecting to ${targetUrlWithToken}\n`);
-      // redirect to the target URL with the token
-      res.status(200).redirect(targetUrlWithToken);
+      console.log(`Redirecting to ${targetUrl}\n`);
+
+      // redirect to the target URL and set an auth cookie
+      setAuthCookie(res, token, user.userId, user.role);
+
+      res.status(200).redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
       res.status(500).send({error: err});
@@ -207,31 +204,6 @@ app.get("/login", async (req, res) => {
   } catch (err) {
     console.error(`${err.code}:`, err.error);
     res.status(err.code).send({error: err.error});
-  }
-});
-
-// Fetches only ID and role of the User whose `userId` is provided by the JWT.
-app.get("/idRole", requireAuth, async (req, res) => {
-  try {
-    // attempt to fetch the user from the database
-    const authenticatedUser = await userModel.getUserById(req.auth.userId);
-
-    // if the authenticated user exists and has a valid role, return the role
-    if (authenticatedUser) {
-      console.log("200: Authenticated user's ID and role\n");
-      res.status(200).send({
-        userId: authenticatedUser.userId,
-        role: authenticatedUser.role
-      });
-    } else {
-      console.log("404: No matching User or invalid role\n");
-      res.status(404).send({error: "No matching User or invalid role"});
-    }
-  } catch (err) {
-    console.error("500: An internal server error occurred\n Error:", err);
-    res.status(500).send({
-      error: "An internal server error occurred. Please try again later."
-    });
   }
 });
 

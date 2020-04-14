@@ -24,7 +24,7 @@ function Logout() {
 
   return (
     <button className="logout-button" css={style} onClick={() => logoutUser()}>
-      Log out
+      Log Out
     </button>
   );
 

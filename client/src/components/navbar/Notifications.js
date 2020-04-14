@@ -4,7 +4,6 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 
 function Notifications() {
 
@@ -82,10 +81,7 @@ function Notifications() {
 
     try {
 
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/notification` +
-        `?accessToken=${token}`;
+      const url = `/api/notification`;
       let obj = [];
 
       // get notifications data
@@ -114,10 +110,7 @@ function Notifications() {
     try {
 
       // set the notification to checked
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/notification/${notificationId}` +
-        `?accessToken=${token}`;
+      const url = `/api/notification/${notificationId}`;
       await fetch(url, {
         method: "PATCH"
       });

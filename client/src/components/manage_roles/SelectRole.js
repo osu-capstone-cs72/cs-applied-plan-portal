@@ -4,7 +4,7 @@ import {css, jsx} from "@emotion/core";
 import {useState} from "react";
 import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
-import {getToken} from "../../utils/authService";
+import {login} from "../../utils/authService";
 
 function SelectRole(props) {
 
@@ -35,24 +35,29 @@ function SelectRole(props) {
 
       // the user confirmed that they wanted to change the role
       // so we will send a request to the API server
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const patchURL = `http://${server}/user/${props.userId}/?accessToken=${token}`;
+      const patchURL = `/api/user/${props.userId}`;
       const patchObj = {
         role: select.value
       };
 
       try {
         props.onLoading(true);
-        await fetch(patchURL, {
+        const results = await fetch(patchURL, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(patchObj),
-        })
-          .then(() => setUpdatedRole(newRole))
-          .catch((error) => alert("Error: " + error));
+        });
+
+        if (results.ok) {
+          setUpdatedRole(newRole);
+
+        } else if (results.status === 403) {
+          // if the user is not allowed to change user roles,
+          // redirect to login to allow updating of user info
+          login();
+        }
       } catch (err) {
         // this is a server error
         alert("An internal server error occurred. Please try again later.");

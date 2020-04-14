@@ -1,41 +1,69 @@
-import jwtDecode from "jwt-decode";
+import cookie from "cookie";
 import url from "url";
+import validator from "validator";
 
-// check if there is a valid saved token
-export function loggedIn() {
-  const token = getToken();
-  return !!token && !isTokenExpired(token);
-}
+// Parses cookies and checks whether the user is logged in.
+//
+// Returns an object containing the userId and the role of the user.
+// On error returns a student with a user ID of 0.
+export function getProfile() {
 
-// check if token is expired
-export function isTokenExpired(token) {
   try {
-    const decoded = jwtDecode(token);
-    if (decoded.exp < Date.now() / 1000) {
-      return true;
-    } else {
-      return false;
+
+    // parse the cookie included in document; must string-coerce it because
+    // cookie.parse() throws on non-string arguments
+    const cookieObj = cookie.parse(`${document.cookie}`);
+
+    // ensure the parsed cookies are a JS object (it should always be)
+    if (cookieObj !== Object(cookieObj)) {
+      throw new Error("Cookies are not a valid JS object");
     }
+
+    // ensure that the userId and role cookies exist
+    if (!cookieObj.userId || !cookieObj.role) {
+      throw new Error("User ID or role cookie not set");
+    }
+
+    // ensure userId and role are non-negative integers
+    if (!validator.isInt(cookieObj.userId + "") ||
+        !validator.isInt(cookieObj.role + "")) {
+      throw new Error("Negative user ID or role");
+    }
+
+    // success case; return an object containing userId and role in integers
+    return {
+      userId: validator.toInt(cookieObj.userId),
+      role: validator.toInt(cookieObj.role)
+    };
+
   } catch (err) {
-    return false;
+
+    // return an invalid user
+    console.error(err);
+    return {
+      userId: 0,
+      role: 0
+    };
+
   }
 }
 
-// save user token to local storage
-export function setToken(idToken) {
-  localStorage.setItem("id_token", idToken);
+// checks if the current user is logged in
+export function loggedIn() {
+
+  const profile = getProfile();
+  const userId = profile.userId;
+
+  return !!userId;
+
 }
 
-// get token from local storage
-export function getToken() {
-  return localStorage.getItem("id_token");
-}
-
-// clear token from local storage
+// clear user cookies then redirect the user to the OSU logout page
 export function logout() {
 
-  // remove the JWT
-  localStorage.removeItem("id_token");
+  // remove the user cookies
+  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to the CAS logout page
   window.location.href = url.format({
@@ -46,24 +74,27 @@ export function logout() {
 
 }
 
-// get the user associated with the JWT payload, or return an empty object `{}`
-// if the user cannot be found or on error
-export async function getProfile() {
-  try {
-    const token = getToken();
+// clear user cookies and then redirect the user to the OSU login page
+export function login() {
 
-    // find the User associated with the payload subject
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/idRole?accessToken=${token}`;
-
-    const results = await fetch(getUrl);
-    const user = await results.json();
-    if (results.ok && user) {
-      return user;
-    } else {
-      return {};
+  // redirect to OSU login page
+  const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+  window.location.href = url.format({
+    protocol: "https",
+    hostname: "login.oregonstate.edu",
+    pathname: "/idp-dev/profile/cas/login",
+    // callback URL for CAS
+    query: {
+      service: url.format({
+        protocol: "http",
+        host: server,
+        pathname: "/api/user/login",
+        // callback URL has its own query string
+        query: {
+          target: "http://localhost:3000/"
+        }
+      })
     }
-  } catch (err) {
-    return {};
-  }
+  });
+
 }
