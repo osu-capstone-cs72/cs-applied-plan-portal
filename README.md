@@ -12,7 +12,7 @@ This is a web app that streamlines the pro-school application process for OSU Ap
 
 From the root directory of this repo, run
 
-    ./install.sh
+    chmod +x install.sh && ./install.sh
 
 Please follow the instructions produced by the script to install the necessary software and dependencies.
 
