@@ -5,9 +5,10 @@ import NavBar from "../navbar/Navbar";
 import {getProfile} from "../../utils/authService";
 import {formatTime} from "../../utils/formatTime";
 import Advisor from "./Advisor";
+import StatusCue from "./StatusCue";
 import PageSpinner from "../general/PageSpinner";
 import PageInternalError from "../general/PageInternalError";
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 
 import {css, jsx} from "@emotion/core";
 
@@ -34,7 +35,7 @@ function StudentHome() {
     }
 
     .student-plans-data {
-      padding: 1rem 2rem;
+      padding: 1rem 4rem;
     }
 
     .new-plan-button {
@@ -58,8 +59,8 @@ function StudentHome() {
     }
 
     .table-item-subtitle {
+      display: inline-block;
       font-weight: normal;
-      color: var(--color-gray-400);
     }
 
     table {
@@ -84,9 +85,9 @@ function StudentHome() {
       white-space: nowrap;
     }
 
-    table.student-plans-table  thead tr th:nth-of-type(2) {
+    table.student-plans-table thead tr th:nth-of-type(4) {
       /*width: -webkit-fill-available;*/
-      width: 30%;
+      //width: 50%;
     }
 
     table tbody tr td {
@@ -107,7 +108,7 @@ function StudentHome() {
     }
 
     table.student-plans-table tbody tr td:nth-of-type(1) {
-      width: 50%;
+      width: 30%;
       font-weight: 500;
     }
 
@@ -220,6 +221,7 @@ function StudentHome() {
               <thead>
                 <tr>
                   <th className="student-plans-data">Name</th>
+                  <th className="student-plans-data">Status</th>
                   <th className="student-plans-data">Reviewers</th>
                   <th className="student-plans-data">Updated</th>
                 </tr>
@@ -229,9 +231,12 @@ function StudentHome() {
                   <tr key={plan.planId + "a"} onClick={() => goToPlan(plan)}>
                     <td className="student-plans-data" key={plan.planId + "b"}>
                       <div className="table-item-title">{plan.planName}</div>
-                      <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
                     </td>
                     <td className="student-plans-data" key={plan.planId + "c"}>
+                      <StatusCue status={plan.status} />
+                      <div className="table-item-subtitle">{statusText(plan.status)}</div>
+                    </td>
+                    <td className="student-plans-data" key={plan.planId + "d"}>
                       {plan.advisors ? (plan.advisors.map(advisor =>
                         <Advisor key={advisor.firstName + advisor.lastName}
                           firstName={advisor.firstName} lastName={advisor.lastName} />
@@ -239,7 +244,7 @@ function StudentHome() {
                         null
                       )}
                     </td>
-                    <td className="student-plans-data" key={plan.planId + "d"}>
+                    <td className="student-plans-data" key={plan.planId + "e"}>
                       {formatTime(plan.lastUpdated)}
                     </td>
                   </tr>) : null}

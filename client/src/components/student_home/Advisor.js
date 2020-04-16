@@ -14,10 +14,10 @@ function Advisor(props) {
 
     & {
       position: relative;
-      margin-right: -2rem;
+      margin-right: -1.5rem;
       display: inline-block;
-      height: 4rem;
-      width: 4rem;
+      height: 3rem;
+      width: 3rem;
       border-radius: 50%;
       background: ${iconColor};
       text-decoration: none !important;
@@ -26,7 +26,7 @@ function Advisor(props) {
     .icon-text {
       color: white;
       font-weight: bold;
-      line-height: 4rem;
+      line-height: 3rem;
       text-align: center;
     }
 
