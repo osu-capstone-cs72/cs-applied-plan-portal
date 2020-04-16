@@ -70,39 +70,62 @@ function Notifications() {
 
   `;
 
-  // when the page first loads, show the list of unseen notifications
+  // fetch new notifications when the page first loads or when enough time passes
   useEffect(() => {
-    fetchNotifications();
-    // eslint-disable-next-line
-  }, []);
 
-  // get all notifications for the current user
-  async function fetchNotifications() {
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
 
-    try {
+    // get all notifications for the current user
+    async function fetchNotifications() {
 
-      const url = `/api/notification`;
-      let obj = [];
+      try {
 
-      // get notifications data
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setNotifications(obj.notifications);
-      } else {
-        setNotifications([]);
+        const url = `/api/notification`;
+        let obj = [];
+
+        // get notifications data
+        const response = await fetch(url);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (response.ok) {
+            obj = await response.json();
+            setNotifications(obj.notifications);
+          } else {
+            setNotifications([]);
+          }
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          // log server error, if it happens while fetching notifications
+          console.log("An internal server error occurred. Please try again later.");
+        }
       }
 
-    } catch (err) {
-      // log server error, if it happens while fetching notifications
-      console.log("An internal server error occurred. Please try again later.");
+      // after the notifications are returned or fail set a timer to try again
+      setTimeout(fetchNotifications, TIME_BETWEEN_NOTIFICATIONS);
+
     }
 
-    // after the notifications are returned or fail set a timer to try again
-    setTimeout(fetchNotifications, TIME_BETWEEN_NOTIFICATIONS);
+    fetchNotifications();
 
-  }
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+    // eslint-disable-next-line
+  }, []);
 
   // clear a specific notification
   async function clearNotification(notificationId, index) {
@@ -118,7 +141,6 @@ function Notifications() {
       // delete the notification on the client-side
       const newNotifications = notifications.slice();
       newNotifications.splice(index, 1);
-      console.log("newNotifications:", newNotifications, "\nnotifications:", notifications);
       setNotifications(newNotifications);
 
     } catch (err) {
