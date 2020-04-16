@@ -116,6 +116,11 @@ function StudentHome() {
   // on page load, show all of the current students plans
   useEffect(() => {
 
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
     // load all of the current students plans
     async function getAllPlans() {
 
@@ -132,50 +137,67 @@ function StudentHome() {
 
       try {
         const results = await fetch(getUrl);
-        if (results.ok) {
-          obj = await results.json();
 
-          // modify how advisors are listed in our plans object
-          // we will convert advisors listed as a string into an array
-          // of objects
-          for (let i = 0; i < obj.plans.length; i++) {
-            if (obj.plans[i].advisors !== null) {
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
 
-              // split the advisor string into an array of full names
-              // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
-              const fullNames = obj.plans[i].advisors.split(",");
-              obj.plans[i].advisors = [];
+          if (results.ok) {
+            obj = await results.json();
 
-              // split the advisor full names into a first and last name
-              for (let j = 0; j < fullNames.length; j++) {
-                const splitName = fullNames[j].split(" ");
-                if (splitName.length >= 2) {
-                  obj.plans[i].advisors.push({
-                    firstName: splitName[0],
-                    lastName: splitName[1]
-                  });
+            // modify how advisors are listed in our plans object
+            // we will convert advisors listed as a string into an array
+            // of objects
+            for (let i = 0; i < obj.plans.length; i++) {
+              if (obj.plans[i].advisors !== null) {
+
+                // split the advisor string into an array of full names
+                // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
+                const fullNames = obj.plans[i].advisors.split(",");
+                obj.plans[i].advisors = [];
+
+                // split the advisor full names into a first and last name
+                for (let j = 0; j < fullNames.length; j++) {
+                  const splitName = fullNames[j].split(" ");
+                  if (splitName.length >= 2) {
+                    obj.plans[i].advisors.push({
+                      firstName: splitName[0],
+                      lastName: splitName[1]
+                    });
+                  }
                 }
               }
             }
+
+            setPlans(obj.plans);
+
+          } else {
+            // we got a bad status code
+            if (results.status === 500) {
+              setPageError(500);
+            }
           }
 
-          setPlans(obj.plans);
-
-        } else {
-          // we got a bad status code
-          if (results.status === 500) {
-            setPageError(500);
-          }
           setLoading(false);
-          return;
+
         }
+
       } catch (err) {
-        setPageError(500);
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          setPageError(500);
+        }
       }
-      setLoading(false);
     }
 
     getAllPlans();
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
 
     // eslint-disable-next-line
   }, []);
