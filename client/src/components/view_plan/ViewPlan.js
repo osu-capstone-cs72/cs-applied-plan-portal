@@ -19,7 +19,10 @@ import PHE from "print-html-element";
 function ViewPlan(props) {
 
   const [pageError, setPageError] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [feedLoading, setFeedLoading] = useState(false);
   const [studentFirstName, setStudentFirstName] = useState("");
   const [studentLastName, setStudentLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -42,6 +45,11 @@ function ViewPlan(props) {
       lastName: ""
     }
   );
+  const [request, setRequest] = useState ({
+    primary: "null",
+    secondary: "null",
+    planId: planId
+  });
 
   const style = css`
     display: inline-block;
@@ -49,150 +57,233 @@ function ViewPlan(props) {
     margin: 0 auto;
   `;
 
+  // get current user data for creating comments or reviews
+  useEffect(() => {
+
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
+    async function fetchUser() {
+      try {
+
+        setUserLoading(true);
+        const profile = getProfile();
+        const url = `/api/user/${profile.userId}`;
+        const response = await fetch(url);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (response.ok) {
+            // get data from the response
+            const obj = await response.json();
+            setCurrentUser(
+              {
+                id: obj.userId,
+                role: obj.role,
+                firstName: obj.firstName,
+                lastName: obj.lastName
+              }
+            );
+          }
+
+          setUserLoading(false);
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          console.log("An internal server error occurred. Please try again later.");
+        }
+      }
+
+    }
+
+    fetchUser();
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+  }, []);
+
   // get primary plan data
   useEffect(() => {
+
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
+    // get plan data based on the plan ID
+    async function fetchPlan(planId) {
+      try {
+
+        setPlanLoading(true);
+        const url = `/api/plan/${planId}`;
+        let obj = [];
+
+        // get plan data
+        const response = await fetch(url);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (response.ok) {
+            // get data from the response
+            obj = await response.json();
+            setCreated(obj.created);
+            setCourses(obj.courses);
+            setPlanName(obj.planName);
+            setUserId(obj.studentId);
+            setStatus(parseInt(obj.status));
+            setStudentFirstName(obj.firstName);
+            setStudentLastName(obj.lastName);
+            setEmail(obj.email);
+          } else {
+            // we got a bad status code
+            if (response.status === 500) {
+              setPageError(500);
+            } else {
+              setPageError(404);
+            }
+            return;
+          }
+
+          setPlanLoading(false);
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          // send to 500 page if a server error happens while fetching plan
+          setPageError(500);
+        }
+      }
+
+    }
+
     fetchPlan(planId);
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
     // eslint-disable-next-line
   }, [planId]);
 
   // get activity feed data for plan
   useEffect(() => {
-    // fetch the plan activity if the plan has loaded
-    // or if the plan ID or plan info has changed
-    if (created !== "" && studentFirstName !== "" && studentLastName !== "") {
 
-      const newCursor = {
-        primary: "null",
-        secondary: "null"
-      };
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
 
-      fetchActivity(planId, newCursor);
 
-    }
-    // eslint-disable-next-line
-  }, [planId, created, studentFirstName, studentLastName]);
-
-  // get plan data based on the plan ID
-  async function fetchPlan(planId) {
-    setLoading(true);
-    try {
-
-      let url = `/api/plan/${planId}`;
-      let obj = [];
-
+    // get the activity feed for the plan that matches the given plan ID
+    async function fetchActivity(planId, cursor) {
       try {
 
-        // get plan data
+        setFeedLoading(true);
+        const initialReview =
+        {
+          id: "0r",
+          status: 5,
+          planId: planId,
+          userId: userId,
+          time: created,
+          firstName: studentFirstName,
+          lastName: studentLastName
+        };
+        const url = `/api/plan/${planId}/activity/${cursor.primary}/` +
+        `${cursor.secondary}`;
+        let obj = [];
+
+        // get plan activity
         const response = await fetch(url);
-        if (response.ok) {
-          // get data from the response
-          obj = await response.json();
-          setCreated(obj.created);
-          setCourses(obj.courses);
-          setPlanName(obj.planName);
-          setUserId(obj.studentId);
-          setStatus(parseInt(obj.status));
-          setStudentFirstName(obj.firstName);
-          setStudentLastName(obj.lastName);
-          setEmail(obj.email);
-        } else {
-          // we got a bad status code
-          if (response.status === 500) {
-            setPageError(500);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (response.ok) {
+
+            // get data from the response
+            obj = await response.json();
+
+            // if this is the first fetch for the current plan
+            // then ensure that the activity feed is empty to start
+            let pastActivity = activity;
+            if (cursor.primary === "null" && cursor.secondary === "null") {
+              pastActivity = [];
+            }
+
+            // if we are showing all activity then show the initial review
+            if (obj.nextCursor.primary === "null") {
+              setActivity([...pastActivity, ...obj.activity, initialReview]);
+            } else {
+              setActivity([...pastActivity, ...obj.activity]);
+            }
+            setCursor(obj.nextCursor);
+
           } else {
-            setPageError(404);
+            // if there is no activity to show, then show the initial review
+            // but first wait for all of the plan metadata to load
+            if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
+              setActivity([initialReview]);
+            }
           }
-          return;
+
+          setFeedLoading(false);
+
         }
 
       } catch (err) {
-        // send to 500 page if a server error happens while fetching plan
-        setPageError(500);
-        return;
+        // this is a server error
+        console.log("An internal server error occurred. Please try again later.");
       }
-
-      // retrieve the logged in user and set user ID accordingly
-      // if user cannot be retrieved, we will get an invalid user ID (0)
-      const profile = getProfile();
-
-      url = `/api/user/${profile.userId}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setCurrentUser(
-          {
-            id: obj.userId,
-            role: obj.role,
-            firstName: obj.firstName,
-            lastName: obj.lastName
-          }
-        );
-      }
-
-    } catch (err) {
-      // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
     }
-    setLoading(false);
-  }
 
-  // get the activity feed for the plan that matches the given plan ID
-  async function fetchActivity(planId, cursor) {
-    setLoading(true);
-    try {
+    if (created !== "" && studentFirstName !== "" && studentLastName !== "") {
 
-      const initialReview =
-      {
-        id: "0r",
-        status: 5,
-        planId: planId,
-        userId: userId,
-        time: created,
-        firstName: studentFirstName,
-        lastName: studentLastName
+      const newCursor = {
+        primary: request.primary,
+        secondary: request.secondary
       };
-      const url = `/api/plan/${planId}/activity/${cursor.primary}/` +
-      `${cursor.secondary}`;
-      let obj = [];
+      fetchActivity(planId, newCursor);
 
-      // get plan activity
-      const response = await fetch(url);
-
-      if (response.ok) {
-
-        // get data from the response
-        obj = await response.json();
-
-        // if this is the first fetch for the current plan
-        // then ensure that the activity feed is empty to start
-        let pastActivity = activity;
-        if (cursor.primary === "null" && cursor.secondary === "null") {
-          pastActivity = [];
-        }
-
-        // if we are showing all activity then show the initial review
-        if (obj.nextCursor.primary === "null") {
-          setActivity([...pastActivity, ...obj.activity, initialReview]);
-        } else {
-          setActivity([...pastActivity, ...obj.activity]);
-        }
-        setCursor(obj.nextCursor);
-
-      } else {
-        // if there is no activity to show, then show the initial review
-        // but first wait for all of the plan metadata to load
-        if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
-          setActivity([initialReview]);
-        }
-      }
-
-    } catch (err) {
-      // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
     }
-    setLoading(false);
-  }
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+    // eslint-disable-next-line
+  }, [request, created, studentFirstName, studentLastName]);
+
+  // track the state of multiple page components loading and
+  // display a spinner if any part of the page is still loading
+  useEffect(() => {
+    if (planLoading || userLoading || feedLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [planLoading, userLoading, feedLoading]);
 
   // add a new comment to the activity feed
   function handleAddComment(e) {
@@ -247,6 +338,14 @@ function ViewPlan(props) {
     }
   }
 
+  function requestActivity(planId, cursor) {
+    setRequest({
+      primary: cursor.primary,
+      secondary: cursor.secondary,
+      planId: planId
+    });
+  }
+
   if (!pageError) {
     return (
       <div id="view-plan-container" css={style}>
@@ -262,7 +361,7 @@ function ViewPlan(props) {
         <ActivityFeed activity={activity} currentUser={currentUser}
           status={status} loading={loading}
           cursor={cursor} onNewComment={e => handleAddComment(e)}
-          onShowMore={cursor => fetchActivity(planId, cursor)}/>
+          onShowMore={cursor => requestActivity(planId, cursor)} />
       </div>
     );
   } else if (pageError === 404) {
