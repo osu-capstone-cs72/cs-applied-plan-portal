@@ -29,7 +29,7 @@ function AdvisorHome() {
     primary: "null",
     secondary: "null",
     new: false
-  })
+  });
 
   const style = css`
 
@@ -166,11 +166,13 @@ function AdvisorHome() {
   // initiate a new search request when the sorting order changes
   useEffect(() => {
 
-    setRequest({
-      primary: "null",
-      secondary: "null",
-      new: true
-    });
+    if (mounted) {
+      setRequest({
+        primary: "null",
+        secondary: "null",
+        new: true
+      });
+    }
 
     // eslint-disable-next-line
   }, [searchFields.orderValue, searchFields.sortValue]);
