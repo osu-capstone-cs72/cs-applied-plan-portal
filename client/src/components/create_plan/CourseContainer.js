@@ -9,8 +9,10 @@ import {css, jsx} from "@emotion/core";
 
 function CourseContainer(props) {
 
+  const [mounted, setMounted] = useState(false);
   const [courses, setCourses] = useState([]);
   const [filter, setFilter] = useState("*");
+  const [request, setRequest] = useState("*");
 
   const style = css`
     flex: 33%;
@@ -84,42 +86,90 @@ function CourseContainer(props) {
     }
   `;
 
-  async function filterSearch() {
-    changeWarning("");
+  // listen for new search requests and perform a new search when one arrives
+  useEffect(() => {
 
-    setCourses([]);
-    let value = document.getElementById("search-container").value;
-    if (value === "") {
-      value = "*";
-    }
-    const getUrl = `/api/course/search/${value}/${filter}`;
-    let obj = [];
-    try {
-      const results = await fetch(getUrl);
-      if (results.ok) {
-        obj = await results.json();
-        setCourses(obj.courses);
-      } else {
-        // we got a bad status code
-        obj = await results.json();
-        changeWarning(obj.error);
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
+    async function filterSearch() {
+      try {
+        changeWarning("");
+
         setCourses([]);
+        let value = document.getElementById("search-container").value;
+        if (value === "") {
+          value = "*";
+        }
+        const getUrl = `/api/course/search/${value}/${filter}`;
+        let obj = [];
+
+        const results = await fetch(getUrl);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (results.ok) {
+            obj = await results.json();
+            setCourses(obj.courses);
+          } else {
+            // we got a bad status code
+            obj = await results.json();
+            changeWarning(obj.error);
+            setCourses([]);
+          }
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          changeWarning("An internal server error occurred. Please try again later.");
+        }
       }
-    } catch (err) {
-      alert("An internal server error occurred. Please try again later.");
     }
+
+    // don't load search results on the initial mount
+    if (mounted) {
+      filterSearch();
+    } else {
+      setMounted(true);
+    }
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+    // eslint-disable-next-line
+  }, [request]);
+
+  // initiates a new course search
+  function callSearch() {
+    setRequest({
+      courses: courses,
+      filter: filter
+    });
   }
 
+  // if the filter value is changed clear the error field and set the filter
   async function handleFilterChange(value) {
     changeWarning("");
     setFilter(value);
   }
 
+  // prevent default submit behavior of form elements
   function submitHandler(e) {
     e.preventDefault();
-    filterSearch();
+    callSearch();
   }
 
+  // update the error field text
   function changeWarning(text) {
     props.onNewWarning(text);
   }
@@ -131,7 +181,7 @@ function CourseContainer(props) {
         <form className="form my-2 my-lg-0" onSubmit={submitHandler}>
           <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
         </form>
-        <button className="search-button" type="submit" onClick={filterSearch}>Search</button>
+        <button className="search-button" type="submit" onClick={callSearch}>Search</button>
       </div>
       <form className="course-filter form-group">
         <FilterBar value={filter} onValueChange={handleFilterChange}/>

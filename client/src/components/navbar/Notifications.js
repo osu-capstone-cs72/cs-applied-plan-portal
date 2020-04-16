@@ -162,7 +162,7 @@ function Notifications() {
           ))
         ) : (
           <Link to={`.`} onClick={(event) => event.preventDefault()}>
-            <p>No new notifications.</p>
+            <p>No new notifications</p>
           </Link>
         )}
       </div>

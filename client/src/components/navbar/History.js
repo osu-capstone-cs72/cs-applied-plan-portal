@@ -99,7 +99,7 @@ function History() {
           ))
         ) : (
           <Link to={`.`} onClick={(event) => event.preventDefault()}>
-            <p>No recently visited plans.</p>
+            <p>No recently visited plans</p>
           </Link>
         )}
       </div>
