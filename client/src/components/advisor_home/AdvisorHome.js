@@ -25,6 +25,11 @@ function AdvisorHome() {
     primary: "null",
     secondary: "null"
   });
+  const [request, setRequest] = useState ({
+    primary: "null",
+    secondary: "null",
+    new: false
+  })
 
   const style = css`
 
@@ -40,7 +45,7 @@ function AdvisorHome() {
 
   `;
 
-  // if the sorting order changes perform a new search
+  // listen for new search requests and perform a new search when one arrives
   useEffect(() => {
 
     // set ignore and controller to prevent a memory leak
@@ -106,6 +111,7 @@ function AdvisorHome() {
             setCursor(obj.nextCursor);
 
           } else {
+
             // we got a bad status code. Show the error
             obj = await results.json();
             setErrorMessage(obj.error);
@@ -118,6 +124,7 @@ function AdvisorHome() {
               setErrorMessage("An internal server error occurred. Please try again later.");
             }
             setPlans([]);
+
           }
 
           setLoading(false);
@@ -139,10 +146,10 @@ function AdvisorHome() {
     // don't load search results on the initial mount
     if (mounted) {
       const newCursor = {
-        primary: "null",
-        secondary: "null"
+        primary: request.primary,
+        secondary: request.secondary
       };
-      searchPlans(newCursor, false);
+      searchPlans(newCursor, request.new);
     } else {
       setMounted(true);
     }
@@ -152,6 +159,18 @@ function AdvisorHome() {
       controller.abort();
       ignore = true;
     };
+
+    // eslint-disable-next-line
+  }, [request]);
+
+  // initiate a new search request when the sorting order changes
+  useEffect(() => {
+
+    setRequest({
+      primary: "null",
+      secondary: "null",
+      new: true
+    });
 
     // eslint-disable-next-line
   }, [searchFields.orderValue, searchFields.sortValue]);
@@ -168,6 +187,15 @@ function AdvisorHome() {
 
   }
 
+  // initiates a new plan search
+  function callSearch(newCursor, newSearch) {
+    setRequest({
+      primary: newCursor.primary,
+      secondary: newCursor.secondary,
+      new: newSearch
+    });
+  }
+
   return (
     <div id="advisor-home-page" css={style}>
       <PageSpinner loading={loading} />
@@ -176,12 +204,12 @@ function AdvisorHome() {
       <div id="advisor-home-container">
         <div id="advisor-home-contents-container">
 
-          <FindPlans onSearch={cursor => searchPlans(cursor, true)}/>
+          <FindPlans onSearch={cursor => callSearch(cursor, true)}/>
 
           <SearchResults plans={plans} cursor={cursor} error={errorMessage}
             searchFields={searchFields} loading={loading}
             onChangeSort={(sort, order) => handleChangeSort(sort, order)}
-            onLoadMore={cursor => searchPlans(cursor, false)} />
+            onLoadMore={cursor => callSearch(cursor, false)} />
 
         </div>
       </div>
