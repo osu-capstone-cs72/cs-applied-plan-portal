@@ -13,7 +13,7 @@ This is a web app that streamlines the pro-school application process for OSU Ap
 1. Download the contents of the repo to your machine by running the following
 command with your preferred shell.
 
-  git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
+        git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
 
 2. Download the following .env file and put it in the ROOT directory of the repo.
 
@@ -27,7 +27,7 @@ NOTE: You must be logged into your Oregon State University email and have been g
 
 4. From the root directory of this repo, run
 
-    chmod +x install.sh && ./install.sh
+        chmod +x install.sh && ./install.sh
 
 Please follow the instructions produced by the script to install the necessary software and dependencies.
 
