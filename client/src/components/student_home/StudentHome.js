@@ -156,7 +156,7 @@ export default class StudentHome extends React.Component {
     }
 
     table thead tr th {
-      background: var(--color-lightgray-100);
+      background: #f8f7f7;
       color: var(--color-gray-400);
       font-variant-caps: all-small-caps;
       font-weight: 500;
@@ -195,6 +195,30 @@ export default class StudentHome extends React.Component {
       font-weight: 500;
     }
     
+    .empty-plan-container {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .empty-plan-create-button {
+      display: block;
+      background: var(--color-orange-500);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      width: auto;
+      color: white;
+      border: none;
+      font-size: 18px;
+      margin-top: 1rem;
+      text-decoration: none !important;
+      transition: background 0.1s linear;
+    }
+    
+    .empty-plan-create-button:active {
+      background: var(--color-orange-600);
+    }
   `;
 
     if (!this.state.pageError) {
@@ -237,9 +261,12 @@ export default class StudentHome extends React.Component {
                       </tr>) : null}
                   </tbody>
                 </table>
-                : <div><p>Click the + button to create a plan.</p></div>
+                : <div className="empty-plan-container">
+                    <h3 className="empty-plan-title">You haven't created any plans.</h3>
+                    <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
+                  </div>
               }
-              <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+              <a href="createPlan" title="Create a plan" className="new-plan-button"></a>
 
             </div>
           </div>

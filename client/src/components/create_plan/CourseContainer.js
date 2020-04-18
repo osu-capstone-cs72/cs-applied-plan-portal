@@ -30,6 +30,7 @@ export default class CourseContainer extends React.Component {
 
     this.filterSearch = this.filterSearch.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.updateFilterAndSearch = this.updateFilterAndSearch.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
     this.changeWarning = this.changeWarning.bind(this);
   }
@@ -64,7 +65,7 @@ export default class CourseContainer extends React.Component {
         });
       }
     } catch (err) {
-      alert("An internal server error occurred. Please try again later.");
+      this.changeWarning("An internal server error occurred. Please try again later.");
     }
   }
 
@@ -75,6 +76,11 @@ export default class CourseContainer extends React.Component {
     });
   }
 
+  async updateFilterAndSearch(e) {
+    await this.handleFilterChange(e);
+    await this.filterSearch();
+  }
+  
   submitHandler(e) {
     e.preventDefault();
     this.filterSearch();
@@ -135,7 +141,8 @@ export default class CourseContainer extends React.Component {
       
       #search-container {
         padding: 2rem 1rem;
-        border: 0;
+        border: 1.5px solid #dfdad8;
+        box-shadow: none;
       }
 
       .course-filter {
@@ -168,7 +175,7 @@ export default class CourseContainer extends React.Component {
           <button className="search-button" type="submit" onClick={this.filterSearch}>Search</button>
         </div>
         <form className="course-filter form-group">
-          <FilterBar value={this.state.filter} onValueChange={this.handleFilterChange}/>
+          <FilterBar value={this.state.filter} onValueChange={this.updateFilterAndSearch}/>
         </form>
         <ErrorMessage text={this.props.warning} />
         <div className="explore-courses">

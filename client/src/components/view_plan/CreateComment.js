@@ -15,7 +15,9 @@ function CreateComment(props) {
   const style = css`
 
     & {
-      display: inline-block;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     #comment-input-container {

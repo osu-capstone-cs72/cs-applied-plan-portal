@@ -235,7 +235,7 @@ export default class EditPlan extends React.Component {
       #plan-name-input {
         font-size: 23px;
         border-radius: 0.5rem;
-        border: 2px solid var(--color-lightgray-500);
+        border: 1.5px solid #dfdad8;
         /*background: var(--color-lightgray-300);*/
         color: var(--color-gray-800);
         padding: 0.5rem 1rem;
@@ -260,7 +260,7 @@ export default class EditPlan extends React.Component {
       }
       
       table.edit-plan-table thead tr th {
-        background: var(--color-lightgray-100);
+        background: #f8f7f7;
         color: var(--color-gray-400);
         font-variant-caps: all-small-caps;
         font-weight: 600;
@@ -282,10 +282,14 @@ export default class EditPlan extends React.Component {
         border-radius: 0.5rem;
         border: none;
       }
-
+      
       .table-container {
         display: flex;
         flex-direction: column;
+      }
+      
+      .empty-plan-title {
+        margin-top: 10px;
       }
     `;
 
@@ -303,7 +307,7 @@ export default class EditPlan extends React.Component {
             <div className="credits-label">credits</div>
           </div>
         </div>
-        <ErrorMessage text={this.state.warning} />
+        <ErrorMessage text={this.state.warning} className="error-hide-conditional"/>
         {this.props.courses.length > 0 ?
           <div className="table-container">
             <table className="edit-plan-table">
@@ -326,7 +330,8 @@ export default class EditPlan extends React.Component {
             </div>
           </div>
           : <div className="no-courses-msg">
-            <p>Use the search bar to find and select classes.</p>
+              <h2 className="empty-plan-title">No courses!</h2>
+              <h4 className="empty-plan-description">Use the search bar to find courses and add them to your plan.</h4>
           </div>}
       </div>
     );
