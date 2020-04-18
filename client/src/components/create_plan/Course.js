@@ -52,7 +52,7 @@ export default class Course extends React.Component {
 
     const style = css`
       margin-bottom: 1rem;
-      background: var(--color-lightgray-50);
+      background: #f8f7f7;
       padding: 1rem;
       border-radius: 0.5rem;
       
@@ -80,6 +80,7 @@ export default class Course extends React.Component {
       .add-button {
         margin-right: 0;
         margin-left: auto;
+        white-space: nowrap;
       }
       
       .disabled {
@@ -128,7 +129,6 @@ export default class Course extends React.Component {
           <h4>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</h4>
           { this.props.description !== "" &&
             <div>
-              <br></br>
               <h4>Description</h4>
               <p>{this.props.description}</p>
             </div>

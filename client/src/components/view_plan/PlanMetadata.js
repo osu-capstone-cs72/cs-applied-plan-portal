@@ -24,7 +24,7 @@ function PlanMetadata(props) {
       padding: 10px;
       text-align: center;
       width: 100%;
-      background: var(--color-gray-200);
+      background: #ede9e8;
       display: flex;
       align-items: stretch;
       justify-content: center;

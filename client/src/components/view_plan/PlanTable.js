@@ -38,7 +38,7 @@ function PlanTable(props) {
     }
 
     table thead tr th {
-      background: var(--color-lightgray-100);
+      background: #f8f7f7;
       color: var(--color-gray-400);
       font-variant-caps: all-small-caps;
       font-weight: 500;

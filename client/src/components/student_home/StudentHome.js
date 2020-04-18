@@ -158,7 +158,7 @@ export default class StudentHome extends React.Component {
     }
 
     table thead tr th {
-      background: var(--color-lightgray-100);
+      background: #f8f7f7;
       color: var(--color-gray-400);
       font-variant-caps: all-small-caps;
       font-weight: 500;
@@ -196,7 +196,31 @@ export default class StudentHome extends React.Component {
       width: 50%;
       font-weight: 500;
     }
-
+    
+    .empty-plan-container {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .empty-plan-create-button {
+      display: block;
+      background: var(--color-orange-500);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      width: auto;
+      color: white;
+      border: none;
+      font-size: 18px;
+      margin-top: 1rem;
+      text-decoration: none !important;
+      transition: background 0.1s linear;
+    }
+    
+    .empty-plan-create-button:active {
+      background: var(--color-orange-600);
+    }
   `;
 
     if (!this.state.pageError) {
@@ -208,36 +232,43 @@ export default class StudentHome extends React.Component {
           <div id="student-home-container">
             <div id="student-home-contents-container">
 
-              <table className="student-plans-table">
-                <thead>
-                  <tr>
-                    <th className="student-plans-data">Name</th>
-                    <th className="student-plans-data">Reviewers</th>
-                    <th className="student-plans-data">Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.plans ? this.state.plans.map(plan =>
-                    <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
-                      <td className="student-plans-data" key={plan.planId + "b"}>
-                        <div className="table-item-title">{plan.planName}</div>
-                        <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
-                      </td>
-                      <td className="student-plans-data" key={plan.planId + "c"}>
-                        {plan.advisors ? (plan.advisors.map(advisor =>
-                          <Advisor key={advisor.firstName + advisor.lastName}
-                            firstName={advisor.firstName} lastName={advisor.lastName} />
-                        )) : (
-                          null
-                        )}
-                      </td>
-                      <td className="student-plans-data" key={plan.planId + "d"}>
-                        {formatTime(plan.lastUpdated)}
-                      </td>
-                    </tr>) : null}
-                </tbody>
-              </table>
-              <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+              {this.state.plans ?
+
+                <table className="student-plans-table">
+                  <thead>
+                    <tr>
+                      <th className="student-plans-data">Name</th>
+                      <th className="student-plans-data">Reviewers</th>
+                      <th className="student-plans-data">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.plans ? this.state.plans.map(plan =>
+                      <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
+                        <td className="student-plans-data" key={plan.planId + "b"}>
+                          <div className="table-item-title">{plan.planName}</div>
+                          <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "c"}>
+                          {plan.advisors ? (plan.advisors.map(advisor =>
+                            <Advisor key={advisor.firstName + advisor.lastName}
+                              firstName={advisor.firstName} lastName={advisor.lastName} />
+                          )) : (
+                            null
+                          )}
+                        </td>
+                        <td className="student-plans-data" key={plan.planId + "d"}>
+                          {formatTime(plan.lastUpdated)}
+                        </td>
+                      </tr>) : null}
+                  </tbody>
+                </table>
+                : <div className="empty-plan-container">
+                    <h3 className="empty-plan-title">You haven't created any plans.</h3>
+                    <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
+                  </div>
+              }
+              <a href="createPlan" title="Create a plan" className="new-plan-button"></a>
 
             </div>
           </div>
