@@ -2,7 +2,7 @@
 
 import React from "react";
 import NavBar from "../navbar/Navbar";
-import {getToken, getProfile} from "../../utils/authService";
+import {getProfile} from "../../utils/authService";
 import {formatTime} from "../../utils/formatTime";
 import Advisor from "./Advisor";
 import PageSpinner from "../general/PageSpinner";
@@ -35,11 +35,13 @@ export default class StudentHome extends React.Component {
     this.setState({
       loading: true
     });
-    const profile = await getProfile();
-    const token = getToken();
-    const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-    const getUrl = `http://${server}/user/${profile.userId}/plans/` +
-      `?accessToken=${token}`;
+
+    // retrieve the logged in user and set user ID accordingly
+    // if user cannot be retrieved, we will get an invalid user ID (0)
+    const profile = getProfile();
+    const userId = profile.userId;
+
+    const getUrl = `/api/user/${userId}/plans`;
 
     let obj = [];
 
@@ -136,7 +138,7 @@ export default class StudentHome extends React.Component {
       background-repeat: no-repeat;
       background-position: center;
     }
-    
+
     .table-item-title {
       font-weight: 600;
     }
@@ -145,7 +147,7 @@ export default class StudentHome extends React.Component {
       font-weight: normal;
       color: var(--color-gray-400);
     }
-    
+
     table {
       border-radius: 0.5rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -168,7 +170,7 @@ export default class StudentHome extends React.Component {
       white-space: nowrap;
     }
 
-    table.student-plans-table  thead tr th:nth-child(2) {
+    table.student-plans-table  thead tr th:nth-of-type(2) {
       /*width: -webkit-fill-available;*/
       width: 30%;
     }
@@ -177,7 +179,7 @@ export default class StudentHome extends React.Component {
       vertical-align: middle;
       padding: 1rem 2rem;
     }
-    
+
     table tbody tr {
       cursor: pointer;
     }

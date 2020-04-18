@@ -4,7 +4,6 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 
 function History() {
 
@@ -66,9 +65,7 @@ function History() {
   // get the current users most recently viewed plans
   async function getRecentPlans() {
     try {
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/recent/?accessToken=${token}`;
+      const getUrl = `/api/plan/recent`;
       let obj = {};
 
       const results = await fetch(getUrl);
@@ -93,12 +90,18 @@ function History() {
         <i className="fa fa-caret-down" />
       </button>
       <div className="dropdown-content">
-        {recentPlans.map((item) => (
-          <Link key={item.planId} to={`/viewPlan/${item.planId}`}>
-            {item.planName} <br/>
-            {item.firstName + " " + item.lastName}
+        {recentPlans.length ? (
+          recentPlans.map((item) => (
+            <Link key={item.planId} to={`/viewPlan/${item.planId}`}>
+              {item.planName} <br/>
+              {item.firstName + " " + item.lastName}
+            </Link>
+          ))
+        ) : (
+          <Link to={`.`} onClick={(event) => event.preventDefault()}>
+            <p>No recently visited plans.</p>
           </Link>
-        ))}
+        )}
       </div>
     </div>
   );

@@ -3,11 +3,11 @@
 import NavBar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
-import {getToken} from "../../utils/authService";
 import FindPlans from "./FindPlans";
 import SearchResults from "./SearchResults";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {login} from "../../utils/authService";
 
 function AdvisorHome() {
 
@@ -93,10 +93,8 @@ function AdvisorHome() {
       }
 
       // construct the request url
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/plan/search/${textValue}/${statusValue}/` +
-        `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}/?accessToken=${token}`;
+      const getUrl = `/api/plan/search/${textValue}/${statusValue}/` +
+        `${sortValue}/${orderValue}/${cursor.primary}/${cursor.secondary}`;
       let obj = {};
 
       // get our search results
@@ -116,6 +114,11 @@ function AdvisorHome() {
         // we got a bad status code. Show the error
         obj = await results.json();
         setErrorMessage(obj.error);
+        if (results.status === 403) {
+          // if the user is not allowed to search plans,
+          // redirect to login to allow updating of user info
+          login();
+        }
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }

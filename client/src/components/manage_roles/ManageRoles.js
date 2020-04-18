@@ -7,7 +7,7 @@ import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
 import SearchResults from "./SearchResults";
-import {getToken} from "../../utils/authService";
+import {login} from "../../utils/authService";
 
 export default function ManageRoles() {
 
@@ -70,10 +70,8 @@ export default function ManageRoles() {
       }
 
       // construct the request url
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const getUrl = `http://${server}/user/search/${textValue}/${roleValue}` +
-        `/${cursor.primary}/${cursor.secondary}?accessToken=${token}`;
+      const getUrl = `/api/user/search/${textValue}/${roleValue}` +
+        `/${cursor.primary}/${cursor.secondary}`;
       let obj = [];
 
       // get our search results
@@ -94,6 +92,11 @@ export default function ManageRoles() {
         // we got a bad status code. Show the error
         obj = await results.json();
         setErrorMessage(obj.error);
+        if (results.status === 403) {
+          // if the user is not allowed to search users,
+          // redirect to login to allow updating of user info
+          login();
+        }
         if (results.status === 500) {
           setErrorMessage("An internal server error occurred. Please try again later.");
         }

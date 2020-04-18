@@ -94,7 +94,7 @@ function PlanMetadata(props) {
       }
 
       .metadata-field {
-        width: 20%;
+        display: inline-block;
         word-wrap: break-word;
       }
 
@@ -112,23 +112,23 @@ function PlanMetadata(props) {
   return (
     <div id="metadata-container" css={style}>
       <div className="plan-metadata">
-        <div className="metadata-field">
+        <div className="metadata-field" id="plan-field">
           <p className="field-type">Plan Name:</p>
           <p className="field-text">{props.planName}</p>
         </div>
-        <div className="metadata-field">
+        <div className="metadata-field" id="student-field">
           <p className="field-type">Student Name:</p>
           <p className="field-text">{props.studentName}</p>
         </div>
-        <div className="metadata-field">
+        <div className="metadata-field" id="email-field">
           <p className="field-type">Email:</p>
           <p className="field-text">{props.email}</p>
         </div>
-        <div className="metadata-field">
+        <div className="metadata-field" id="credit-field">
           <p className="field-type">Total Credits:</p>
           <p className="field-text">{creditSum}</p>
         </div>
-        <div className="metadata-field">
+        <div className="metadata-field" id="status-field">
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{renderStatus(props.status)}</p>
         </div>

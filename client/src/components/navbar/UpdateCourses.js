@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
-import {getToken} from "../../utils/authService";
+import {login} from "../../utils/authService";
 
 function UpdateCourses() {
 
@@ -40,15 +40,21 @@ function UpdateCourses() {
       try {
 
         // request that all courses are updated
-        const token = getToken();
-        const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-        const url = `http://${server}/course/updateDatabase?accessToken=${token}`;
+        const url = `/api/course/updateDatabase`;
 
         // perform the query
         const response = await fetch(url);
         if (!response.ok) {
-          // note that there was an error trying to start the update
-          alert("Internal server error. Unable to update courses.");
+
+          if (response.status === 403) {
+            // if the user is not allowed to update courses,
+            // redirect to login to allow updating of user info
+            login();
+          } else {
+            // note that there was an error trying to start the update
+            alert("Internal server error. Unable to update courses.");
+          }
+
         }
 
       } catch (err) {

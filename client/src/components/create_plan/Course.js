@@ -96,6 +96,7 @@ export default class Course extends React.Component {
       .course-title {
         display: inline-block;
         vertical-align: bottom;
+        text-transform: uppercase;
       }
 
       .course-code {
@@ -119,7 +120,7 @@ export default class Course extends React.Component {
             <div className="course-title">{this.props.courseName}
               <div className="course-code">
                 <small>
-                  {this.props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}
+                  {this.props.courseCode}
                 </small>
               </div>
             </div>

@@ -10,7 +10,7 @@ export default class PlanCourse extends React.Component {
       courseId: PropTypes.number,
       courseCode: PropTypes.string,
       courseName: PropTypes.string,
-      credits: PropTypes.number,
+      credits: PropTypes.any,
       onRemoveCourse: PropTypes.func
     };
   }

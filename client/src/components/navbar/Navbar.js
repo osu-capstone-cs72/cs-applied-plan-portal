@@ -15,16 +15,17 @@ function Navbar() {
   // role and function to set role, default to 0 (Student)
   const [role, setRole] = useState(0);
 
+  // retrieve the logged in user and set role accordingly
+  // if user cannot be retrieved, default to the student role
   useEffect(() => {
+
     async function checkRole() {
-      const profile = await getProfile();
-      if (!profile.role) {
-        setRole(0);
-      } else {
-        setRole(profile.role);
-      }
+      const profile = getProfile();
+      setRole(profile.role);
     }
+
     checkRole();
+
   }, []);
 
   const style = css`
@@ -44,11 +45,11 @@ function Navbar() {
       right: 0;
       z-index: 9;
     }
-    
+
     & a:first-of-type:hover {
       text-decoration: none;
     }
-    
+
     & a:first-of-type {
       text-decoration-color: transparent !important;
     }
@@ -61,7 +62,7 @@ function Navbar() {
       margin-right: 1rem;
       color: white;
     }
-    
+
     /* Don't style the last item, but in a way that's safe for SSR. */
     .right-container > * > button {
       height: 35px;

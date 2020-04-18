@@ -3,8 +3,8 @@
 import {useState} from "react";
 import {css, jsx} from "@emotion/core";
 import {useParams} from "react-router-dom";
-import {getToken} from "../../utils/authService";
 import ErrorMessage from "../general/ErrorMessage";
+import {login} from "../../utils/authService";
 
 function CreateComment(props) {
 
@@ -87,9 +87,7 @@ function CreateComment(props) {
 
       const text = document.getElementById("comment-text-input").value;
 
-      const token = getToken();
-      const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
-      const url = `http://${server}/comment/?accessToken=${token}`;
+      const url = `/api/comment`;
       let obj = [];
 
       const postObj = {
@@ -119,6 +117,10 @@ function CreateComment(props) {
           userId: props.currentUser.id,
           text: text
         });
+      } else if (response.status === 403) {
+        // if the user is not allowed to create a comment on this plan,
+        // redirect to login to allow updating of user info
+        login();
       } else {
         // we got a bad status code. Show the error
         obj = await response.json();
