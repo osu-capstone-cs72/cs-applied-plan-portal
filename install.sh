@@ -34,13 +34,13 @@ else
   echo -e "  NPM \xE2\x9C\x94"
 fi
 
-missing_mysql=$(mysql --version > /dev/null 2>&1; echo $?)
-if [[ "${missing_mysql}" -ne 0 ]]; then
-  echo -e "  MySQL \xE2\x9D\x8C" >&2
-  has_required_software=false
-else
-  echo -e "  MySQL \xE2\x9C\x94"
-fi
+# missing_mysql=$(mysql --version > /dev/null 2>&1; echo $?)
+# if [[ "${missing_mysql}" -ne 0 ]]; then
+#   echo -e "  MySQL \xE2\x9D\x8C" >&2
+#   has_required_software=false
+# else
+#   echo -e "  MySQL \xE2\x9C\x94"
+# fi
 
 if [[ "${has_required_software}" == true ]]; then
   echo -e "\033[0;32mSoftware requirements are met.\033[0m\n"
