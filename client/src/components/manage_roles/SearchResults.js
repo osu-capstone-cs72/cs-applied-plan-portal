@@ -56,8 +56,8 @@ function SearchResults(props) {
     }
 
     table thead tr th {
-      background: var(--color-lightgray-100);
-      color: var(--color-gray-400);
+      background: #f8f7f7;
+      color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
       font-size: 12pt;

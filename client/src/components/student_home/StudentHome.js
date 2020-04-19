@@ -74,7 +74,7 @@ function StudentHome() {
 
     table thead tr th {
       background: #f8f7f7;
-      color: var(--color-gray-400);
+      color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
       font-size: 12pt;
@@ -136,6 +136,11 @@ function StudentHome() {
     .empty-plan-create-button:active {
       background: var(--color-orange-600);
     }
+
+    tr:hover {
+      background: rgba(0, 0, 0, 0.01);
+    }
+  
   `;
 
   // on page load, show all of the current students plans

@@ -81,6 +81,10 @@ function PlanMetadata(props) {
       margin-right: 0.5rem;
     }
 
+    button:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
     @media print {
 
       & {

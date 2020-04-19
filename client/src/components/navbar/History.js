@@ -16,6 +16,10 @@ function History() {
       height: 35px;
     }
 
+    button:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
     &:hover .dropdown-content {
       display: block;
     }
