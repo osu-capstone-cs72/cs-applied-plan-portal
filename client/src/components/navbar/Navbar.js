@@ -86,7 +86,7 @@ function Navbar() {
   `;
 
   return (
-    <div className="navbar-parent" css={style}>
+    <div id="navbar" className="navbar-parent" css={style}>
       <Link to={"/"}>
         <p className="osu-logo">OSU CS Applied Plan Portal</p>
       </Link>

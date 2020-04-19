@@ -158,8 +158,8 @@ export default class StudentHome extends React.Component {
     }
 
     table thead tr th {
-      background: #f8f7f7;
-      color: var(--color-gray-400);
+      background: #f4f2f1;
+      color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
       font-size: 12pt;

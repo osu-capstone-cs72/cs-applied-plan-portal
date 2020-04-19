@@ -60,6 +60,7 @@ export default class PlanCourse extends React.Component {
           <div className="table-item-subtitle"><small>{this.props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}</small></div>
         </td>
         <td>{this.props.credits}</td>
+        <td></td>
         <td><button className="remove-button" onClick={this.removeButton}>Remove</button></td>
       </tr>
     );
