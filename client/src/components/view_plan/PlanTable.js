@@ -38,8 +38,8 @@ function PlanTable(props) {
     }
 
     table thead tr th {
-      background: #f8f7f7;
-      color: var(--color-gray-400);
+      background: #f4f2f1;
+      color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
       font-size: 12pt;
@@ -72,7 +72,8 @@ function PlanTable(props) {
       }
 
       tr    {
-        page-break-inside:avoid; page-break-after:auto 
+        page-break-inside: avoid;
+        page-break-after: auto;
       }
 
       th {
@@ -81,11 +82,12 @@ function PlanTable(props) {
 
       td {
         border-bottom: 1px solid black;
-        page-break-inside:avoid; page-break-after:auto 
+        page-break-inside: avoid;
+        page-break-after: auto;
       }
 
       table, tr, td, th, tbody, thead, tfoot {
-        page-break-inside: avoid !important;
+        page-break-inside: avoid;
       }
 
       .restriction-header, .restriction-column {
@@ -103,8 +105,8 @@ function PlanTable(props) {
           <tr>
             <th>Course</th>
             <th>Name</th>
-            <th>Credit Hours</th>
-            <th className={"restriction-header"}>Registration Restrictions</th>
+            <th>Credits</th>
+            <th className={"restriction-header"}>Restrictions</th>
           </tr>
         </thead>
         <tbody>

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {useState} from "react";
-import PlanCourse from "./PlanCourse";
+import EditPlanTable from "./EditPlanTable";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
@@ -12,107 +12,78 @@ function EditPlan(props) {
   const [warning, setWarning] = useState("");
 
   const style = css`
-    flex: 80%;
-    margin: 15px;
-    margin-top: 65px;
-    margin-bottom: 0;
-    display: flex;
-    flex-direction: column;
+    & {
+      grid-area: plan;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 50px 1fr auto;
+      grid-row-gap: 1rem;
+      grid-template-areas: 'title'
+                          'table'
+                          'submit';
+    }
     
-    .action-tray {
-      margin-top: 1rem;
+    #title {
+      grid-area: title;
       display: flex;
-      justify-content: flex-end;
+      align-items: stretch;
     }
     
-    .submit-button {
-    }
-
-    .plan-header {
-      display: inline;
-    }
-
-    .plan-name {
-      padding: 5px;
-    }
-
-    .credits {
-    }
-    
-    .credits-label {
-      font-size: 14px;
-      margin-top: -5px;
-      margin-bottom: 5px;
-    }
-    
-    .credits-header {
-      display: flex;
-      align-items: space-around;
-      justify-content: center;
-      text-align: center;
-      font-weight: 600;
-      font-size: 18px;
-      margin-left: auto;
-      flex-direction: column;
-      margin-right: 1rem;
-    }
-
-    #plan-name-input {
-      font-size: 23px;
-      border-radius: 0.5rem;
-      border: 2px solid var(--color-lightgray-500);
-      /*background: var(--color-lightgray-300);*/
-      color: var(--color-gray-800);
+    #title-input {
+      font-size: x-large;
       padding: 0.5rem 1rem;
-      font-weight: 500;
-      margin-bottom: 1rem;
-      outline: none;
-    }
-    
-    .header {
-      display: flex;
-      flex-direction: row;
-    }
-    
-    .edit-plan-table {
-      flex: 100%;
+      font-family: 'Muli', sans-serif;
+      font-weight: bold;
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      padding: 1rem;
-      background: var(--color-lightgray-50);
-      background: white;
+      border: 1.5px solid #dfdad8;
     }
     
-    table.edit-plan-table thead tr th {
-      background: var(--color-lightgray-100);
-      color: var(--color-gray-400);
-      font-variant-caps: all-small-caps;
-      font-weight: 600;
-      font-size: 12pt;
-      border-bottom: none;
-      padding: 1rem 2rem;
-      /*padding: 10px;*/
+    #title-credits {
+      margin-left: auto;
+      margin-right: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      text-align: center;
+      font-weight: bold;
     }
     
-    table.edit-plan-table tbody tr td {
-      vertical-align: middle;
-      padding: 1rem 2rem;
+    #credits-count {
+      font-size: 18px;
     }
     
-    .submit-button {
+    #credits-label {
+      font-size: 14px;
+    }
+    
+    #submit {
+      grid-area: submit;
+      text-align: right;
+    }
+    
+    #submit-button {
       background: var(--color-blue-500);
       color: var(--color-blue-50);
       padding: 1rem 1rem;
       border-radius: 0.5rem;
       border: none;
     }
+
+    #submit-plan-error {
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    #submit-plan-error div {
+      height: 100%;
+    }
+
   `;
 
   // create a new plan by submitting a set of courses and a plan name
   async function submitPlan() {
     // get plan name from input field
-    const planName = document.getElementById("plan-name-input").value;
+    const planName = document.getElementById("title-input").value;
     if (validatePlan(planName)) {
 
       // create an array of strings containing course IDs
@@ -241,49 +212,46 @@ function EditPlan(props) {
     props.onChangePlanName(e.target.value);
   }
 
-
   return (
-    <div className="edit-plan" css={style}>
-      <div className="header">
-        <div className="plan-header">
-          {/* <label className="plan-name">Plan name</label> */}
-          <input id="plan-name-input" type="text" placeholder={"Enter plan name"}
-            value={props.planName} onChange={updatePlanName} />
+    <div id="edit-container" css={style}>
+      <div id="title">
+        <input id="title-input"
+          type="text"
+          placeholder={"Enter plan name"}
+          value={props.planName}
+          onChange={updatePlanName}
+        />
+        <div id="submit-plan-error">
+          <ErrorMessage text={warning} className="error-hide-conditional"/>
         </div>
-        <div className="credits-header">
-          {/* <label className="credits">Total credits</label> */}
-          <div className="credits">{loadCredits()}</div>
-          <div className="credits-label">credits</div>
+        <div id="title-credits">
+          <div id="credits-count">{loadCredits()}</div>
+          <div id="credits-label">credits</div>
         </div>
       </div>
-      <ErrorMessage text={warning} className="error-hide-conditional"/>
-      {props.courses.length > 0 ?
-        <div className="table-container">
-          <table className="edit-plan-table">
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Credits</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
-                courseName={c.courseName} credits={c.credits} onRemoveCourse={e => props.onRemoveCourse(e)}/>)}
-            </tbody>
-          </table>
-          <div className="action-tray">
-            <button className="submit-button" onClick={submitPlan}>
-              {props.edit ? "Save Plan" : "Submit Plan"}
-            </button>
-          </div>
-        </div>
-        : <div className="no-courses-msg">
+      {props.courses.length > 0 ? (
+        <EditPlanTable
+          courses={props.courses}
+          onRemoveCourse={props.onRemoveCourse}
+        />
+      ) : (
+        <div className="no-courses-msg">
           <h2 className="empty-plan-title">No courses!</h2>
           <h4 className="empty-plan-description">Use the search bar to find courses and add them to your plan.</h4>
-        </div>}
+        </div>
+      )}
+      {props.courses.length > 0 ? (
+        <div id="submit">
+          <button id="submit-button"onClick={submitPlan}>
+            {props.edit ? "Save Plan" : "Submit Plan"}
+          </button>
+        </div>
+      ) : (
+        null
+      )}
     </div>
   );
+
 }
 export default EditPlan;
 

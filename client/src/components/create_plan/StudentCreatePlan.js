@@ -2,7 +2,7 @@
 
 import {useState, useEffect} from "react";
 import EditPlan from "./EditPlan";
-import CourseContainer from "./CourseContainer";
+import CourseSearch from "./CourseSearch";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useParams} from "react-router-dom";
@@ -23,7 +23,35 @@ export default function StudentCreatePlan() {
   const {planId} = useParams();
 
   const style = css`
-    display: flex;
+    & {
+      display: grid;
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      grid-template-columns: 1rem 7fr 5rem 3fr 1rem;
+      grid-template-rows: 50px 50px 1fr auto 0px;
+      grid-column-gap: 0px;
+      grid-row-gap: 1rem;
+      grid-template-areas: 'navbar  navbar  navbar  navbar  navbar'
+                           'left    plan    center  search  right'
+                           'left    plan    center  search  right'
+                           'left    plan    center  search  right'
+                           'bottom  bottom  bottom  bottom  bottom';
+    }
+    
+    #navbar {
+      grid-area: navbar;
+    }
+    
+    #search {
+      grid-area: search;
+    }
   `;
 
   // when editing a plan, load previously selected courses
@@ -137,7 +165,7 @@ export default function StudentCreatePlan() {
         <Navbar showSearch={false} searchContent={null}/>
         <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubmitLoading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
-        <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
+        <CourseSearch warning={warning} onAddCourse={e => handleAddCourse(e)}
           onNewWarning={e => setWarning(e)}/>
       </div>
     );

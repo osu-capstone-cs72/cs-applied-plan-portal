@@ -73,7 +73,7 @@ function StudentHome() {
     }
 
     table thead tr th {
-      background: #f8f7f7;
+      background: #f4f2f1;
       color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
@@ -101,6 +101,7 @@ function StudentHome() {
 
     table.student-plans-table tbody tr td {
       cursor: pointer;
+      padding: 2rem 2rem;
     }
 
     table.student-plans-table tbody tr:hover td .table-item-title {
@@ -137,7 +138,7 @@ function StudentHome() {
       background: var(--color-orange-600);
     }
 
-    tr:hover {
+    table.student-plans-table tbody tr:hover {
       background: rgba(0, 0, 0, 0.01);
     }
   
@@ -267,7 +268,7 @@ function StudentHome() {
                         <StatusCue status={plan.status} />
                         <div className="table-item-subtitle">{statusText(plan.status)}</div>
                       </td>
-                      <td className="student-plans-data" key={plan.planId + "c"}>
+                      <td className="student-plans-data" key={plan.planId + "d"}>
                         {plan.advisors ? (plan.advisors.map(advisor =>
                           <Advisor key={advisor.firstName + advisor.lastName}
                             firstName={advisor.firstName} lastName={advisor.lastName} />
@@ -275,7 +276,7 @@ function StudentHome() {
                           null
                         )}
                       </td>
-                      <td className="student-plans-data" key={plan.planId + "d"}>
+                      <td className="student-plans-data" key={plan.planId + "e"}>
                         {formatTime(plan.lastUpdated)}
                       </td>
                     </tr>) : null}

@@ -52,7 +52,7 @@ function SearchResults(props) {
     }
     
     table thead tr th {
-      background: #f8f7f7;
+      background: #f4f2f1;
       color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;

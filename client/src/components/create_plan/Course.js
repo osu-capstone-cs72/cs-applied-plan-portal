@@ -7,9 +7,10 @@ function Course(props) {
 
   const style = css`
     margin-bottom: 1rem;
-    background: var(--color-lightgray-50);
+    background: #f4f2f1;
     padding: 1rem;
     border-radius: 0.5rem;
+    margin-right: 1rem;
     
     .add-button {
       display: inline-block;
@@ -35,6 +36,7 @@ function Course(props) {
     .add-button {
       margin-right: 0;
       margin-left: auto;
+      white-space: nowrap;
     }
     
     .disabled {
@@ -65,6 +67,12 @@ function Course(props) {
     p:last-child {
       margin-bottom: 0;
     }
+    
+    hr {
+      border-top-color: #e6e6e5;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
   `;
 
   // add the course to the plan
@@ -93,18 +101,18 @@ function Course(props) {
           </div>
           <button className={`add-button ${props.restriction > 0 ? "disabled" : ""}`} onClick={addButton}>Add to plan</button>
         </summary>
-        <h4>{props.credits} credit hour{props.credits !== 1 && "s"}{props.prerequisites === "" && ", no prerequisites"}</h4>
+        <p>{props.credits} credit hour{props.credits !== 1 && "s"}{props.prerequisites === "" && ", no prerequisites"}</p>
         {props.description !== "" &&
           <div>
-            <br></br>
-            <h4>Description</h4>
+            <hr/>
+            {/* <h4>Description</h4> */}
             <p>{props.description}</p>
           </div>
         }
         {props.prerequisites !== "" &&
           <div>
-            <br></br>
-            <h4>Registration Restrictions</h4>
+            <hr/>
+            {/* <h4>Restrictions</h4> */}
             <p>{props.prerequisites}</p>
           </div>
         }

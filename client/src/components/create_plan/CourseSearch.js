@@ -14,27 +14,26 @@ function CourseContainer(props) {
   const [filter, setFilter] = useState("*");
   const [request, setRequest] = useState("*");
 
+
   const style = css`
-    flex: 33%;
-    margin-top: 65px;
-    margin-right: 1rem;
-    margin-left: 30px;
-    display: grid;
-    grid-gap: 1rem;
-    grid-template-columns: auto auto;
-    grid-template-rows: 36px auto auto 1fr;
-    grid-template-areas:
-    'title category'
-    'warn warn'
-    'search search'
-    'results results';
+
+    & {
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: auto auto;
+      grid-template-rows: 50px auto auto 1fr;
+      grid-template-areas: 'title    category'
+                          'search   search'
+                          'warn     warn'
+                          'results  results';
+    }
     
     .search-title {
       font-weight: 600;
       font-size: 23px;
       grid-area: title;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
     }
     
     .search-category {
@@ -49,8 +48,10 @@ function CourseContainer(props) {
       border: none;
     }
     
-    .explore-courses {
+    .search-results {
       grid-area: results;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .search-container {
@@ -63,12 +64,13 @@ function CourseContainer(props) {
     
     #search-container {
       padding: 2rem 1rem;
-      border: 0;
+      border: 1.5px solid #dfdad8;
+      box-shadow: none;
     }
 
     .course-filter {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: flex-end;
       margin-bottom: 0;
     }
@@ -161,6 +163,7 @@ function CourseContainer(props) {
   async function handleFilterChange(value) {
     changeWarning("");
     setFilter(value);
+    callSearch();
   }
 
   // prevent default submit behavior of form elements
@@ -175,7 +178,7 @@ function CourseContainer(props) {
   }
 
   return (
-    <div className="course-container" css={style}>
+    <div id="search" css={style}>
       <div className="search-title">Search</div>
       <div className="search-container">
         <form className="form my-2 my-lg-0" onSubmit={submitHandler}>
@@ -187,7 +190,7 @@ function CourseContainer(props) {
         <FilterBar value={filter} onValueChange={handleFilterChange}/>
       </form>
       <ErrorMessage text={props.warning} />
-      <div className="explore-courses">
+      <div className="search-results">
         {courses.length > 0 ? courses.map(c =>
           <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
             description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>

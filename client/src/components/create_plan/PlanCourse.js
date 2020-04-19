@@ -6,7 +6,7 @@ import {css, jsx} from "@emotion/core";
 function PlanCourse(props) {
 
   const style = css`
-        
+
     .remove-button {
       display: inline-block;
       margin-left: auto;
@@ -43,6 +43,7 @@ function PlanCourse(props) {
         <div className="table-item-subtitle"><small>{props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}</small></div>
       </td>
       <td>{props.credits}</td>
+      <td></td>
       <td><button className="remove-button" onClick={removeButton}>Remove</button></td>
     </tr>
   );
