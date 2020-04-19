@@ -132,10 +132,10 @@ function Notifications() {
 
     try {
 
-      // set the notification to checked
+      // delete the notification
       const url = `/api/notification/${notificationId}`;
       await fetch(url, {
-        method: "PATCH"
+        method: "DELETE"
       });
 
       // delete the notification on the client-side

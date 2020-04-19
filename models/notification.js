@@ -24,24 +24,24 @@ async function getNotifications(userId) {
 }
 exports.getNotifications = getNotifications;
 
-// check a notification by id
-async function checkNotification(notificationId, userId) {
+// delete a notification by id
+async function deleteNotification(notificationId, userId) {
 
   try {
 
-    const sql = "UPDATE Notification SET checked=1 WHERE notificationId=? AND userId=?;";
+    const sql = "DELETE FROM Notification WHERE notificationId=? AND userId=?;";
     const results = await pool.query(sql, [notificationId, userId]);
     return {
       affectedRows: results[0].affectedRows
     };
 
   } catch (err) {
-    console.log("Error checking notification");
+    console.log("Error deleting notification");
     throw Error(err);
   }
 
 }
-exports.checkNotification = checkNotification;
+exports.deleteNotification = deleteNotification;
 
 // create a new notification
 async function createNotification(planId, userId, type, status, planName, actorName) {
