@@ -241,6 +241,7 @@ function EditPlan(props) {
     props.onChangePlanName(e.target.value);
   }
 
+
   return (
     <div className="edit-plan" css={style}>
       <div className="header">
@@ -255,25 +256,32 @@ function EditPlan(props) {
           <div className="credits-label">credits</div>
         </div>
       </div>
-      <ErrorMessage text={warning} />
-      <table className="edit-plan-table">
-        <thead>
-          <tr>
-            <th>Course</th>
-            <th>Credits</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
-            courseName={c.courseName} credits={c.credits} onRemoveCourse={e => props.onRemoveCourse(e)}/>)}
-        </tbody>
-      </table>
-      <div className="action-tray">
-        <button className="submit-button" onClick={submitPlan}>
-          {props.edit ? "Save Plan" : "Submit Plan"}
-        </button>
-      </div>
+      <ErrorMessage text={warning} className="error-hide-conditional"/>
+      {props.courses.length > 0 ?
+        <div className="table-container">
+          <table className="edit-plan-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Credits</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {props.courses.map(c => <PlanCourse key={c.courseId} courseId={c.courseId} courseCode={c.courseCode}
+                courseName={c.courseName} credits={c.credits} onRemoveCourse={e => props.onRemoveCourse(e)}/>)}
+            </tbody>
+          </table>
+          <div className="action-tray">
+            <button className="submit-button" onClick={submitPlan}>
+              {props.edit ? "Save Plan" : "Submit Plan"}
+            </button>
+          </div>
+        </div>
+        : <div className="no-courses-msg">
+          <h2 className="empty-plan-title">No courses!</h2>
+          <h4 className="empty-plan-description">Use the search bar to find courses and add them to your plan.</h4>
+        </div>}
     </div>
   );
 }
