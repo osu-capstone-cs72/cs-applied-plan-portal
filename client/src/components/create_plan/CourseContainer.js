@@ -77,7 +77,7 @@ export default class CourseContainer extends React.Component {
     await this.handleFilterChange(e);
     await this.filterSearch();
   }
-  
+
   submitHandler(e) {
     e.preventDefault();
     this.filterSearch();

@@ -33,17 +33,57 @@ if [[ "${missing_npm}" -ne 0 ]]; then
 else
   echo -e "  NPM \xE2\x9C\x94"
 fi
-
-missing_mysql=$(mysql --version > /dev/null 2>&1; echo $?)
-if [[ "${missing_mysql}" -ne 0 ]]; then
-  echo -e "  MySQL \xE2\x9D\x8C" >&2
-  has_required_software=false
-else
-  echo -e "  MySQL \xE2\x9C\x94"
-fi
-
 if [[ "${has_required_software}" == true ]]; then
   echo -e "\033[0;32mSoftware requirements are met.\033[0m\n"
+else
+  echo -e "\033[0;31mSoftware requirements were not met. Please install the missing software above, then rerun this script.\033[0m" >&2
+  exit 1
+fi
+
+# check if .env file exists and is correctly named
+# if a file is named env exists in the correct location, we rename it to .env
+has_required_env=true
+echo -e "\033[0;34mChecking if environment files exist\033[0m"
+
+# check for API .env
+file="./.env"
+badFile="./.env"
+if [[ -f "$file" ]]; then
+  echo -e "  API .env \xE2\x9C\x94"
+else
+  # check if misnamed .env file exists
+  if [[ -f "$badFile" ]]; then
+    mv "$badFile" "$file"
+    echo -e "  API .env \xE2\x9C\x94"
+  else
+    echo -e "  API .env \xE2\x9D\x8C" >&2
+    has_required_env=false
+  fi
+fi
+
+# check for React .env
+file="./client/.env"
+badFile="./client/env"
+if [[ -f "$file" ]]; then
+  echo -e "  React .env \xE2\x9C\x94"
+else
+  # check if misnamed .env file exists
+  if [[ -f "$badFile" ]]; then
+    mv "$badFile" "$file"
+    echo -e "  React .env \xE2\x9C\x94"
+  else
+    echo -e "  React .env \xE2\x9D\x8C" >&2
+    has_required_env=false
+  fi
+fi
+
+if [[ "${has_required_env}" == true ]]; then
+  echo -e "\033[0;32mEnvironment files present.\033[0m\n"
+else
+  echo -e "\033[0;31mMissing environment file(s). Please download the environment files and ensure they are in the correct directorys.\033[0m" >&2
+  exit 1
+fi
+
   echo -e "\033[0;34mInstalling API server's dependencies\033[0m"
   exe npm install
 
@@ -51,7 +91,4 @@ if [[ "${has_required_software}" == true ]]; then
   exe npm --prefix client/ install client/
 
   echo -e "\n\033[0;32mInstallation complete. Please double-check npm's log above to ensure all packages were successfully installed.\033[0m"
-else
-  echo -e "\033[0;31mSoftware requirements were not met. Please install the missing software above, then rerun this script.\033[0m" >&2
-  exit 1
-fi
+
