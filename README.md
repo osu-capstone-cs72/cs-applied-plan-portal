@@ -7,6 +7,7 @@ This is a web app that streamlines the pro-school application process for OSU Ap
 - A shell to run commands
 - Node.js version at least 12.x
 - Chrome version at least 80.x or Firefox version at least 75.x
+- Access to the Oregon State University network
 
 ## Installation and Setup
 
@@ -14,6 +15,7 @@ This is a web app that streamlines the pro-school application process for OSU Ap
 command with your preferred shell.
 
         git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
+
 
 2. Download the following .env file and put it in the ROOT directory of the repo.
 
@@ -28,15 +30,21 @@ command with your preferred shell.
    If you are unable to access these files and you believe that you should have permission, please send an email to
    thomasza@oregonstate.edu and ask to be given permission.
 
-4. From the root directory of this repo, run
+
+3. From the root directory of this repo, run
 
         chmod +x install.sh && ./install.sh
 
    Please follow the instructions produced by the script to install the necessary software and dependencies.
 
+
 4. Make sure the port 3000 and the port specified by the `PORT` (5000 by default) environment variable are available to be used.
 
-5. To start the application, from the root directory of this repo, run
+
+5. To access the database referenced in the API environment file you will need to be connected to the OSU network. If you are on campus you may not need to perform any further action, if you are away from campus, use a VPN to connect to sds.oregonstate.edu using your ONID password.
+
+
+6. To start the application, from the root directory of this repo, run
 
         npm start
 
@@ -49,3 +57,5 @@ Node.js download: https://nodejs.org/en/
 Chrome download: https://www.google.com/chrome
 
 Firefox download: https://www.mozilla.org/en-US/firefox/new/
+
+Documentation for connecting to OSU's network using a VPN: https://is.oregonstate.edu/service/vpn
