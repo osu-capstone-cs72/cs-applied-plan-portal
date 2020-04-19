@@ -241,40 +241,47 @@ function StudentHome() {
         <div id="student-home-container">
           <div id="student-home-contents-container">
 
-            <table className="student-plans-table">
-              <thead>
-                <tr>
-                  <th className="student-plans-data">Name</th>
-                  <th className="student-plans-data">Status</th>
-                  <th className="student-plans-data">Reviewers</th>
-                  <th className="student-plans-data">Updated</th>
-                </tr>
-              </thead>
-              <tbody>
-                {plans ? plans.map(plan =>
-                  <tr key={plan.planId + "a"} onClick={() => goToPlan(plan)}>
-                    <td className="student-plans-data" key={plan.planId + "b"}>
-                      <div className="table-item-title">{plan.planName}</div>
-                    </td>
-                    <td className="student-plans-data" key={plan.planId + "c"}>
-                      <StatusCue status={plan.status} />
-                      <div className="table-item-subtitle">{statusText(plan.status)}</div>
-                    </td>
-                    <td className="student-plans-data" key={plan.planId + "d"}>
-                      {plan.advisors ? (plan.advisors.map(advisor =>
-                        <Advisor key={advisor.firstName + advisor.lastName}
-                          firstName={advisor.firstName} lastName={advisor.lastName} />
-                      )) : (
-                        null
-                      )}
-                    </td>
-                    <td className="student-plans-data" key={plan.planId + "e"}>
-                      {formatTime(plan.lastUpdated)}
-                    </td>
-                  </tr>) : null}
-              </tbody>
-            </table>
-            <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+            {plans ?
+
+              <table className="student-plans-table">
+                <thead>
+                  <tr>
+                    <th className="student-plans-data">Name</th>
+                    <th className="student-plans-data">Status</th>
+                    <th className="student-plans-data">Reviewers</th>
+                    <th className="student-plans-data">Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {plans ? plans.map(plan =>
+                    <tr key={plan.planId + "a"} onClick={() => goToPlan(plan)}>
+                      <td className="student-plans-data" key={plan.planId + "b"}>
+                        <div className="table-item-title">{plan.planName}</div>
+                      </td>
+                      <td className="student-plans-data" key={plan.planId + "c"}>
+                        <StatusCue status={plan.status} />
+                        <div className="table-item-subtitle">{statusText(plan.status)}</div>
+                      </td>
+                      <td className="student-plans-data" key={plan.planId + "c"}>
+                        {plan.advisors ? (plan.advisors.map(advisor =>
+                          <Advisor key={advisor.firstName + advisor.lastName}
+                            firstName={advisor.firstName} lastName={advisor.lastName} />
+                        )) : (
+                          null
+                        )}
+                      </td>
+                      <td className="student-plans-data" key={plan.planId + "d"}>
+                        {formatTime(plan.lastUpdated)}
+                      </td>
+                    </tr>) : null}
+                </tbody>
+              </table>
+              : <div className="empty-plan-container">
+                <h3 className="empty-plan-title">You haven&#39;t created any plans.</h3>
+                <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
+              </div>
+            }
+            <a href="createPlan" title="Create a plan" className="new-plan-button"></a>
 
           </div>
         </div>
