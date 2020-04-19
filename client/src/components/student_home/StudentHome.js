@@ -1,109 +1,24 @@
 /** @jsx jsx */
 
-import React from "react";
+import {useEffect, useState} from "react";
 import NavBar from "../navbar/Navbar";
 import {getProfile} from "../../utils/authService";
 import {formatTime} from "../../utils/formatTime";
 import Advisor from "./Advisor";
+import StatusCue from "./StatusCue";
 import PageSpinner from "../general/PageSpinner";
 import PageInternalError from "../general/PageInternalError";
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 
 import {css, jsx} from "@emotion/core";
 
-export default class StudentHome extends React.Component {
+function StudentHome() {
 
-  constructor(props) {
-    super(props);
+  const [pageError, setPageError] = useState(0);
+  const [plans, setPlans] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    this.state = {
-      pageError: 0,
-      plans: null,
-      loading: true
-    };
-
-    this.getAllPlans = this.getAllPlans.bind(this);
-    this.getAllPlans = this.getAllPlans.bind(this);
-  }
-
-  componentDidMount() {
-    this.getAllPlans();
-  }
-
-  async getAllPlans() {
-
-    this.setState({
-      loading: true
-    });
-
-    // retrieve the logged in user and set user ID accordingly
-    // if user cannot be retrieved, we will get an invalid user ID (0)
-    const profile = getProfile();
-    const userId = profile.userId;
-
-    const getUrl = `/api/user/${userId}/plans`;
-
-    let obj = [];
-
-    try {
-      const results = await fetch(getUrl);
-      if (results.ok) {
-        obj = await results.json();
-
-        // modify how advisors are listed in our plans object
-        // we will convert advisors listed as a string into an array
-        // of objects
-        for (let i = 0; i < obj.plans.length; i++) {
-          if (obj.plans[i].advisors !== null) {
-
-            // split the advisor string into an array of full names
-            // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
-            const fullNames = obj.plans[i].advisors.split(",");
-            obj.plans[i].advisors = [];
-
-            // split the advisor full names into a first and last name
-            for (let j = 0; j < fullNames.length; j++) {
-              const splitName = fullNames[j].split(" ");
-              if (splitName.length >= 2) {
-                obj.plans[i].advisors.push({
-                  firstName: splitName[0],
-                  lastName: splitName[1]
-                });
-              }
-            }
-          }
-        }
-
-        this.setState(obj);
-      } else {
-        // we got a bad status code
-        if (results.status === 500) {
-          this.setState({
-            pageError: 500
-          });
-        }
-        this.setState({
-          loading: false
-        });
-        return;
-      }
-    } catch (err) {
-      this.setState({
-        pageError: 500
-      });
-    }
-    this.setState({
-      loading: false
-    });
-  }
-
-  goToPlan(plan) {
-    window.location.href = `/viewPlan/${plan.planId}`;
-  }
-
-  render() {
-
-    const style = css`
+  const style = css`
 
     #student-home-container {
       margin: 100px 0 auto;
@@ -120,7 +35,7 @@ export default class StudentHome extends React.Component {
     }
 
     .student-plans-data {
-      padding: 1rem 2rem;
+      padding: 1rem 4rem;
     }
 
     .new-plan-button {
@@ -144,8 +59,8 @@ export default class StudentHome extends React.Component {
     }
 
     .table-item-subtitle {
+      display: inline-block;
       font-weight: normal;
-      color: var(--color-gray-400);
     }
 
     table {
@@ -170,9 +85,9 @@ export default class StudentHome extends React.Component {
       white-space: nowrap;
     }
 
-    table.student-plans-table  thead tr th:nth-of-type(2) {
+    table.student-plans-table thead tr th:nth-of-type(4) {
       /*width: -webkit-fill-available;*/
-      width: 30%;
+      //width: 50%;
     }
 
     table tbody tr td {
@@ -193,7 +108,7 @@ export default class StudentHome extends React.Component {
     }
 
     table.student-plans-table tbody tr td:nth-of-type(1) {
-      width: 50%;
+      width: 30%;
       font-weight: 500;
     }
     
@@ -223,60 +138,152 @@ export default class StudentHome extends React.Component {
     }
   `;
 
-    if (!this.state.pageError) {
-      return (
-        <div id="student-home-page" css={style}>
-          <PageSpinner loading={this.state.loading} />
-          <NavBar />
+  // on page load, show all of the current students plans
+  useEffect(() => {
 
-          <div id="student-home-container">
-            <div id="student-home-contents-container">
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
 
-              {this.state.plans ?
+    // load all of the current students plans
+    async function getAllPlans() {
 
-                <table className="student-plans-table">
-                  <thead>
-                    <tr>
-                      <th className="student-plans-data">Name</th>
-                      <th className="student-plans-data">Reviewers</th>
-                      <th className="student-plans-data">Updated</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.plans ? this.state.plans.map(plan =>
-                      <tr key={plan.planId + "a"} onClick={() => this.goToPlan(plan)}>
-                        <td className="student-plans-data" key={plan.planId + "b"}>
-                          <div className="table-item-title">{plan.planName}</div>
-                          <div className="table-item-subtitle"><small>{renderStatus(plan.status)}</small></div>
-                        </td>
-                        <td className="student-plans-data" key={plan.planId + "c"}>
-                          {plan.advisors ? (plan.advisors.map(advisor =>
-                            <Advisor key={advisor.firstName + advisor.lastName}
-                              firstName={advisor.firstName} lastName={advisor.lastName} />
-                          )) : (
-                            null
-                          )}
-                        </td>
-                        <td className="student-plans-data" key={plan.planId + "d"}>
-                          {formatTime(plan.lastUpdated)}
-                        </td>
-                      </tr>) : null}
-                  </tbody>
-                </table>
-                : <div className="empty-plan-container">
-                    <h3 className="empty-plan-title">You haven't created any plans.</h3>
-                    <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
-                  </div>
+      setLoading(true);
+
+      // retrieve the logged in user and set user ID accordingly
+      // if user cannot be retrieved, we will get an invalid user ID (0)
+      const profile = getProfile();
+      const userId = profile.userId;
+
+      const getUrl = `/api/user/${userId}/plans`;
+
+      let obj = [];
+
+      try {
+        const results = await fetch(getUrl);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (results.ok) {
+            obj = await results.json();
+
+            // modify how advisors are listed in our plans object
+            // we will convert advisors listed as a string into an array
+            // of objects
+            for (let i = 0; i < obj.plans.length; i++) {
+              if (obj.plans[i].advisors !== null) {
+
+                // split the advisor string into an array of full names
+                // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
+                const fullNames = obj.plans[i].advisors.split(",");
+                obj.plans[i].advisors = [];
+
+                // split the advisor full names into a first and last name
+                for (let j = 0; j < fullNames.length; j++) {
+                  const splitName = fullNames[j].split(" ");
+                  if (splitName.length >= 2) {
+                    obj.plans[i].advisors.push({
+                      firstName: splitName[0],
+                      lastName: splitName[1]
+                    });
+                  }
+                }
               }
-              <a href="createPlan" title="Create a plan" className="new-plan-button"></a>
+            }
 
-            </div>
-          </div>
+            setPlans(obj.plans);
 
-        </div>
-      );
-    } else {
-      return <PageInternalError />;
+          } else {
+            // we got a bad status code
+            if (results.status === 500) {
+              setPageError(500);
+            }
+          }
+
+          setLoading(false);
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          setPageError(500);
+        }
+      }
     }
+
+    getAllPlans();
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+    // eslint-disable-next-line
+  }, []);
+
+  // go to the specified plans page
+  function goToPlan(plan) {
+    window.location.href = `/viewPlan/${plan.planId}`;
   }
+
+  if (!pageError) {
+    return (
+      <div id="student-home-page" css={style}>
+        <PageSpinner loading={loading} />
+        <NavBar />
+
+        <div id="student-home-container">
+          <div id="student-home-contents-container">
+
+            <table className="student-plans-table">
+              <thead>
+                <tr>
+                  <th className="student-plans-data">Name</th>
+                  <th className="student-plans-data">Status</th>
+                  <th className="student-plans-data">Reviewers</th>
+                  <th className="student-plans-data">Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {plans ? plans.map(plan =>
+                  <tr key={plan.planId + "a"} onClick={() => goToPlan(plan)}>
+                    <td className="student-plans-data" key={plan.planId + "b"}>
+                      <div className="table-item-title">{plan.planName}</div>
+                    </td>
+                    <td className="student-plans-data" key={plan.planId + "c"}>
+                      <StatusCue status={plan.status} />
+                      <div className="table-item-subtitle">{statusText(plan.status)}</div>
+                    </td>
+                    <td className="student-plans-data" key={plan.planId + "d"}>
+                      {plan.advisors ? (plan.advisors.map(advisor =>
+                        <Advisor key={advisor.firstName + advisor.lastName}
+                          firstName={advisor.firstName} lastName={advisor.lastName} />
+                      )) : (
+                        null
+                      )}
+                    </td>
+                    <td className="student-plans-data" key={plan.planId + "e"}>
+                      {formatTime(plan.lastUpdated)}
+                    </td>
+                  </tr>) : null}
+              </tbody>
+            </table>
+            <button className="new-plan-button" onClick={() => window.location.href = "/createPlan"}></button>
+
+          </div>
+        </div>
+
+      </div>
+    );
+  } else {
+    return <PageInternalError />;
+  }
+
 }
+export default StudentHome;

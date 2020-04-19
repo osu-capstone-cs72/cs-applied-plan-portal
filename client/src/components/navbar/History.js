@@ -57,32 +57,58 @@ function History() {
     }
   `;
 
-  // get the list of recent plans
+  // get a list of the most recently viewed plans
   useEffect(() => {
-    getRecentPlans();
-  }, []);
 
-  // get the current users most recently viewed plans
-  async function getRecentPlans() {
-    try {
-      const getUrl = `/api/plan/recent`;
-      let obj = {};
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
 
-      const results = await fetch(getUrl);
-      if (results.ok) {
-        obj = await results.json();
-        setRecentPlans(obj.plans);
-      } else {
-        // we got a bad status code.
-        if (results.status === 500) {
+    // get the current users most recently viewed plans
+    async function getRecentPlans() {
+      try {
+        const getUrl = `/api/plan/recent`;
+        let obj = {};
+
+        const results = await fetch(getUrl);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (results.ok) {
+            obj = await results.json();
+            setRecentPlans(obj.plans);
+          } else {
+            // we got a bad status code.
+            if (results.status === 500) {
+              console.error("An internal server error occurred. Please try again later.");
+            }
+          }
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          // log server error
           console.error("An internal server error occurred. Please try again later.");
         }
       }
-    } catch (err) {
-      // log server error
-      console.error("An internal server error occurred. Please try again later.");
     }
-  }
+
+    getRecentPlans();
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
+  }, []);
+
 
   return (
     <div className="history-dropdown" css={style}>
@@ -99,7 +125,7 @@ function History() {
           ))
         ) : (
           <Link to={`.`} onClick={(event) => event.preventDefault()}>
-            <p>No recently visited plans.</p>
+            <p>No recently visited plans</p>
           </Link>
         )}
       </div>

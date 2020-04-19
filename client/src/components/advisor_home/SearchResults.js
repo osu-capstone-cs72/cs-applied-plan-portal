@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 import {formatTime} from "../../utils/formatTime";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -158,7 +158,7 @@ function SearchResults(props) {
                 </td>
                 <td className="student-plans-data" key={plan.planId + "sb"}>{plan.userId}</td>
                 <td className="student-plans-data" key={plan.planId + "sc"}>{plan.planName}</td>
-                <td className="student-plans-data" key={plan.planId + "sd"}>{renderStatus(plan.status)}</td>
+                <td className="student-plans-data" key={plan.planId + "sd"}>{statusText(plan.status)}</td>
                 <td className="student-plans-data" key={plan.planId + "se"}>{formatTime(plan.created)}</td>
                 <td className="student-plans-data" key={plan.planId + "sf"}>{formatTime(plan.lastUpdated)}</td>
 
