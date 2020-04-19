@@ -7,7 +7,7 @@ import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 
-export default class CourseContainer extends React.Component {
+export default class CourseSearch extends React.Component {
 
   static get propTypes() {
     return {
@@ -45,6 +45,9 @@ export default class CourseContainer extends React.Component {
       value = "*";
     }
     const getUrl = `/api/course/search/${value}/${this.state.filter}`;
+    if (value === "*" && this.state.filter === "*") {
+      return;
+    }
     let obj = [];
     try {
       const results = await fetch(getUrl);
@@ -90,26 +93,21 @@ export default class CourseContainer extends React.Component {
   render() {
 
     const style = css`
-      flex: 33%;
-      margin-top: 65px;
-      margin-right: 1rem;
-      margin-left: 30px;
       display: grid;
       grid-gap: 1rem;
       grid-template-columns: auto auto;
-      grid-template-rows: 36px auto auto 1fr;
-      grid-template-areas:
-      'title category'
-      'warn warn'
-      'search search'
-      'results results';
+      grid-template-rows: 50px auto auto 1fr;
+      grid-template-areas: 'title    category'
+                           'search   search'
+                           'warn     warn'
+                           'results  results';
       
       .search-title {
         font-weight: 600;
         font-size: 23px;
         grid-area: title;
         display: flex;
-        align-items: flex-end;
+        align-items: center;
       }
       
       .search-category {
@@ -124,8 +122,10 @@ export default class CourseContainer extends React.Component {
         border: none;
       }
       
-      .explore-courses {
+      .search-results {
         grid-area: results;
+        overflow-x: hidden;
+        overflow-y: auto;
       }
 
       .search-container {
@@ -144,7 +144,7 @@ export default class CourseContainer extends React.Component {
 
       .course-filter {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         justify-content: flex-end;
         margin-bottom: 0;
       }
@@ -163,7 +163,7 @@ export default class CourseContainer extends React.Component {
     `;
 
     return (
-      <div className="course-container" css={style}>
+      <div id="search" css={style}>
         <div className="search-title">Search</div>
         <div className="search-container">
           <form className="form my-2 my-lg-0" onSubmit={this.submitHandler}>
@@ -175,7 +175,7 @@ export default class CourseContainer extends React.Component {
           <FilterBar value={this.state.filter} onValueChange={this.updateFilterAndSearch}/>
         </form>
         <ErrorMessage text={this.props.warning} />
-        <div className="explore-courses">
+        <div className="search-results">
           {this.state.courses.length > 0 ? this.state.courses.map(c =>
             <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
               description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => this.props.onAddCourse(e)}/>

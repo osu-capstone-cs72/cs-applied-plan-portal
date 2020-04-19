@@ -52,9 +52,10 @@ export default class Course extends React.Component {
 
     const style = css`
       margin-bottom: 1rem;
-      background: #f8f7f7;
+      background: #f4f2f1;
       padding: 1rem;
       border-radius: 0.5rem;
+      margin-right: 1rem;
       
       .add-button {
         display: inline-block;
@@ -111,6 +112,12 @@ export default class Course extends React.Component {
       p:last-child {
         margin-bottom: 0;
       }
+      
+      hr {
+        border-top-color: #e6e6e5;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
     `;
 
     return (
@@ -126,17 +133,18 @@ export default class Course extends React.Component {
             </div>
             <button className={`add-button ${this.props.restriction > 0 ? "disabled" : ""}`} onClick={this.addButton}>Add to plan</button>
           </summary>
-          <h4>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</h4>
+          <p>{this.props.credits} credit hour{this.props.credits !== 1 && "s"}{this.props.prerequisites === "" && ", no prerequisites"}</p>
           { this.props.description !== "" &&
             <div>
-              <h4>Description</h4>
+              <hr/>
+              {/*<h4>Description</h4>*/}
               <p>{this.props.description}</p>
             </div>
           }
           { this.props.prerequisites !== "" &&
             <div>
-              <br></br>
-              <h4>Registration Restrictions</h4>
+              <hr/>
+              {/*<h4>Restrictions</h4>*/}
               <p>{this.props.prerequisites}</p>
             </div>
           }
