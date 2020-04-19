@@ -2,7 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
@@ -12,7 +12,8 @@ import {login} from "../../utils/authService";
 export default function ManageRoles() {
 
   const [loading, setLoading] = useState(false);
-  const [subloading, setSubloading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
+  const [moreLoading, setMoreLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchFields, setSearchFields] = useState({
@@ -38,11 +39,21 @@ export default function ManageRoles() {
 
 `;
 
+  // track the state of multiple page components loading and
+  // display a spinner if any part of the page is still loading
+  useEffect(() => {
+    if (userLoading || moreLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [userLoading, moreLoading]);
+
   // search for users
   async function searchUsers(cursor, newSearch) {
     try {
       setErrorMessage("");
-      setLoading(true);
+      setUserLoading(true);
 
       // get the search text from the search field
       let textValue = document.getElementById("input-search").value;
@@ -106,12 +117,12 @@ export default function ManageRoles() {
       // show error message if error while searching
       setErrorMessage("An internal server error occurred. Please try again later.");
     }
-    setLoading(false);
+    setUserLoading(false);
   }
 
   return (
     <div css={style}>
-      <PageSpinner loading={loading} subloading={subloading} />
+      <PageSpinner loading={loading} />
       <Navbar />
 
       <div id="user-manage-container">
@@ -120,7 +131,7 @@ export default function ManageRoles() {
           <FindUsers onSearch={cursor => searchUsers(cursor, true)}/>
 
           <SearchResults users={users} cursor={cursor} loading={loading}
-            onLoading={load => setSubloading(load)} error={errorMessage}
+            onLoading={load => setMoreLoading(load)} error={errorMessage}
             onLoadMore={cursor => searchUsers(cursor, false)} />
 
         </div>

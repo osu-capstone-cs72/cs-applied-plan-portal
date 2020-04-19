@@ -13,7 +13,8 @@ import {css, jsx} from "@emotion/core";
 export default function StudentCreatePlan() {
 
   const [loading, setLoading] = useState(false);
-  const [subloading, setSubloading] = useState(false);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [pageError, setPageError] = useState(0);
   const [planName, setPlanName] = useState("");
   const [courses, setCourses] = useState([]);
@@ -25,9 +26,10 @@ export default function StudentCreatePlan() {
     display: flex;
   `;
 
+  // when editing a plan, load previously selected courses
   useEffect(() => {
     async function fetchPlan(planId) {
-      setLoading(true);
+      setPlanLoading(true);
       try {
         const url = `/api/plan/${planId}`;
         let obj = [];
@@ -39,7 +41,7 @@ export default function StudentCreatePlan() {
           // get the courses array from the plan object
           setCourses(obj.courses);
           setPlanName(obj.planName);
-          setLoading(false);
+          setPlanLoading(false);
         } else {
           // we got a bad status code
           if (response.status === 500) {
@@ -61,6 +63,16 @@ export default function StudentCreatePlan() {
     }
 
   }, [planId]);
+
+  // track the state of multiple page components loading and
+  // display a spinner if any part of the page is still loading
+  useEffect(() => {
+    if (planLoading || submitLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [planLoading, submitLoading]);
 
   // adds a new course to the courses array
   function handleAddCourse(course) {
@@ -121,9 +133,9 @@ export default function StudentCreatePlan() {
   if (!pageError) {
     return (
       <div className="student-create-plan" css={style}>
-        <PageSpinner loading={loading} subloading={subloading}/>
+        <PageSpinner loading={loading} />
         <Navbar showSearch={false} searchContent={null}/>
-        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubloading(load)}
+        <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubmitLoading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
         <CourseContainer warning={warning} onAddCourse={e => handleAddCourse(e)}
           onNewWarning={e => setWarning(e)}/>
