@@ -19,11 +19,11 @@ command with your preferred shell.
 
 2. Download the following .env file and put it in the ROOT directory of the repo.
 
-        https://drive.google.com/file/d/1epze7tEpO4yoF5zyID8DB5dFScxRR6Ld/view?usp=sharing
+      https://drive.google.com/file/d/1epze7tEpO4yoF5zyID8DB5dFScxRR6Ld/view?usp=sharing
 
    Download the following .env file and put it in the CLIENT directory of the repo.
 
-        https://drive.google.com/file/d/1Cf0WDgirYUqg43qTEzD0RrC52VfwNDK2/view?usp=sharing
+      https://drive.google.com/file/d/1Cf0WDgirYUqg43qTEzD0RrC52VfwNDK2/view?usp=sharing
 
    **NOTE:** 
    You must be logged into your Oregon State University email and have been given express permission to access these files. 
@@ -41,7 +41,7 @@ command with your preferred shell.
 4. Make sure the port 3000 and the port specified by the `PORT` (5000 by default) environment variable are available to be used.
 
 
-5. To access the database referenced in the API environment file you will need to be connected to the OSU network. If you are on campus you may not need to perform any further action, if you are away from campus, use a VPN to connect to sds.oregonstate.edu using your ONID password.
+5. To access the database referenced in the API environment file, you will need to be connected to the OSU network. If you are on campus, you may not need to perform any further action. If you are away from campus, use a VPN to connect to sds.oregonstate.edu using your ONID password.
 
 
 6. To start the application, from the root directory of this repo, run

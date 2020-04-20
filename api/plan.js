@@ -321,8 +321,8 @@ app.delete("/:planId", requireAuth, async (req, res) => {
         console.error("404: No plan found\n");
         res.status(404).send({error: "Could not delete plan."});
       } else {
-        console.log("202: Plan deleted\n");
-        res.status(202).send(results);
+        console.log("200: Plan deleted\n");
+        res.status(200).send(results);
       }
 
     } else {

@@ -47,13 +47,13 @@ echo -e "\033[0;34mChecking if environment files exist\033[0m"
 
 # check for API .env
 file="./.env"
-badFile="./.env"
-if [[ -f "$file" ]]; then
+badFile="./env"
+if [[ -f "${file}" ]]; then
   echo -e "  API .env \xE2\x9C\x94"
 else
   # check if misnamed .env file exists
-  if [[ -f "$badFile" ]]; then
-    mv "$badFile" "$file"
+  if [[ -f "${badFile}" ]]; then
+    mv "${badFile}" "${file}"
     echo -e "  API .env \xE2\x9C\x94"
   else
     echo -e "  API .env \xE2\x9D\x8C" >&2
@@ -64,12 +64,12 @@ fi
 # check for React .env
 file="./client/.env"
 badFile="./client/env"
-if [[ -f "$file" ]]; then
+if [[ -f "${file}" ]]; then
   echo -e "  React .env \xE2\x9C\x94"
 else
   # check if misnamed .env file exists
-  if [[ -f "$badFile" ]]; then
-    mv "$badFile" "$file"
+  if [[ -f "${badFile}" ]]; then
+    mv "${badFile}" "${file}"
     echo -e "  React .env \xE2\x9C\x94"
   else
     echo -e "  React .env \xE2\x9D\x8C" >&2

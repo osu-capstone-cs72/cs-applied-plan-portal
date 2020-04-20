@@ -42,8 +42,8 @@ app.delete("/:notificationId", requireAuth, async (req, res) => {
       console.error("404: No notification found\n");
       res.status(404).send({error: "No notification found."});
     } else {
-      console.log("202: Notification deleted\n");
-      res.status(202).send(results);
+      console.log("200: Notification deleted\n");
+      res.status(200).send(results);
     }
 
   } catch (err) {
