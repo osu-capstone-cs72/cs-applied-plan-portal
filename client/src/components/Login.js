@@ -16,6 +16,11 @@ function Login() {
 
   useEffect(() => {
 
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
     // attempt to login and then redirect based on results
     async function fetchLogin() {
 
@@ -26,25 +31,36 @@ function Login() {
         // attempt to login
         const results = await fetch(`/api/user/authenticated/`);
 
-        if (results.ok) {
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
 
-          // return to the homepage
-          setRedirect(1);
+          if (results.ok) {
 
-        } else if (results.status === 401 || results.status === 404) {
+            // return to the homepage
+            setRedirect(1);
 
-          // redirect to ONID login
-          setRedirect(2);
+          } else if (results.status === 401 || results.status === 404) {
 
-        } else {
-          throw Error(`Error code ${results.status}`);
+            // redirect to ONID login
+            setRedirect(2);
+
+          } else {
+            throw Error(`Error code ${results.status}`);
+          }
+
+          setLoading(false);
+
         }
-      } catch (err) {
-        // send to 500 page if we have a server error while trying to login
-        setPageError(500);
-      }
 
-      setLoading(false);
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          // send to 500 page if we have a server error while trying to login
+          setPageError(500);
+        }
+      }
 
     }
 
@@ -67,6 +83,12 @@ function Login() {
     } else {
       redirectUrl(redirect);
     }
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
 
     // eslint-disable-next-line
   }, [redirect]);

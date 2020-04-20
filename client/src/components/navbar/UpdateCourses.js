@@ -12,6 +12,10 @@ function UpdateCourses() {
       height: 35px;
     }
 
+    button:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
     update-courses-button {
       height: 35px;
       border: 1px solid white;

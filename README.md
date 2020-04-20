@@ -1,48 +1,61 @@
 # OSU CS Applied Plan Portal
 
-This is a web app that streamlines the pro-school application process for OSU Applied-CS students.
+This is a web app that streamlines the pro-school application process for OSU Applied-CS students and advisors.
 
 ## Prerequisites
 
+- A shell to run commands
 - Node.js version at least 12.x
-- MySQL version at least 8.x
-- Firefox version at least 75.x or Chrome version at least 80.x
+- Chrome version at least 80.x or Firefox version at least 75.x
+- Access to the Oregon State University network
 
-## Installation
+## Installation and Setup
 
-From the root directory of this repo, run
+1. Download the contents of the repo to your machine by running the following
+command with your preferred shell.
 
-    chmod +x install.sh && ./install.sh
+        git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
 
-Please follow the instructions produced by the script to install the necessary software and dependencies.
 
-## Deployment
+2. Download the following .env file and put it in the ROOT directory of the repo.
 
-1. A MySQL database is required for this application. To create an empty database in MySQL, e.g. `cs72`,
+        https://drive.google.com/file/d/1epze7tEpO4yoF5zyID8DB5dFScxRR6Ld/view?usp=sharing
 
-        mysql -u root -p -e "CREATE DATABASE cs72"
+   Download the following .env file and put it in the CLIENT directory of the repo.
 
-2. Import the data from the initialization script to the newly created database. For the previous example, from the root directory of this repo, run
+        https://drive.google.com/file/d/1Cf0WDgirYUqg43qTEzD0RrC52VfwNDK2/view?usp=sharing
 
-        mysql -u root -p cs72 < services/db/db-init.sql
+   **NOTE:** 
+   You must be logged into your Oregon State University email and have been given express permission to access these files. 
+   If you are unable to access these files and you believe that you should have permission, please send an email to
+   thomasza@oregonstate.edu and ask to be given permission.
 
-3. The following environment variables must be set:
 
-        PORT
-        SQL_HOST
-        SQL_PORT
-        SQL_USER
-        SQL_PASSWORD
-        SQL_DB_NAME
-        JWT_SECRET_KEY
-        CSRF_SECRET_KEY
-        REACT_APP_API_HOST
-        REACT_APP_API_PORT
+3. From the root directory of this repo, run
 
-    where `REACT_APP_API_PORT` must have the same value as `PORT`.
+        chmod +x install.sh && ./install.sh
 
-4. Make sure the port 3000 and the port specified by the `PORT` environment variable are available to be used.
+   Please follow the instructions produced by the script to install the necessary software and dependencies.
 
-5. To start the application, from the root directory of this repo, run
+
+4. Make sure the port 3000 and the port specified by the `PORT` (5000 by default) environment variable are available to be used.
+
+
+5. To access the database referenced in the API environment file you will need to be connected to the OSU network. If you are on campus you may not need to perform any further action, if you are away from campus, use a VPN to connect to sds.oregonstate.edu using your ONID password.
+
+
+6. To start the application, from the root directory of this repo, run
 
         npm start
+
+## Resources
+
+Git Bash for Windows: https://gitforwindows.org/
+
+Node.js download: https://nodejs.org/en/
+
+Chrome download: https://www.google.com/chrome
+
+Firefox download: https://www.mozilla.org/en-US/firefox/new/
+
+Documentation for connecting to OSU's network using a VPN: https://is.oregonstate.edu/service/vpn

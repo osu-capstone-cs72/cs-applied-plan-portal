@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Apr 12, 2020 at 10:25 PM
+-- Generation Time: Apr 19, 2020 at 02:30 AM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.4
 
@@ -54,7 +54,7 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (12, 27, 61846240923, '2020-03-20 16:46:38', 'This plan has too many 100 level courses.'),
 (13, 28, 97689531333, '2020-03-20 16:48:06', 'Hello there!\nThis plan has too many credits focused on research, add something else instead.'),
 (14, 16, 97689531333, '2020-03-20 16:58:18', 'Hello there!\nI don\'t think focusing on birds is really a valid strategy for a plan. Possibly rework this plan a bit to focus on general nature studies?'),
-(15, 29, 82757579527, '2020-03-21 03:36:13', 'I really really like minerals.'),
+(15, 29, 82757579527, '2020-03-21 03:36:13', 'I really like minerals.'),
 (16, 21, 82757579527, '2020-03-25 19:22:40', 'Comment #1'),
 (17, 21, 82757579527, '2020-03-25 19:22:43', 'Comment #2'),
 (18, 21, 82757579527, '2020-03-25 19:22:47', 'Comment #3'),
@@ -73,7 +73,9 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (31, 29, 77768733898, '2020-03-31 22:20:48', 'This plan looks good. I will go ahead and give it to the head advisor.'),
 (32, 29, 80612566209, '2020-03-31 22:32:35', 'Looks good.'),
 (34, 19, 82757579527, '2020-04-10 06:48:35', 'This plan looks good. I will have the head advisor review it.'),
-(35, 15, 82757579527, '2020-04-12 19:41:09', 'Interesting area of focus');
+(35, 15, 82757579527, '2020-04-12 19:41:09', 'Interesting area of focus'),
+(36, 41, 77768733898, '2020-04-16 19:48:51', 'I think you should include GEO 101 on this plan.'),
+(37, 41, 82757579527, '2020-04-16 19:49:18', 'I updated the plan to include GEO 101');
 
 -- --------------------------------------------------------
 
@@ -7015,47 +7017,35 @@ CREATE TABLE `Notification` (
   `planId` int(11) NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `text` varchar(100) NOT NULL,
-  `type` int(11) NOT NULL,
-  `checked` tinyint(11) NOT NULL
+  `type` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Notification`
 --
 
-INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`, `checked`) VALUES
-(1, 17, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Language Plan\".', 1, 0),
-(2, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
-(3, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2, 0),
-(4, 26, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Geology Focused Plan\".', 1, 0),
-(5, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
-(6, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2, 0),
-(7, 11, 19424289189, 'Leia Organa has added a new comment to the plan \"Math Plan\".', 1, 1),
-(8, 11, 19424289189, 'The plan \"Math Plan\" has been set to \"Awaiting final review\" by Leia Organa.', 2, 1),
-(9, 13, 60535363653, 'Zachary Thomas has added a new comment to the plan \"Business Plan\".', 1, 1),
-(10, 13, 60535363653, 'The plan \"Business Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 1),
-(11, 9, 84979840992, 'Zachary Thomas has added a new comment to the plan \"Music Plan\".', 1, 0),
-(12, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
-(13, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Accepted\" by Sheev Palpatine.', 2, 0),
-(14, 10, 84979840992, 'Anakin Skywalker has added a new comment to the plan \"Chemistry Plan\".', 1, 0),
-(15, 10, 84979840992, 'The plan \"Chemistry Plan\" has been set to \"Awaiting final review\" by Anakin Skywalker.', 2, 0),
-(16, 16, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Bird Plan\".', 1, 0),
-(17, 16, 14278597767, 'The plan \"Bird Plan\" has been set to \"Awaiting student changes\" by Zachary Thomas.', 2, 0),
-(18, 21, 82757579527, 'Zachary Thomas has added a new comment to the plan \"Law Plan\".', 1, 1),
-(25, 0, 82757579527, 'Began updating courses at Mar 28, 2020, 3:29 AM.', 3, 1),
-(26, 0, 82757579527, 'Finished updating courses at Mar 28, 2020, 3:29 AM.', 3, 1),
-(27, 0, 82757579527, 'Began updating courses at Mar 28, 2020, 7:19 PM.', 3, 1),
-(28, 0, 82757579527, 'Error completing course update at Mar 28, 2020, 7:25 PM', 3, 1),
-(29, 0, 82757579527, 'Began updating courses at Mar 28, 2020, 7:58 PM.', 3, 1),
-(30, 0, 82757579527, 'Began updating courses at Mar 31, 2020, 6:41 PM.', 3, 1),
-(31, 0, 82757579527, 'Began updating courses at Mar 31, 2020, 6:48 PM.', 3, 1),
-(32, 0, 82757579527, 'Finished updating courses at Mar 31, 2020, 7:10 PM.', 3, 1),
-(33, 19, 12002489701, 'Zachary Thomas has added a new comment to the plan \"Robotics Plan\".', 1, 0),
-(34, 19, 12002489701, 'The plan \"Robotics Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
-(35, 15, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Family Plan\".', 1, 0),
-(36, 15, 14278597767, 'The plan \"Family Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2, 0),
-(37, 0, 82757579527, 'Began updating courses at Apr 12, 2020, 9:51 PM.', 3, 0),
-(38, 0, 82757579527, 'Error completing course update at Apr 12, 2020, 10:20 PM', 3, 0);
+INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`) VALUES
+(1, 17, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Language Plan\".', 1),
+(2, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
+(3, 17, 86725657261, 'The plan \"Language Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2),
+(4, 26, 86725657261, 'Zachary Thomas has added a new comment to the plan \"Geology Focused Plan\".', 1),
+(5, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
+(6, 26, 86725657261, 'The plan \"Geology Focused Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2),
+(7, 11, 19424289189, 'Leia Organa has added a new comment to the plan \"Math Plan\".', 1),
+(8, 11, 19424289189, 'The plan \"Math Plan\" has been set to \"Awaiting final review\" by Leia Organa.', 2),
+(9, 13, 60535363653, 'Zachary Thomas has added a new comment to the plan \"Business Plan\".', 1),
+(10, 13, 60535363653, 'The plan \"Business Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
+(11, 9, 84979840992, 'Zachary Thomas has added a new comment to the plan \"Music Plan\".', 1),
+(12, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
+(13, 9, 84979840992, 'The plan \"Music Plan\" has been set to \"Accepted\" by Sheev Palpatine.', 2),
+(14, 10, 84979840992, 'Anakin Skywalker has added a new comment to the plan \"Chemistry Plan\".', 1),
+(15, 10, 84979840992, 'The plan \"Chemistry Plan\" has been set to \"Awaiting final review\" by Anakin Skywalker.', 2),
+(16, 16, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Bird Plan\".', 1),
+(17, 16, 14278597767, 'The plan \"Bird Plan\" has been set to \"Awaiting student changes\" by Zachary Thomas.', 2),
+(33, 19, 12002489701, 'Zachary Thomas has added a new comment to the plan \"Robotics Plan\".', 1),
+(34, 19, 12002489701, 'The plan \"Robotics Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
+(35, 15, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Family Plan\".', 1),
+(36, 15, 14278597767, 'The plan \"Family Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2);
 
 -- --------------------------------------------------------
 
@@ -7078,10 +7068,10 @@ CREATE TABLE `Plan` (
 
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
 (1, 2, 'Forestry Focused Plan', 10157289101, '2020-03-20 08:33:50', '2020-03-20 16:11:59'),
-(2, 2, 'CS Plan', 82757579527, '2020-03-20 13:03:03', '2020-03-20 13:03:29'),
-(8, 0, 'Research Plan', 82757579527, '2020-03-20 15:16:32', '2020-03-20 16:31:51'),
-(9, 4, 'Music Plan', 84979840992, '2020-03-20 15:53:41', '2020-03-20 16:39:11'),
-(10, 3, 'Chemistry Plan', 84979840992, '2020-03-20 15:54:54', '2020-03-20 16:41:22'),
+(2, 2, 'CS Plan', 82757579527, '2020-03-20 13:03:03', '2020-04-19 09:29:38'),
+(8, 0, 'Research Plan', 82757579527, '2020-03-20 15:16:32', '2020-04-19 09:29:38'),
+(9, 4, 'Music Plan', 12002489701, '2020-03-20 15:53:41', '2020-04-18 17:57:01'),
+(10, 3, 'Chemistry Plan', 12002489701, '2020-03-20 15:54:54', '2020-04-18 17:57:09'),
 (11, 3, 'Math Plan', 12002489701, '2020-03-20 15:56:45', '2020-04-08 01:09:15'),
 (12, 2, 'Art Plan', 12002489701, '2020-03-20 15:57:15', '2020-04-08 01:09:15'),
 (15, 3, 'Family Plan', 14278597767, '2020-03-20 16:03:31', '2020-04-12 19:49:07'),
@@ -7096,14 +7086,15 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 (24, 2, 'Agriculture Plan', 73611589202, '2020-03-20 16:20:14', '2020-04-12 23:42:28'),
 (25, 2, 'Geology Plan', 73611589202, '2020-03-20 16:26:47', '2020-03-20 16:27:44'),
 (26, 4, 'Geology Focused Plan', 86725657261, '2020-03-20 16:27:15', '2020-03-20 16:33:50'),
-(27, 0, 'Computer and Math Plan', 82757579527, '2020-03-20 16:46:09', '2020-03-20 16:54:48'),
-(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-03-20 16:48:57'),
-(29, 4, 'Earth Plan', 82757579527, '2020-03-21 03:35:55', '2020-03-31 22:32:38'),
+(27, 0, 'Computer and Math Plan', 82757579527, '2020-03-20 16:46:09', '2020-04-19 09:29:38'),
+(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-04-19 09:29:38'),
+(29, 4, 'Earth Plan', 82757579527, '2020-03-21 03:35:55', '2020-04-19 09:29:38'),
 (30, 2, 'Computer Plan', 50734529811, '2020-03-21 20:01:46', '2020-03-27 03:23:17'),
 (31, 2, 'Space & Earth Plan', 96734244380, '2020-03-27 03:02:57', '2020-03-27 03:23:17'),
 (32, 2, 'Bio-Health Plan', 74237743225, '2020-03-27 03:23:23', '2020-03-27 03:36:39'),
 (33, 2, 'Civil Engineering Plan', 74237743225, '2020-03-27 03:36:02', '2020-03-27 03:36:39'),
-(38, 2, 'this is a plan', 82757579527, '2020-04-12 20:54:05', '2020-04-12 20:54:05');
+(41, 2, 'Geology Plan', 82757579527, '2020-04-16 18:51:49', '2020-04-19 09:29:38'),
+(42, 2, 'aaaaa', 84979840992, '2020-04-18 19:03:06', '2020-04-18 19:03:06');
 
 -- --------------------------------------------------------
 
@@ -7139,7 +7130,9 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 (14, 29, 77768733898, 3, '2020-03-31 22:20:56'),
 (15, 29, 80612566209, 4, '2020-03-31 22:32:38'),
 (16, 19, 82757579527, 3, '2020-04-10 06:48:44'),
-(17, 15, 82757579527, 3, '2020-04-12 19:49:07');
+(17, 15, 82757579527, 3, '2020-04-12 19:49:07'),
+(18, 41, 77768733898, 1, '2020-04-16 19:48:55'),
+(19, 41, 82757579527, 2, '2020-04-16 19:49:09');
 
 -- --------------------------------------------------------
 
@@ -7162,11 +7155,12 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (159, 20, 60535363653, '2020-04-02 00:29:03'),
 (173, 1, 60535363653, '2020-04-07 00:30:37'),
 (175, 2, 60535363653, '2020-04-07 00:34:06'),
-(219, 21, 82757579527, '2020-04-12 23:41:41'),
-(222, 24, 82757579527, '2020-04-12 23:42:29'),
-(223, 2, 82757579527, '2020-04-12 23:52:56'),
-(225, 22, 82757579527, '2020-04-12 23:53:45'),
-(226, 19, 82757579527, '2020-04-13 05:18:28');
+(249, 9, 84979840992, '2020-04-13 22:34:21'),
+(283, 28, 82757579527, '2020-04-19 06:46:39'),
+(284, 21, 82757579527, '2020-04-19 06:49:01'),
+(285, 22, 82757579527, '2020-04-19 06:51:04'),
+(289, 32, 82757579527, '2020-04-19 06:52:23'),
+(290, 17, 82757579527, '2020-04-19 07:06:29');
 
 -- --------------------------------------------------------
 
@@ -7444,17 +7438,31 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`, `credits`) VALUES
 (33, 1451, 4),
 (33, 1452, 4),
 (33, 1470, 2),
-(38, 1, 4),
-(38, 6, 3),
-(38, 7, 4),
-(38, 9, 2),
-(38, 10, 3),
-(38, 15, 4),
-(38, 16, 3),
-(38, 258, 4),
-(38, 2988, 3),
-(38, 3394, 3),
-(38, 5305, 1);
+(41, 2979, 4),
+(41, 2980, 4),
+(41, 2981, 4),
+(41, 2982, 4),
+(41, 2983, 4),
+(41, 2984, 3),
+(41, 2985, 3),
+(41, 2986, 3),
+(41, 2987, 3),
+(42, 2432, 1),
+(42, 2433, 1),
+(42, 2434, 1),
+(42, 2435, 1),
+(42, 2436, 3),
+(42, 2437, 3),
+(42, 2438, 4),
+(42, 2439, 1),
+(42, 2440, 4),
+(42, 2441, 3),
+(42, 2442, 1),
+(42, 2443, 3),
+(42, 2444, 2),
+(42, 2445, 3),
+(42, 2446, 3),
+(42, 2447, 3);
 
 -- --------------------------------------------------------
 
@@ -7479,18 +7487,18 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (12002489701, 'Luke', 'Skywalker', 'usetheforce@gmail.com', 0),
 (14278597767, 'San', 'Holo', 'vibrant@birbspotters.nl', 0),
 (15999951730, 'Anakin', 'Skywalker', 'darth-vader@gmail.com', 1),
-(19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 2),
+(19424289189, 'Claire', 'Cahill', 'cahillc@oregonstate.edu', 0),
 (19654375695, 'Boba', 'Fett', 'bounty-hunter@yahoo.com', 0),
 (50734529811, 'R2', 'D2', 'artoo@gmail.com', 0),
-(60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 2),
+(60535363653, 'Phi', 'Luu', 'luuph@oregonstate.edu', 0),
 (61846240923, 'Wilhuff', 'Tarkin', 'grandmoff@yahoo.com', 1),
 (64391826876, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (73611589202, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (74237743225, 'Wedge', 'Antilles', 'x-wing@aol.com', 0),
 (77768733898, 'Leia', 'Organa', 'CinnamonBuns@msn.com', 1),
 (80612566209, 'Sheev', 'Palpatine', 'order66@gmail.com', 2),
-(82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2),
-(84979840992, 'Jackson', 'Golletz', 'golletzj@oregonstate.edu', 2),
+(82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 0),
+(84979840992, 'Jackson', 'Golletz', 'golletzj@oregonstate.edu', 0),
 (86725657261, 'C', '3PO', 'human_cyborg_relations@aol.com', 0),
 (96734244380, 'Lando', 'Calrissian', 'cloud_city@hotmail.com', 0),
 (97689531333, 'Ben', 'Kenobi', 'hello-there@hotmail.com', 1);
@@ -7567,7 +7575,7 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `Course`
@@ -7579,25 +7587,25 @@ ALTER TABLE `Course`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=291;
 
 --
 -- Constraints for dumped tables

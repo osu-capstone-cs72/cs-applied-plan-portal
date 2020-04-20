@@ -55,31 +55,56 @@ function ListSimilarPlans() {
 
   `;
 
+  // get a count of similar plans that have been accepted and rejected
   useEffect(() => {
+
+    // set ignore and controller to prevent a memory leak
+    // in the case where we need to abort early
+    let ignore = false;
+    const controller = new AbortController();
+
+    // get a count of similar plans that have been accepted and rejected
+    async function fetchSimilar(planId) {
+      try {
+
+        const url = `/api/plan/${planId}/similar`;
+        let obj = [];
+
+        // get similar plan data
+        const response = await fetch(url);
+
+        // before checking the results, ensure the request was not canceled
+        if (!ignore) {
+
+          if (response.ok) {
+            // get data from the response
+            obj = await response.json();
+            setAccepted(obj.accepted);
+            setRejected(obj.rejected);
+          }
+
+        }
+
+      } catch (err) {
+        if (err instanceof DOMException) {
+          // if we canceled the fetch request then don't show an error message
+          console.log("HTTP request aborted");
+        } else {
+          console.log("An internal server error occurred. Please try again later.");
+        }
+      }
+    }
+
     fetchSimilar(planId);
+
+    // cleanup function
+    return () => {
+      controller.abort();
+      ignore = true;
+    };
+
     // eslint-disable-next-line
   }, [planId]);
-
-  async function fetchSimilar(planId) {
-    try {
-
-      const url = `/api/plan/${planId}/similar`;
-      let obj = [];
-
-      // get similar plan data
-      const response = await fetch(url);
-      if (response.ok) {
-        // get data from the response
-        obj = await response.json();
-        setAccepted(obj.accepted);
-        setRejected(obj.rejected);
-      }
-
-    } catch (err) {
-      // this is a server error
-      console.log("An internal server error occurred. Please try again later.");
-    }
-  }
 
   if (accepted === 0 && rejected === 0) {
     return null;

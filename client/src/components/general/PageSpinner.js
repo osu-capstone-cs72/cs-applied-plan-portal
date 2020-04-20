@@ -19,7 +19,7 @@ function PageSpinner(props) {
   `;
 
   return (
-    (props.loading || props.subloading ? (
+    (props.loading ? (
       <div className="loader-container" css={style}>
         <BounceLoader
           size={150}
@@ -34,6 +34,5 @@ function PageSpinner(props) {
 export default PageSpinner;
 
 PageSpinner.propTypes = {
-  loading: PropTypes.bool,
-  subloading: PropTypes.bool
+  loading: PropTypes.bool
 };

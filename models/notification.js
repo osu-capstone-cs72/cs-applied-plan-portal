@@ -9,7 +9,7 @@ async function getNotifications(userId) {
 
   try {
 
-    const sql = "SELECT * FROM Notification WHERE userId=? AND checked=0;";
+    const sql = "SELECT * FROM Notification WHERE userId=?;";
     const results = await pool.query(sql, userId);
 
     return {
@@ -24,24 +24,24 @@ async function getNotifications(userId) {
 }
 exports.getNotifications = getNotifications;
 
-// check a notification by id
-async function checkNotification(notificationId, userId) {
+// delete a notification by id
+async function deleteNotification(notificationId, userId) {
 
   try {
 
-    const sql = "UPDATE Notification SET checked=1 WHERE notificationId=? AND userId=?;";
+    const sql = "DELETE FROM Notification WHERE notificationId=? AND userId=?;";
     const results = await pool.query(sql, [notificationId, userId]);
     return {
       affectedRows: results[0].affectedRows
     };
 
   } catch (err) {
-    console.log("Error checking notification");
+    console.log("Error deleting notification");
     throw Error(err);
   }
 
 }
-exports.checkNotification = checkNotification;
+exports.deleteNotification = deleteNotification;
 
 // create a new notification
 async function createNotification(planId, userId, type, status, planName, actorName) {
@@ -65,7 +65,7 @@ async function createNotification(planId, userId, type, status, planName, actorN
     // prevent duplicate notifications from being created by
     // comparing notification messages
     let sql = "SELECT text FROM Notification WHERE userId = ? " +
-      "AND text = ? AND checked = 0;";
+      "AND text = ?;";
     let results = await pool.query(sql, [userId, text]);
 
     if (results[0].length) {
@@ -73,8 +73,8 @@ async function createNotification(planId, userId, type, status, planName, actorN
     }
 
     // create the new notification
-    sql = "INSERT INTO Notification (planId, userId, text, type, checked) " +
-      "VALUES (?, ?, ?, ?, 0)";
+    sql = "INSERT INTO Notification (planId, userId, text, type) " +
+      "VALUES (?, ?, ?, ?)";
     results = await pool.query(sql, [planId, userId, text, type]);
     return;
 
@@ -151,8 +151,8 @@ async function courseUpdateNotification(userId, state) {
       notificationText = `Error completing course update at ${time}`;
     }
 
-    const sql = "INSERT INTO Notification (planId, userId, text, type, checked) " +
-      "VALUES (0, ?, ?, 3, 0)";
+    const sql = "INSERT INTO Notification (planId, userId, text, type) " +
+      "VALUES (0, ?, ?, 3)";
     const results = await pool.query(sql, [userId, notificationText]);
     return {
       affectedRows: results[0].affectedRows

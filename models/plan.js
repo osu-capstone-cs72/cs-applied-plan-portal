@@ -353,7 +353,7 @@ async function getPlan(planId, userId) {
   try {
 
     // remove all notifications for the plan
-    checkPlanNotifications(planId, userId);
+    deletePlanNotifications(planId, userId);
 
     // add plan to recently viewed
     addRecentPlan(planId, userId);
@@ -464,24 +464,24 @@ async function getPlanActivity(planId, cursor) {
 }
 exports.getPlanActivity = getPlanActivity;
 
-// check all notifications on a plan for a specific user
-async function checkPlanNotifications(planId, userId) {
+// delete all notifications on a plan for a specific user
+async function deletePlanNotifications(planId, userId) {
 
   try {
 
-    const sql = "UPDATE Notification SET checked=1 WHERE planId=? AND userId=?;";
+    const sql = "DELETE FROM Notification WHERE planId=? AND userId=?;";
     const results = await pool.query(sql, [planId, userId]);
     return {
       affectedRows: results[0].affectedRows
     };
 
   } catch (err) {
-    console.log("Error checking notification");
+    console.log("Error deleting notification");
     throw Error(err);
   }
 
 }
-exports.checkPlanNotifications = checkPlanNotifications;
+exports.deletePlanNotifications = deletePlanNotifications;
 
 // get a list of plans recently viewed by the user
 async function getRecentPlans(userId) {
