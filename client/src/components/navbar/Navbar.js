@@ -77,6 +77,10 @@ function Navbar() {
       margin-left: auto;
     }
 
+    #manage-roles-button:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
     @media print {
       & {
         display: none;

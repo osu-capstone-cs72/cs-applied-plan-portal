@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {css, jsx} from "@emotion/core";
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 import {Link, useParams, withRouter} from "react-router-dom";
 import {useState, useEffect} from "react";
 import PropTypes from "prop-types";
@@ -81,6 +81,10 @@ function PlanMetadata(props) {
       margin-right: 0.5rem;
     }
 
+    button:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
     @media print {
 
       & {
@@ -130,7 +134,7 @@ function PlanMetadata(props) {
         </div>
         <div className="metadata-field" id="status-field">
           <p className="field-type">Plan Status:</p>
-          <p className="field-text">{renderStatus(props.status)}</p>
+          <p className="field-text">{statusText(props.status)}</p>
         </div>
         <div className="metadata-field button-field">
           <button id="print-plan-button" onClick={() => props.onPrint()}>

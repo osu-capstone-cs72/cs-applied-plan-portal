@@ -57,7 +57,7 @@ function CreateReview(props) {
 
     const selectStatus = document.getElementById("review-select");
     const statusValue = selectStatus.options[selectStatus.selectedIndex].value;
-    const statusMessage = renderStatus(statusValue);
+    const statusMessage = statusText(statusValue);
 
     if (window.confirm(`Are you sure that you want to set this plans status to "${statusMessage}"?`)) {
       try {
@@ -109,7 +109,7 @@ function CreateReview(props) {
 
   }
 
-  function renderStatus(status) {
+  function statusText(status) {
     switch (status) {
       case "0":
         return "Rejected";

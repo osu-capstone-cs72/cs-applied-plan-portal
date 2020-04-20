@@ -15,6 +15,10 @@ function Logout() {
       background: transparent;
     }
 
+    &:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
   `;
 
   // logout the current user

@@ -5,7 +5,7 @@ require("path");
 const validator = require("validator");
 const express = require("express");
 const app = express();
-const {getNotifications, checkNotification} = require("../models/notification");
+const {getNotifications, deleteNotification} = require("../models/notification");
 const {requireAuth} = require("../services/auth/auth");
 
 
@@ -28,21 +28,21 @@ app.get("/", requireAuth, async (req, res) => {
 
 });
 
-// set a notification as checked
-app.patch("/:notificationId", requireAuth, async (req, res) => {
+// delete a notification
+app.delete("/:notificationId", requireAuth, async (req, res) => {
 
   try {
 
     const userId = req.auth.userId;
     const notificationId = validator.toInt(req.params.notificationId);
-    console.log("Check notification", notificationId);
+    console.log("Delete notification", notificationId);
 
-    const results = await checkNotification(notificationId, userId);
+    const results = await deleteNotification(notificationId, userId);
     if (results.affectedRows === 0) {
       console.error("404: No notification found\n");
       res.status(404).send({error: "No notification found."});
     } else {
-      console.log("200: Notification checked\n");
+      console.log("200: Notification deleted\n");
       res.status(200).send(results);
     }
 

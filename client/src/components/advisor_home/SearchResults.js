@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 import {formatTime} from "../../utils/formatTime";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
@@ -52,8 +52,8 @@ function SearchResults(props) {
     }
     
     table thead tr th {
-      background: var(--color-lightgray-100);
-      color: var(--color-gray-400);
+      background: #f4f2f1;
+      color: #706c6b;
       font-variant-caps: all-small-caps;
       font-weight: 500;
       font-size: 12pt;
@@ -69,6 +69,14 @@ function SearchResults(props) {
     table tbody tr td {
       vertical-align: middle;
       padding: 1rem 2rem;
+    }
+
+    table tbody tr {
+      cursor: pointer;
+    }
+
+    tr:hover {
+      background: rgba(0, 0, 0, 0.02);
     }
 
   `;
@@ -158,7 +166,7 @@ function SearchResults(props) {
                 </td>
                 <td className="student-plans-data" key={plan.planId + "sb"}>{plan.userId}</td>
                 <td className="student-plans-data" key={plan.planId + "sc"}>{plan.planName}</td>
-                <td className="student-plans-data" key={plan.planId + "sd"}>{renderStatus(plan.status)}</td>
+                <td className="student-plans-data" key={plan.planId + "sd"}>{statusText(plan.status)}</td>
                 <td className="student-plans-data" key={plan.planId + "se"}>{formatTime(plan.created)}</td>
                 <td className="student-plans-data" key={plan.planId + "sf"}>{formatTime(plan.lastUpdated)}</td>
 

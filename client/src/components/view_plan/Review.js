@@ -2,7 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
-import {renderStatus} from "../../utils/renderStatus";
+import {statusText} from "../../utils/renderStatus";
 import {formatTime} from "../../utils/formatTime";
 
 function Reviews(props) {
@@ -49,7 +49,7 @@ function Reviews(props) {
           {props.status > 4 ? (
             <p className="review-status">Created a new plan</p>
           ) : (
-            <p className="review-status">Updated status to {renderStatus(props.status)}</p>
+            <p className="review-status">Updated status to {statusText(props.status)}</p>
           )}
         </div>
       </div>

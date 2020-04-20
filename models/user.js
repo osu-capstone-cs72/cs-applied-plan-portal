@@ -178,7 +178,8 @@ async function getUserPlans(userId) {
       "SELECT P.planId, P.status, planName, lastUpdated, " +
       "GROUP_CONCAT(DISTINCT CAST(CONCAT(firstName, ' ', lastName) as CHAR)) AS advisors " +
       "FROM Plan AS P " +
-      "LEFT JOIN PlanReview AS R " +
+      "LEFT JOIN " +
+      "( SELECT * FROM PlanReview AS R WHERE userId != ? ) R " +
       "ON P.planId = R.planId " +
       "LEFT JOIN User AS U " +
       "ON R.userId = U.userId " +

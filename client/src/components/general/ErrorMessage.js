@@ -6,7 +6,10 @@ import PropTypes from "prop-types";
 function ErrorMessage(props) {
 
   const style = css`
-    grid-area: warn;
+
+    & {
+      grid-area: warn;
+    }
 
     .error-message, .hidden-error-message {
       border-radius: 0.5rem;
