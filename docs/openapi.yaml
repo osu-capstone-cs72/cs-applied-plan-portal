@@ -1,14 +1,13 @@
-# View this document on https://editor.swagger.io.
-
 openapi: 3.0.2
 
 info:
   description: >
     A portal that streamlines the planning process for Oregon State University
-    CS Applied students
+    CS Applied students and advisors
   version: 1.0.0
   title: OSU CS Applied Plan Portal
   contact:
+    name: API support
     email: 'thomasza@oregonstate.edu'
   license:
     name: MIT License
@@ -116,22 +115,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  '/user/{onid}':
+  '/user/{userId}':
     get:
-      summary: Fetch data about a specific User
+      summary: Fetches information about a specific User
       description: >
-        Returns information about a User with the provided `onid`.
-      operationId: getUserByOnid
+        Returns information about a User with the provided `userId`.
+      operationId: getUserById
       tags:
         - User
       parameters:
-        - name: onid
+        - name: userId
           in: path
-          description: ONID of the User to fetch
+          description: 11-digit ID of the User to fetch
           required: true
           schema:
             type: string
-          example: doejohn
+          example: 12345678901
       responses:
         '200':
           description: Success
@@ -618,28 +617,37 @@ components:
       type: object
       properties:
         commentId:
-          description: The ID to uniquely identify the comment
+          description: The ID to uniquely identify a comment
           type: integer
-          format: int64
+          format: int32
+          minimum: 1
           example: 72
         planId:
-          description: The ID of the plan that the comment is attached to
+          description: The ID of the plan to which the comment is attached
           type: integer
-          format: int64
+          format: int32
+          minimum: 1
           example: 72
         userId:
-          description: The ID of the user who created the comment
+          description: The 11-digit ID of the user who created the comment
           type: integer
           format: int64
-          example: 72
+          minimum: 10000000000
+          maximum: 99999999999
+          example: 72727272727
         time:
-          description: 'The time that the comment was created, in UTC'
+          description: The UTC time at which the comment was created
           type: string
-          format: date-time
-          example: '2020-05-15T14:30:29Z'
+          format: 'yyyy-mm-dd HH:MM:SS'
+          minLength: 19
+          maxLength: 19
+          example: '2020-12-31 23:59:59'
         text:
           description: The text content of the comment
           type: string
+          format: utf8
+          minLength: 5
+          maxLength: 500
           example: 'Your plan looks good!'
 
     Course:
@@ -647,95 +655,188 @@ components:
       type: object
       properties:
         courseId:
-          description: The ID to uniquely identify the course
+          description: The ID to uniquely identify a course
           type: integer
-          format: int64
+          format: int32
+          minimum: 1
           example: 72
         credits:
           description: The number of credits the course offers
-          type: integer
+          type: string
           format: int32
-          example: 4
+          minLength: 1
+          maxLength: 25
+          example: '4'
         courseName:
-          description: The name of the course
+          description: The name of the course in the OSU catalog
           type: string
-          example: Cloud Application Development
+          format: utf8
+          minLength: 1
+          maxLength: 100
+          example: CLOUD APPLICATION DEVELOPMENT
         courseCode:
-          description: The course code
+          description: The code of the course in the OSU catalog
           type: string
-          example: CS493
-        courseUrl:
-          description: >
-            The URL that corresponds with the OSU catalog listing of the course
-          type: string
-          example: 'https://example.com'
+          format: utf8
+          minLength: 1
+          maxLength: 25
+          example: CS 493
         restriction:
           description: >
-            The restriction code of this course in the CS applied program
+            Encodes different restriction of this course: `0` are any courses a
+            student is allowed to select, `1` are required courses, and `2` are
+            graduate courses
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 2
+          example: 1
+        description:
+          description: The description of the course
+          type: string
+          format: utf8
+          minLength: 1
+          maxLength: 1000
+          example: The quick brown fox jumps over the lazy dog
+        prerequisites:
+          description: >
+            The condition which students must meet to take the course
+          type: string
+          format: utf8
+          minLength: 0
+          maxLength: 1000
+          example: >
+            Prerequisites: CS 344, 340, and 372. A minimum grade of C is
+            required in CS 344, CS 340, and CS 372.
+
+    Notification:
+      description: >
+        An object representing information about an application notification
+      type: object
+      properties:
+        notificationId:
+          description: The ID to uniquely identify a notification
+          type: integer
+          format: int32
+          minimum: 1
+          example: 72
+        planId:
+          description: The ID of the plan to which the notification belongs
+          type: integer
+          format: int32
+          minimum: 1
+          example: 72
+        userId:
+          description: The 11-digit ID of the user who created the notification
           type: integer
           format: int64
-          example: 2
+          minimum: 10000000000
+          maximum: 99999999999
+          example: 72727272727
+        text:
+          description: The text content of the notification
+          type: string
+          format: utf8
+          minLength: 1
+          maxLength: 100
+          example: 'John Doe has added a new comment to the plan "CS plan".'
+        type:
+          description: >
+            Encodes different types of notifications: `1` are notifications
+            about comments on plans, `2` are notifications about plan status,
+            and `3` are notifications about course update progress
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 3
+          example: 1
 
     Plan:
       description: An object representing information about an applied plan
       type: object
       properties:
         planId:
-          description: The ID to uniquely identify the plan
+          description: The ID to uniquely identify a plan
           type: integer
-          format: int64
+          format: int32
+          minimum: 1
           example: 72
-        studentId:
-          description: >
-            The ID to uniquely identify the student that created the plan
-          type: integer
-          format: int64
-          example: 72
-        planName:
-          description: 'The name of the plan, decided by the student'
-          type: string
-          example: My Artificial Intelligence Plan
         status:
           description: >
-            An integer represents a specific status of a plan: 0 is `Rejected`,
-            1 is `Awaiting Student Changes`, 2 is `Awaiting Review`, 3 is
-            `Awaiting Final Review`, 4 is `Accepted`
-          type: string
+            Encodes different statuses of a plan: `0` is Rejected, `1` is
+            Awaiting Student Changes, `2` is Awaiting Review, `3` is
+            Awaiting Final Review, and `4` is Accepted
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 4
           example: 3
-        lastUpdated:
-          description: 'The time when the plan was last changed, in UTC'
+        planName:
+          description: The name of the plan
           type: string
-          format: date-time
-          example: '2020-05-15T14:30:29Z'
+          format: utf8
+          minLength: 5
+          maxLength: 50
+          example: My AI Plan
+        studentId:
+          description: The 11-digit ID of the student who created the plan
+          type: integer
+          format: int64
+          minimum: 10000000000
+          maximum: 99999999999
+          example: 72727272727
+        created:
+          description: The UTC time at which this plan was created
+          type: string
+          format: 'yyyy-mm-dd HH:MM:SS'
+          minLength: 19
+          maxLength: 19
+          example: '2020-12-31 23:59:59'
+        lastUpdated:
+          description: The UTC time at which the plan was last changed
+          type: string
+          format: 'yyyy-mm-dd HH:MM:SS'
+          minLength: 19
+          maxLength: 19
+          example: '2020-12-31 23:59:59'
 
     User:
       description: An object representing information about an application user
       type: object
       properties:
         userId:
-          description: The ID to uniquely identify the user
+          description: The 11-digit ID to uniquely identify a user
           type: integer
           format: int64
-          example: 72
+          minimum: 10000000000
+          maximum: 99999999999
+          example: 72727272727
         firstName:
           description: The first name of the user
           type: string
+          minLength: 1
+          maxLength: 50
           example: John
         lastName:
           description: The last name of the user
           type: string
+          minLength: 1
+          maxLength: 50
           example: Doe
         email:
           description: The OSU email of the user
           type: string
           format: email
+          minLength: 1
           example: 'email@example.com'
         role:
           description: >
-            The role of the user in the system: 0 is `Student`, 1 is `Advisor`,
-            2 is `Head Advisor`
+            Encodes the role of the user in the application: `0` is Student, `1`
+            is Advisor, and `2` is Head Advisor
           type: integer
-          format: int64
+          format: int32
+          minimum: 0
+          maximum: 2
           example: 1
 
     Error:
@@ -745,7 +846,9 @@ components:
         error:
           description: A message describing the error
           type: string
-          example: Error message
+          format: utf8
+          minLength: 1
+          example: Internal Server Error
 
   requestBodies:
     Comment:
@@ -763,6 +866,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Course'
+
+    Notification:
+      description: A Notification object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Notification'
 
     Plan:
       description: A Plan object
@@ -785,6 +896,8 @@ tags:
     description: API endpoints related to application Users
   - name: Course
     description: API endpoints related to Courses
+  - name: Notification
+    description: API endpoints related to Notifications
   - name: Plan
     description: API endpoints related to applied Plans
   - name: Comment
