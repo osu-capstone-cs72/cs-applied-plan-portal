@@ -13,6 +13,18 @@ info:
     name: MIT License
     url: 'https://github.com/osu-capstone-cs72/cs-applied-plan-portal/blob/master/LICENSE'
 
+tags:
+  - name: Comment
+    description: API endpoints related to Comments
+  - name: Course
+    description: API endpoints related to Courses
+  - name: Notification
+    description: API endpoints related to Notifications
+  - name: Plan
+    description: API endpoints related to applied Plans
+  - name: User
+    description: API endpoints related to application Users
+
 paths:
   /comment:
     post:
@@ -891,15 +903,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/User'
-
-tags:
-  - name: Comment
-    description: API endpoints related to Comments
-  - name: Course
-    description: API endpoints related to Courses
-  - name: Notification
-    description: API endpoints related to Notifications
-  - name: Plan
-    description: API endpoints related to applied Plans
-  - name: User
-    description: API endpoints related to application Users
