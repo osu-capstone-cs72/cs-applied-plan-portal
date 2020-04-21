@@ -88,7 +88,9 @@ fi
   exe npm install
 
   echo -e "\033[0;34mInstalling React server's dependencies\033[0m"
-  exe npm --prefix client/ install client/
+  exe cd client/
+  exe npm install
+  exe cd ../
 
   echo -e "\n\033[0;32mInstallation complete. Please double-check npm's log above to ensure all packages were successfully installed.\033[0m"
 
