@@ -25,8 +25,8 @@ command with your preferred shell.
 
       https://drive.google.com/file/d/1Cf0WDgirYUqg43qTEzD0RrC52VfwNDK2/view?usp=sharing
 
-   **NOTE:** 
-   You must be logged into your Oregon State University email and have been given express permission to access these files. 
+   **NOTE:**
+   You must be logged into your Oregon State University email and have been given express permission to access these files.
    If you are unable to access these files and you believe that you should have permission, please send an email to
    thomasza@oregonstate.edu and ask to be given permission.
 
@@ -46,7 +46,7 @@ command with your preferred shell.
 
 6. To start the application, from the root directory of this repo, run
 
-        npm start
+        npm run dev
 
 ## Resources
 
