@@ -7,6 +7,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+app.set("env", process.env.ENV);
+
 // catch invalid JSON request bodies
 app.use((req, res, next) => {
   bodyParser.json()(req, res, err => {

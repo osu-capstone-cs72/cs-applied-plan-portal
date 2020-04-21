@@ -14,6 +14,7 @@ const {userSchema} = require("../validation/schemaValidation");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const CSRF_SECRET_KEY = process.env.CSRF_SECRET_KEY;
 const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
+const COOKIE_SECURED = process.env.ENV === "PRODUCTION";  // secured cookie in production
 
 // Generates an auth token for a specific User with the provided ID.
 // Token is a JSON Web Token which expires in 24 hours.
@@ -171,26 +172,30 @@ function setAuthCookie(res, token, userId, role) {
       path: "/",
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
-      maxAge: COOKIE_EXPIRES_MS / 1000
+      maxAge: COOKIE_EXPIRES_MS / 1000,
+      secure: COOKIE_SECURED
     }),
     cookie.serialize("role", role, {
       path: "/",
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
-      maxAge: COOKIE_EXPIRES_MS / 1000
+      maxAge: COOKIE_EXPIRES_MS / 1000,
+      secure: COOKIE_SECURED
     }),
     cookie.serialize("csrf", CryptoJS.AES.encrypt(token, CSRF_SECRET_KEY).toString(), {
       path: "/",
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
-      maxAge: COOKIE_EXPIRES_MS / 1000
+      maxAge: COOKIE_EXPIRES_MS / 1000,
+      secure: COOKIE_SECURED
     }),
     cookie.serialize("auth", token, {
       path: "/",
       httpOnly: true,
       sameSite: true,
       expires: new Date(Date.now() + COOKIE_EXPIRES_MS),
-      maxAge: COOKIE_EXPIRES_MS / 1000
+      maxAge: COOKIE_EXPIRES_MS / 1000,
+      secure: COOKIE_SECURED
     })
   ]);
 }
