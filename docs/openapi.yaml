@@ -4,6 +4,9 @@ info:
   description: >
     A portal that streamlines the planning process for Oregon State University
     CS Applied students and advisors
+
+
+    [GitHub repository](https://github.com/osu-capstone-cs72/cs-applied-plan-portal)
   version: 1.0.0
   title: OSU CS Applied Plan Portal
   contact:
@@ -35,189 +38,106 @@ paths:
       tags:
         - Comment
       requestBody:
-        required: true
-        description: A Comment object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Comment'
+        $ref: '#/components/requestBodies/CommentBody'
       responses:
         '201':
-          description: Successfully added new Comment
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  insertId:
+                    type: integer
+                    format: int32
+                    minimum: 1
+                    example: 72
+                  time:
+                    type: string
+                    format: 'yyyy-mm-dd HH:MM:SS'
+                    minLength: 19
+                    maxLength: 19
+                    example: '2020-12-31 23:59:59'
         '400':
-          description: Invalid request body
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Request not made by an authorized user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Plan with the specified `planId` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/400Response'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/500Response'
 
-  '/comment/{commentId}':
+  '/course/updateDatabase':
     get:
-      summary: Fetch data about a specific Comment
+      summary: Sync Courses with the OSU catalog
       description: >
-        Returns information about a Comment with the provided `commentId`
-      operationId: getCommentById
-      tags:
-        - Comment
-      parameters:
-        - name: commentId
-          in: path
-          description: ID of the Comment to fetch
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 72
-      responses:
-        '200':
-          description: Success
-        '403':
-          description: Request not made by an authorized user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Plan with the specified `commentId` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  '/course/{courseId}':
-    get:
-      summary: Fetch data about a specific Course
-      description: >
-        Returns information about a Course with the provided `courseId`.
-      operationId: getCourseById
+        Fetches live Courses from the OSU course catalog. Existing Courses are
+        updated, and new Courses are added to the application database.
+      operationId: getLiveCourses
       tags:
         - Course
-      parameters:
-        - name: courseId
-          in: path
-          description: ID of the Course to fetch
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 72
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Course'
-        '404':
-          description: Course with the specified `courseId` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                properties:
+                  note:
+                    type: string
+                    format: utf8
+                    minLength: 1
+                    example: 'Courses update started.'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/500Response'
 
-  '/course/{courseCode}':
+  '/course/search/{searchText}/{filterValue}':
     get:
-      summary: Fetch data about a specific Course based on course code
+      summary: Search Courses with text and filters
       description: >
-        Returns information about a specific Course with the provided course
-        code.
-      operationId: getCourseByCode
+        Returns information about a Course with the provided search text and
+        filter value.
+      operationId: getCourse
       tags:
         - Course
       parameters:
-        - name: courseCode
+        - name: searchText
           in: path
-          description: Code of the Course to fetch
+          description: Text typed into the search bar
           required: true
           schema:
             type: string
-          example: "CS493"
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Course'
-        '404':
-          description: Course with the specified `courseCode` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  '/course/{courseName}':
-    get:
-      summary: Fetch data about a specific Course based on course name
-      description: >
-        Returns information about a specific Course with the provided course
-        name.
-      operationId: getCourseByName
-      tags:
-        - Course
-      parameters:
-        - name: courseName
+            format: utf8
+            minLength: 1
+            example: Engineering
+        - name: filterValue
           in: path
-          description: Name of the Course to fetch
+          description: Index of the selected filter option in the dropdown
           required: true
           schema:
-            type: string
-          example: "Cloud Application Development"
+            type: integer
+            format: int32
+            minimum: 0
+            example: 2
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Course'
-        '404':
-          description: Course with the specified `courseName` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Course'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/500Response'
 
   # Notification routes here
 
@@ -861,10 +781,10 @@ components:
           type: string
           format: utf8
           minLength: 1
-          example: Internal Server Error
+          example: Something's wrong
 
   requestBodies:
-    Comment:
+    CommentBody:
       description: A Comment object
       required: true
       content:
@@ -872,7 +792,7 @@ components:
           schema:
             $ref: '#/components/schemas/Comment'
 
-    Course:
+    CourseBody:
       description: A Course object
       required: true
       content:
@@ -880,7 +800,7 @@ components:
           schema:
             $ref: '#/components/schemas/Course'
 
-    Notification:
+    NotificationBody:
       description: A Notification object
       required: true
       content:
@@ -888,7 +808,7 @@ components:
           schema:
             $ref: '#/components/schemas/Notification'
 
-    Plan:
+    PlanBody:
       description: A Plan object
       required: true
       content:
@@ -896,10 +816,46 @@ components:
           schema:
             $ref: '#/components/schemas/Plan'
 
-    User:
+    UserBody:
       description: A User object
       required: true
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/User'
+
+  responses:
+    400Response:
+      description: Missing or invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    401Response:
+      description: Missing or invalid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    403Response:
+      description: Not allowed to perform this action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    404Response:
+      description: Specified resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    500Response:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
