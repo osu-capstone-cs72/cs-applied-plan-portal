@@ -31,7 +31,8 @@
     "dev": "ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
     "server": "node server.js --ignore client/*",
     "serverDev": "nodemon server.js --ignore client/*",
-    "client": "cd client && npm start"
+    "client": "cd client && npm start",
+    "test": "cd client && npm test"
   },
   "repository": {
     "type": "git",
