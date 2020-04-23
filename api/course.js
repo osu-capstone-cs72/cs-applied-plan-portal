@@ -9,6 +9,7 @@ const {getUserById} = require("../models/user");
 const {Role} = require("../entities/role");
 const {requireAuth} = require("../services/auth/auth");
 
+
 // Get all courses from the Course API server,
 // then process the collected courses so that they conform with our database.
 // Then add each course to the database that doesn't already exist.
@@ -43,6 +44,7 @@ app.get("/updateDatabase", requireAuth, async (req, res) => {
   }
 
 });
+
 
 // search for course data
 app.get("/search/:searchText/:filterValue", requireAuth, async (req, res) => {

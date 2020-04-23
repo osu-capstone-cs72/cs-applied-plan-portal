@@ -24,14 +24,23 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
-    "nodemon": "^2.0.2"
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
+    "wait-on": "^4.0.2"
   },
   "scripts": {
     "start": "ENV=PRODUCTION concurrently \"npm run server\" \"npm run client\"",
     "dev": "ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles",
+    "testReact": "cd client && npm test",
     "server": "node server.js --ignore client/*",
     "serverDev": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "./client"
+    ]
   },
   "repository": {
     "type": "git",

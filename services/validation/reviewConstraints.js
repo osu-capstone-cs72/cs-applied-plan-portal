@@ -3,6 +3,7 @@
 
 const {pool} = require("../db/mysqlPool");
 
+
 // checks that the user exists and returns their role
 async function userConstraint(userId) {
 
@@ -28,6 +29,7 @@ async function userConstraint(userId) {
 
 }
 exports.userConstraint = userConstraint;
+
 
 // checks that the plan exists and is using a different status
 // returns the current status
@@ -56,6 +58,7 @@ async function planConstraint(planId, status) {
 
 }
 exports.planConstraint = planConstraint;
+
 
 // checks that the selected status change is valid for the current role
 async function roleConstraint(role, status, planStatus) {
@@ -89,6 +92,7 @@ async function roleConstraint(role, status, planStatus) {
 
 }
 exports.roleConstraint = roleConstraint;
+
 
 // Error that is given when a constraint is violated.
 // Includes a status code.
