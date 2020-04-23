@@ -13,7 +13,7 @@ beforeEach(() => {
   document.cookie = "role=0; path=/";
 });
 
-it("Renders without crashing2", () => {
+it("Renders without crashing", () => {
   mount(
     <Router>
       <StudentHome />

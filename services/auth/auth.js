@@ -88,6 +88,16 @@ function requireAuth(req, res, next) {
       req.auth = {
         userId: payload.sub
       };
+
+    } else {
+
+      // in testing mode we just accept the sent user ID
+      req.auth = {
+        userId: cookieObj.userId
+      };
+
+      console.log(req.auth);
+
     }
 
     // route to the next middleware
