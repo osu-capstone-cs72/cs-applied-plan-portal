@@ -7,18 +7,13 @@ import Adapter from "enzyme-adapter-react-16";
 
 Enzyme.configure({adapter: new Adapter()});
 
+// set default user cookies to test with
 beforeEach(() => {
-  const document = {
-    cookie: {
-      userId: 50734529811,
-      role: 0
-    }
-  };
-  // forces the obj we just created to act like the "document" we are familiar with
-  global.document = document;
+  document.cookie = "userId=50734529811; path=/";
+  document.cookie = "role=0; path=/";
 });
 
-it("Renders without crashing", () => {
+it("Renders without crashing2", () => {
   mount(
     <Router>
       <StudentHome />
