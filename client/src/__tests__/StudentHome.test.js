@@ -13,9 +13,12 @@ beforeEach(() => {
   document.cookie = "role=0; path=/";
 });
 
-it("Renders without crashing", () => {
-  mount(
-    <Router>
-      <StudentHome />
-    </Router>);
+describe("Student home", () => {
+  it("Matches snapshot", () => {
+    const home = mount(
+      <Router>
+        <StudentHome />
+      </Router>);
+    expect(home).toMatchSnapshot();
+  });
 });
