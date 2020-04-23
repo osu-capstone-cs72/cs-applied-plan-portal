@@ -62,7 +62,7 @@ function requireAuth(req, res, next) {
       assert(cookieObj.csrf, "No CSRF cookie provided with request");
 
       // decrypt the CSRF
-      const bytes  = CryptoJS.AES.decrypt(cookieObj.csrf, CSRF_SECRET_KEY);
+      const bytes = CryptoJS.AES.decrypt(cookieObj.csrf, CSRF_SECRET_KEY);
       const originalCsrf = bytes.toString(CryptoJS.enc.Utf8);
 
       // ensure that the auth and decrypted CSRF match
@@ -95,8 +95,6 @@ function requireAuth(req, res, next) {
       req.auth = {
         userId: cookieObj.userId
       };
-
-      console.log(req.auth);
 
     }
 
