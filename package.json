@@ -31,12 +31,11 @@
   "scripts": {
     "start": "ENV=PRODUCTION concurrently \"npm run server\" \"npm run client\"",
     "dev": "ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
-    "test": "ENV=TESTING concurrently \"npm run serverTest\" \"npm run clientTest\"",
+    "testAPI": "ENV=TESTING jest",
+    "testReact": "cd client && npm test",
     "server": "node server.js --ignore client/*",
     "serverDev": "nodemon server.js --ignore client/*",
-    "serverTest": "jest",
-    "client": "cd client && npm start",
-    "clientTest": "cd client && npm test"
+    "client": "cd client && npm start"
   },
   "jest": {
     "testPathIgnorePatterns": [

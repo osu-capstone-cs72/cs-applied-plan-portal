@@ -376,7 +376,7 @@ async function limitConstraint(userId) {
 }
 exports.limitConstraint = limitConstraint;
 
-// checks that at least the minimum plan credits are selected
+// checks that the number of selected credits are between the minimum and max allowed
 async function planCreditConstraint(courses) {
 
   const violationMin = `Invalid course selection:\n` +

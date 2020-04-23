@@ -48,6 +48,12 @@ command with your preferred shell.
 
         npm run dev
 
+## Testing
+
+Run the following command to perform unit and integration testing for plan API calls
+
+        npm run testAPI
+
 ## Resources
 
 Git Bash for Windows: https://gitforwindows.org/
