@@ -5,7 +5,7 @@ import StudentCreatePlan from "../components/create_plan/StudentCreatePlan";
 import {BrowserRouter as Router} from "react-router-dom";
 import Adapter from "enzyme-adapter-react-16";
 import {MemoryRouter} from "react-router-dom";
-import setCookies from "../cookieInfo";
+import setCookies from "../utils/cookieInfo";
 import Cookies from "js-cookie";
 
 Enzyme.configure({adapter: new Adapter()});
