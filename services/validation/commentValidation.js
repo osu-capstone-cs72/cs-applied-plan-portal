@@ -8,6 +8,7 @@ const {
   historicalConstraint
 } = require("./commentConstraints");
 
+
 // checks to see if any constraints are violated when creating a comment
 async function createCommentValidation(planId, userId) {
 

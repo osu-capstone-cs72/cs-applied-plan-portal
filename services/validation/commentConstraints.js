@@ -27,6 +27,7 @@ async function userConstraint(userId) {
 }
 exports.userConstraint = userConstraint;
 
+
 // checks that the plan exists
 async function planConstraint(planId) {
 
@@ -50,6 +51,7 @@ async function planConstraint(planId) {
 
 }
 exports.planConstraint = planConstraint;
+
 
 //  checks that if a student is commenting that they are the owner of the plan
 async function ownerConstraint(planId, userId) {
@@ -85,6 +87,7 @@ async function ownerConstraint(planId, userId) {
 }
 exports.ownerConstraint = ownerConstraint;
 
+
 // checks that the plan still allows comments
 async function historicalConstraint(planId) {
 
@@ -109,6 +112,7 @@ async function historicalConstraint(planId) {
 
 }
 exports.historicalConstraint = historicalConstraint;
+
 
 // Error that is given when a constraint is violated.
 // Includes a status code.

@@ -28,6 +28,7 @@ app.get("/", requireAuth, async (req, res) => {
 
 });
 
+
 // delete a notification
 app.delete("/:notificationId", requireAuth, async (req, res) => {
 

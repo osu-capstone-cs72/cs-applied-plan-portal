@@ -7,6 +7,7 @@ const CREDITS_MIN = 32;
 const CREDITS_MAX = 50;
 const PLANS_MAX = 5;
 
+
 // checks that the plan exists
 async function planConstraint(planId) {
 
@@ -30,6 +31,7 @@ async function planConstraint(planId) {
 
 }
 exports.planConstraint = planConstraint;
+
 
 // checks that the plan does not share a name with another plan by that user
 async function nameConstraint(planName, userId, planId) {
@@ -69,6 +71,7 @@ async function nameConstraint(planName, userId, planId) {
 }
 exports.nameConstraint = nameConstraint;
 
+
 // checks that the plan has not been accepted, rejected, or is awaiting final review
 async function lockedConstraint(planId) {
 
@@ -95,6 +98,7 @@ async function lockedConstraint(planId) {
 }
 exports.lockedConstraint = lockedConstraint;
 
+
 // checks that the user exists
 async function userConstraint(userId) {
 
@@ -118,6 +122,7 @@ async function userConstraint(userId) {
 
 }
 exports.userConstraint = userConstraint;
+
 
 // checks that the user is a student
 async function studentConstraint(userId) {
@@ -143,6 +148,7 @@ async function studentConstraint(userId) {
 }
 exports.studentConstraint = studentConstraint;
 
+
 // checks that the user is an advisor
 async function advisorConstraint(userId) {
 
@@ -167,6 +173,7 @@ async function advisorConstraint(userId) {
 }
 exports.advisorConstraint = advisorConstraint;
 
+
 // checks to see if any courses are selected
 async function zeroCourseConstraint(courses) {
 
@@ -180,6 +187,7 @@ async function zeroCourseConstraint(courses) {
 
 }
 exports.zeroCourseConstraint = zeroCourseConstraint;
+
 
 // checks that no single course is selected more than once
 async function duplicateCourseConstraint(courses) {
@@ -198,6 +206,7 @@ async function duplicateCourseConstraint(courses) {
 
 }
 exports.duplicateCourseConstraint = duplicateCourseConstraint;
+
 
 // checks that all courses are valid
 async function courseConstraint(courses) {
@@ -232,6 +241,7 @@ async function courseConstraint(courses) {
 
 }
 exports.courseConstraint = courseConstraint;
+
 
 // checks if there are any restrictions on selected courses
 async function restrictionConstraint(courses) {
@@ -272,6 +282,7 @@ async function restrictionConstraint(courses) {
 
 }
 exports.restrictionConstraint = restrictionConstraint;
+
 
 // checks that the submitted credit value of each course
 // matches the valid range from the courses in the database
@@ -348,6 +359,7 @@ async function courseCreditConstraint(courses) {
 }
 exports.courseCreditConstraint = courseCreditConstraint;
 
+
 // checks to see if the user is allowed to create any more plans
 async function limitConstraint(userId) {
 
@@ -375,6 +387,7 @@ async function limitConstraint(userId) {
 
 }
 exports.limitConstraint = limitConstraint;
+
 
 // checks that the number of selected credits are between the minimum and max allowed
 async function planCreditConstraint(courses) {
@@ -422,6 +435,7 @@ async function planCreditConstraint(courses) {
 }
 exports.planCreditConstraint = planCreditConstraint;
 
+
 // checks that the user owns the plan or is an advisor
 async function ownerConstraint(planId, userId) {
 
@@ -460,6 +474,7 @@ async function ownerConstraint(planId, userId) {
 
 }
 exports.ownerConstraint = ownerConstraint;
+
 
 //  checks that the user is allowed to delete this plan
 async function deleteConstraint(planId, userId) {
@@ -506,6 +521,7 @@ async function deleteConstraint(planId, userId) {
 
 }
 exports.deleteConstraint = deleteConstraint;
+
 
 // Error that is given when a constraint is violated.
 // Includes a status code.

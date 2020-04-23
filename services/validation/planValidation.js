@@ -19,6 +19,7 @@ const {
   deleteConstraint
 } = require("./planConstraints");
 
+
 // checks to see if any constraints are violated when creating a plan
 async function createPlanValidation(userId, planName, courses) {
 
@@ -46,6 +47,7 @@ async function createPlanValidation(userId, planName, courses) {
 
 }
 exports.createPlanValidation = createPlanValidation;
+
 
 // checks to see if any constraints are violated when patching a plan
 async function patchPlanValidation(planId, planName, courses, userId) {
@@ -82,6 +84,7 @@ async function patchPlanValidation(planId, planName, courses, userId) {
 }
 exports.patchPlanValidation = patchPlanValidation;
 
+
 // checks to see if any constraints are violated when viewing a plan
 async function viewPlanValidation(planId, userId) {
 
@@ -102,6 +105,7 @@ async function viewPlanValidation(planId, userId) {
 }
 exports.viewPlanValidation = viewPlanValidation;
 
+
 // checks to see if any constraints are violated when trying to search for a plan
 async function searchPlanValidation(userId) {
 
@@ -121,6 +125,7 @@ async function searchPlanValidation(userId) {
 
 }
 exports.searchPlanValidation = searchPlanValidation;
+
 
 // checks to see if any constraints are violated when trying to delete a plan
 async function deletePlanValidation(planId, userId) {
@@ -143,6 +148,7 @@ async function deletePlanValidation(planId, userId) {
 }
 exports.deletePlanValidation = deletePlanValidation;
 
+
 // checks that no constraints are violated when trying to view the activity feed on a plan
 async function viewPlanActivityValidation(planId, userId) {
 
@@ -162,6 +168,7 @@ async function viewPlanActivityValidation(planId, userId) {
 
 }
 exports.viewPlanActivityValidation = viewPlanActivityValidation;
+
 
 // checks that no constraints are violated when trying to view the list of recently viewed plans
 async function recentPlanValidation(userId) {

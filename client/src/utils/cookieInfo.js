@@ -1,5 +1,4 @@
-function setCookie(cookName, cookValue) {
+// set a cookie
+export function setCookie(cookName, cookValue) {
   document.cookie = cookName + "=" + cookValue + ";" + ";path=/";
 }
-
-export default setCookie;

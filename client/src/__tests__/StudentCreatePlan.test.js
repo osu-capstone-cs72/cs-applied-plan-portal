@@ -2,7 +2,6 @@
 import React from "react";
 import Enzyme, {mount} from "enzyme";
 import StudentCreatePlan from "../components/create_plan/StudentCreatePlan";
-import {BrowserRouter as Router} from "react-router-dom";
 import Adapter from "enzyme-adapter-react-16";
 import {MemoryRouter} from "react-router-dom";
 import setCookies from "../utils/cookieInfo";

@@ -29,6 +29,7 @@ app.all("/api/*", (req, res, next) => {
   next();
 });
 
+// handle requests
 app.use("/api/notification", require("./notification"));
 app.use("/api/review", require("./review"));
 app.use("/api/comment", require("./comment"));
