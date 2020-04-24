@@ -1,11 +1,13 @@
 /* eslint-disable no-undef */
 import React from "react";
-import Enzyme, {mount} from "enzyme";
-import StudentCreatePlan from "../components/create_plan/StudentCreatePlan";
+import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import {MemoryRouter} from "react-router-dom";
-import setCookies from "../utils/cookieInfo";
 import Cookies from "js-cookie";
+import renderer from "react-test-renderer";
+
+import setCookies from "../cookieInfo";
+import StudentCreatePlan from "../components/create_plan/StudentCreatePlan";
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -25,9 +27,10 @@ describe("Student create plan", () => {
   });
 
   it("renders successfully", () => {
-    mount(
+    const wrapper = renderer.create(
       <MemoryRouter initialEntries={["/createPlan"]}>
         <StudentCreatePlan />
-      </MemoryRouter>);
+      </MemoryRouter>).toJSON();
+    expect(wrapper).toMatchSnapshot();
   });
 });
