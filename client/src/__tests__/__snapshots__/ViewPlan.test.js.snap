@@ -1,0 +1,203 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`View plan renders successfully 1`] = `
+<div
+  className="css-6u0764-ViewPlan"
+  id="view-plan-container"
+>
+  <div
+    className="navbar-parent css-12g91iz-Navbar"
+    id="navbar"
+  >
+    <a
+      href="/"
+      onClick={[Function]}
+    >
+      <p
+        className="osu-logo"
+      >
+        OSU CS Applied Plan Portal
+      </p>
+    </a>
+    <div
+      className="right-container"
+    >
+      <div
+        className="notification-dropdown css-3i4jcj-Notifications"
+      >
+        <button
+          className="drop-button-notification"
+          data-count={0}
+        >
+          Notifications
+          <span
+            className="badge"
+          />
+          <i
+            className="fa fa-caret-down"
+          />
+        </button>
+        <div
+          className="dropdown-content"
+        >
+          <a
+            href="/viewPlan/"
+            onClick={[Function]}
+          >
+            <p>
+              No new notifications
+            </p>
+          </a>
+        </div>
+      </div>
+      <button
+        className="logout-button css-1k1xu2y-Logout"
+        onClick={[Function]}
+      >
+        Log Out
+      </button>
+    </div>
+  </div>
+  <div
+    className="css-1rqemad-PlanMetadata"
+    id="metadata-container"
+  >
+    <div
+      className="plan-metadata"
+    >
+      <div
+        className="metadata-field"
+        id="plan-field"
+      >
+        <p
+          className="field-type"
+        >
+          Plan Name:
+        </p>
+        <p
+          className="field-text"
+        >
+          
+        </p>
+      </div>
+      <div
+        className="metadata-field"
+        id="student-field"
+      >
+        <p
+          className="field-type"
+        >
+          Student Name:
+        </p>
+        <p
+          className="field-text"
+        >
+           
+        </p>
+      </div>
+      <div
+        className="metadata-field"
+        id="email-field"
+      >
+        <p
+          className="field-type"
+        >
+          Email:
+        </p>
+        <p
+          className="field-text"
+        >
+          
+        </p>
+      </div>
+      <div
+        className="metadata-field"
+        id="credit-field"
+      >
+        <p
+          className="field-type"
+        >
+          Total Credits:
+        </p>
+        <p
+          className="field-text"
+        >
+          0
+        </p>
+      </div>
+      <div
+        className="metadata-field"
+        id="status-field"
+      >
+        <p
+          className="field-type"
+        >
+          Plan Status:
+        </p>
+        <p
+          className="field-text"
+        >
+          
+        </p>
+      </div>
+      <div
+        className="metadata-field button-field"
+      >
+        <button
+          id="print-plan-button"
+          onClick={[Function]}
+        >
+          Print Plan
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    className="css-nk0226-PlanTable"
+    id="table-container"
+  >
+    <table
+      id="courses-table"
+    >
+      <thead>
+        <tr>
+          <th>
+            Course
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Credits
+          </th>
+          <th
+            className="restriction-header"
+          >
+            Restrictions
+          </th>
+        </tr>
+      </thead>
+      <tbody />
+    </table>
+  </div>
+  <div
+    className="css-exzccc-ActivityFeed"
+    id="plan-activity"
+  >
+    <h2>
+      Activity Feed
+    </h2>
+    <div
+      className="css-174cigp-CreateComment"
+      id="create-comment-container"
+    >
+      <button
+        className="toggle-creation-button"
+        onClick={[Function]}
+      >
+        Add Comment
+      </button>
+    </div>
+  </div>
+</div>
+`;

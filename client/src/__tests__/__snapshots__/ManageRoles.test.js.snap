@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Manage roles renders successfully 1`] = `
+<div
+  className="css-17w70oq-ManageRoles"
+>
+  <div
+    className="navbar-parent css-12g91iz-Navbar"
+    id="navbar"
+  >
+    <a
+      href="/"
+      onClick={[Function]}
+    >
+      <p
+        className="osu-logo"
+      >
+        OSU CS Applied Plan Portal
+      </p>
+    </a>
+    <div
+      className="right-container"
+    >
+      <div
+        className="notification-dropdown css-3i4jcj-Notifications"
+      >
+        <button
+          className="drop-button-notification"
+          data-count={0}
+        >
+          Notifications
+          <span
+            className="badge"
+          />
+          <i
+            className="fa fa-caret-down"
+          />
+        </button>
+        <div
+          className="dropdown-content"
+        >
+          <a
+            href="/"
+            onClick={[Function]}
+          >
+            <p>
+              No new notifications
+            </p>
+          </a>
+        </div>
+      </div>
+      <button
+        className="logout-button css-1k1xu2y-Logout"
+        onClick={[Function]}
+      >
+        Log Out
+      </button>
+    </div>
+  </div>
+  <div
+    id="user-manage-container"
+  >
+    <div
+      id="user-manage-contents-container"
+    >
+      <div
+        className="css-17bdxq6-FindUsers"
+        id="user-search-container"
+      >
+        <h2>
+          Search Users
+        </h2>
+        <form
+          id="search-form"
+          onSubmit={[Function]}
+        >
+          <input
+            id="input-search"
+            type="text"
+          />
+          <button
+            id="search-user-button"
+          >
+            Search
+          </button>
+        </form>
+        <div
+          id="filter-container"
+        >
+          <select
+            className="user-filter"
+            defaultValue="3"
+            id="select-role"
+          >
+            <option
+              value="3"
+            >
+              Any Role
+            </option>
+            <option
+              value="0"
+            >
+              Student
+            </option>
+            <option
+              value="1"
+            >
+              Advisor
+            </option>
+            <option
+              value="2"
+            >
+              Head Advisor
+            </option>
+          </select>
+        </div>
+      </div>
+      <div
+        className="css-r4wapz-SearchResults"
+      >
+        <div
+          className="prompt-container"
+        >
+          <h3>
+            Search for users...
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
