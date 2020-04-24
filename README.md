@@ -54,6 +54,10 @@ Run the following command to perform unit and integration testing for plan API c
 
         npm run testAPI
 
+Run the following command to perform unit testing for the React client code (using Jest's snapshot testing)
+
+        npm run testReact
+
 ## Resources
 
 Git Bash for Windows: https://gitforwindows.org/
