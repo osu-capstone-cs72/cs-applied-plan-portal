@@ -1,3 +1,105 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Student home Matches snapshot 1`] = `ReactWrapper {}`;
+exports[`Student home renders successfully 1`] = `
+<div
+  className="css-1t10nat-StudentHome"
+  id="student-home-page"
+>
+  <div
+    className="loader-container css-3s2go1-PageSpinner"
+  >
+    <div
+      className="css-jv9gnm"
+    >
+      <div
+        className="css-bmodww"
+      />
+      <div
+        className="css-phb2pc"
+      />
+    </div>
+  </div>
+  <div
+    className="navbar-parent css-12g91iz-Navbar"
+    id="navbar"
+  >
+    <a
+      href="/"
+      onClick={[Function]}
+    >
+      <p
+        className="osu-logo"
+      >
+        OSU CS Applied Plan Portal
+      </p>
+    </a>
+    <div
+      className="right-container"
+    >
+      <div
+        className="notification-dropdown css-3i4jcj-Notifications"
+      >
+        <button
+          className="drop-button-notification"
+          data-count={0}
+        >
+          Notifications
+          <span
+            className="badge"
+          />
+          <i
+            className="fa fa-caret-down"
+          />
+        </button>
+        <div
+          className="dropdown-content"
+        >
+          <a
+            href="/"
+            onClick={[Function]}
+          >
+            <p>
+              No new notifications
+            </p>
+          </a>
+        </div>
+      </div>
+      <button
+        className="logout-button css-1k1xu2y-Logout"
+        onClick={[Function]}
+      >
+        Log Out
+      </button>
+    </div>
+  </div>
+  <div
+    id="student-home-container"
+  >
+    <div
+      id="student-home-contents-container"
+    >
+      <div
+        className="empty-plan-container"
+      >
+        <h3
+          className="empty-plan-title"
+        >
+          You haven't created any plans.
+        </h3>
+        <a
+          className="empty-plan-create-button"
+          href="createPlan"
+          title="Create a plan"
+        >
+          Create a plan
+        </a>
+      </div>
+      <a
+        className="new-plan-button"
+        href="createPlan"
+        title="Create a plan"
+      />
+    </div>
+  </div>
+</div>
+`;

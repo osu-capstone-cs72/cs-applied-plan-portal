@@ -1,24 +1,37 @@
 /* eslint-disable no-undef */
 import React from "react";
-import Enzyme, {mount} from "enzyme";
-import StudentHome from "../components/student_home/StudentHome";
+// import Enzyme from "enzyme";
 import {BrowserRouter as Router} from "react-router-dom";
-import Adapter from "enzyme-adapter-react-16";
+// import Adapter from "enzyme-adapter-react-16";
+import renderer from "react-test-renderer";
+// import Cookies from "js-cookie";
 
-Enzyme.configure({adapter: new Adapter()});
+// import setCookie from "../utils/cookieInfo";
+import StudentHome from "../components/student_home/StudentHome";
 
-// set default user cookies to test with
-beforeEach(() => {
-  document.cookie = "userId=50734529811; path=/";
-  document.cookie = "role=0; path=/";
-});
+
+// Enzyme.configure({adapter: new Adapter()});
 
 describe("Student home", () => {
-  it("Matches snapshot", () => {
-    const home = mount(
+
+  // beforeEach(() => {
+  //   // create a mock function using jest.fn()
+  //   const mockSet = jest.fn();
+
+  //   // here we are trying to mock the 'set' functionality of Cookie
+  //   Cookies.set = mockSet;
+
+  //   // call the set method of Cookies
+  //   setCookie("userId", "12002489701"); // Luke Skywalker
+  //   setCookie("role", "1");
+
+  // });
+
+  it("renders successfully", () => {
+    const home = renderer.create(
       <Router>
         <StudentHome />
-      </Router>);
+      </Router>).toJSON();
     expect(home).toMatchSnapshot();
   });
 });
