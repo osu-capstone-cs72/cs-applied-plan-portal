@@ -611,8 +611,8 @@ components:
         userId:
           allOf:
             - description: >
-                The 11-digit unique identifier of the user who created the
-                comment
+                The 11-digit unique identifier of the user who owns the
+                notification
             - $ref: '#/components/schemas/BigId'
         text:
           description: The text content of the notification
@@ -704,7 +704,7 @@ components:
         userId:
           allOf:
             - description: >
-                The 11-digit ID to uniquely identify the user who created the
+                The 11-digit uniquely identifier of the user who created the
                 review
             - $ref: '#/components/schemas/BigId'
         status:
@@ -748,9 +748,37 @@ components:
             - description: The UTC time at which the plan was created
             - $ref: '#/components/schemas/UtcTime'
 
+    SelectedCourse:
+      description: >
+        An object representing information about selected courses in an applied
+        plan
+      type: object
+      required:
+        - planId
+        - courseId
+        - credits
+      properties:
+        planId:
+          allOf:
+            - description: The unique identifier of the plan
+            - $ref: '#/components/schemas/Id'
+        courseId:
+          allOf:
+            - description: >
+                The unique identifier of the course selected for the plan
+            - $ref: '#/components/schemas/BigId'
+        credits:
+          $ref: '#/components/schemas/CourseCredits'
+
     User:
       description: An object representing information about an application user
       type: object
+      required:
+        - userId
+        - firstName
+        - lastName
+        - email
+        - role
       properties:
         userId:
           allOf:
@@ -792,7 +820,7 @@ components:
       type: integer
       format: int32
       minimum: 1
-      maximum: 2147483647
+      maximum: 4294967295
       example:
         $ref: '#/components/examples/Id/value'
 
