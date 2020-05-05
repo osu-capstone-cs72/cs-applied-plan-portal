@@ -268,19 +268,19 @@ paths:
 
   '/plan/search/{text}/{status}/{sort}/{order}/{cursorPrimary}/{cursorSecondary}':
     get:
-      summary: Search for Plans
+      summary: Search for Plans, retrieving paginated results
       description: >
         Returns a list of Plans with matching criteria and cursor pagination.
       operationId: searchPlans
       tags:
         - Plan
       parameters:
-        - $ref: '#/components/parameters/Plan_Search_GET_Text'
+        - $ref: '#/components/parameters/Search_Text'
         - $ref: '#/components/parameters/Plan_Search_GET_Status'
         - $ref: '#/components/parameters/Plan_Search_GET_Sort'
         - $ref: '#/components/parameters/Plan_Search_GET_Order'
-        - $ref: '#/components/parameters/Plan_CursorPrimary'
-        - $ref: '#/components/parameters/Plan_CursorSecondary'
+        - $ref: '#/components/parameters/Search_CursorPrimary'
+        - $ref: '#/components/parameters/Search_CursorSecondary'
       responses:
         '200':
           $ref: '#/components/responses/Plan_Search_GET_200'
@@ -295,7 +295,9 @@ paths:
 
   '/plan/{planId}/activity/{cursorPrimary}/{cursorSecondary}':
     get:
-      summary: Fetch a Plan's activity, such as Comments and Reviews
+      summary: >
+        Fetch a Plan's activity, such as Comments and Reviews, retrieving
+        paginated results
       description: >
         Returns an object containing a list of Plan's activity and the next
         cursor to the pagination
@@ -304,8 +306,8 @@ paths:
         - Plan
       parameters:
         - $ref: '#/components/parameters/Plan_GET_PlanId'
-        - $ref: '#/components/parameters/Plan_CursorPrimary'
-        - $ref: '#/components/parameters/Plan_CursorSecondary'
+        - $ref: '#/components/parameters/Search_CursorPrimary'
+        - $ref: '#/components/parameters/Search_CursorSecondary'
       responses:
         '200':
           $ref: '#/components/responses/Plan_Activity_GET_200'
@@ -320,86 +322,147 @@ paths:
 
   '/user/search/{text}/{role}/{cursorPrimary}/{cursorSecondary}':
     get:
-      summary: TODO
-      description: TODO
-      operationId: searchUsers
-      tags:
-        - User
-
-  /user:
-    post:
-      summary: Fetch a list of applied Plans that belong to this User
+      summary: Fetch a User, retrieving paginated results
       description: >
-        Fetches all applied Plans a specific User is completing/reviewing,
-        depending on the role of that User in the system.
-      operationId: getPlansOfUser
+        Returns a list of Users matching the criteria and cursor pagination
+      operationId: searchUsers
       tags:
         - User
       parameters:
-        - name: onid
-          in: path
-          description: ONID of the User to fetch
-          required: true
-          schema:
-            type: string
-          example: doejohn
+        - $ref: '#/components/parameters/Search_Text'
+        - $ref: '#/components/parameters/User_Search_GET_Role'
+        - $ref: '#/components/parameters/Search_CursorPrimary'
+        - $ref: '#/components/parameters/Search_CursorSecondary'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+          $ref: '#/components/responses/User_Search_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
         '403':
-          description: Request not made by an authorized User
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/403'
         '404':
-          description: User with the specified `onid` not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/404'
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/500'
+
+  /user:
+    post:
+      summary: Create a new User
+      description: >
+        Creates a new User in the application.
+      operationId: createUser
+      tags:
+        - User
+      requestBody:
+        $ref: '#/components/requestBodies/User_POST'
+      responses:
+        '201':
+          $ref: '#/components/responses/User_POST_201'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
 
   '/user/authenticated':
     get:
-      summary: TODO
-      description: TODO
-      operationId: searchUsers
+      summary: Test the authentication of the current User
+      description: Tests the authentication of the current User.
+      operationId: authenticateUser
       tags:
         - User
+      responses:
+        '200':
+          $ref: '#/components/responses/User_Authenticated_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
 
   '/user/login':
     get:
-      summary: TODO
-      description: TODO
-      operationId: searchUsers
+      summary: Verify the User's ticket from ONID CAS
+      description: >
+        Verifies the User's credentials after redirecting from CAS by sending
+        the ticket received from the redirection to the CAS service validator.
+      operationId: casValidateUser
       tags:
         - User
+      parameters:
+        - $ref: '#/components/parameters/User_Login_GET_Ticket'
+        - $ref: '#/components/parameters/User_Login_GET_Target'
+      responses:
+        '200':
+          $ref: '#/components/responses/User_Login_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
 
   '/user/{userId}/plans':
     get:
-      summary: TODO
-      description: TODO
-      operationId: searchUsers
+      summary: Fetch a list of applied Plans created by the User
+      description: Returns a list of applied Plans created by the User.
+      operationId: getUserPlans
       tags:
         - User
+      parameters:
+        - $ref: '#/components/parameters/User_UserId'
+      responses:
+        '200':
+          $ref: '#/components/responses/User_Plans_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 
   '/user/{userId}':
     get:
-      summary: TODO
-      description: TODO
-      operationId: searchUsers
+      summary: Fetch information about a specific User
+      description: Returns information about the User with matching identifier
+      operationId: getUserById
       tags:
         - User
+      parameters:
+       - $ref: '#/components/parameters/User_UserId'
+      responses:
+        '200':
+          $ref: '#/components/responses/User_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    patch:
+      summary: Update an existing User
+      description: Updates an existing User in the database.
+      operationId: updateUserPartial
+      tags:
+        - User
+      parameters:
+        - $ref: '#/components/parameters/User_UserId'
+      responses:
+        '200':
+          $ref: '#/components/responses/User_Plans_PATCH_200'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 
 components:
   schemas:
@@ -823,6 +886,13 @@ components:
       example:
         $ref: '#/components/examples/UtcTime/value'
 
+    NextCursor:
+      description: The next cursor in the pagination
+      type: string
+      minLength: 1
+      example:
+        $ref: '#/components/examples/Text/value'
+
     Error:
       description: An object describing an error response from the system
       type: object
@@ -897,6 +967,13 @@ components:
                 items:
                   $ref: '#/components/schemas/Course'
 
+    User_POST:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
   parameters:
     Course_Search_GET_SearchText:
       name: searchText
@@ -943,7 +1020,7 @@ components:
       schema:
         $ref: '#/components/schemas/Plan/properties/planId'
 
-    Plan_Search_GET_Text:
+    Search_Text:
       name: text
       in: path
       description: The text typed into the search bar
@@ -985,7 +1062,7 @@ components:
         maximum: 1
       example: 0
 
-    Plan_CursorPrimary:
+    Search_CursorPrimary:
       name: cursorPrimary
       in: path
       description: The primary cursor of the cursor pagination setup
@@ -996,7 +1073,7 @@ components:
         example:
           $ref: '#/components/examples/Text/value'
 
-    Plan_CursorSecondary:
+    Search_CursorSecondary:
       name: cursorSecondary
       in: path
       description: The secondary cursor of the cursor pagination setup
@@ -1006,6 +1083,44 @@ components:
         minLength: 1
         example:
           $ref: '#/components/examples/Text/value'
+
+    User_Search_GET_Role:
+      name: role
+      in: path
+      description: The role to filter Users by
+      required: true
+      schema:
+        $ref: '#/components/schemas/User/properties/role'
+
+    User_Login_GET_Ticket:
+      name: ticket
+      in: query
+      description: The ticket received from the first ONID CAS redirection
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        example:
+          $ref: '#/components/examples/Text/value'
+
+    User_Login_GET_Target:
+      name: target
+      in: query
+      description: The target URL to finally redirect to on successful login
+      required: true
+      schema:
+        type: string
+        format: url
+        minLength: 1
+        example: 'https://example.com'
+
+    User_UserId:
+      name: userId
+      in: path
+      description: The unique identifier of the User
+      required: true
+      schema:
+        $ref: '#/components/schemas/User/properties/userId'
 
   responses:
     Comment_POST_201:
@@ -1228,11 +1343,7 @@ components:
                 items:
                   $ref: '#/components/schemas/PlanUser'
               nextCursor:
-                description: The next cursor in the pagination
-                type: string
-                minLength: 1
-                example:
-                  $ref: '#/components/examples/Text/value'
+                $ref: '#/components/schemas/NextCursor'
 
     Plan_DELETE_200:
       description: Plans deleted
@@ -1270,11 +1381,99 @@ components:
                 items:
                   $ref: '#/components/schemas/PlanActivity'
               nextCursor:
-                description: The next cursor in the pagination
+                $ref: '#/components/schemas/NextCursor'
+
+    User_Search_GET_200:
+      description: Matching users found
+      content:
+        application/json:
+          schema:
+            description: An object containing information about matching Users
+            type: object
+            required:
+              - users
+              - nextCursor
+            properties:
+              users:
+                description: The list of matching Users
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              nextCursor:
+                $ref: '#/components/schemas/NextCursor'
+
+    User_POST_201:
+      description: User created
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the new User
+            type: object
+            required:
+              - insertId
+            properties:
+              insertId:
+                $ref: '#/components/schemas/InsertId'
+
+    User_Authenticated_GET_200:
+      description: Test auth - authenticated
+      content:
+        application/json:
+          schema:
+            description: An object containing information about successful auth
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                description: The response message from the server
                 type: string
                 minLength: 1
-                example:
-                  $ref: '#/components/examples/Text/value'
+                example: 'authenticated'
+
+    User_Login_GET_200:
+      description: User authenticated
+
+    User_Plans_GET_200:
+      description: Plans found
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the User's Plans
+            type: object
+            required:
+              - plans
+            properties:
+              plans:
+                description: The list of User's Plans
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+
+    User_GET_200:
+      description: User found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+    User_Plans_PATCH_200:
+      description: User partial update succeeded
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the update
+            type: object
+            required:
+              - changedRows
+            properties:
+              changedRows:
+                description: The number of updated User rows in the database
+                type: integer
+                format: int32
+                minimum: 0
+                maximum: 1
+                example: 1
 
     '400':
       description: Missing or invalid request body
