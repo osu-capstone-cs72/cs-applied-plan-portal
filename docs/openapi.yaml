@@ -1,3 +1,6 @@
+# VS Code was able to parse this file into proper Swagger without errors or
+# warnings. On https://editor.swagger.io, however, there were some errors when
+# trying to parse, and so please ignore those errors and/or warnings.
 openapi: 3.0.2
 
 info:
@@ -33,36 +36,21 @@ paths:
     post:
       summary: Create a new Comment
       description: >
-        Creates a new Comment related to an applied Plan
+        Creates a new Comment attached to an applied Plan.
       operationId: createComment
       tags:
         - Comment
       requestBody:
-        $ref: '#/components/requestBodies/CommentBody_POST'
+        $ref: '#/components/requestBodies/Comment_POST'
       responses:
         '201':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - insertId
-                  - time
-                properties:
-                  insertId:
-                    type: integer
-                    format: int32
-                    minimum: 1
-                    example: 72
-                  time:
-                    type: string
-                    format: 'yyyy-mm-dd HH:MM:SS'
-                    minLength: 19
-                    maxLength: 19
-                    example: '2020-12-31 23:59:59'
+          $ref: '#/components/responses/Comment_POST_201'
         '400':
           $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
 
@@ -77,18 +65,7 @@ paths:
         - Course
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - note
-                properties:
-                  note:
-                    type: string
-                    minLength: 1
-                    example: 'Courses update started.'
+          $ref: '#/components/responses/Course_UpdateDatabase_GET_200'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -106,104 +83,53 @@ paths:
       tags:
         - Course
       parameters:
-        - name: searchText
-          in: path
-          description: Text typed into the search bar
-          required: true
-          schema:
-            type: string
-            minLength: 1
-          example: Engineering
-        - name: filterValue
-          in: path
-          description: Index of the selected filter option in the dropdown
-          required: true
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-          example: 2
+        - $ref: '#/components/parameters/Course_Search_GET_SearchText'
+        - $ref: '#/components/parameters/Course_Search_GET_FilterValue'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  courses:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Course'
+          $ref: '#/components/responses/Course_Search_GET_200'
         '400':
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
 
   /notification:
     get:
-      summary: View Notifications owned by a User
-      description: >
-        Retrieves a set of Notifications owned by the logged in User.
+      summary: Fetch Notifications owned by a User
+      description: Returns a set of Notifications owned by the logged in User.
       operationId: getNotifications
       tags:
         - Notification
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  notifications:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Notification'
-        '400':
-          $ref: '#/components/responses/400'
+          $ref: '#/components/responses/Notification_GET_200'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
 
   '/notification/{notificationId}':
     delete:
       summary: Delete a Notification owned by a User
-      description: >
-        Delete a Notification owned by the logged in User.
+      description: Deletes a Notification owned by the logged in User.
       operationId: deleteNotification
       tags:
         - Notification
       parameters:
-        - name: notificationId
-          in: path
-          description: Unique ID of the Notification to be deleted
-          required: true
-          schema:
-            type: integer
-            format: int32
-            minLength: 1
-          example: 72
+        - $ref: '#/components/parameters/Notification_DELETE_NotificationId'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - affectedRows
-                properties:
-                  affectedRows:
-                    type: integer
-                    format: int32
-                    minimum: 0
-                    example: 1
+          $ref: '#/components/responses/Notification_DELETE_200'
         '401':
           $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -218,22 +144,10 @@ paths:
       tags:
         - Plan
       requestBody:
-        $ref: '#/components/requestBodies/PlanBody_POST'
+        $ref: '#/components/requestBodies/Plan_POST'
       responses:
         '201':
-          description: Successfully added a new Plan
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - insertId
-                properties:
-                  insertId:
-                    description: Unique ID of the Plan
-                    type: integer
-                    format: int32
-                    example: 72
+          $ref: '#/components/responses/Plan_POST_201'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -242,182 +156,20 @@ paths:
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
+
     patch:
       summary: Update a specific applied Plan
-      description: >
-        Updates an existing applied Plan in the database
+      description: Updates an existing applied Plan in the database.
       operationId: updatePlan
       tags:
         - Plan
       requestBody:
-        $ref: '#/components/requestBodies/PlanBody_PATCH'
+        $ref: '#/components/requestBodies/Plan_PATCH'
       responses:
         '200':
-          description: Successfully updated the Plan
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - updatedName
-                  - updatedCourses
-                properties:
-                  updatedName:
-                    description: New name of the Plan
-                    type: string
-                    example: My updated AI plan
-                  updatedCourses:
-                    description: New list of Courses for the Plan
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Course'
+          $ref: '#/components/responses/Plan_PATCH_200'
         '400':
           $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-
-  '/plan/recent':
-    get:
-      summary: Fetch a list of recently viewed Plan
-      description: >
-        Retrieves a list of recently viewed Plan by the logged in User.
-      operationId: getRecentPlans
-      tags:
-        - Plan
-      responses:
-        '200':
-          description: Recent Plans found
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - planId
-                  - planName
-                  - firstName
-                  - lastName
-                  - status
-                  - created
-                  - lastUpdated
-                  - userId
-                properties:
-                  planId:
-                    description: The ID to uniquely identify a Plan
-                    type: integer
-                    format: int32
-                    minimum: 1
-                    example: 72
-                  planName:
-                    description: The name of the Plan
-                    type: string
-                    minLength: 5
-                    maxLength: 50
-                    example: My AI Plan
-                  firstName:
-                    description: The first name of the user
-                    type: string
-                    minLength: 1
-                    maxLength: 50
-                    example: John
-                  lastName:
-                    description: The last name of the user
-                    type: string
-                    minLength: 1
-                    maxLength: 50
-                    example: Doe
-                  status:
-                    description: >
-                      Encodes different statuses of a Plan: `0` is Rejected, `1`
-                      is Awaiting Student Changes, `2` is Awaiting Review, `3`
-                      is Awaiting Final Review, and `4` is Accepted
-                    type: integer
-                    format: int32
-                    minimum: 0
-                    maximum: 4
-                    example: 3
-                  created:
-                    description: The UTC time at which this Plan was created
-                    type: string
-                    format: 'yyyy-mm-dd HH:MM:SS'
-                    minLength: 19
-                    maxLength: 19
-                    example: '2020-12-31 23:59:59'
-                  lastUpdated:
-                    description: The UTC time at which the Plan was last changed
-                    type: string
-                    format: 'yyyy-mm-dd HH:MM:SS'
-                    minLength: 19
-                    maxLength: 19
-                    example: '2020-12-31 23:59:59'
-                  userId:
-                    description: >
-                      The 11-digit ID of the student who created the Plan
-                    type: integer
-                    format: int64
-                    minimum: 10000000000
-                    maximum: 99999999999
-                    example: 72727272727
-
-
-  '/plan/{planId}':
-    get:
-      summary: Fetch all data about a specific applied Plan
-      description: >
-        Retrieves all data for a specific applied Plan, including selected
-        Courses, User info, and Reviews
-      operationId: getPlan
-      tags:
-        - Plan
-      parameters:
-        - name: planId
-          in: path
-          description: Unique ID of the Plan to fetch
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 72
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - required:
-                      - planId
-                      - status
-                      - planName
-                      - studentId
-                      - created
-                      - lastUpdated
-                      - firstName
-                      - lastName
-                      - email
-                  - properties:
-                      firstName:
-                        description: The first name of the user
-                        type: string
-                        minLength: 1
-                        maxLength: 50
-                        example: John
-                      lastName:
-                        description: The last name of the user
-                        type: string
-                        minLength: 1
-                        maxLength: 50
-                        example: Doe
-                      email:
-                        description: The OSU email of the user
-                        type: string
-                        format: email
-                        minLength: 1
-                        example: 'email@example.com'
-                  - $ref: '#/components/schemas/Plan'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -427,8 +179,152 @@ paths:
         '500':
           $ref: '#/components/responses/500'
 
-  # '/user/search/{text}/{role}/{cursorPrimary}/{cursorSecondary}':
-  #   get:
+  '/plan/recent':
+    get:
+      summary: Fetch a list of recently viewed Plan
+      description: >
+        Returns a list of Plan recently viewed by the logged in User.
+      operationId: getRecentPlans
+      tags:
+        - Plan
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_Recent_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/plan/{planId}':
+    get:
+      summary: Fetch all data about a specific applied Plan
+      description: >
+        Returns all data for a specific applied Plan, including selected
+        Courses, User info, and Reviews.
+      operationId: getPlan
+      tags:
+        - Plan
+      parameters:
+        - $ref: '#/components/parameters/Plan_GET_PlanId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+    delete:
+      summary: Delete an existing applied Plan
+      description: Deletes an existing applied Plan with a matching identifier.
+      operationId: deletePlan
+      tags:
+        - Plan
+      parameters:
+        - $ref: '#/components/parameters/Plan_DELETE_PlanId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_DELETE_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+
+  '/plan/{planId}/similar':
+    get:
+      summary: Fetch the number of applied Plans similar to the Plan
+      description: >
+        Returns a count of accepted similar Plans and a count of rejected
+        similar Plans.
+      operationId: getSimilarPlans
+      tags:
+        - Plan
+      parameters:
+        - $ref: '#/components/parameters/Plan_GET_PlanId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_Similar_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/plan/search/{text}/{status}/{sort}/{order}/{cursorPrimary}/{cursorSecondary}':
+    get:
+      summary: Search for Plans
+      description: >
+        Returns a list of Plans with matching criteria and cursor pagination.
+      operationId: searchPlans
+      tags:
+        - Plan
+      parameters:
+        - $ref: '#/components/parameters/Plan_Search_GET_Text'
+        - $ref: '#/components/parameters/Plan_Search_GET_Status'
+        - $ref: '#/components/parameters/Plan_Search_GET_Sort'
+        - $ref: '#/components/parameters/Plan_Search_GET_Order'
+        - $ref: '#/components/parameters/Plan_CursorPrimary'
+        - $ref: '#/components/parameters/Plan_CursorSecondary'
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_Search_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/plan/{planId}/activity/{cursorPrimary}/{cursorSecondary}':
+    get:
+      summary: Fetch a Plan's activity, such as Comments and Reviews
+      description: >
+        Returns an object containing a list of Plan's activity and the next
+        cursor to the pagination
+      operationId: getPlanActivity
+      tags:
+        - Plan
+      parameters:
+        - $ref: '#/components/parameters/Plan_GET_PlanId'
+        - $ref: '#/components/parameters/Plan_CursorPrimary'
+        - $ref: '#/components/parameters/Plan_CursorSecondary'
+      responses:
+        '200':
+          $ref: '#/components/responses/Plan_Activity_GET_200'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  '/user/search/{text}/{role}/{cursorPrimary}/{cursorSecondary}':
+    get:
+      summary: TODO
+      description: TODO
+      operationId: searchUsers
+      tags:
+        - User
 
   /user:
     post:
@@ -455,7 +351,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '403':
-          description: Request not made by an authorized user
+          description: Request not made by an authorized User
           content:
             application/json:
               schema:
@@ -473,22 +369,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # '/user/authenticated':
-  #   get:
+  '/user/authenticated':
+    get:
+      summary: TODO
+      description: TODO
+      operationId: searchUsers
+      tags:
+        - User
 
-  # '/user/login':
-  #   get:
+  '/user/login':
+    get:
+      summary: TODO
+      description: TODO
+      operationId: searchUsers
+      tags:
+        - User
 
-  # '/user/{userId}/plans':
-  #   get:
+  '/user/{userId}/plans':
+    get:
+      summary: TODO
+      description: TODO
+      operationId: searchUsers
+      tags:
+        - User
 
-  # '/user/{userId}':
-  #   get:
+  '/user/{userId}':
+    get:
+      summary: TODO
+      description: TODO
+      operationId: searchUsers
+      tags:
+        - User
 
 components:
   schemas:
     Comment:
-      description: An object representing information about a comment
+      description: An object representing information about a Comment
       type: object
       required:
         - commentId
@@ -499,26 +415,18 @@ components:
       properties:
         commentId:
           allOf:
-            - description: The unique identifier of the comment
+            - description: The unique identifier of the Comment
             - $ref: '#/components/schemas/Id'
         planId:
-          allOf:
-            - description: >
-                The unique identifier of the plan to which the comment is
-                attached
-            - $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/Plan/properties/planId'
         userId:
-          allOf:
-            - description: >
-                The 11-digit unique identifier of the user who created the
-                comment
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/User/properties/userId'
         time:
           allOf:
-            - description: The UTC time at which the comment was created
+            - description: The UTC time at which the Comment was created
             - $ref: '#/components/schemas/UtcTime'
         text:
-          description: The text content of the comment
+          description: The text content of the Comment
           type: string
           minLength: 5
           maxLength: 500
@@ -526,7 +434,7 @@ components:
             $ref: '#/components/examples/Text/value'
 
     Course:
-      description: An object representing information about a course
+      description: An object representing information about a Course
       type: object
       required:
         - courseId
@@ -539,10 +447,10 @@ components:
       properties:
         courseId:
           allOf:
-            - description: The unique identifier of the course
+            - description: The unique identifier of the Course
             - $ref: '#/components/schemas/Id'
         credits:
-          description: The number of credits the course offers
+          description: The number of credits the Course offers
           type: string
           format: int32
           minLength: 1
@@ -550,14 +458,14 @@ components:
           example:
             $ref: '#/components/examples/CourseCredits/value'
         courseName:
-          description: The name of the course in the OSU catalog
+          description: The name of the Course in the OSU catalog
           type: string
           minLength: 1
           maxLength: 100
           example:
             $ref: '#/components/examples/CourseName/value'
         courseCode:
-          description: The code of the course in the OSU catalog
+          description: The code of the Course in the OSU catalog
           type: string
           minLength: 1
           maxLength: 25
@@ -565,9 +473,9 @@ components:
             $ref: '#/components/examples/CourseCode/value'
         restriction:
           description: >
-            Encodes different restriction of the course: `0` are any courses a
-            student is allowed to select, `1` are required courses, and `2` are
-            graduate courses
+            Encodes different restriction of the Course: `0` are any Courses a
+            student is allowed to select, `1` are required Courses, and `2` are
+            graduate Courses
           type: integer
           format: int32
           minimum: 0
@@ -575,14 +483,14 @@ components:
           example:
             $ref: '#/components/examples/CourseRestriction/value'
         description:
-          description: The description of the course
+          description: The description of the Course
           type: string
           minLength: 1
           maxLength: 1000
           example:
             $ref: '#/components/examples/CourseDescription/value'
         prerequisites:
-          description: The condition which students must meet to take the course
+          description: The condition which students must meet to take the Course
           type: string
           minLength: 0
           maxLength: 1000
@@ -590,7 +498,7 @@ components:
             $ref: '#/components/examples/CoursePrerequisites/value'
 
     Notification:
-      description: An object representing information about a notification
+      description: An object representing information about a Notification
       type: object
       required:
         - notificationId
@@ -601,21 +509,14 @@ components:
       properties:
         notificationId:
           allOf:
-            - description: The unique identifier of the notification
+            - description: The unique identifier of the Notification
             - $ref: '#/components/schemas/Id'
         planId:
-          allOf:
-            - description: >
-                The unique identifier of the plan that owns the notification
-            - $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/Plan/properties/planId'
         userId:
-          allOf:
-            - description: >
-                The 11-digit unique identifier of the user who owns the
-                notification
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/User/properties/userId'
         text:
-          description: The text content of the notification
+          description: The text content of the Notification
           type: string
           minLength: 1
           maxLength: 100
@@ -623,9 +524,9 @@ components:
             $ref: '#/components/examples/Text/value'
         type:
           description: >
-            Encodes different types of the notification: `1` are notifications
-            about comments on plans, `2` are notifications about plan status,
-            and `3` are notifications about course update progress
+            Encodes different types of the Notification: `1` are Notifications
+            about Comments on Plans, `2` are Notifications about Plan status,
+            and `3` are Notifications about Course update progress
           type: integer
           format: int32
           minimum: 1
@@ -634,7 +535,7 @@ components:
             $ref: '#/components/examples/NotificationType/value'
 
     Plan:
-      description: An object representing information about an applied plan
+      description: An object representing information about an applied Plan
       type: object
       required:
         - planId
@@ -646,11 +547,11 @@ components:
       properties:
         planId:
           allOf:
-            - description: The unique identifier of the plan
+            - description: The unique identifier of the Plan
             - $ref: '#/components/schemas/Id'
         status:
           description: >
-            Encodes different statuses of the plan: `0` is Rejected, `1` is
+            Encodes different statuses of the Plan: `0` is Rejected, `1` is
             Awaiting Student Changes, `2` is Awaiting Review, `3` is
             Awaiting Final Review, and `4` is Accepted
           type: integer
@@ -660,29 +561,25 @@ components:
           example:
             $ref: '#/components/examples/PlanStatus/value'
         planName:
-          description: The name of the plan
+          description: The name of the Plan
           type: string
           minLength: 5
           maxLength: 50
           example:
             $ref: '#/components/examples/PlanName/value'
         studentId:
-          allOf:
-            - description: >
-                The 11-digit unique identifier of the student who created the
-                plan
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/User/properties/userId'
         created:
           allOf:
-            - description: The UTC time at which the plan was created
+            - description: The UTC time at which the Plan was created
             - $ref: '#/components/schemas/UtcTime'
         lastUpdated:
           allOf:
-            - description: The UTC time at which the plan was last changed
+            - description: The UTC time at which the Plan was last changed
             - $ref: '#/components/schemas/UtcTime'
 
     PlanReview:
-      description: An object representing information about a plan review
+      description: An object representing information about a Plan Review
       type: object
       required:
         - reviewId
@@ -693,23 +590,15 @@ components:
       properties:
         reviewId:
           allOf:
-            - description: The unique identifier of the review
+            - description: The unique identifier of the Review
             - $ref: '#/components/schemas/Id'
         planId:
-          allOf:
-            - description: >
-                The unique identifier of the plan to which the review is
-                attached
-            - $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/Plan/properties/planId'
         userId:
-          allOf:
-            - description: >
-                The 11-digit uniquely identifier of the user who created the
-                review
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/User/properties/userId'
         status:
           description: >
-            Encodes different statuses of a plan: `0` is Rejected, `1` is
+            Encodes different statuses of a Plan: `0` is Rejected, `1` is
             Awaiting Student Changes, `2` is Awaiting Review, `3` is
             Awaiting Final Review, and `4` is Accepted
           type: integer
@@ -720,12 +609,12 @@ components:
             $ref: '#/components/examples/PlanStatus/value'
         time:
           allOf:
-            - description: The UTC time at which the review was created
+            - description: The UTC time at which the Review was created
             - $ref: '#/components/schemas/UtcTime'
 
     RecentPlan:
       description: >
-        An object representing information about a recently viewed applied plan
+        An object representing information about a recently viewed applied Plan
       type: object
       required:
         - recentId
@@ -734,24 +623,16 @@ components:
         - time
       properties:
         planId:
-          allOf:
-            - description: The unique identifier of the plan
-            - $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/Plan/properties/planId'
         userId:
-          allOf:
-            - description: >
-                The 11-digit unique identifier of the student who created the
-                plan
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/User/properties/userId'
         time:
-          allOf:
-            - description: The UTC time at which the plan was created
-            - $ref: '#/components/schemas/UtcTime'
+          $ref: '#/components/schemas/Plan/properties/lastUpdated'
 
     SelectedCourse:
       description: >
-        An object representing information about selected courses in an applied
-        plan
+        An object representing information about selected Courses in an applied
+        Plan
       type: object
       required:
         - planId
@@ -759,19 +640,14 @@ components:
         - credits
       properties:
         planId:
-          allOf:
-            - description: The unique identifier of the plan
-            - $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/Plan/properties/planId'
         courseId:
-          allOf:
-            - description: >
-                The unique identifier of the course selected for the plan
-            - $ref: '#/components/schemas/BigId'
+          $ref: '#/components/schemas/Course/properties/courseId'
         credits:
-          $ref: '#/components/schemas/CourseCredits'
+          $ref: '#/components/schemas/Course/properties/credits'
 
     User:
-      description: An object representing information about an application user
+      description: An object representing information about an application User
       type: object
       required:
         - userId
@@ -782,24 +658,24 @@ components:
       properties:
         userId:
           allOf:
-            - description: The 11-digit ID to uniquely identify a user
+            - description: The 11-digit unique identifier of a User
             - $ref: '#/components/schemas/BigId'
         firstName:
-          description: The first name of the user
+          description: The first name of the User
           type: string
           minLength: 1
           maxLength: 50
           example:
             $ref: '#/components/examples/FirstName/value'
         lastName:
-          description: The last name of the user
+          description: The last name of the User
           type: string
           minLength: 1
           maxLength: 50
           example:
             $ref: '#/components/examples/LastName/value'
         email:
-          description: The OSU email of the user
+          description: The OSU email of the User
           type: string
           format: email
           minLength: 1
@@ -807,7 +683,7 @@ components:
             $ref: '#/components/examples/Email/value'
         role:
           description: >
-            Encodes the role of the user in the application: `0` is Student, `1`
+            Encodes the role of the User in the application: `0` is Student, `1`
             is Advisor, and `2` is Head Advisor
           type: integer
           format: int32
@@ -815,6 +691,108 @@ components:
           maximum: 2
           example:
             $ref: '#/components/examples/UserRole/value'
+
+    PlanUser:
+      description: >
+        An object containing extended information about an applied Plan,
+        including the Plan's information and the User's information
+      type: object
+      required:
+        - planId
+        - planName
+        - firstName
+        - lastName
+        - status
+        - created
+        - lastUpdated
+        - userId
+      properties:
+        planId:
+          $ref: '#/components/schemas/RecentPlan/properties/planId'
+        planName:
+          $ref: '#/components/schemas/Plan/properties/planName'
+        firstName:
+          $ref: '#/components/schemas/User/properties/firstName'
+        lastName:
+          $ref: '#/components/schemas/User/properties/lastName'
+        status:
+          $ref: '#/components/schemas/Plan/properties/status'
+        created:
+          $ref: '#/components/schemas/Plan/properties/created'
+        lastUpdated:
+          $ref: '#/components/schemas/Plan/properties/lastUpdated'
+        userId:
+          $ref: '#/components/schemas/User/properties/userId'
+
+    PlanSelectedCourse:
+      description: >
+        An object containing compact information about a selected Course in an
+        applied Plan
+      type: object
+      required:
+        - courseId
+        - courseName
+        - courseCode
+        - prerequisites
+        - credits
+      properties:
+        courseId:
+          $ref: '#/components/schemas/Course/properties/courseId'
+        courseName:
+          $ref: '#/components/schemas/Course/properties/courseName'
+        courseCode:
+          $ref: '#/components/schemas/Course/properties/courseCode'
+        prerequisites:
+          $ref: '#/components/schemas/Course/properties/prerequisites'
+        credits:
+          $ref: '#/components/schemas/SelectedCourse/properties/credits'
+
+    PlanActivity:
+      description: >
+        An object containing extended information about a Plan's activity, such
+        as its Comments and Reviews
+      type: object
+      required:
+        - id
+        - planId
+        - userId
+        - text
+        - status
+        - time
+        - timeUnix
+        - firstName
+        - lastName
+      properties:
+        id:
+          description: >
+            The unique identifier of the Plan activity. If the activity was a
+            Comment, the value of this field is the value of the `commentId`
+            field followed immediately by a single `c` character. Similarly, if
+            the activity was a Review, the value of this field is the value of
+            the `reviewId` field followed immediately by a single `r` character
+          type: string
+          minLength: 2
+          example: 7272c
+        planId:
+          $ref: '#/components/schemas/Plan/properties/planId'
+        userId:
+          $ref: '#/components/schemas/Comment/properties/userId'
+        text:
+          $ref: '#/components/schemas/Comment/properties/text'
+        status:
+          $ref: '#/components/schemas/Plan/properties/status'
+        time:
+          $ref: '#/components/schemas/Comment/properties/time'
+        timeUnix:
+          description: Time in UNIX format
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 2147483647
+        firstName:
+          $ref: '#/components/schemas/User/properties/firstName'
+        lastName:
+          $ref: '#/components/schemas/User/properties/lastName'
 
     Id:
       type: integer
@@ -831,6 +809,11 @@ components:
       maximum: 99999999999
       example:
         $ref: '#/components/examples/BigId/value'
+
+    InsertId:
+      allOf:
+        - description: The unique identifier of the newly inserted object
+        - $ref: '#/components/schemas/Id'
 
     UtcTime:
       type: string
@@ -853,46 +836,446 @@ components:
           example: Something's wrong
 
   requestBodies:
-    CommentBody_POST:
-      description: A Comment object
+    Comment_POST:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Comment'
+            description:
+              $ref: '#/components/schemas/Comment/description'
+            type:
+              $ref: '#/components/schemas/Comment/type'
+            required:
+              - planId
+              - text
+            properties:
+              planId:
+                $ref: '#/components/schemas/Comment/properties/planId'
+              text:
+                $ref: '#/components/schemas/Comment/properties/text'
 
-    PlanBody_POST:
-      description: A Plan object
+    Plan_POST:
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Plan'
+            description:
+              $ref: '#/components/schemas/Plan/description'
+            type:
+              $ref: '#/components/schemas/Plan/type'
+            required:
+              - planName
+              - courses
+            properties:
+              planName:
+                $ref: '#/components/schemas/Plan/properties/planName'
+              courses:
+                description: A list of selected Courses for the Plan
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
 
-    PlanBody_PATCH:
-      description: A Plan object
+    Plan_PATCH:
       required: true
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/Plan'
-              - properties:
-                  courses:
-                    description: A list of selected Courses
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Course'
+            description:
+              $ref: '#/components/schemas/Plan/description'
+            type:
+              $ref: '#/components/schemas/Plan/type'
+            required:
+              - planId
+            properties:
+              planId:
+                $ref: '#/components/schemas/Plan/properties/planId'
+              planName:
+                $ref: '#/components/schemas/Plan/properties/planName'
+              courses:
+                description: An updated list of selected Courses for the Plan
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
 
-    UserBody:
-      description: A User object
+  parameters:
+    Course_Search_GET_SearchText:
+      name: searchText
+      in: path
+      description: Text typed into the search bar
       required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
+      schema:
+        type: string
+        minLength: 1
+      example: Engineering
+
+    Course_Search_GET_FilterValue:
+      name: filterValue
+      in: path
+      description: Index of the selected filter option in the dropdown
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      example: 2
+
+    Notification_DELETE_NotificationId:
+      name: notificationId
+      in: path
+      description: The unique identifier of the Notification to delete
+      required: true
+      schema:
+        $ref: '#/components/schemas/Notification/properties/notificationId'
+
+    Plan_GET_PlanId:
+      name: planId
+      in: path
+      description: The unique identifier of the Plan to fetch
+      required: true
+      schema:
+        $ref: '#/components/schemas/Plan/properties/planId'
+
+    Plan_DELETE_PlanId:
+      name: planId
+      in: path
+      description: The unique identifier of the Plan to delete
+      required: true
+      schema:
+        $ref: '#/components/schemas/Plan/properties/planId'
+
+    Plan_Search_GET_Text:
+      name: text
+      in: path
+      description: The text typed into the search bar
+      required: true
+      schema:
+        type: string
+        minLength: 1
+      example: The quick brown fox jumps over the lazy dog.
+
+    Plan_Search_GET_Status:
+      name: status
+      in: path
+      description: The Plan status filter
+      required: true
+      schema:
+        $ref: '#/components/schemas/Plan/properties/status'
+
+    Plan_Search_GET_Sort:
+      name: sort
+      in: path
+      description: The column number to sort by
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 6
+      example: 3
+
+    Plan_Search_GET_Order:
+      name: order
+      in: path
+      description: The sort order, either ascending (`1`) or descending (`0`)
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 1
+      example: 0
+
+    Plan_CursorPrimary:
+      name: cursorPrimary
+      in: path
+      description: The primary cursor of the cursor pagination setup
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        example:
+          $ref: '#/components/examples/Text/value'
+
+    Plan_CursorSecondary:
+      name: cursorSecondary
+      in: path
+      description: The secondary cursor of the cursor pagination setup
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        example:
+          $ref: '#/components/examples/Text/value'
 
   responses:
+    Comment_POST_201:
+      description: Comment created
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the new Comment
+            type: object
+            required:
+              - insertId
+              - time
+            properties:
+              insertId:
+                $ref: '#/components/schemas/InsertId'
+              time:
+                allOf:
+                  - description: The UTC time of the insertion
+                  - $ref: '#/components/schemas/UtcTime'
+
+    Course_UpdateDatabase_GET_200:
+      description: Course update started
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing information about the course update process
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                description: The response message from the server
+                type: string
+                minLength: 1
+                example: 'Courses update started.'
+
+    Course_Search_GET_200:
+      description: Courses found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing information about the matching Courses
+            type: object
+            properties:
+              courses:
+                description: >
+                  A list of Courses that match the search text and the filter
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+
+    Notification_GET_200:
+      description: Notification set found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing information about the Notifications owned
+              by the logged in User
+            type: object
+            properties:
+              notifications:
+                description: A list of Notifications
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+
+    Notification_DELETE_200:
+      description: Notification deleted
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing information about the deleted Notification
+            type: object
+            required:
+              - affectedRows
+            properties:
+              affectedRows:
+                description: The number of deleted Notifications
+                type: integer
+                format: int32
+                minimum: 0
+                maximum: 1
+                example: 1
+
+    Plan_POST_201:
+      description: Submitted plan has been created
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the new Plan
+            type: object
+            required:
+              - insertId
+            properties:
+              insertId:
+                $ref: '#/components/schemas/InsertId'
+
+    Plan_PATCH_200:
+      description: Plan has been updated
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the updated Plan
+            type: object
+            required:
+              - updatedName
+              - updatedCourses
+            properties:
+              updatedName:
+                $ref: '#/components/schemas/Plan/properties/planName'
+              updatedCourses:
+                description: The list of updated Courses
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+
+    Plan_Recent_GET_200:
+      description: Plans found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing extended information about the Plans recently
+              viewed by the logged in User
+            type: object
+            required:
+              - plans
+            properties:
+              plans:
+                description: The list of recent Plans with extended information
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanUser'
+
+    Plan_GET_200:
+      description: Plan found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing extended information about an applied Plan,
+              including the Plan's information, the User's information, and the
+              list of selected Courses
+            type: object
+            required:
+              - planId
+              - status
+              - planName
+              - studentId
+              - created
+              - lastUpdated
+              - firstName
+              - lastName
+              - email
+              - courses
+            properties:
+              planId:
+                $ref: '#/components/schemas/Plan/properties/planId'
+              status:
+                $ref: '#/components/schemas/Plan/properties/status'
+              planName:
+                $ref: '#/components/schemas/Plan/properties/planName'
+              studentId:
+                $ref: '#/components/schemas/Plan/properties/studentId'
+              created:
+                $ref: '#/components/schemas/Plan/properties/created'
+              lastUpdated:
+                $ref: '#/components/schemas/Plan/properties/lastUpdated'
+              firstName:
+                $ref: '#/components/schemas/User/properties/firstName'
+              lastName:
+                $ref: '#/components/schemas/User/properties/lastName'
+              email:
+                $ref: '#/components/schemas/User/properties/email'
+              courses:
+                description: The list of selected Courses for the Plan
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanSelectedCourse'
+
+    Plan_Similar_GET_200:
+      description: Similar plans found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing counts of accepted and rejected similar Plans
+            type: object
+            required:
+              - accepted
+              - rejected
+            properties:
+              accepted:
+                allOf:
+                  - description: The number of accepted similar Plans
+                  - $ref: '#/components/schemas/Id'
+              rejected:
+                allOf:
+                  - description: The number of rejected similar Plans
+                  - $ref: '#/components/schemas/Id'
+
+    Plan_Search_GET_200:
+      description: Plans found
+      content:
+        application/json:
+          schema:
+            description: An object containing a cursor-paginated list of Plans
+            type: object
+            required:
+              - plans
+              - nextCursor
+            properties:
+              plans:
+                description: The list of matching Plans
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanUser'
+              nextCursor:
+                description: The next cursor in the pagination
+                type: string
+                minLength: 1
+                example:
+                  $ref: '#/components/examples/Text/value'
+
+    Plan_DELETE_200:
+      description: Plans deleted
+      content:
+        application/json:
+          schema:
+            description: An object containing information about the deleted Plan
+            type: object
+            required:
+              - affectedRows
+            properties:
+              affectedRows:
+                description: The number of deleted Plans
+                type: integer
+                format: int32
+                minimum: 0
+                maximum: 1
+                example: 1
+
+    Plan_Activity_GET_200:
+      description: Plan activity found
+      content:
+        application/json:
+          schema:
+            description: >
+              An object containing information about the Plan's activity
+            type: object
+            required:
+              - activity
+              - nextCursor
+            properties:
+              activity:
+                description: The list of Plan's activity
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanActivity'
+              nextCursor:
+                description: The next cursor in the pagination
+                type: string
+                minLength: 1
+                example:
+                  $ref: '#/components/examples/Text/value'
+
     '400':
       description: Missing or invalid request body
       content:
@@ -933,22 +1316,22 @@ components:
       summary: An example of a big unique identifier
       value: 72727272727
     CourseCode:
-      summary: An example of the code of a course
+      summary: An example of the code of a Course
       value: CS 493
     CourseCredits:
-      summary: An example of the number of credits a course offers
+      summary: An example of the number of credits a Course offers
       value: '4'
     CourseName:
-      summary: An example of the name of a course
+      summary: An example of the name of a Course
       value: CLOUD APPLICATION DEVELOPMENT
     CourseDescription:
-      summary: An example of the description of a course
+      summary: An example of the description of a Course
       value: Covers developing RESTful cloud services.
     CoursePrerequisites:
-      summary: An example of the prerequisites of a course
+      summary: An example of the prerequisites of a Course
       value: A minimum grade of C is required in CS 290 and CS 261.
     CourseRestriction:
-      summary: An example of the restriction code of a course
+      summary: An example of the restriction code of a Course
       value: 1
     Email:
       summary: An example of an email
@@ -963,19 +1346,19 @@ components:
       summary: An example of a last name
       value: Doe
     NotificationType:
-      summary: An example of the type of a notification
+      summary: An example of the type of a Notification
       value: 1
     PlanName:
-      summary: An example of the name of an applied plan
+      summary: An example of the name of an applied Plan
       value: My AI plan
     PlanStatus:
-      summary: An example of the status code of an applied plan
+      summary: An example of the status code of an applied Plan
       value: 3
     Text:
       summary: An example of a text content
       value: The quick brown fox jumps over the lazy dog.
     UserRole:
-      summary: An example of the role code of a user
+      summary: An example of the role code of a User
       value: 1
     UtcTime:
       summary: An example of a time value in UTC format
