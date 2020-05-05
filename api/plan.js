@@ -34,6 +34,7 @@ const {
   sanitizeUsingSchema
 } = require("../services/validation/schemaValidation");
 
+
 // submit a plan
 app.post("/", requireAuth, async (req, res) => {
 
@@ -82,6 +83,7 @@ app.post("/", requireAuth, async (req, res) => {
   }
 
 });
+
 
 // update a plan
 app.patch("/", requireAuth, async (req, res) => {
@@ -149,6 +151,7 @@ app.patch("/", requireAuth, async (req, res) => {
 
 });
 
+
 // view a list of recently viewed plans
 app.get("/recent", requireAuth, async (req, res) => {
 
@@ -185,6 +188,7 @@ app.get("/recent", requireAuth, async (req, res) => {
   }
 
 });
+
 
 // view a plan
 app.get("/:planId", requireAuth, async (req, res) => {
@@ -223,6 +227,7 @@ app.get("/:planId", requireAuth, async (req, res) => {
 
 });
 
+
 // view the number of rejected and accepted plans
 // that are similar to the selected plan
 app.get("/:planId/similar", requireAuth, async (req, res) => {
@@ -242,6 +247,7 @@ app.get("/:planId/similar", requireAuth, async (req, res) => {
   }
 
 });
+
 
 // search for plans
 app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {
@@ -303,6 +309,7 @@ app.get("/search/:text/:status/:sort/:order/:cursorPrimary/:cursorSecondary", re
 
 });
 
+
 // delete a plan
 app.delete("/:planId", requireAuth, async (req, res) => {
 
@@ -339,6 +346,7 @@ app.delete("/:planId", requireAuth, async (req, res) => {
   }
 
 });
+
 
 // get a plan's activity (comments and reviews)
 app.get("/:planId/activity/:cursorPrimary/:cursorSecondary", requireAuth, async (req, res) => {

@@ -7,6 +7,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+app.set("env", process.env.ENV);
+
 // catch invalid JSON request bodies
 app.use((req, res, next) => {
   bodyParser.json()(req, res, err => {
@@ -27,6 +29,7 @@ app.all("/api/*", (req, res, next) => {
   next();
 });
 
+// handle requests
 app.use("/api/notification", require("./notification"));
 app.use("/api/review", require("./review"));
 app.use("/api/comment", require("./comment"));

@@ -1,4 +1,4 @@
-// convert a status code to a string
+// convert a role code to a string
 export function formatRole(role) {
   switch (role) {
     case 0:

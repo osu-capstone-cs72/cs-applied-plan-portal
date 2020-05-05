@@ -18,18 +18,30 @@
     "mysql2": "^2.1.0",
     "needle": "^2.3.2",
     "node-fetch": "^2.6.0",
+    "react-test-renderer": "^16.13.1",
     "validator": "^12.2.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
-    "nodemon": "^2.0.2"
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
+    "wait-on": "^4.0.2"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon server.js --ignore client/*",
+    "start": "ENV=PRODUCTION concurrently \"npm run server\" \"npm run client\"",
+    "dev": "ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles",
+    "testReact": "cd client && npm test a",
+    "server": "node server.js --ignore client/*",
+    "serverDev": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "./client"
+    ]
   },
   "repository": {
     "type": "git",

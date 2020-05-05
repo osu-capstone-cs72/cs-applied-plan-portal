@@ -80,6 +80,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
   }
 });
 
+
 // Creates a new User in the system.
 app.post("/", requireAuth, async (req, res) => {
   try {
@@ -123,6 +124,7 @@ app.get("/authenticated", requireAuth, (req, res)  => {
     message: "authenticated"
   });
 });
+
 
 // Retrieves the CAS ticket after a User has successfully logged in via ONID.
 // Sends the second request to CAS with the ticket to validate it.
@@ -207,6 +209,7 @@ app.get("/login", async (req, res) => {
   }
 });
 
+
 // Fetches a list of plans related to a specific User.
 app.get("/:userId/plans", requireAuth, async (req, res) => {
   try {
@@ -255,6 +258,7 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
   }
 });
 
+
 // Fetches information about a specific User.
 app.get("/:userId", requireAuth, async (req, res) => {
   try {
@@ -302,6 +306,7 @@ app.get("/:userId", requireAuth, async (req, res) => {
     });
   }
 });
+
 
 // Partially updates the User with the provided ID.
 app.patch("/:userId", requireAuth, async (req, res) => {
