@@ -40,7 +40,6 @@ function Course(props) {
       margin-top: 1rem;
     }
 
-
     details summary::-webkit-details-marker {
       display:none;
     }
