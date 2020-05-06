@@ -123,7 +123,7 @@ export default function ManageRoles() {
   return (
     <div css={style}>
       <PageSpinner loading={loading} />
-      <Navbar />
+      <Navbar currentPlan={0} />
 
       <div id="user-manage-container">
         <div id="user-manage-contents-container">

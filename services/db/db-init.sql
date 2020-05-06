@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: classmysql.engr.oregonstate.edu:3306
--- Generation Time: Apr 20, 2020 at 03:26 PM
+-- Generation Time: May 05, 2020 at 11:32 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.4
 
@@ -29,12 +29,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Comment` (
-  `commentId` int(11) NOT NULL,
-  `planId` int(11) NOT NULL,
+  `commentId` int(11) UNSIGNED NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `text` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `text` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Comment`
@@ -76,7 +76,14 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 (35, 15, 82757579527, '2020-04-12 19:41:09', 'Interesting area of focus'),
 (36, 41, 77768733898, '2020-04-16 19:48:51', 'I think you should include GEO 101 on this plan.'),
 (37, 41, 82757579527, '2020-04-16 19:49:18', 'I updated the plan to include GEO 101'),
-(39, 42, 82757579527, '2020-04-20 22:12:23', '🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟');
+(39, 42, 82757579527, '2020-04-20 22:12:23', '🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟🐟'),
+(40, 46, 82757579527, '2020-04-22 01:16:22', '3️⃣1️⃣0️⃣'),
+(41, 47, 82757579527, '2020-04-24 04:52:23', 'Made this plan on Firefox.'),
+(42, 48, 82757579527, '2020-04-24 05:01:39', 'This is my new plan. 🤖'),
+(43, 42, 84979840992, '2020-04-24 05:15:54', 'Glub glub.'),
+(44, 42, 82757579527, '2020-05-01 17:18:12', '💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥💯🔥'),
+(48, 19, 82757579527, '2020-05-05 01:30:57', 'Hello'),
+(49, 51, 82757579527, '2020-05-06 06:21:50', '🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲🐲');
 
 -- --------------------------------------------------------
 
@@ -85,14 +92,14 @@ INSERT INTO `Comment` (`commentId`, `planId`, `userId`, `time`, `text`) VALUES
 --
 
 CREATE TABLE `Course` (
-  `courseId` int(11) NOT NULL,
-  `credits` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `courseName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `courseCode` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `courseId` int(11) UNSIGNED NOT NULL,
+  `credits` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `courseName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `courseCode` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `restriction` int(11) NOT NULL,
-  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `prerequisites` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `description` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prerequisites` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Course`
@@ -7014,12 +7021,12 @@ INSERT INTO `Course` (`courseId`, `credits`, `courseName`, `courseCode`, `restri
 --
 
 CREATE TABLE `Notification` (
-  `notificationId` int(11) NOT NULL,
-  `planId` int(11) NOT NULL,
+  `notificationId` int(11) UNSIGNED NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
-  `text` varchar(100) NOT NULL,
+  `text` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Notification`
@@ -7045,7 +7052,9 @@ INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`
 (34, 19, 12002489701, 'The plan \"Robotics Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
 (35, 15, 14278597767, 'Zachary Thomas has added a new comment to the plan \"Family Plan\".', 1),
 (36, 15, 14278597767, 'The plan \"Family Plan\" has been set to \"Awaiting final review\" by Zachary Thomas.', 2),
-(41, 42, 84979840992, 'Zachary Thomas has added a new comment to the plan \"Fish Plan\".', 1);
+(43, 42, 84979840992, 'Zachary Thomas has added a new comment to the plan \"Fish Plan\".', 1),
+(44, 42, 84979840992, 'The plan \"Fish Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2),
+(48, 19, 12002489701, 'The plan \"Robotics Plan\" has been set to \"Accepted\" by Zachary Thomas.', 2);
 
 -- --------------------------------------------------------
 
@@ -7054,13 +7063,13 @@ INSERT INTO `Notification` (`notificationId`, `planId`, `userId`, `text`, `type`
 --
 
 CREATE TABLE `Plan` (
-  `planId` int(11) NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
   `status` int(11) NOT NULL,
-  `planName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `planName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `studentId` bigint(11) UNSIGNED NOT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Plan`
@@ -7068,8 +7077,8 @@ CREATE TABLE `Plan` (
 
 INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `lastUpdated`) VALUES
 (1, 2, 'Forestry Focused Plan', 10157289101, '2020-03-20 08:33:50', '2020-03-20 16:11:59'),
-(2, 2, 'CS Plan', 82757579527, '2020-03-20 13:03:03', '2020-04-19 09:29:38'),
-(8, 0, 'Research Plan', 82757579527, '2020-03-20 15:16:32', '2020-04-19 09:29:38'),
+(2, 2, 'CS Plan', 80612566209, '2020-03-20 13:03:03', '2020-04-20 22:58:05'),
+(8, 0, 'Research Plan', 80612566209, '2020-03-20 15:16:32', '2020-04-20 22:58:05'),
 (9, 4, 'Music Plan', 12002489701, '2020-03-20 15:53:41', '2020-04-18 17:57:01'),
 (10, 3, 'Chemistry Plan', 12002489701, '2020-03-20 15:54:54', '2020-04-18 17:57:09'),
 (11, 3, 'Math Plan', 12002489701, '2020-03-20 15:56:45', '2020-04-08 01:09:15'),
@@ -7078,23 +7087,27 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 (16, 1, 'Bird Plan', 14278597767, '2020-03-20 16:04:36', '2020-03-20 16:58:20'),
 (17, 4, 'Language Plan', 86725657261, '2020-03-20 16:06:18', '2020-03-20 16:29:53'),
 (18, 2, 'Farm Plan', 12002489701, '2020-03-20 16:07:20', '2020-03-26 05:24:44'),
-(19, 3, 'Robotics Plan', 12002489701, '2020-03-20 16:08:35', '2020-04-10 06:48:44'),
+(19, 4, 'Robotics Plan', 12002489701, '2020-03-20 16:08:35', '2020-05-05 01:31:05'),
 (20, 2, 'Economics Plan', 96734244380, '2020-03-20 16:13:39', '2020-03-20 16:13:55'),
 (21, 2, 'Law Plan', 19654375695, '2020-03-20 16:15:25', '2020-03-26 05:18:39'),
-(22, 2, 'Map Plan', 50734529811, '2020-03-20 16:17:13', '2020-03-20 16:18:23'),
+(22, 2, 'Map Plan', 50734529811, '2020-03-20 16:17:13', '2020-04-23 01:20:55'),
 (23, 2, 'Astronomy Plan', 74237743225, '2020-03-20 16:18:06', '2020-03-20 16:18:23'),
 (24, 2, 'Agriculture Plan', 73611589202, '2020-03-20 16:20:14', '2020-04-12 23:42:28'),
 (25, 2, 'Geology Plan', 73611589202, '2020-03-20 16:26:47', '2020-03-20 16:27:44'),
 (26, 4, 'Geology Focused Plan', 86725657261, '2020-03-20 16:27:15', '2020-03-20 16:33:50'),
-(27, 0, 'Computer and Math Plan', 82757579527, '2020-03-20 16:46:09', '2020-04-19 09:29:38'),
-(28, 1, 'Environmental Plan', 82757579527, '2020-03-20 16:47:36', '2020-04-19 09:29:38'),
-(29, 4, 'Earth Plan', 82757579527, '2020-03-21 03:35:55', '2020-04-19 09:29:38'),
-(30, 2, 'Computer Plan', 50734529811, '2020-03-21 20:01:46', '2020-03-27 03:23:17'),
+(27, 0, 'Computer and Math Plan', 80612566209, '2020-03-20 16:46:09', '2020-04-20 22:58:05'),
+(28, 1, 'Environmental Plan', 80612566209, '2020-03-20 16:47:36', '2020-04-20 22:58:05'),
+(29, 4, 'Earth Plan', 80612566209, '2020-03-21 03:35:55', '2020-04-20 22:58:05'),
+(30, 2, 'Computer Plan', 50734529811, '2020-03-21 20:01:46', '2020-04-23 01:20:55'),
 (31, 2, 'Space & Earth Plan', 96734244380, '2020-03-27 03:02:57', '2020-03-27 03:23:17'),
 (32, 2, 'Bio-Health Plan', 74237743225, '2020-03-27 03:23:23', '2020-03-27 03:36:39'),
 (33, 2, 'Civil Engineering Plan', 74237743225, '2020-03-27 03:36:02', '2020-03-27 03:36:39'),
-(41, 2, 'Geology Plan', 82757579527, '2020-04-16 18:51:49', '2020-04-19 09:29:38'),
-(42, 2, 'Fish Plan', 84979840992, '2020-04-18 19:03:06', '2020-04-20 22:00:45');
+(41, 2, 'Geology Plan', 80612566209, '2020-04-16 18:51:49', '2020-04-20 22:58:05'),
+(42, 4, 'Fish Plan', 84979840992, '2020-04-18 19:03:06', '2020-05-01 17:18:16'),
+(46, 2, '310 Plan', 82757579527, '2020-04-22 01:14:36', '2020-04-24 04:49:47'),
+(47, 4, 'Fire Plan', 82757579527, '2020-04-24 04:51:43', '2020-04-24 05:03:05'),
+(48, 2, 'Neato Plan', 82757579527, '2020-04-24 05:00:51', '2020-04-24 05:00:51'),
+(51, 2, '🐉Mythology Plan', 82757579527, '2020-05-06 06:21:25', '2020-05-06 06:21:25');
 
 -- --------------------------------------------------------
 
@@ -7103,12 +7116,12 @@ INSERT INTO `Plan` (`planId`, `status`, `planName`, `studentId`, `created`, `las
 --
 
 CREATE TABLE `PlanReview` (
-  `reviewId` int(11) NOT NULL,
-  `planId` int(11) NOT NULL,
+  `reviewId` int(11) UNSIGNED NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `status` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `PlanReview`
@@ -7132,7 +7145,11 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 (16, 19, 82757579527, 3, '2020-04-10 06:48:44'),
 (17, 15, 82757579527, 3, '2020-04-12 19:49:07'),
 (18, 41, 77768733898, 1, '2020-04-16 19:48:55'),
-(19, 41, 82757579527, 2, '2020-04-16 19:49:09');
+(19, 41, 82757579527, 2, '2020-04-16 19:49:09'),
+(20, 47, 77768733898, 3, '2020-04-24 04:54:16'),
+(21, 47, 80612566209, 4, '2020-04-24 05:03:05'),
+(22, 42, 82757579527, 4, '2020-05-01 17:18:16'),
+(27, 19, 82757579527, 4, '2020-05-05 01:31:05');
 
 -- --------------------------------------------------------
 
@@ -7141,11 +7158,11 @@ INSERT INTO `PlanReview` (`reviewId`, `planId`, `userId`, `status`, `time`) VALU
 --
 
 CREATE TABLE `RecentPlan` (
-  `recentId` int(11) NOT NULL,
-  `planId` int(11) NOT NULL,
+  `recentId` int(11) UNSIGNED NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
   `userId` bigint(11) UNSIGNED NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `RecentPlan`
@@ -7155,12 +7172,12 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 (159, 20, 60535363653, '2020-04-02 00:29:03'),
 (173, 1, 60535363653, '2020-04-07 00:30:37'),
 (249, 9, 84979840992, '2020-04-13 22:34:21'),
-(284, 21, 82757579527, '2020-04-19 06:49:01'),
-(285, 22, 82757579527, '2020-04-19 06:51:04'),
-(289, 32, 82757579527, '2020-04-19 06:52:23'),
-(290, 17, 82757579527, '2020-04-19 07:06:29'),
 (291, 2, 60535363653, '2020-04-20 01:25:09'),
-(302, 42, 82757579527, '2020-04-20 22:24:50');
+(350, 27, 82757579527, '2020-05-06 06:25:28'),
+(351, 8, 82757579527, '2020-05-06 06:25:38'),
+(352, 42, 82757579527, '2020-05-06 06:25:55'),
+(353, 19, 82757579527, '2020-05-06 06:25:58'),
+(354, 51, 82757579527, '2020-05-06 06:26:10');
 
 -- --------------------------------------------------------
 
@@ -7169,10 +7186,10 @@ INSERT INTO `RecentPlan` (`recentId`, `planId`, `userId`, `time`) VALUES
 --
 
 CREATE TABLE `SelectedCourse` (
-  `planId` int(11) NOT NULL,
-  `courseId` int(11) NOT NULL,
+  `planId` int(11) UNSIGNED NOT NULL,
+  `courseId` int(11) UNSIGNED NOT NULL,
   `credits` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `SelectedCourse`
@@ -7462,7 +7479,48 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`, `credits`) VALUES
 (42, 2444, 2),
 (42, 2445, 3),
 (42, 2446, 3),
-(42, 2447, 3);
+(42, 2447, 3),
+(46, 258, 4),
+(46, 689, 3),
+(46, 790, 4),
+(46, 1754, 4),
+(46, 2763, 4),
+(46, 2990, 4),
+(46, 3143, 4),
+(46, 3395, 3),
+(46, 3476, 4),
+(46, 4234, 3),
+(46, 5607, 6),
+(47, 1066, 3),
+(47, 2694, 3),
+(47, 2759, 2),
+(47, 2760, 3),
+(47, 2761, 4),
+(47, 2762, 3),
+(47, 2824, 3),
+(47, 2828, 1),
+(47, 2833, 3),
+(47, 2834, 4),
+(47, 2844, 3),
+(47, 3289, 1),
+(48, 16, 3),
+(48, 18, 4),
+(48, 29, 15),
+(48, 1060, 1),
+(48, 3314, 2),
+(48, 3315, 2),
+(48, 5890, 4),
+(48, 5891, 4),
+(51, 694, 3),
+(51, 1615, 3),
+(51, 2194, 3),
+(51, 2207, 4),
+(51, 3154, 4),
+(51, 3306, 2),
+(51, 3340, 2),
+(51, 5859, 4),
+(51, 6703, 3),
+(51, 6730, 4);
 
 -- --------------------------------------------------------
 
@@ -7472,11 +7530,11 @@ INSERT INTO `SelectedCourse` (`planId`, `courseId`, `credits`) VALUES
 
 CREATE TABLE `User` (
   `userId` bigint(11) UNSIGNED NOT NULL,
-  `firstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lastName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `firstName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lastName` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `User`
@@ -7495,6 +7553,7 @@ INSERT INTO `User` (`userId`, `firstName`, `lastName`, `email`, `role`) VALUES
 (64391826876, 'Gial', 'Ackbar', 'its-a-trap@yahoo.com', 1),
 (73611589202, 'Owen', 'Lars', 'powerConverters@msn.com', 0),
 (74237743225, 'Wedge', 'Antilles', 'x-wing@aol.com', 0),
+(76090936725, 'Emily', 'Disbury', 'disburye@oregonstate.edu', 2),
 (77768733898, 'Leia', 'Organa', 'CinnamonBuns@msn.com', 1),
 (80612566209, 'Sheev', 'Palpatine', 'order66@gmail.com', 2),
 (82757579527, 'Zachary', 'Thomas', 'thomasza@oregonstate.edu', 2),
@@ -7575,37 +7634,37 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `commentId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `Course`
 --
 ALTER TABLE `Course`
-  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6867;
+  MODIFY `courseId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6867;
 
 --
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `notificationId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `Plan`
 --
 ALTER TABLE `Plan`
-  MODIFY `planId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `planId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `PlanReview`
 --
 ALTER TABLE `PlanReview`
-  MODIFY `reviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `reviewId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `RecentPlan`
 --
 ALTER TABLE `RecentPlan`
-  MODIFY `recentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=303;
+  MODIFY `recentId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=355;
 
 --
 -- Constraints for dumped tables

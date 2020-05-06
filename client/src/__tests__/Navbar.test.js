@@ -10,7 +10,7 @@ describe("Navbar", () => {
   it("renders successfully", () => {
     const wrapper = renderer.create(
       <MemoryRouter>
-        <Navbar />
+        <Navbar currentPlan={0} />
       </MemoryRouter>).toJSON();
     expect(wrapper).toMatchSnapshot();
   });

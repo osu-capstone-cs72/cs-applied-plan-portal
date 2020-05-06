@@ -2,7 +2,7 @@
 
 import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
-import NavBar from "../navbar/Navbar";
+import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
 import ListSimilarPlans from "./ListSimilarPlans";
@@ -350,7 +350,7 @@ function ViewPlan(props) {
     return (
       <div id="view-plan-container" css={style}>
         <PageSpinner loading={loading} />
-        <NavBar showSearch={false} />
+        <Navbar currentPlan={planId} />
         <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
           planName={planName} status={status} currentUser={currentUser} courses={courses}
           onPrint={() => handlePrint()} onDelete={() => handleDelete()} />

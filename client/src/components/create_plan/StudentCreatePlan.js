@@ -162,7 +162,7 @@ export default function StudentCreatePlan() {
     return (
       <div className="student-create-plan" css={style}>
         <PageSpinner loading={loading} />
-        <Navbar showSearch={false} searchContent={null}/>
+        <Navbar currentPlan={0} />
         <EditPlan courses={courses} edit={edit} planName={planName} onLoading={load => setSubmitLoading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
         <CourseSearch warning={warning} onAddCourse={e => handleAddCourse(e)}

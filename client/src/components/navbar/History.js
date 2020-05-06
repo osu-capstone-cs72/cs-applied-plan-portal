@@ -4,8 +4,9 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
+import PropTypes from "prop-types";
 
-function History() {
+function History(props) {
 
   const [recentPlans, setRecentPlans] = useState([]);
 
@@ -111,7 +112,7 @@ function History() {
       ignore = true;
     };
 
-  }, []);
+  }, [props.currentPlan]);
 
 
   return (
@@ -138,3 +139,7 @@ function History() {
 
 }
 export default withRouter(History);
+
+History.propTypes = {
+  currentPlan: PropTypes.number
+};
