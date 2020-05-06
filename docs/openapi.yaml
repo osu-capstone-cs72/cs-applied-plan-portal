@@ -1,6 +1,4 @@
-# VS Code was able to parse this file into proper Swagger without errors or
-# warnings. On https://editor.swagger.io, however, there were some errors when
-# trying to parse, and so please ignore those errors and/or warnings.
+# This document looks better when parsed on https://editor.swagger.io.
 openapi: 3.0.2
 
 info:
@@ -493,8 +491,7 @@ components:
           type: string
           minLength: 5
           maxLength: 500
-          example:
-            $ref: '#/components/examples/Text/value'
+          example: The quick brown fox jumps over the lazy dog.
 
     Course:
       description: An object representing information about a Course
@@ -518,22 +515,19 @@ components:
           format: int32
           minLength: 1
           maxLength: 25
-          example:
-            $ref: '#/components/examples/CourseCredits/value'
+          example: '4'
         courseName:
           description: The name of the Course in the OSU catalog
           type: string
           minLength: 1
           maxLength: 100
-          example:
-            $ref: '#/components/examples/CourseName/value'
+          example: CLOUD APPLICATION DEVELOPMENT
         courseCode:
           description: The code of the Course in the OSU catalog
           type: string
           minLength: 1
           maxLength: 25
-          example:
-            $ref: '#/components/examples/CourseCode/value'
+          example: CS 493
         restriction:
           description: >
             Encodes different restriction of the Course: `0` are any Courses a
@@ -543,22 +537,19 @@ components:
           format: int32
           minimum: 0
           maximum: 2
-          example:
-            $ref: '#/components/examples/CourseRestriction/value'
+          example: 1
         description:
           description: The description of the Course
           type: string
           minLength: 1
           maxLength: 1000
-          example:
-            $ref: '#/components/examples/CourseDescription/value'
+          example: Covers developing RESTful cloud services.
         prerequisites:
           description: The condition which students must meet to take the Course
           type: string
           minLength: 0
           maxLength: 1000
-          example:
-            $ref: '#/components/examples/CoursePrerequisites/value'
+          example: A minimum grade of C is required in CS 290 and CS 261.
 
     Notification:
       description: An object representing information about a Notification
@@ -583,8 +574,7 @@ components:
           type: string
           minLength: 1
           maxLength: 100
-          example:
-            $ref: '#/components/examples/Text/value'
+          example: The quick brown fox jumps over the lazy dog.
         type:
           description: >
             Encodes different types of the Notification: `1` are Notifications
@@ -594,8 +584,7 @@ components:
           format: int32
           minimum: 1
           maximum: 3
-          example:
-            $ref: '#/components/examples/NotificationType/value'
+          example: 1
 
     Plan:
       description: An object representing information about an applied Plan
@@ -621,15 +610,13 @@ components:
           format: int32
           minimum: 0
           maximum: 4
-          example:
-            $ref: '#/components/examples/PlanStatus/value'
+          example: 3
         planName:
           description: The name of the Plan
           type: string
           minLength: 5
           maxLength: 50
-          example:
-            $ref: '#/components/examples/PlanName/value'
+          example: My AI plan
         studentId:
           $ref: '#/components/schemas/User/properties/userId'
         created:
@@ -668,8 +655,7 @@ components:
           format: int32
           minimum: 0
           maximum: 4
-          example:
-            $ref: '#/components/examples/PlanStatus/value'
+          example: 3
         time:
           allOf:
             - description: The UTC time at which the Review was created
@@ -728,22 +714,19 @@ components:
           type: string
           minLength: 1
           maxLength: 50
-          example:
-            $ref: '#/components/examples/FirstName/value'
+          example: John
         lastName:
           description: The last name of the User
           type: string
           minLength: 1
           maxLength: 50
-          example:
-            $ref: '#/components/examples/LastName/value'
+          example: Doe
         email:
           description: The OSU email of the User
           type: string
           format: email
           minLength: 1
-          example:
-            $ref: '#/components/examples/Email/value'
+          example: 'email@example.com'
         role:
           description: >
             Encodes the role of the User in the application: `0` is Student, `1`
@@ -752,8 +735,7 @@ components:
           format: int32
           minimum: 0
           maximum: 2
-          example:
-            $ref: '#/components/examples/UserRole/value'
+          example: 1
 
     PlanUser:
       description: >
@@ -898,16 +880,14 @@ components:
       format: int32
       minimum: 1
       maximum: 4294967295
-      example:
-        $ref: '#/components/examples/Id/value'
+      example: 72
 
     BigId:
       type: integer
       format: int64
       minimum: 10000000000
       maximum: 99999999999
-      example:
-        $ref: '#/components/examples/BigId/value'
+      example: 72727272727
 
     InsertId:
       allOf:
@@ -919,15 +899,13 @@ components:
       format: 'yyyy-mm-dd HH:MM:SS'
       minLength: 19
       maxLength: 19
-      example:
-        $ref: '#/components/examples/UtcTime/value'
+      example: '2020-12-31 23:59:59'
 
     NextCursor:
       description: The next cursor in the pagination
       type: string
       minLength: 1
-      example:
-        $ref: '#/components/examples/Text/value'
+      example: The quick brown fox jumps over the lazy dog.
 
     Error:
       description: An object describing an error response from the system
@@ -947,10 +925,8 @@ components:
       content:
         application/json:
           schema:
-            description:
-              $ref: '#/components/schemas/Comment/description'
-            type:
-              $ref: '#/components/schemas/Comment/type'
+            description: An object representing information about a Comment
+            type: object
             required:
               - planId
               - text
@@ -965,10 +941,9 @@ components:
       content:
         application/json:
           schema:
-            description:
-              $ref: '#/components/schemas/Plan/description'
-            type:
-              $ref: '#/components/schemas/Plan/type'
+            description: >
+              An object representing information about an applied Plan
+            type: object
             required:
               - planName
               - courses
@@ -986,10 +961,9 @@ components:
       content:
         application/json:
           schema:
-            description:
-              $ref: '#/components/schemas/Plan/description'
-            type:
-              $ref: '#/components/schemas/Plan/type'
+            description: >
+              An object representing information about an applied Plan
+            type: object
             required:
               - planId
             properties:
@@ -1096,7 +1070,7 @@ components:
         format: int32
         minimum: 0
         maximum: 1
-      example: 0
+        example: 0
 
     Search_CursorPrimary:
       name: cursorPrimary
@@ -1106,8 +1080,7 @@ components:
       schema:
         type: string
         minLength: 1
-        example:
-          $ref: '#/components/examples/Text/value'
+        example: The quick brown fox jumps over the lazy dog.
 
     Search_CursorSecondary:
       name: cursorSecondary
@@ -1117,8 +1090,7 @@ components:
       schema:
         type: string
         minLength: 1
-        example:
-          $ref: '#/components/examples/Text/value'
+        example: The quick brown fox jumps over the lazy dog.
 
     User_Search_GET_Role:
       name: role
@@ -1136,8 +1108,7 @@ components:
       schema:
         type: string
         minLength: 1
-        example:
-          $ref: '#/components/examples/Text/value'
+        example: The quick brown fox jumps over the lazy dog.
 
     User_Login_GET_Target:
       name: target
@@ -1545,56 +1516,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-
-  examples:
-    BigId:
-      summary: An example of a big unique identifier
-      value: 72727272727
-    CourseCode:
-      summary: An example of the code of a Course
-      value: CS 493
-    CourseCredits:
-      summary: An example of the number of credits a Course offers
-      value: '4'
-    CourseName:
-      summary: An example of the name of a Course
-      value: CLOUD APPLICATION DEVELOPMENT
-    CourseDescription:
-      summary: An example of the description of a Course
-      value: Covers developing RESTful cloud services.
-    CoursePrerequisites:
-      summary: An example of the prerequisites of a Course
-      value: A minimum grade of C is required in CS 290 and CS 261.
-    CourseRestriction:
-      summary: An example of the restriction code of a Course
-      value: 1
-    Email:
-      summary: An example of an email
-      value: email@example.com
-    FirstName:
-      summary: An example of a first name
-      value: John
-    Id:
-      summary: An example of a unique identifier
-      value: 72
-    LastName:
-      summary: An example of a last name
-      value: Doe
-    NotificationType:
-      summary: An example of the type of a Notification
-      value: 1
-    PlanName:
-      summary: An example of the name of an applied Plan
-      value: My AI plan
-    PlanStatus:
-      summary: An example of the status code of an applied Plan
-      value: 3
-    Text:
-      summary: An example of a text content
-      value: The quick brown fox jumps over the lazy dog.
-    UserRole:
-      summary: An example of the role code of a User
-      value: 1
-    UtcTime:
-      summary: An example of a time value in UTC format
-      value: '2020-12-31 23:59:59'
