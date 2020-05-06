@@ -787,6 +787,42 @@ components:
         userId:
           $ref: '#/components/schemas/User/properties/userId'
 
+    PlanAdvisor:
+      description: >
+        An object containing extended information about an applied Plan,
+        including the Plan's information and the list of advisors working on
+        the Plan
+      type: object
+      required:
+        - planId
+        - status
+        - planName
+        - studentId
+        - created
+        - lastUpdated
+        - advisors
+      properties:
+        planId:
+          $ref: '#/components/schemas/Plan/properties/planId'
+        status:
+          $ref: '#/components/schemas/Plan/properties/status'
+        planName:
+          $ref: '#/components/schemas/Plan/properties/planName'
+        studentId:
+          $ref: '#/components/schemas/Plan/properties/studentId'
+        created:
+          $ref: '#/components/schemas/Plan/properties/created'
+        lastUpdated:
+          $ref: '#/components/schemas/Plan/properties/lastUpdated'
+        advisors:
+          description: A list of names of advisors working on the Plan
+          type: array
+          minItems: 0
+          items:
+            type: string
+            minLength: 1
+            example: John Doe
+
     PlanSelectedCourse:
       description: >
         An object containing compact information about a selected Course in an
@@ -1448,7 +1484,7 @@ components:
                 description: The list of User's Plans
                 type: array
                 items:
-                  $ref: '#/components/schemas/Plan'
+                  $ref: '#/components/schemas/PlanAdvisor'
 
     User_GET_200:
       description: User found
