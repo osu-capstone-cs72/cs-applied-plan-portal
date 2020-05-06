@@ -6,12 +6,15 @@ import {css, jsx} from "@emotion/core";
 function Course(props) {
 
   const style = css`
-    margin-bottom: 1rem;
-    background: #f4f2f1;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-right: 1rem;
-    
+
+    & {
+      margin-bottom: 1rem;
+      background: #f4f2f1;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-right: 1rem;
+    }
+
     .add-button {
       display: inline-block;
       margin-left: auto;
@@ -26,11 +29,37 @@ function Course(props) {
     details summary {
       cursor: pointer;
       height: unset;
+      width: 100%;
       display: inline-flex;
       flex-direction: row;
       align-items: center;
-      width: 100%;
       user-select: none;
+    }
+
+    summary+p {
+      margin-top: 1rem;
+    }
+
+
+    details summary::-webkit-details-marker {
+      display:none;
+    }
+
+    summary::-moz-list-bullet {
+      list-style-type: none;
+      display: block;
+    }
+
+    details summary:before {
+      content: '⯈';
+      display: inline-block;
+      padding: 0 5px 5px 0;
+    }
+
+    details[open] summary:before {
+      content: '⯆';
+      display: inline-block;
+      padding: 0 5px 5px 0;
     }
 
     .add-button {
@@ -58,10 +87,6 @@ function Course(props) {
     .course-code {
       color: var(--color-gray-400);
       font-weight: normal;
-    }
-
-    summary+p {
-      margin-top: 1rem;
     }
 
     p:last-child {
