@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {useEffect, useState} from "react";
-import NavBar from "../navbar/Navbar";
+import Navbar from "../navbar/Navbar";
 import {getProfile} from "../../utils/authService";
 import {formatTime} from "../../utils/formatTime";
 import Advisor from "./Advisor";
@@ -242,7 +242,7 @@ function StudentHome() {
     return (
       <div id="student-home-page" css={style}>
         <PageSpinner loading={loading} />
-        <NavBar />
+        <Navbar currentPlan={0} />
 
         <div id="student-home-container">
           <div id="student-home-contents-container">

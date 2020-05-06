@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import NavBar from "../navbar/Navbar";
+import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
 import FindPlans from "./FindPlans";
@@ -201,7 +201,7 @@ function AdvisorHome() {
   return (
     <div id="advisor-home-page" css={style}>
       <PageSpinner loading={loading} />
-      <NavBar />
+      <Navbar currentPlan={0} />
 
       <div id="advisor-home-container">
         <div id="advisor-home-contents-container">

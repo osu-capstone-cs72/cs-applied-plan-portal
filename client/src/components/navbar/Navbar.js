@@ -9,8 +9,9 @@ import History from "./History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
+import PropTypes from "prop-types";
 
-function Navbar() {
+function Navbar(props) {
 
   // role and function to set role, default to 0 (Student)
   const [role, setRole] = useState(0);
@@ -95,7 +96,7 @@ function Navbar() {
         <p className="osu-logo">OSU CS Applied Plan Portal</p>
       </Link>
       <div className="right-container">
-        {role ? <History /> : null}
+        {role ? <History currentPlan={props.currentPlan}/> : null}
         <Notifications />
         {role === 2 ? (
           <Link to={"/manageRoles"}>
@@ -116,3 +117,7 @@ function Navbar() {
 
 }
 export default withRouter(Navbar);
+
+Navbar.propTypes = {
+  currentPlan: PropTypes.number
+};
