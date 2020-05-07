@@ -1,7 +1,7 @@
 // File: index.js
 // Description: handles all API routing
 
-require("path");
+const path = require("path");
 const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
@@ -37,8 +37,14 @@ app.use("/api/course", require("./course"));
 app.use("/api/plan", require("./plan"));
 app.use("/api/user", require("./user"));
 
-// statically serve files from the public directory
-app.use(express.static("src/public"));
+// statically serve files from the React app
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// test API server
+app.get("/api/test", (req, res) => {
+  console.log("200: API test route successful\n");
+  res.status(200).send({message: "API test route successful"});
+});
 
 // everything else gets a 404 error
 app.get("/api/*", (req, res) => {
