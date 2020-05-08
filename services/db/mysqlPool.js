@@ -11,7 +11,7 @@ const mysqlPassword = process.env.SQL_PASSWORD;
 const mysqlDatabase = process.env.SQL_DB_NAME;
 
 // create a MySQL resource pool
-const MAX_CONNECTIONS = 25;
+const MAX_CONNECTIONS = 100;
 const pool = mysql.createPool({
   port: mysqlPort,
   host: mysqlHost,
