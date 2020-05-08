@@ -162,7 +162,7 @@ function StudentHome() {
       const profile = getProfile();
       const userId = profile.userId;
 
-      const getUrl = `/api/test`;
+      const getUrl = `/api/testdb`;
 
       let obj = [];
 
@@ -173,10 +173,10 @@ function StudentHome() {
         if (!ignore) {
 
           if (results.ok) {
+
             obj = await results.json();
 
-            alert("GOOD");
-            alert(obj);
+            alert(obj.userId);
 
           } else {
             // we got a bad status code
