@@ -78,7 +78,10 @@ export function logout() {
 export function login() {
 
   // redirect to OSU login page
-  const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+  let server = `${process.env.REACT_APP_API_HOST}`;
+  if (process.env.ENV !== "PRODUCTION") {
+    server += `:${process.env.REACT_APP_API_PORT}`;
+  }
   window.location.href = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
@@ -86,12 +89,15 @@ export function login() {
     // callback URL for CAS
     query: {
       service: url.format({
-        protocol: "http",
+        protocol: process.env.ENV === "PRODUCTION" ? "https" : "http",
         host: server,
         pathname: "/api/user/login",
         // callback URL has its own query string
         query: {
-          target: "http://localhost:5000"
+          target: url.format({
+            protocol: process.env.ENV === "PRODUCTION" ? "https" : "http",
+            host: server
+          })
         }
       })
     }
