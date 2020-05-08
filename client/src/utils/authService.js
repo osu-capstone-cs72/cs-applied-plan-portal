@@ -7,44 +7,49 @@ import validator from "validator";
 // Returns an object containing the userId and the role of the user.
 // On error returns a student with a user ID of 0.
 export function getProfile() {
-
-  try {
-
-    // parse the cookie included in document; must string-coerce it because
-    // cookie.parse() throws on non-string arguments
-    const cookieObj = cookie.parse(`${document.cookie}`);
-
-    // ensure the parsed cookies are a JS object (it should always be)
-    if (cookieObj !== Object(cookieObj)) {
-      throw new Error("Cookies are not a valid JS object");
-    }
-
-    // ensure that the userId and role cookies exist
-    if (!cookieObj.userId || !cookieObj.role) {
-      throw new Error("User ID or role cookie not set");
-    }
-
-    // ensure userId and role are non-negative integers
-    if (!validator.isInt(cookieObj.userId + "") ||
-        !validator.isInt(cookieObj.role + "")) {
-      throw new Error("Negative user ID or role");
-    }
-
-    // success case; return an object containing userId and role in integers
+  if (process.env.TEST_NO_AUTH === 1 || process.env.TEST_NO_AUTH === "1") {
+    // temporarily skip auth until official CAS service is resolved
     return {
-      userId: validator.toInt(cookieObj.userId),
-      role: validator.toInt(cookieObj.role)
-    };
-
-  } catch (err) {
-
-    // return an invalid user
-    console.error(err);
-    return {
-      userId: 0,
+      userId: process.env.TEST_NO_AUTH_USERID,
       role: 0
     };
+  } else {
+    try {
+      // parse the cookie included in document; must string-coerce it because
+      // cookie.parse() throws on non-string arguments
+      const cookieObj = cookie.parse(`${document.cookie}`);
 
+      // ensure the parsed cookies are a JS object (it should always be)
+      if (cookieObj !== Object(cookieObj)) {
+        throw new Error("Cookies are not a valid JS object");
+      }
+
+      // ensure that the userId and role cookies exist
+      if (!cookieObj.userId || !cookieObj.role) {
+        throw new Error("User ID or role cookie not set");
+      }
+
+      // ensure userId and role are non-negative integers
+      if (
+        !validator.isInt(cookieObj.userId + "") ||
+        !validator.isInt(cookieObj.role + "")
+      ) {
+        throw new Error("Negative user ID or role");
+      }
+
+      // success case; return an object containing userId and role in integers
+      return {
+        userId: validator.toInt(cookieObj.userId),
+        role: validator.toInt(cookieObj.role),
+      };
+    } catch (err) {
+      // return an invalid user
+      console.error(err);
+      return {
+        userId: 0,
+        role: 0,
+      };
+    }
   }
 }
 
