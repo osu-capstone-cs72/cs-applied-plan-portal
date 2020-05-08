@@ -37,20 +37,6 @@ app.use("/api/course", require("./course"));
 app.use("/api/plan", require("./plan"));
 app.use("/api/user", require("./user"));
 
-// a simple route to test API server's response
-app.get("/api/test", (req, res) => {
-  console.log("200: API server running\n");
-  res.status(200).send({message: "API server running"});
-});
-
-app.get("/api/testdb", async (req, res) => {
-  const sql = "SELECT * FROM User WHERE userId = ?";
-  const {pool} = require("../services/db/mysqlPool");
-  const results = await pool.query(sql, 72727272727);
-
-  res.status(200).send(results[0][0]);
-});
-
 // statically serve files from the React app if in production mode
 if (process.env.ENV === "PRODUCTION") {
   app.use(express.static(path.join(__dirname, "../client/build")));
