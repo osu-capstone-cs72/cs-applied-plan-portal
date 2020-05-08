@@ -37,19 +37,24 @@ app.use("/api/course", require("./course"));
 app.use("/api/plan", require("./plan"));
 app.use("/api/user", require("./user"));
 
-// statically serve files from the React app
-app.use(express.static(path.join(__dirname, "client/build")));
-
-// test API server
+// a simple route to test API server's response
 app.get("/api/test", (req, res) => {
-  console.log("200: API test route successful\n");
-  res.status(200).send({message: "API test route successful"});
+  console.log("200: API server running\n");
+  res.status(200).send({message: "API server running"});
 });
 
-// everything else gets a 404 error
-app.get("/api/*", (req, res) => {
-  console.error("404: File not found\n");
-  res.status(404).send({error: "Not Found"});
-});
+// statically serve files from the React app if in production mode
+if (process.env.ENV === "PRODUCTION") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  });
+} else {
+  // if on other modes, everything else gets a 404 error
+  app.get("/api/*", (req, res) => {
+    console.error("404: File not found\n");
+    res.status(404).send({error: "Not Found"});
+  });
+}
 
 module.exports = app;

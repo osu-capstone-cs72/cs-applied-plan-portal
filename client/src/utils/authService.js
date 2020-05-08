@@ -91,7 +91,7 @@ export function login() {
         pathname: "/api/user/login",
         // callback URL has its own query string
         query: {
-          target: "http://localhost:3000/"
+          target: "http://localhost:5000"
         }
       })
     }
