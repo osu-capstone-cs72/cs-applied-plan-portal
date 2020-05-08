@@ -43,7 +43,7 @@ app.get("/api/test", (req, res) => {
   res.status(200).send({message: "API server running"});
 });
 
-app.get("/api/testDb", async (req, res) => {
+app.get("/api/testdb", async (req, res) => {
   const sql = "SELECT * FROM User WHERE userId = ?";
   const {pool} = require("../services/db/mysqlPool");
   const results = await pool.query(sql, 72727272727);
