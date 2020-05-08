@@ -43,6 +43,14 @@ app.get("/api/test", (req, res) => {
   res.status(200).send({message: "API server running"});
 });
 
+app.get("/api/testDb", async (req, res) => {
+  const sql = "SELECT * FROM User WHERE userId = ?";
+  const {pool} = require("../services/db/mysqlPool");
+  const results = await pool.query(sql, 72727272727);
+
+  res.status(200).send(results[0][0]);
+});
+
 // statically serve files from the React app if in production mode
 if (process.env.ENV === "PRODUCTION") {
   app.use(express.static(path.join(__dirname, "../client/build")));
