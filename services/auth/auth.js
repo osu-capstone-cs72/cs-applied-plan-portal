@@ -127,6 +127,8 @@ function casValidateUser(casValidationUrl) {
             Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
             serviceResponse["cas:authenticationSuccess"].length === 1 &&
             !serviceResponse["cas:authenticationFailure"]) {
+          console.log("CAS validation successful\n");
+
           // resolve with the logged in User's information
           resolve(serviceResponse["cas:authenticationSuccess"][0]);
         } else {
