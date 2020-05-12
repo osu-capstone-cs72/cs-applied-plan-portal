@@ -3,8 +3,11 @@
 
 console.log("Server JavaScript start");
 
+const {Env} = require("./entities/environment");
+
 // setup database connection and routing
-if (process.env.ENV !== "PRODUCTION") {
+if (process.env.ENV !== Env.production) {
+  // use the .env file if not running on production
   require("dotenv").config();
 }
 const pool = require("./services/db/mysqlPool").pool;

@@ -5,6 +5,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
+const {Env} = require("../entities/environment");
+
 const app = express();
 
 app.set("env", process.env.ENV);
@@ -38,13 +40,13 @@ app.use("/api/plan", require("./plan"));
 app.use("/api/user", require("./user"));
 
 // statically serve files from the React app if in production mode
-if (process.env.ENV === "PRODUCTION") {
+if (process.env.ENV === Env.production) {
   app.use(express.static(path.join(__dirname, "../client/build")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../client/build/index.html"));
   });
 } else {
-  // if on other modes, everything else gets a 404 error
+  // if on other environments, everything else gets a 404 error
   app.get("/api/*", (req, res) => {
     console.error("404: File not found\n");
     res.status(404).send({error: "Not Found"});

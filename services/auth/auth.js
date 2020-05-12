@@ -10,11 +10,12 @@ const xml2js = require("xml2js");
 const CryptoJS = require("crypto-js");
 
 const {userSchema} = require("../validation/schemaValidation");
+const {Env} = require("../../entities/environment");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const CSRF_SECRET_KEY = process.env.CSRF_SECRET_KEY;
 const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
-const COOKIE_SECURED = process.env.ENV === "PRODUCTION";  // secured cookie in production
+const COOKIE_SECURED = process.env.ENV === Env.production;  // secured cookie in production
 
 // Generates an auth token for a specific User with the provided ID.
 // Token is a JSON Web Token which expires in 24 hours.
@@ -39,10 +40,74 @@ exports.generateAuthToken = generateAuthToken;
 // - No need to check the type and value range of `userId` because the
 //   assertions in this function already does that job.
 function requireAuth(req, res, next) {
-  req.auth = {
-    userId: 82757579527
-  };
-  next();
+  try {
+    // first of all, clear the field that will be used for holding the payload
+    req.auth = {};
+
+    // parse the cookie included in the request; must string-coerce it because
+    // cookie.parse() throws on non-string arguments
+    const cookieObj = cookie.parse(`${req.headers.cookie}`);
+
+    // ensure the parsed cookie is a JS object (it should always be after parse)
+    assert(cookieObj === Object(cookieObj), "No cookie provided with request");
+
+    // ensure that the user is aware of their role and user ID
+    assert(cookieObj.role, "No role cookie provided with request");
+    assert(cookieObj.userId, "No userId cookie provided with request");
+
+    // ignore auth cookies if we are running unit tests
+    if (process.env.ENV !== Env.testing) {
+
+      // ensure that authentication cookies are sent with the request
+      assert(cookieObj.auth, "No auth cookie provided with request");
+      assert(cookieObj.csrf, "No CSRF cookie provided with request");
+
+      // decrypt the CSRF
+      const bytes = CryptoJS.AES.decrypt(cookieObj.csrf, CSRF_SECRET_KEY);
+      const originalCsrf = bytes.toString(CryptoJS.enc.Utf8);
+
+      // ensure that the auth and decrypted CSRF match
+      assert(cookieObj.auth === originalCsrf, "Auth and CSRF cookies conflict");
+
+      const token = cookieObj.auth;
+
+      // use the jwt service to verify the token
+      // this function call throws an error if token is invalid
+      const payload = jwt.verify(token, JWT_SECRET_KEY);
+
+      // ensure the retrieved `sub` (i.e. User's ID) satisfies the schema or
+      // throw a schema validation error otherwise
+      assert(
+        validator.isInt(payload.sub + "", {
+          min: userSchema.userId.minValue,
+          max: userSchema.userId.maxValue
+        }),
+        userSchema.userId.getErrorMessage()
+      );
+
+      // if verified, add an extra property to the request object
+      req.auth = {
+        userId: payload.sub
+      };
+
+    } else {
+
+      // in testing mode we just accept the sent user ID
+      req.auth = {
+        userId: cookieObj.userId
+      };
+
+    }
+
+    // route to the next middleware
+    next();
+
+  } catch (err) {
+    console.error("Authentication error:", err);
+    res.status(401).send({
+      error: "Missing or invalid credentials"
+    });
+  }
 }
 exports.requireAuth = requireAuth;
 

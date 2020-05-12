@@ -6,6 +6,7 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
+const {Env} = require("../entities/environment");
 const {Role} = require("../entities/role");
 const userModel = require("../models/user");
 const {
@@ -148,10 +149,11 @@ app.get("/login", async (req, res) => {
   });
 
   // send the ticket to this URL to validate it against CAS
+  const casIdp = (process.env.ENV === Env.production) ? "idp" : "idp-dev";
   const casValidationUrl = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
-    pathname: "/idp-dev/profile/cas/serviceValidate",
+    pathname: `/${casIdp}/profile/cas/serviceValidate`,
     query: {
       ticket: ticket,
       service: callbackUrl
