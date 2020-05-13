@@ -1,7 +1,7 @@
 import cookie from "cookie";
 import url from "url";
 import validator from "validator";
-import Env from "./environment";
+import {Env} from "./environment";
 
 // Parses cookies and checks whether the user is logged in.
 //
