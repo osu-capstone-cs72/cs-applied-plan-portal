@@ -1,10 +1,12 @@
 // File: index.js
 // Description: handles all API routing
 
-require("path");
+const path = require("path");
 const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
+const {Env} = require("../entities/environment");
+
 const app = express();
 
 app.set("env", process.env.ENV);
@@ -37,13 +39,18 @@ app.use("/api/course", require("./course"));
 app.use("/api/plan", require("./plan"));
 app.use("/api/user", require("./user"));
 
-// statically serve files from the public directory
-app.use(express.static("src/public"));
-
-// everything else gets a 404 error
-app.get("/api/*", (req, res) => {
-  console.error("404: File not found\n");
-  res.status(404).send({error: "Not Found"});
-});
+// statically serve files from the React app if in production mode
+if (process.env.ENV === Env.production) {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  });
+} else {
+  // if on other environments, everything else gets a 404 error
+  app.get("/api/*", (req, res) => {
+    console.error("404: File not found\n");
+    res.status(404).send({error: "Not Found"});
+  });
+}
 
 module.exports = app;

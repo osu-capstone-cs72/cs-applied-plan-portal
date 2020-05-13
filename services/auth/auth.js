@@ -10,11 +10,12 @@ const xml2js = require("xml2js");
 const CryptoJS = require("crypto-js");
 
 const {userSchema} = require("../validation/schemaValidation");
+const {Env} = require("../../entities/environment");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const CSRF_SECRET_KEY = process.env.CSRF_SECRET_KEY;
 const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
-const COOKIE_SECURED = process.env.ENV === "PRODUCTION";  // secured cookie in production
+const COOKIE_SECURED = process.env.ENV === Env.production;  // secured cookie in production
 
 // Generates an auth token for a specific User with the provided ID.
 // Token is a JSON Web Token which expires in 24 hours.
@@ -39,10 +40,10 @@ exports.generateAuthToken = generateAuthToken;
 // - No need to check the type and value range of `userId` because the
 //   assertions in this function already does that job.
 function requireAuth(req, res, next) {
-  // first of all, clear the field that will be used for holding the payload
-  req.auth = {};
-
   try {
+    // first of all, clear the field that will be used for holding the payload
+    req.auth = {};
+
     // parse the cookie included in the request; must string-coerce it because
     // cookie.parse() throws on non-string arguments
     const cookieObj = cookie.parse(`${req.headers.cookie}`);
@@ -55,7 +56,7 @@ function requireAuth(req, res, next) {
     assert(cookieObj.userId, "No userId cookie provided with request");
 
     // ignore auth cookies if we are running unit tests
-    if (process.env.ENV !== "TESTING") {
+    if (process.env.ENV !== Env.testing) {
 
       // ensure that authentication cookies are sent with the request
       assert(cookieObj.auth, "No auth cookie provided with request");
@@ -126,6 +127,8 @@ function casValidateUser(casValidationUrl) {
             Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
             serviceResponse["cas:authenticationSuccess"].length === 1 &&
             !serviceResponse["cas:authenticationFailure"]) {
+          console.log("CAS validation successful\n");
+
           // resolve with the logged in User's information
           resolve(serviceResponse["cas:authenticationSuccess"][0]);
         } else {

@@ -1,13 +1,13 @@
 import cookie from "cookie";
 import url from "url";
 import validator from "validator";
+import {Env} from "./environment";
 
 // Parses cookies and checks whether the user is logged in.
 //
 // Returns an object containing the userId and the role of the user.
 // On error returns a student with a user ID of 0.
 export function getProfile() {
-
   try {
 
     // parse the cookie included in document; must string-coerce it because
@@ -66,10 +66,11 @@ export function logout() {
   document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to the CAS logout page
+  const casIdp = (process.env.REACT_APP_ENV === Env.production) ? "idp" : "idp-dev";
   window.location.href = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
-    pathname: "/idp-dev/profile/cas/logout",
+    pathname: `/${casIdp}/profile/cas/logout`,
   });
 
 }
@@ -78,20 +79,30 @@ export function logout() {
 export function login() {
 
   // redirect to OSU login page
-  const server = `${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}`;
+  let server = `${process.env.REACT_APP_API_HOST}`;
+  if (process.env.REACT_APP_ENV !== Env.production) {
+    // specify API server's port only if not on production
+    server += `:${process.env.REACT_APP_API_PORT}`;
+  }
+  const thisHost = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`;
+  const protocol = (process.env.REACT_APP_ENV === Env.production) ? "https" : "http";
+  const casIdp = (process.env.REACT_APP_ENV === Env.production) ? "idp" : "idp-dev";
   window.location.href = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
-    pathname: "/idp-dev/profile/cas/login",
+    pathname: `/${casIdp}/profile/cas/login`,
     // callback URL for CAS
     query: {
       service: url.format({
-        protocol: "http",
+        protocol: protocol,
         host: server,
         pathname: "/api/user/login",
         // callback URL has its own query string
         query: {
-          target: "http://localhost:3000/"
+          target: url.format({
+            protocol: protocol,
+            host: (process.env.REACT_APP_ENV === Env.production) ? server : thisHost
+          })
         }
       })
     }

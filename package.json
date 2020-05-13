@@ -30,13 +30,13 @@
     "wait-on": "^4.0.2"
   },
   "scripts": {
-    "start": "ENV=PRODUCTION concurrently \"npm run server\" \"npm run client\"",
-    "dev": "ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    "start": "node server.js",
+    "dev": "ENV=DEVELOPMENT REACT_APP_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
     "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles",
     "testReact": "cd client && npm test a",
-    "server": "node server.js --ignore client/*",
     "serverDev": "nodemon server.js --ignore client/*",
-    "client": "cd client && npm start"
+    "client": "cd client && npm start",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [

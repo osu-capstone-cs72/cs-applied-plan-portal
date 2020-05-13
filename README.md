@@ -1,71 +1,79 @@
 # OSU CS Applied Plan Portal
 
-This is a web app that streamlines the pro-school application process for OSU Applied-CS students and advisors.
+This is a web app that streamlines the pro-school application process for OSU Applied-CS students and advisors. The live version of the app is deployed on [Heroku](https://applied-plan-portal.herokuapp.com).
 
-## Prerequisites
+## Deploying Locally
 
-- A shell to run commands
-- Node.js version at least 12.x
-- Chrome version at least 80.x or Firefox version at least 75.x
-- Access to the Oregon State University network
+### Prerequisites
 
-## Installation and Setup
+- A shell to run commands. [Bash](https://www.gnu.org/software/bash) is recommended. For Linux, it should already be installed. For Windows, [Git Bash](https://gitforwindows.org) is recommended.
+- [Node.js](https://nodejs.org/en) version at least 12.x
+- [Chrome](https://www.google.com/chrome/?brand=CHBD&gclid=EAIaIQobChMIiO2K4_Ov6QIVsiCtBh16Ug0nEAAYASABEgI39PD_BwE&gclsrc=aw.ds) version at least 80.x or [Firefox](https://www.mozilla.org/en-US/firefox/new) version at least 75.x
+- [MySQL](https://dev.mysql.com/downloads) version at least 8.0
+
+### Installation and Setup
 
 1. Download the contents of the repo to your machine by running the following
-command with your preferred shell.
+command in the shell:
 
-        git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
+       git clone https://github.com/osu-capstone-cs72/cs-applied-plan-portal.git
 
+2. Add a file named `.env` to the ROOT directory of the project. Copy the following block to the file:
 
-2. Download the following .env file and put it in the ROOT directory of the repo.
+       CSRF_SECRET_KEY='foobar'
+       JWT_SECRET_KEY='foobar'
+       PORT=5000
+       SQL_DB_NAME='foobar'
+       SQL_HOST='foobar'
+       SQL_PASSWORD='foobar'
+       SQL_PORT=3306
+       SQL_USER='foobar'
 
-      https://drive.google.com/file/d/1epze7tEpO4yoF5zyID8DB5dFScxRR6Ld/view?usp=sharing
+3. Make change to the file, replacing all `foobar` strings with appropriate values. The meaning of these variables are explained below:
 
-   Download the following .env file and put it in the CLIENT directory of the repo.
+    `CSRF_SECRET_KEY` holds the secret key for Express to make the app more secured against Cross-site scripting attack. We recommend generating a password of at least 20 characters with all types of characters as the value of this environment variable.
 
-      https://drive.google.com/file/d/1Cf0WDgirYUqg43qTEzD0RrC52VfwNDK2/view?usp=sharing
+    `JWT_SECRET_KEY` holds the secret key Express to parse JSON web tokens which holds login credentials. We recommend generating a password of at least 20 characters with all types of characters as the value of this environment variable.
 
-   **NOTE:**
-   You must be logged into your Oregon State University email and have been given express permission to access these files.
-   If you are unable to access these files and you believe that you should have permission, please send an email to
-   thomasza@oregonstate.edu and ask to be given permission.
+    `PORT` holds the port that the Express server listens to when runs. The value must be `5000`.
 
+    `SQL_DB_NAME`, `SQL_HOST`, `SQL_PASSWORD`, `SQL_PORT`, and `SQL_USER` hold the database name, the hostname, the password, the port, and the username, respectively, of the required MySQL connection to run the app. We default `SQL_PORT` to `3306`. You should configure these 5 environment variables to match with your MySQL connection.
 
-3. From the root directory of this repo, run
+4. Add another file, also named `.env`, but to the `client/` directory of the project. Copy the following block to the file:
 
-        chmod +x install.sh && ./install.sh
+       REACT_APP_API_HOST='localhost'
+       REACT_APP_API_PORT=5000
+       REACT_APP_HOST='localhost'
+       REACT_APP_PORT=3000
 
-   Please follow the instructions produced by the script to install the necessary software and dependencies.
+5. The content of this file should not be changed. The meaning of these variables are explained below:
 
+    `REACT_APP_API_HOST` and `REACT_APP_API_PORT` hold the hostname and the port, respectively, of the Express server that runs alongside the React server in the `client/` directory.
 
-4. Make sure the port 3000 and the port specified by the `PORT` (5000 by default) environment variable are available to be used.
+    `REACT_APP_HOST` and `REACT_APP_PORT` hold the hostname of the port, respectively, of this React server in the `client/` directory.
 
+    **Note**: All environment variables in this file must be prefixed by `REACT_APP_` to be recognized by Create React App.
 
-5. To access the database referenced in the API environment file, you will need to be connected to the OSU network. If you are on campus, you may not need to perform any further action. If you are away from campus, use a VPN to connect to sds.oregonstate.edu using your ONID password.
+6. From the root directory of this repo, run
 
+       chmod +x install.sh && ./install.sh
 
-6. To start the application, from the root directory of this repo, run
+    Please follow the instructions produced by the script to check and install the necessary software and dependencies.
 
-        npm run dev
+7. Make sure the port 3000 and the port specified by the `PORT` environment variable are available to be used.
+
+8. Make sure your MySQL database is ready to be connected.
+
+9. To start the application, from the root directory of this repo, run
+
+       npm run dev
 
 ## Testing
 
 Run the following command to perform unit and integration testing for plan API calls
 
-        npm run testAPI
+    npm run testAPI
 
 Run the following command to perform unit testing for the React client code (using Jest's snapshot testing)
 
-        npm run testReact
-
-## Resources
-
-Git Bash for Windows: https://gitforwindows.org/
-
-Node.js download: https://nodejs.org/en/
-
-Chrome download: https://www.google.com/chrome
-
-Firefox download: https://www.mozilla.org/en-US/firefox/new/
-
-Documentation for connecting to OSU's network using a VPN: https://is.oregonstate.edu/service/vpn
+    npm run testReact

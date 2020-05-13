@@ -6,6 +6,7 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
+const {Env} = require("../entities/environment");
 const {Role} = require("../entities/role");
 const userModel = require("../models/user");
 const {
@@ -139,7 +140,7 @@ app.get("/login", async (req, res) => {
   // the callback URL, used as a query of the URL of the second request sent to
   // CAS to validate the ticket received from the first request
   const callbackUrl = url.format({
-    protocol: req.protocol,
+    protocol: (process.env.ENV === Env.production) ? "https" : "http",
     host: req.get("host"),
     pathname: url.parse(req.originalUrl).pathname,  // this route
     query: {
@@ -148,15 +149,18 @@ app.get("/login", async (req, res) => {
   });
 
   // send the ticket to this URL to validate it against CAS
+  const casIdp = (process.env.ENV === Env.production) ? "idp" : "idp-dev";
   const casValidationUrl = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
-    pathname: "/idp-dev/profile/cas/serviceValidate",
+    pathname: `/${casIdp}/profile/cas/serviceValidate`,
     query: {
       ticket: ticket,
       service: callbackUrl
     }
   });
+
+  console.log(`Validating the user via ${casValidationUrl}\n`);
 
   try {
     // validate the user via ONID's CAS and get back object containing
@@ -172,13 +176,14 @@ app.get("/login", async (req, res) => {
 
       // if the User is not already in the database, create one for them
       if (!existingUser) {
-        // construct a new User object
+        // construct a new User object and force student role on create
+        // changes in roles must be approved by the administrator(s)
         const newUser = {
           userId: osuuid,
           firstName: userAttributes["cas:givenName"][0],
           lastName: userAttributes["cas:lastname"][0],
           email: userAttributes["cas:osuprimarymail"][0],
-          role: Role[userAttributes["cas:eduPersonPrimaryAffiliation"][0]]
+          role: Role.student
         };
 
         // insert the new User to the database

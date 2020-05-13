@@ -182,7 +182,6 @@ function StudentHome() {
               if (obj.plans[i].advisors !== null) {
 
                 // split the advisor string into an array of full names
-                // obj.plans[i].advisors = obj.plans[i].advisors.split(",");
                 const fullNames = obj.plans[i].advisors.split(",");
                 obj.plans[i].advisors = [];
 
