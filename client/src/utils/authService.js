@@ -84,6 +84,7 @@ export function login() {
     // specify API server's port only if not on production
     server += `:${process.env.REACT_APP_API_PORT}`;
   }
+  const thisHost = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`;
   const protocol = (process.env.REACT_APP_ENV === Env.production) ? "https" : "http";
   const casIdp = (process.env.REACT_APP_ENV === Env.production) ? "idp" : "idp-dev";
   window.location.href = url.format({
@@ -100,7 +101,7 @@ export function login() {
         query: {
           target: url.format({
             protocol: protocol,
-            host: server
+            host: (process.env.REACT_APP_ENV === Env.production) ? server : thisHost
           })
         }
       })
