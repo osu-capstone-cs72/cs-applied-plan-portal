@@ -66,7 +66,7 @@ export function logout() {
   document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to the CAS logout page
-  const casIdp = (process.env.ENV === Env.production) ? "idp" : "idp-dev";
+  const casIdp = (process.env.REACT_APP_ENV === Env.production) ? "idp" : "idp-dev";
   window.location.href = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
