@@ -6,6 +6,7 @@ import SelectRole from "./SelectRole";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../general/LoadMoreButton";
 
+// search results for a user search
 function SearchResults(props) {
 
   const style = css`

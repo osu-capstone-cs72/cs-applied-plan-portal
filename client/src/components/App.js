@@ -97,6 +97,7 @@ const globalStyles = css`
   }
 `;
 
+// handle all application URL page routing
 function App() {
 
   return (

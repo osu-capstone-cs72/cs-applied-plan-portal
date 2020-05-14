@@ -9,6 +9,7 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {login} from "../../utils/authService";
 
+// advisor homepage
 function AdvisorHome() {
 
   const [mounted, setMounted] = useState(false);

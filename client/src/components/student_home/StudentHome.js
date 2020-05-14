@@ -12,6 +12,7 @@ import {statusText} from "../../utils/renderStatus";
 
 import {css, jsx} from "@emotion/core";
 
+// student homepage
 function StudentHome() {
 
   const [pageError, setPageError] = useState(0);

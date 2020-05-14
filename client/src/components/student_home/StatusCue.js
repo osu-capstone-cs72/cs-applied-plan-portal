@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {statusColor} from "../../utils/renderStatus";
 
+// colored cue that shows the current status of a plan
 function StatusCue(props) {
 
   const iconColor = statusColor(props.status);

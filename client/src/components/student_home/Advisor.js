@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import {useEffect, useState} from "react";
 import {hashToColor} from "../../utils/hashToColor";
 
+// coin icon that shows an advisors name
 function Advisor(props) {
 
   const [initials, setInitials] = useState("");

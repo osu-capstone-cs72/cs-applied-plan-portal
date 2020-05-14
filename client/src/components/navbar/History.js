@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
+// dropdown menu that shows plan view history
 function History(props) {
 
   const [recentPlans, setRecentPlans] = useState([]);

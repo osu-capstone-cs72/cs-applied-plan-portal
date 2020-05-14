@@ -6,6 +6,7 @@ import {Link, useParams, withRouter} from "react-router-dom";
 import {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 
+// header bar that shows metadata about current plan
 function PlanMetadata(props) {
 
   const {planId} = useParams();

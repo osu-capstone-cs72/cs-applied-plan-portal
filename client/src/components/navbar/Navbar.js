@@ -11,6 +11,7 @@ import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 
+// application navigation bar
 function Navbar(props) {
 
   // role and function to set role, default to 0 (Student)

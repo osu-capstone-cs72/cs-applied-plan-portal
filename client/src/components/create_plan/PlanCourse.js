@@ -3,6 +3,7 @@
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 
+// a single selected course
 function PlanCourse(props) {
 
   const style = css`

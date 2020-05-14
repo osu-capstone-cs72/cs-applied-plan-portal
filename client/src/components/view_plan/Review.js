@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import {statusText} from "../../utils/renderStatus";
 import {formatTime} from "../../utils/formatTime";
 
+// a single review on a plan
 function Reviews(props) {
 
   const style = css`

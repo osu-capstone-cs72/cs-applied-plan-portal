@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import {useEffect} from "react";
 import PropTypes from "prop-types";
 
+// generic load more button
 function LoadMoreButton(props) {
 
   const style = css`

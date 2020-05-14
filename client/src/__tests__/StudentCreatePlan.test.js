@@ -6,7 +6,6 @@ import {MemoryRouter} from "react-router-dom";
 import renderer from "react-test-renderer";
 // import Cookies from "js-cookie";
 
-// import setCookie from "../utils/cookieInfo";
 import StudentCreatePlan from "../components/create_plan/StudentCreatePlan";
 
 // Enzyme.configure({adapter: new Adapter()});

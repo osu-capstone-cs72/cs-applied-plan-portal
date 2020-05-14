@@ -8,6 +8,7 @@ import PageInternalError from "./general/PageInternalError";
 import PropTypes from "prop-types";
 import {login} from "../utils/authService";
 
+// ensures that current user is logged in, otherwise redirect them to CAS login
 function Login() {
 
   const [redirect, setRedirect] = useState(0);

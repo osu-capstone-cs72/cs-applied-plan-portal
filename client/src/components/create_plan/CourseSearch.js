@@ -7,6 +7,7 @@ import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 
+// search form for courses
 function CourseContainer(props) {
 
   const [mounted, setMounted] = useState(false);

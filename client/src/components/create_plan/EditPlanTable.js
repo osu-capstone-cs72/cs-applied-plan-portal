@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import PlanCourse from "./PlanCourse";
 import {css, jsx} from "@emotion/core";
 
+// table showing all of the currently selected courses
 function EditPlanTable(props) {
 
   const style = css`

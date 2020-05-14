@@ -6,6 +6,7 @@ import {PropTypes} from "prop-types";
 import {formatRole} from "../../utils/formatRole";
 import {login} from "../../utils/authService";
 
+// dropdown menu for selecting a user's role
 function SelectRole(props) {
 
   const [updatedRole, setUpdatedRole] = useState(-1);
