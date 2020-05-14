@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import BounceLoader  from "react-spinners/BounceLoader";
 import PropTypes from "prop-types";
 
+// generic loading spinner
 function PageSpinner(props) {
 
   const style = css`

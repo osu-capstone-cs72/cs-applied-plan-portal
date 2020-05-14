@@ -8,6 +8,7 @@ import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import {loggedIn, getProfile} from "../utils/authService";
 
+// renders either student or advisor homepage depending on current user
 function Home(props) {
 
   const [loading] = useState(true);

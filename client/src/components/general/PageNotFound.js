@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 
+// 404 error code page
 function PageNotFound() {
 
   const style = css`

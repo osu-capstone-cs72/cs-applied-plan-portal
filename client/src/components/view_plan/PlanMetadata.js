@@ -6,6 +6,7 @@ import {Link, useParams, withRouter} from "react-router-dom";
 import {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 
+// header bar that shows metadata about current plan
 function PlanMetadata(props) {
 
   const {planId} = useParams();
@@ -136,11 +137,13 @@ function PlanMetadata(props) {
           <p className="field-type">Plan Status:</p>
           <p className="field-text">{statusText(props.status)}</p>
         </div>
+        {/*
         <div className="metadata-field button-field">
           <button id="print-plan-button" onClick={() => props.onPrint()}>
             Print Plan
           </button>
         </div>
+        */}
         {props.status === 1 || props.status === 2 ? (
           <div className="metadata-field button-field">
             <Link to={`/editPlan/${planId}`} id="edit-plan-link">

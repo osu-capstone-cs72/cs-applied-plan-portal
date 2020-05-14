@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
 
+// box that displays if similar plans have been accepted or rejected
 function ListSimilarPlans() {
 
   const {planId} = useParams();

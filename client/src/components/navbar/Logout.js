@@ -3,6 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import {logout} from "../../utils/authService";
 
+// logout button
 function Logout() {
 
   const style = css`

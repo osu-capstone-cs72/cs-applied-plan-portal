@@ -7,6 +7,7 @@ import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../general/LoadMoreButton";
 
+// search results for a plan search
 function SearchResults(props) {
 
   const style = css`

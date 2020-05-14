@@ -3,6 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
+// search form for finding users
 function FindUsers(props) {
 
   const style = css`

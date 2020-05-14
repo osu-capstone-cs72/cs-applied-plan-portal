@@ -16,6 +16,7 @@ import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
 import PHE from "print-html-element";
 
+// the view plan page
 function ViewPlan(props) {
 
   const [pageError, setPageError] = useState(0);

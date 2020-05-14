@@ -6,7 +6,6 @@ import {BrowserRouter as Router} from "react-router-dom";
 import renderer from "react-test-renderer";
 // import Cookies from "js-cookie";
 
-// import setCookie from "../utils/cookieInfo";
 import StudentHome from "../components/student_home/StudentHome";
 
 

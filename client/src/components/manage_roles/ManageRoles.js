@@ -9,6 +9,7 @@ import FindUsers from "./FindUsers";
 import SearchResults from "./SearchResults";
 import {login} from "../../utils/authService";
 
+// manage roles page
 export default function ManageRoles() {
 
   const [loading, setLoading] = useState(false);

@@ -4,6 +4,7 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {formatTime} from "../../utils/formatTime";
 
+// a single comment on a plan
 function Comment(props) {
 
   const style = css`

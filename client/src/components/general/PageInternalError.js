@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 
+// 500 error code page
 function PageInternalError() {
 
   const style = css`

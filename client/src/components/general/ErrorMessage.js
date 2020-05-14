@@ -3,6 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
+// generic error message container
 function ErrorMessage(props) {
 
   const style = css`

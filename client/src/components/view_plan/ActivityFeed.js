@@ -7,6 +7,7 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../general/LoadMoreButton";
 
+// shows comments and reviews for a plan
 function ActivityFeed(props) {
 
   const style = css`

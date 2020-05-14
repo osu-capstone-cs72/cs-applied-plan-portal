@@ -10,6 +10,7 @@ import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
 import {css, jsx} from "@emotion/core";
 
+// create plan page
 export default function StudentCreatePlan() {
 
   const [loading, setLoading] = useState(false);

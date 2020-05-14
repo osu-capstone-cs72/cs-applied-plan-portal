@@ -1,3 +1,7 @@
+# NOTE TO GRADER
+Code review responses can be found at
+./docs/Code_Review_Actions.pdf
+
 # OSU CS Applied Plan Portal
 
 This is a web app that streamlines the pro-school application process for OSU Applied-CS students and advisors. The live version of the app is deployed on [Heroku](https://applied-plan-portal.herokuapp.com).

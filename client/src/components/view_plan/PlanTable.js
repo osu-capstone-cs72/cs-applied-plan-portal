@@ -3,7 +3,7 @@
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 
-
+// table of all of the courses in the current plan
 function PlanTable(props) {
 
   const style = css`

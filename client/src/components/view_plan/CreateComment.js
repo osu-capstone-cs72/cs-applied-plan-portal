@@ -6,6 +6,7 @@ import {useParams} from "react-router-dom";
 import ErrorMessage from "../general/ErrorMessage";
 import {login} from "../../utils/authService";
 
+// comment creation text field
 function CreateComment(props) {
 
   const [newComment, setNewComment] = useState(true);

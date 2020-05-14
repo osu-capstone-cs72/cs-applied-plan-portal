@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Subject from "../../utils/subject";
 
+// course subject filter bar
 function FilterBar(props) {
 
   // keep track of changes to filter selection
