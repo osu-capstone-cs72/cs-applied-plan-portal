@@ -59,6 +59,7 @@ app.get("/search/:searchText/:filterValue", requireAuth, async (req, res) => {
     if (searchText === "*" && filterValue === "*") {
       console.error("400: Search too broad, please use the subject filter or search bar to narrow your results.\n");
       res.status(404).send({error: "Search too broad, please use the subject filter or search bar to narrow your results."});
+      return;
     }
 
     const results = await getCourse(searchText, filterValue);
