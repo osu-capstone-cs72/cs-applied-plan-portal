@@ -32,7 +32,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "ENV=DEVELOPMENT REACT_APP_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
-    "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles",
+    "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles --forceExit --maxWorkers=10",
     "testReact": "cd client && npm test a",
     "serverDev": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start",
