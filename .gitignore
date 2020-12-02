@@ -128,7 +128,7 @@ $RECYCLE.BIN/
 # ==============================================================================
 # Node modules, NPM debug log, and env file
 # ==============================================================================
-
+package-lock.json
 node_modules
 npm-debug.log
 *.env

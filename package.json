@@ -17,7 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.1.0",
     "needle": "^2.3.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "react-test-renderer": "^16.13.1",
     "validator": "^12.2.0",
     "xml2js": "^0.4.23"
@@ -30,13 +30,17 @@
     "wait-on": "^4.0.2"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "ENV=DEVELOPMENT REACT_APP_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    // "start": "node server.js",
+    "start": "cross-env NODE_ENV=production node app.js",
+    // "dev": "ENV=DEVELOPMENT REACT_APP_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run serverDev\" \"npm run client\"",
     "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles --forceExit --maxWorkers=10",
     "testReact": "cd client && npm test a",
     "serverDev": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    // "heroku-postbuild": "cd client && npm install && npm run build",
+    "installAll": "npm install && cd client && npm install",
+    "build": "cd client && npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [

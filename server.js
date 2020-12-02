@@ -3,7 +3,8 @@
 
 console.log("Server JavaScript start");
 
-const {Env} = require("./entities/environment");
+require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
+const { Env } = require("./entities/environment");
 
 // setup database connection and routing
 if (process.env.ENV !== Env.production) {
