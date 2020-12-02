@@ -131,7 +131,7 @@ $RECYCLE.BIN/
 package-lock.json
 node_modules
 npm-debug.log
-*.env
+
 *.env.test
 
 # ==============================================================================
