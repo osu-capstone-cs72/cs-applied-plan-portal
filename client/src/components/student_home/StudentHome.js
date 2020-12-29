@@ -9,6 +9,7 @@ import StatusCue from "./StatusCue";
 import PageSpinner from "../general/PageSpinner";
 import PageInternalError from "../general/PageInternalError";
 import {statusText} from "../../utils/renderStatus";
+import PlanSelect from "./PlanSelect";
 
 import {css, jsx} from "@emotion/core";
 
@@ -18,6 +19,7 @@ function StudentHome() {
   const [pageError, setPageError] = useState(0);
   const [plans, setPlans] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPlans, setShowPlans] = useState(false);
 
   const style = css`
 
@@ -287,8 +289,9 @@ function StudentHome() {
                 <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
               </div>
             }
-            <a href="createPlan" title="Create a plan" className="new-plan-button"></a>
-
+            {/* <a href="createPlan" title="Create a plan" className="new-plan-button"></a> */}
+            <button className="new-plan-button" onClick={() => setShowPlans(true)}></button>
+            <PlanSelect hidden={!showPlans} hidePlan={() => setShowPlans(false)}/>
           </div>
         </div>
 
