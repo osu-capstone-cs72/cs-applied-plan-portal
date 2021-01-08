@@ -58,34 +58,34 @@ function PlanSelect(props) {
                 </button>
             </div>
             
-            <button className="option" onClick={() => props.history.push("/createPlan")}>
+            <button className="option" onClick={() => props.history.push("/createPlan/1")}>
                 Artificial Intelligence
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/2")}>
                 Bioinformatics
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/3")}>
                 Business {"&"} Entrepreneurship
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/4")}>
                 Cybersecurity
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/5")}>
                 Data Science
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/6")}>
                 Human Computer Interaction
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/7")}>
                 Robot Intelligence
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/8")}>
                 Simulation {"&"} Game Programming
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/9")}>
                 Web {"&"} Mobile Application Development
             </button>
-            <button className="option">
+            <button className="option" onClick={() => props.history.push("/createPlan/0")}>
                 Custom Plan
             </button>
         </div>

@@ -5,7 +5,7 @@ import EditPlan from "./EditPlan";
 import CourseSearch from "./CourseSearch";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
 import {css, jsx} from "@emotion/core";
@@ -22,7 +22,8 @@ export default function StudentCreatePlan() {
   const [warning, setWarning] = useState("");
   const [edit, setEdit] = useState(0);
   const {planId} = useParams();
-
+  const location = useLocation();
+  
   const style = css`
     & {
       display: grid;
@@ -85,13 +86,62 @@ export default function StudentCreatePlan() {
       }
     }
 
+    async function searchCourse(planId) {
+        setPlanLoading(true);
+        // List of prefilled courses
+        let courses = [["CS 331", "CS 434", "MTH 254", "MTH 341", "ST 421", "CS 475"], // Artificial Intelligence
+                       ["CS 434", "CS 440", "CS 453", "BI 212", "BI 213"], // ? Bioinformatics
+                       ["CS 440"], // Business & Entrepreneurship
+                       ["CS 321", "CS 370", "CS 373", "CS 427", "CS 478"], // Cybersecurity
+                       ["CS 434", "CS 440", "CS 475", "MTH 254", "MTH 341", "ST 421", "CS 453"], // ? Data Science
+                       ["CS 468", "CS 453", "CS 492", "PSY 340"], // ? Human Computer Interaction
+                       ["CS 331", "CS 434", "ROB 421", "ROB 456", "MTH 254", "MTH 341", "PH 211", "PH 221"], // Robot Intelligence
+                       ["CS 450"], // Simulation & Game Programming
+                       ["CS 370", "CS 458", "CS 492", "CS 493"]]; // ? Web & Mobile Application Development
+        
+        // If this is a prefill plan, add prefilled courses
+        if (planId >= 1 && planId <=  9) {  // planId index at 1 to set null planId as custom plan
+            let i;
+            let prefillClasses = [];
+            for (i = 0; i < courses[planId - 1].length; i++) {
+                try {
+                    const url = `/api/course/search/${courses[planId - 1][i]}/*`;
+                    const results = await fetch(url);
+                    
+                    if (results.ok) {
+                        let obj = await results.json();
+                        if (obj && obj.courses && obj.courses.length > 0) {
+                            let c;
+                            for (c of obj.courses) {
+                                if (c.courseCode === courses[planId - 1][i]) {
+                                    prefillClasses.push(c);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (err) {
+                    console.log("Failed to add required courses. Err: " + err);
+                }
+            }
+            setCourses(prefillClasses);
+        }
+        setPlanLoading(false);
+    }
     // only fetch a plan if we are on the edit plan page
-    if (planId) {
-      setEdit(parseInt(planId));
-      fetchPlan(planId);
+    if (location.pathname.substring(0, 9) === "/editPlan" && planId) {
+        setEdit(parseInt(planId));
+        fetchPlan(planId);
+    }
+    // if we're on create plan page check if plan is prefilled plan and add requisite courses
+    else if (location.pathname.substring(0, 11) === "/createPlan") {
+        if (planId) {
+            searchCourse(parseInt(planId));
+        }
     }
 
-  }, [planId]);
+  }, [planId, location]);
 
   // track the state of multiple page components loading and
   // display a spinner if any part of the page is still loading
