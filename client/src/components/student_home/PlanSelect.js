@@ -9,8 +9,8 @@ function PlanSelect(props) {
         top: 0px;
         left: 0px;
         background-color: rgba(0,0,0,0.6);
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         z-index: 10;
         visibility: ${props.hidden ? "hidden" : "visible"};
         display: flex;
@@ -19,8 +19,9 @@ function PlanSelect(props) {
         align-items: center;
 
         .option {
-            width: 40vw;
-            height: 5vh;
+            width: 40%;
+            height: 5%;
+            max-height: 40px;
             border-radius: 10px;
             background-color: white;
             border-style: hidden;
@@ -39,13 +40,23 @@ function PlanSelect(props) {
 
         .header {
             color: white;
-            width: 40vw;
+            width: 40%;
             text-align: center;
         }
 
         .header > span {
             font-size: 20px;
             font-weight: bold;
+        }
+
+        @media screen and (max-width: 600px) {
+            .option {
+                width: 70%;
+            }
+
+            .header {
+                width: 70%;
+            }
         }
     `;
 
