@@ -196,7 +196,7 @@ function EditPlan(props) {
             // reqCourse contain list of core course option
             // Student must take at least one course from reqCourse list
             for (let j = 0; j < props.reqCourse.length; j++) {
-                if (props.courses[i].courseCode == props.reqCourse[j]) {
+                if (props.courses[i].courseCode === props.reqCourse[j]) {
                     hasReqCourse = true;
                     break;
                 }

@@ -286,7 +286,7 @@ function StudentHome() {
               </table>
               : <div className="empty-plan-container">
                 <h3 className="empty-plan-title">You haven&#39;t created any plans.</h3>
-                <a href="createPlan" title="Create a plan" className="empty-plan-create-button">Create a plan</a>
+                <button className="empty-plan-create-button" onClick={() => setShowPlans(true)}>Create a plan</button>
               </div>
             }
             {/* <a href="createPlan" title="Create a plan" className="new-plan-button"></a> */}
