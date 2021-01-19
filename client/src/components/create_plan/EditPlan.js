@@ -188,6 +188,28 @@ function EditPlan(props) {
       setWarning(`Plan name must be between ${NAME_MIN} and ${NAME_MAX} characters.`);
       return false;
     }
+    // check that at least 1 core course option is picked
+    // if reqCourse is empty skip this check
+    if (props.reqCourse && props.reqCourse.length > 0) {
+        let hasReqCourse = false;
+        for (let i = 0; i < props.courses.length; i++) {
+            // reqCourse contain list of core course option
+            // Student must take at least one course from reqCourse list
+            for (let j = 0; j < props.reqCourse.length; j++) {
+                if (props.courses[i].courseCode == props.reqCourse[j]) {
+                    hasReqCourse = true;
+                    break;
+                }
+            }
+            if (hasReqCourse) {
+                break;
+            }
+        }
+        if (hasReqCourse === false) {
+            setWarning(`Plan must contain at least 1 course from the following list: ${props.reqCourse.join(", ")}.`);
+            return false;
+        }
+    }
     // check that the minimum amount of credits are selected
     const credits = loadCredits();
     if (credits < CREDITS_MIN) {
