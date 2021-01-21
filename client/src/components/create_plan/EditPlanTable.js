@@ -108,5 +108,5 @@ export default EditPlanTable;
 EditPlanTable.propTypes = {
   onRemoveCourse: PropTypes.func,
   courseId: PropTypes.number,
-  courses: PropTypes.object
+  courses: PropTypes.array
 };
