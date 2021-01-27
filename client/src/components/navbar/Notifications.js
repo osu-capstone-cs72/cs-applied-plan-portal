@@ -5,8 +5,14 @@ import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 
+
+
+
 // dropdown menu that shows notifications
 function Notifications() {
+
+
+
 
   const [notifications, setNotifications] = useState([]);
   const TIME_BETWEEN_NOTIFICATIONS = 5000;
@@ -170,10 +176,26 @@ function Notifications() {
 
   }
 
+  
+    // set up bell icons
+  var bellUnicode = "\u{1F514}";
+  var notificationButton = "Notifications";
+  const [viewSize, setViewSize] = useState(window.innerWidth);
+  const responSize = 750;
+
+  useEffect(() => {
+      const handleResize = () => setViewSize(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+  }, []);  
+
+
   return (
     <div className="notification-dropdown" css={style}>
       <button className="drop-button-notification" data-count={notifications.length}>
-        Notifications
+        {
+          viewSize > responSize? (notificationButton) : (bellUnicode)
+        }
         <span className="badge" >
           {notifications.length ? notifications.length : null }
         </span>
