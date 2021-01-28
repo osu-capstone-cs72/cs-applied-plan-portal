@@ -85,7 +85,7 @@ export function login() {
   }
   const thisHost = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`;
   const protocol = (process.env.NODE_ENV === ENV.PRODUCTION) ? "https" : "http";
-  const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-devv";
+  const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-dev";
   window.location.href = url.format({
     protocol: "https",
     hostname: "login.oregonstate.edu",
