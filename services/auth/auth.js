@@ -9,13 +9,13 @@ const validator = require("validator");
 const xml2js = require("xml2js");
 const CryptoJS = require("crypto-js");
 
-const {userSchema} = require("../validation/schemaValidation");
-const {Env} = require("../../entities/environment");
+const { userSchema } = require("../validation/schemaValidation");
+const { ENV } = require("../../entities/environment");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const CSRF_SECRET_KEY = process.env.CSRF_SECRET_KEY;
 const COOKIE_EXPIRES_MS = 8 * 60 * 60 * 1000;  // 8 hours in milliseconds
-const COOKIE_SECURED = process.env.ENV === Env.production;  // secured cookie in production
+const COOKIE_SECURED = process.env.NODE_ENV === ENV.PRODUCTION;  // secured cookie in production
 
 // Generates an auth token for a specific User with the provided ID.
 // Token is a JSON Web Token which expires in 24 hours.
@@ -23,7 +23,7 @@ function generateAuthToken(userId) {
   const payload = {
     sub: userId
   };
-  const token = jwt.sign(payload, JWT_SECRET_KEY, {expiresIn: "24h"});
+  const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: "24h" });
   return token;
 }
 exports.generateAuthToken = generateAuthToken;
@@ -56,7 +56,7 @@ function requireAuth(req, res, next) {
     assert(cookieObj.userId, "No userId cookie provided with request");
 
     // ignore auth cookies if we are running unit tests
-    if (process.env.ENV !== Env.testing) {
+    if (process.env.NODE_ENV !== ENV.TESTING) {
 
       // ensure that authentication cookies are sent with the request
       assert(cookieObj.auth, "No auth cookie provided with request");
@@ -124,9 +124,9 @@ function casValidateUser(casValidationUrl) {
 
         // resolve on successful authentication and reject otherwise
         if (serviceResponse &&
-            Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
-            serviceResponse["cas:authenticationSuccess"].length === 1 &&
-            !serviceResponse["cas:authenticationFailure"]) {
+          Array.isArray(serviceResponse["cas:authenticationSuccess"]) &&
+          serviceResponse["cas:authenticationSuccess"].length === 1 &&
+          !serviceResponse["cas:authenticationFailure"]) {
           console.log("CAS validation successful\n");
 
           // resolve with the logged in User's information
@@ -134,8 +134,8 @@ function casValidateUser(casValidationUrl) {
         } else {
 
           if (serviceResponse &&
-              Array.isArray(serviceResponse["cas:authenticationFailure"]) &&
-              serviceResponse["cas:authenticationFailure"].length > 0) {
+            Array.isArray(serviceResponse["cas:authenticationFailure"]) &&
+            serviceResponse["cas:authenticationFailure"].length > 0) {
             // when authentication fails due to invalid credential
             console.error("CAS authentication rejected\n");
 
