@@ -31,7 +31,7 @@ function Navbar(props) {
 
   }, []);
 
-  const responSize = "max-width: 750px";
+  const responSize = "max-width: 860px";
 
   const style = css`
 

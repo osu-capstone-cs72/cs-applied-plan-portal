@@ -2,10 +2,14 @@
 
 import {css, jsx} from "@emotion/core";
 import {logout} from "../../utils/authService";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt as signoutIcon } from '@fortawesome/free-solid-svg-icons';
 
 // logout button
 function Logout() {
 
+  const responSize = "max-width: 860px";
   const style = css`
 
     & {
@@ -20,6 +24,11 @@ function Logout() {
       background: rgba(0, 0, 0, 0.15);
     }
 
+    .logout-button{
+       
+    }
+
+
   `;
 
   // logout the current user
@@ -28,9 +37,20 @@ function Logout() {
   }
 
   return (
+  <div>
+  <Desktop>
     <button className="logout-button" css={style} onClick={() => logoutUser()}>
       Log Out
     </button>
+  </Desktop>
+
+  <Mobile>
+      <button className="logout-button" css={style} onClick={() => logoutUser()}>
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </Mobile>
+
+  </div>
   );
 
 }

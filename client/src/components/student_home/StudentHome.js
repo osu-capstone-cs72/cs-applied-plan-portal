@@ -13,7 +13,6 @@ import {statusText} from "../../utils/renderStatus";
 import {css, jsx} from "@emotion/core";
 
 
-
 // student homepage
 function StudentHome() {
 
@@ -21,7 +20,7 @@ function StudentHome() {
   const [plans, setPlans] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const responSize = "max-width: 750px";
+  const responSize = "max-width: 860px";
 
   const style = css`
 
