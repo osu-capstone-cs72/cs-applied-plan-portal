@@ -12,22 +12,25 @@ function Logout() {
   const responSize = "max-width: 860px";
   const style = css`
 
-    & {
+    &{
       height: 35px;
       border: 1px solid white;
       color: white;
       border-radius: 0.25rem;
       background: transparent;
+        // @media(${responSize}){
+        // border: none;
+        // position: relative;
+        // top:60%;
+        // font-size: 1.5em;
+        // }
     }
 
     &:hover {
       background: rgba(0, 0, 0, 0.15);
     }
 
-    .logout-button{
-       
-    }
-
+  
 
   `;
 
@@ -37,7 +40,7 @@ function Logout() {
   }
 
   return (
-  <div>
+  <div className="logout">
   <Desktop>
     <button className="logout-button" css={style} onClick={() => logoutUser()}>
       Log Out

@@ -69,6 +69,8 @@ function Navbar(props) {
       margin: 0;
       margin-right: 1rem;
       color: white;
+       width: 119px;
+       height: 66px;
       @media (${responSize}){
         width: 119px;
         height: 75px;
@@ -76,24 +78,32 @@ function Navbar(props) {
     }
 
     .logo-img {
-      display: none;
-      @media (${responSize}){
         display: block;
-        width: 40%;
+        width: 33%;
         position: relative;
         left: 16px;
         top: 9px;
-      }
+        @media (${responSize}){
+          width: 40%;
+       }
     }
 
     .logo-text {
-      display: flex;
+        display: flex;
+        flex-wrap: wrap;
+        position: absolute;
+        text-align:center;
+        top: 12px;
+        left: 41%;
+        width: 40%;
+
       @media(${responSize}) {
         display: block;
         position: absolute;
         text-align:center;
         top: 12px;
-        width: 90%;
+        left: 29%;
+        width: 40%;
         height: 75px;
         padding: 10px;
       }
@@ -125,11 +135,19 @@ function Navbar(props) {
       border-radius: 0.25rem;
       background: transparent;
       margin-right: 0.5rem;
+
+      @media (${responSize}){
+        border: 1px solid transparent;
+        font-size: 2em;
+      }
     }
 
     .right-container {
       margin-left: auto;
+      display:flex;
     }
+
+
 
     #manage-roles-button:hover {
       background: rgba(0, 0, 0, 0.15);

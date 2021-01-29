@@ -45,17 +45,8 @@ const responSize = "max-width: 860px";
     }
 
     button.drop-button-notification {
-       @media(${responSize}){
-        
-        border: 1px solid transparent;
-        position: relative;
-        right: 83%;
-        top:66%;
-        font-size: 1.5em;
-      }
+
     }
-
-
 
     .badge {
       margin: 0 5px;
@@ -80,6 +71,9 @@ const responSize = "max-width: 860px";
       min-width: 160px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
       z-index: 1;
+      @media (${responSize}){
+        right: 60px;
+      }
     }
 
     .dropdown-content a {
@@ -94,6 +88,8 @@ const responSize = "max-width: 860px";
     .dropdown-content a:hover {
       background-color: #ddd;
     }
+
+
 
   `;
 
@@ -215,8 +211,9 @@ const responSize = "max-width: 860px";
           <span className="badge" >
             {notifications.length ? notifications.length : null }
           </span>
-          
+          {/* <i className="fa fa-caret-down" /> */}
         </button>
+
       </Mobile>
 
       <div className="dropdown-content">
