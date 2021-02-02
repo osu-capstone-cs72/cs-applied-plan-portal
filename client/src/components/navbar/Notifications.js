@@ -4,9 +4,18 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt as signoutIcon } from '@fortawesome/free-solid-svg-icons';
+
+
+
 
 // dropdown menu that shows notifications
 function Notifications() {
+
+const responSize = "max-width: 860px";
+
 
   const [notifications, setNotifications] = useState([]);
   const TIME_BETWEEN_NOTIFICATIONS = 5000;
@@ -35,6 +44,10 @@ function Notifications() {
       margin-right: 0.5rem;
     }
 
+    button.drop-button-notification {
+
+    }
+
     .badge {
       margin: 0 5px;
       background: black;
@@ -58,6 +71,9 @@ function Notifications() {
       min-width: 160px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
       z-index: 1;
+      @media (${responSize}){
+        right: 60px;
+      }
     }
 
     .dropdown-content a {
@@ -72,6 +88,8 @@ function Notifications() {
     .dropdown-content a:hover {
       background-color: #ddd;
     }
+
+
 
   `;
 
@@ -170,15 +188,34 @@ function Notifications() {
 
   }
 
+  
+    // set up bell icons
+  var notificationButton = "Notifications";
+
+
+
   return (
     <div className="notification-dropdown" css={style}>
-      <button className="drop-button-notification" data-count={notifications.length}>
-        Notifications
-        <span className="badge" >
-          {notifications.length ? notifications.length : null }
-        </span>
-        <i className="fa fa-caret-down" />
-      </button>
+      <Desktop>
+        <button className="drop-button-notification" data-count={notifications.length}>
+          {notificationButton}
+          <span className="badge" >
+            {notifications.length ? notifications.length : null }
+          </span>
+          <i className="fa fa-caret-down" />
+        </button>
+      </Desktop>
+      <Mobile>
+        <button className="drop-button-notification" data-count={notifications.length}>
+          <i className="fas fa-bell"></i>
+          <span className="badge" >
+            {notifications.length ? notifications.length : null }
+          </span>
+          {/* <i className="fa fa-caret-down" /> */}
+        </button>
+
+      </Mobile>
+
       <div className="dropdown-content">
         {notifications.length ? (
           notifications.map((item, index) => (
