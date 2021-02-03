@@ -2,6 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // search form for plans
 function FindPlans(props) {
@@ -60,6 +61,12 @@ function FindPlans(props) {
       padding: 1rem 1rem;
       flex: 100%;
     }
+
+    @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
+      & {
+        width: 97%;
+      }
+    }
     
   `;
 
@@ -68,7 +75,6 @@ function FindPlans(props) {
 
     // prevent the default behavior of the form button
     e.preventDefault();
-
     // perform a new search for plans
     const newCursor = {
       primary: "null",

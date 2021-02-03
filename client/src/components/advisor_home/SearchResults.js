@@ -6,6 +6,7 @@ import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../general/LoadMoreButton";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // search results for a plan search
 function SearchResults(props) {
@@ -79,6 +80,11 @@ function SearchResults(props) {
     tr:hover {
       background: rgba(0, 0, 0, 0.02);
     }
+
+     @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
+      .prompt-container {
+        width: 97%;
+      }
 
   `;
 

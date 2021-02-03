@@ -1,13 +1,13 @@
 /** @jsx jsx */
 
-import { useState, useEffect } from "react";
-import { css, jsx } from "@emotion/core";
-import { Link } from "react-router-dom";
-import { withRouter } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {css, jsx} from "@emotion/core";
+import {Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import { Desktop, Mobile } from "../../utils/responsiveUI";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHistory } from "@fortawesome/free-solid-svg-icons";
+import {Desktop, Mobile} from "../../utils/responsiveUI";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faHistory} from "@fortawesome/free-solid-svg-icons";
 
 // dropdown menu that shows plan view history
 function History(props) {
@@ -17,6 +17,7 @@ function History(props) {
     & {
       display: inline-block;
       height: 35px;
+      z-index: 99;
     }
 
     button:hover {
