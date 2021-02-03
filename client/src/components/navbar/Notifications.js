@@ -207,7 +207,7 @@ const responSize = "max-width: 860px";
       </Desktop>
       <Mobile>
         <button className="drop-button-notification" data-count={notifications.length}>
-          <i className="fas fa-bell"></i>
+          <i className="fas fa-bell fa-xs"></i>
           <span className="badge" >
             {notifications.length ? notifications.length : null }
           </span>

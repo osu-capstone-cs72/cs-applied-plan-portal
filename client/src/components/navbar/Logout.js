@@ -49,7 +49,7 @@ function Logout() {
 
   <Mobile>
       <button className="logout-button" css={style} onClick={() => logoutUser()}>
-      <i class="fas fa-sign-out-alt"></i>
+      <i className="fas fa-sign-out-alt fa-xs"></i>
     </button>
   </Mobile>
 

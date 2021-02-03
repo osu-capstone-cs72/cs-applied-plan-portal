@@ -1,18 +1,19 @@
 /** @jsx jsx */
 
-import {useState, useEffect} from "react";
-import {css, jsx} from "@emotion/core";
-import {Link} from "react-router-dom";
-import {withRouter} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { css, jsx } from "@emotion/core";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHistory } from "@fortawesome/free-solid-svg-icons";
 
 // dropdown menu that shows plan view history
 function History(props) {
-
   const [recentPlans, setRecentPlans] = useState([]);
 
   const style = css`
-
     & {
       display: inline-block;
       height: 35px;
@@ -35,7 +36,7 @@ function History(props) {
       position: absolute;
       background-color: #f9f9f9;
       min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 1;
     }
 
@@ -65,7 +66,6 @@ function History(props) {
 
   // get a list of the most recently viewed plans
   useEffect(() => {
-
     // set ignore and controller to prevent a memory leak
     // in the case where we need to abort early
     let ignore = false;
@@ -81,26 +81,27 @@ function History(props) {
 
         // before checking the results, ensure the request was not canceled
         if (!ignore) {
-
           if (results.ok) {
             obj = await results.json();
             setRecentPlans(obj.plans);
           } else {
             // we got a bad status code.
             if (results.status === 500) {
-              console.error("An internal server error occurred. Please try again later.");
+              console.error(
+                "An internal server error occurred. Please try again later."
+              );
             }
           }
-
         }
-
       } catch (err) {
         if (err instanceof DOMException) {
           // if we canceled the fetch request then don't show an error message
           console.log("HTTP request aborted");
         } else {
           // log server error
-          console.error("An internal server error occurred. Please try again later.");
+          console.error(
+            "An internal server error occurred. Please try again later."
+          );
         }
       }
     }
@@ -112,20 +113,25 @@ function History(props) {
       controller.abort();
       ignore = true;
     };
-
   }, [props.currentPlan]);
-
 
   return (
     <div className="history-dropdown" css={style}>
-      <button className="drop-button">History
-        <i className="fa fa-caret-down" />
+      <button className="drop-button">
+        <Desktop>
+          History
+          <i className="fa fa-caret-down" />
+        </Desktop>
+        <Mobile>
+          <FontAwesomeIcon icon={faHistory} size='xs' />
+        </Mobile>
       </button>
+
       <div className="dropdown-content">
         {recentPlans.length ? (
           recentPlans.map((item) => (
             <Link key={item.planId} to={`/viewPlan/${item.planId}`}>
-              {item.planName} <br/>
+              {item.planName} <br />
               {item.firstName + " " + item.lastName}
             </Link>
           ))
@@ -137,10 +143,9 @@ function History(props) {
       </div>
     </div>
   );
-
 }
 export default withRouter(History);
 
 History.propTypes = {
-  currentPlan: PropTypes.number
+  currentPlan: PropTypes.number,
 };
