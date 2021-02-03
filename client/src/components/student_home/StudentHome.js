@@ -13,6 +13,7 @@ import PlanSelect from "./PlanSelect";
 
 import {css, jsx} from "@emotion/core";
 
+
 // student homepage
 function StudentHome() {
 
@@ -21,24 +22,36 @@ function StudentHome() {
   const [loading, setLoading] = useState(true);
   const [showPlans, setShowPlans] = useState(false);
 
+  const responSize = "max-width: 860px";
+
   const style = css`
 
     #student-home-container {
       margin: 100px 0 auto;
-      width: 100%;
     }
 
     #student-home-contents-container {
       margin: 25px auto;
       width: 60%;
+      @media(${responSize}){
+        width:100%;
+      }
     }
 
     .student-plans-table {
       margin: 0 auto;
+      @media (${responSize}){
+        width: 95%;
+      }
     }
 
     .student-plans-data {
       padding: 1rem 4rem;
+      @media(${responSize}){
+        padding:0px;
+        min-width: 80px;
+        text-align: center;
+      }
     }
 
     .new-plan-button {
@@ -75,6 +88,7 @@ function StudentHome() {
       background: white;
     }
 
+    /* all threads */
     table thead tr th {
       background: #f4f2f1;
       color: #706c6b;
@@ -86,6 +100,7 @@ function StudentHome() {
       /*padding: 10px;*/
       font-weight: bold;
       white-space: nowrap;
+
     }
 
     table.student-plans-table thead tr th:nth-of-type(4) {
@@ -99,7 +114,7 @@ function StudentHome() {
     }
 
     table tbody tr {
-      cursor: pointer;
+      /*cursor: pointer;*/
     }
 
     table.student-plans-table tbody tr td {
@@ -107,15 +122,17 @@ function StudentHome() {
       padding: 2rem 2rem;
     }
 
+    /* plan title */
     table.student-plans-table tbody tr:hover td .table-item-title {
       text-decoration: underline;
     }
 
+   /* Each plan name*/
     table.student-plans-table tbody tr td:nth-of-type(1) {
       width: 30%;
       font-weight: 500;
     }
-    
+   
     .empty-plan-container {
       text-align: center;
       display: flex;
@@ -142,7 +159,7 @@ function StudentHome() {
     }
 
     table.student-plans-table tbody tr:hover {
-      background: rgba(0, 0, 0, 0.01);
+      background: rgba(0, 0, 0, 0.03);
     }
   
   `;
