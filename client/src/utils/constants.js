@@ -6,3 +6,5 @@ export const SCREENWIDTH = {
     MAX: 860,
   },
 };
+
+export const MOBILE_WIDTH = "97%";

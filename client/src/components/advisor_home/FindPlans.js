@@ -2,7 +2,7 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
-import {SCREENWIDTH} from "../../utils/constants";
+import {SCREENWIDTH, MOBILE_WIDTH} from "../../utils/constants";
 
 // search form for plans
 function FindPlans(props) {
@@ -64,7 +64,7 @@ function FindPlans(props) {
 
     @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
       & {
-        width: 97%;
+        width: ${MOBILE_WIDTH};
       }
     }
     

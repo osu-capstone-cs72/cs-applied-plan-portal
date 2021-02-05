@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import {useState, useEffect} from "react";
-import {css, jsx} from "@emotion/core";
+import {css, jsx} from "@emotion/react";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
