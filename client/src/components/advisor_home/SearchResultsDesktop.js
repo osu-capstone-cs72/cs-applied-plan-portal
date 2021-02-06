@@ -1,21 +1,21 @@
 /** @jsx jsx */
 
-import {statusText} from "../../utils/renderStatus";
-import {formatTime} from "../../utils/formatTime";
-import {css, jsx} from "@emotion/core";
-import {withRouter} from "react-router-dom";
+import { statusText } from "../../utils/renderStatus";
+import { formatTime } from "../../utils/formatTime";
+import { css, jsx } from "@emotion/core";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../general/LoadMoreButton";
-import {MOBILE_WIDTH, SCREENWIDTH} from "../../utils/constants";
+import { BOX_SHADOW_CARD, MOBILE_WIDTH, SCREENWIDTH } from "../../utils/constants";
 
-function  SearchResultsDesktop({
-  props: {error,
+function SearchResultsDesktop({
+  props: { error,
     loading,
     plans,
     cursor,
     searchFields,
     onLoadMore,
-    onChangeSort},
+    onChangeSort },
   goToPlan,
 }) {
   const desktopStyle = css`
@@ -42,7 +42,7 @@ function  SearchResultsDesktop({
     
     table {
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: ${BOX_SHADOW_CARD};
       overflow: hidden;
       padding: 1rem;
       background: var(--color-lightgray-50);
@@ -51,7 +51,7 @@ function  SearchResultsDesktop({
 
     .prompt-container {
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: ${BOX_SHADOW_CARD};
       overflow: hidden;
       padding: 10rem;
       background: white;
@@ -118,13 +118,13 @@ function  SearchResultsDesktop({
                   User Name <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(0, false)}
-                >
-                  User Name <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(0, false)}
+                  >
+                    User Name <small>▼</small>
+                  </th>
+                )}
               {searchFields.sortValue === 1 ? (
                 <th
                   className="student-plans-data active-sort"
@@ -133,13 +133,13 @@ function  SearchResultsDesktop({
                   User ID <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(1, false)}
-                >
-                  User ID <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(1, false)}
+                  >
+                    User ID <small>▼</small>
+                  </th>
+                )}
               {searchFields.sortValue === 2 ? (
                 <th
                   className="student-plans-data active-sort"
@@ -148,13 +148,13 @@ function  SearchResultsDesktop({
                   Plan Name <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(2, false)}
-                >
-                  Plan Name <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(2, false)}
+                  >
+                    Plan Name <small>▼</small>
+                  </th>
+                )}
               {searchFields.sortValue === 3 ? (
                 <th
                   className="student-plans-data active-sort"
@@ -163,13 +163,13 @@ function  SearchResultsDesktop({
                   Status <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(3, false)}
-                >
-                  Status <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(3, false)}
+                  >
+                    Status <small>▼</small>
+                  </th>
+                )}
               {searchFields.sortValue === 4 ? (
                 <th
                   className="student-plans-data active-sort"
@@ -179,13 +179,13 @@ function  SearchResultsDesktop({
                   <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(4, false)}
-                >
-                  Time Created <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(4, false)}
+                  >
+                    Time Created <small>▼</small>
+                  </th>
+                )}
               {searchFields.sortValue === 5 ? (
                 <th
                   className="student-plans-data active-sort"
@@ -195,13 +195,13 @@ function  SearchResultsDesktop({
                   <small>{searchFields.orderValue ? "▲" : "▼"}</small>
                 </th>
               ) : (
-                <th
-                  className="student-plans-data"
-                  onClick={() => changeSort(5, false)}
-                >
-                  Time Updated <small>▼</small>
-                </th>
-              )}
+                  <th
+                    className="student-plans-data"
+                    onClick={() => changeSort(5, false)}
+                  >
+                    Time Updated <small>▼</small>
+                  </th>
+                )}
             </tr>
           </thead>
           <tbody>

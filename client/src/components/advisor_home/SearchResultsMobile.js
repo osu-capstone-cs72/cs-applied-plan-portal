@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 /** @jsx jsx */
 
-import {statusText} from "../../utils/renderStatus";
-import {formatTime} from "../../utils/formatTime";
-import {css, jsx} from "@emotion/core";
-import {withRouter} from "react-router-dom";
+import { statusText } from "../../utils/renderStatus";
+import { formatTime } from "../../utils/formatTime";
+import { css, jsx } from "@emotion/core";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import {SCREENWIDTH, MOBILE_WIDTH} from "../../utils/constants";
+import { SCREENWIDTH, MOBILE_WIDTH, BOX_SHADOW_CARD } from "../../utils/constants";
 import SearchResultsMobileCard from "./SearchResultsMobileCard";
 
 function SearchResultsMobile({
@@ -23,8 +23,7 @@ function SearchResultsMobile({
 
     .prompt-container {
       background: white;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow:${BOX_SHADOW_CARD};
       border-radius: 0.5rem;
       padding: 1rem;
       margin: auto;
@@ -35,6 +34,11 @@ function SearchResultsMobile({
         margin: 10px;
       }
     },
+
+    ul {
+      padding: 0;
+    },
+
     li {
       list-style: none;
     }
