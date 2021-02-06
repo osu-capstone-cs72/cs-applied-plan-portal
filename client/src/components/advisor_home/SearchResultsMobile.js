@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 /** @jsx jsx */
 
-import { statusText } from "../../utils/renderStatus";
-import { formatTime } from "../../utils/formatTime";
-import { css, jsx } from "@emotion/core";
-import { withRouter } from "react-router-dom";
+import {css, jsx} from "@emotion/core";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import { SCREENWIDTH, MOBILE_WIDTH, BOX_SHADOW_CARD } from "../../utils/constants";
+import LoadMoreButton from "../general/LoadMoreButton";
+import {MOBILE_WIDTH, BOX_SHADOW_CARD} from "../../utils/constants";
 import SearchResultsMobileCard from "./SearchResultsMobileCard";
 
 function SearchResultsMobile({
@@ -15,7 +14,7 @@ function SearchResultsMobile({
     loading,
     plans,
     cursor,
-    searchFields,
+    onLoadMore
   },
   goToPlan,
 }) {
@@ -44,7 +43,7 @@ function SearchResultsMobile({
     }
   `;
   const planList = plans.map(plan => (
-    <li key={plan.planId}>
+    <li key={plan.planId} onClick={() => goToPlan(plan)}>
       <SearchResultsMobileCard plan={plan} />
     </li>
   ));
@@ -52,9 +51,16 @@ function SearchResultsMobile({
   if (plans.length) {
     return (
       <div css={mobileStyle}>
-        <ul>
-          {planList}
-        </ul>
+        <ul>{planList}</ul>
+        {cursor.primary === "null" ? null : (
+          <LoadMoreButton
+            onUpdate={() => {
+              onLoadMore(cursor);
+              console.log(cursor);
+            }}
+            loading={loading}
+          />
+        )}
       </div>
     );
   } else {
