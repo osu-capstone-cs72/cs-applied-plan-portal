@@ -1,10 +1,10 @@
 import React from "react";
 import History from "../History";
-import PropTypes from "prop-types";
 import Notifications from "../Notifications";
 import {Link} from "react-router-dom";
 import UpdateCourses from "../UpdateCourses";
 import Logout from "../Logout";
+import {PropTypes} from "prop-types";
 
 function HeadAdvisorNavDesktop({currentPlan}) {
   return (

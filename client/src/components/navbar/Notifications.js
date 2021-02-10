@@ -199,7 +199,7 @@ function Notifications() {
           <span className="badge" >
             {notifications.length ? notifications.length : null }
           </span>
-          <i className="fa fa-caret-down" />
+          <i className="fa fa-caret-down caret-down" />
         </button>
       </Desktop>
       <Mobile>

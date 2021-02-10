@@ -27,10 +27,8 @@ function History(props) {
       display: block;
     }
 
-    .drop-button {
-      height: 35px;
-      background: transparent;
-      color: white;
+    .caret-down {
+      margin-left: 4px;
     }
 
     .dropdown-content {
@@ -122,7 +120,7 @@ function History(props) {
       <button className="drop-button">
         <Desktop>
           History
-          <i className="fa fa-caret-down" />
+          <i className="fa fa-caret-down caret-down" />
         </Desktop>
         <Mobile>
           <FontAwesomeIcon icon={faHistory} size='xs' />

@@ -129,7 +129,7 @@ function Navbar(props) {
 
 
     /* Don't style the last item, but in a way that's safe for SSR. */
-    .right-container > * > button {
+    .right-container button {
       height: 35px;
       border: 1px solid white;
       color: white;
