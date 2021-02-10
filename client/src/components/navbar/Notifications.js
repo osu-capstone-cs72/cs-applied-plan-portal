@@ -4,17 +4,14 @@ import {useState, useEffect} from "react";
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import { Desktop, Mobile } from "../../utils/responsiveUI";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt as signoutIcon } from '@fortawesome/free-solid-svg-icons';
-
+import {Desktop, Mobile} from "../../utils/responsiveUI";
 
 
 
 // dropdown menu that shows notifications
 function Notifications() {
 
-const responSize = "max-width: 860px";
+  const responSize = "max-width: 860px";
 
 
   const [notifications, setNotifications] = useState([]);
@@ -188,9 +185,9 @@ const responSize = "max-width: 860px";
 
   }
 
-  
-    // set up bell icons
-  var notificationButton = "Notifications";
+
+  // set up bell icons
+  const notificationButton = "Notifications";
 
 
 
@@ -207,7 +204,7 @@ const responSize = "max-width: 860px";
       </Desktop>
       <Mobile>
         <button className="drop-button-notification" data-count={notifications.length}>
-          <i className="fas fa-bell"></i>
+          <i className="fas fa-bell fa-xs"></i>
           <span className="badge" >
             {notifications.length ? notifications.length : null }
           </span>

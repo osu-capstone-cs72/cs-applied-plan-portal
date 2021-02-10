@@ -10,17 +10,13 @@ import {loggedIn, getProfile} from "../utils/authService";
 
 // renders either student or advisor homepage depending on current user
 function Home(props) {
-
   const [loading] = useState(true);
   const [pageState, setPageState] = useState(0);
 
   useEffect(() => {
-
-    async function checkLoggedIn () {
-
+    async function checkLoggedIn() {
       // check to see if the user is logged in
       if (loggedIn()) {
-
         // render a page based on the users role
         const profile = getProfile();
         if (!profile.role) {
@@ -28,12 +24,9 @@ function Home(props) {
         } else {
           setPageState(2);
         }
-
       } else {
-
         // go to the login page
         props.history.push("/login");
-
       }
     }
 

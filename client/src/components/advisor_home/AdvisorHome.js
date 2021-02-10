@@ -103,7 +103,10 @@ function AdvisorHome() {
           if (results.ok) {
 
             // if the cursor is new then we will want to relist plans
+            console.log("Results: ", results);
             obj = await results.json();
+            console.log("Obj: ", obj);
+
             if (cursor.primary === "null") {
               setPlans([...obj.plans]);
             } else {
