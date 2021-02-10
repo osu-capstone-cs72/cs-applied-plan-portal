@@ -7,24 +7,21 @@ import {Desktop, Mobile} from "../../utils/responsiveUI";
 
 // logout button
 function Logout() {
-  const responSize = "max-width: 860px";
   const style = css`
     & {
+      display: inline-block
+    }
+    
+    .logout-button {
       height: 35px;
       border: 1px solid white;
       color: white;
       border-radius: 0.25rem;
       background: transparent;
-      // @media(${responSize}){
-      // border: none;
-      // position: relative;
-      // top:60%;
-      // font-size: 1.5em;
-      // }
-    }
 
-    &:hover {
-      background: rgba(0, 0, 0, 0.15);
+      &:hover {
+        background: rgba(0, 0, 0, 0.15);
+      }
     }
   `;
 
@@ -34,11 +31,10 @@ function Logout() {
   }
 
   return (
-    <div className="logout">
+    <div css={style}>
       <Desktop>
         <button
           className="logout-button"
-          css={style}
           onClick={() => logoutUser()}
         >
           Log Out
@@ -48,7 +44,6 @@ function Logout() {
       <Mobile>
         <button
           className="logout-button"
-          css={style}
           onClick={() => logoutUser()}
         >
           <i className="fas fa-sign-out-alt fa-xs"></i>

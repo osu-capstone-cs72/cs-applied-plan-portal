@@ -4,8 +4,8 @@
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import LoadMoreButton from "../general/LoadMoreButton";
-import {MOBILE_WIDTH, BOX_SHADOW_CARD} from "../../utils/constants";
+import LoadMoreButton from "../../general/LoadMoreButton";
+import {MOBILE_WIDTH, BOX_SHADOW_CARD} from "../../../utils/constants";
 import SearchResultsMobileCard from "./SearchResultsMobileCard";
 
 function SearchResultsMobile({

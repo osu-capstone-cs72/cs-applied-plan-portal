@@ -4,7 +4,7 @@ import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
 import FindPlans from "./FindPlans";
-import SearchResults from "./SearchResults";
+import SearchResults from "./search_results/SearchResults";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {login} from "../../utils/authService";

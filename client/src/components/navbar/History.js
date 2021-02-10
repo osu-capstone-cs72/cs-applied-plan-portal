@@ -17,7 +17,6 @@ function History(props) {
     & {
       display: inline-block;
       height: 35px;
-      z-index: 99;
     }
 
     button:hover {
@@ -30,6 +29,8 @@ function History(props) {
 
     .drop-button {
       height: 35px;
+      background: transparent;
+      color: white;
     }
 
     .dropdown-content {
