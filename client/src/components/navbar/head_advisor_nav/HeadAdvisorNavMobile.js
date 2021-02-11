@@ -4,12 +4,12 @@ import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {slide as Menu} from "react-burger-menu";
 import {logout} from "../../../utils/authService";
+import ManageRoles from "../../manage_roles/ManageRoles";
+import History from "../History";
+import Notifications from "../Notifications";
 
 function HeadAdvisorNavMobile({currentPlan}) {
   const style = css`
-    & {
-      font-size: 1rem;
-    }
     /* Position and sizing of burger button */
     .bm-burger-button {
       position: fixed;
@@ -52,16 +52,40 @@ function HeadAdvisorNavMobile({currentPlan}) {
       left: 0;
       right: 0;
       top: 0;
-      bottom: 0
+      bottom: 0;
+    }
+
+    & {
+      font-size: 1rem;
+    }
+    a {
+      color: white
+    }
+    .nav-item {
+      display: block;
     }
   `;
 
 
-  const Logout = () => {
+  const LogoutBtn = () => {
     return (
-      <button className="logout-button" onClick={logout}>
+      <button className="logout-button nav-item" onClick={logout}>
         Log Out
       </button>
+    );
+  };
+
+  const ManageRoleBtn = () => {
+    return (
+      <button className="nav-item">
+        <a href="/manageRoles">Manage Roles</a>
+      </button>
+    );
+  };
+
+  const HomeBtn = () => {
+    return (
+      <button className="nav-item"><a href="/">Home</a></button>
     );
   };
 
@@ -69,7 +93,11 @@ function HeadAdvisorNavMobile({currentPlan}) {
   return (
     <div css={style}>
       <Menu right>
-        <Logout />
+        <HomeBtn />
+        <ManageRoleBtn />
+        <Notifications/>
+        <History currentPlan={currentPlan} />
+        <LogoutBtn />
       </Menu>
     </div>
   );
