@@ -5,6 +5,7 @@ import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import {Desktop, Mobile} from "../../utils/responsiveUI";
+import Cookies from "js-cookie";
 
 
 
@@ -12,8 +13,7 @@ import {Desktop, Mobile} from "../../utils/responsiveUI";
 function Notifications() {
 
   const responSize = "max-width: 860px";
-
-
+  const [role, setRole] = useState(-1);
   const [notifications, setNotifications] = useState([]);
   const TIME_BETWEEN_NOTIFICATIONS = 5000;
 
@@ -85,10 +85,12 @@ function Notifications() {
     .dropdown-content a:hover {
       background-color: #ddd;
     }
-
-
-
   `;
+
+  useEffect(() => {
+    const role = Cookies.get("role");
+    setRole(role);
+  }, []);
 
   // fetch new notifications when the page first loads or when enough time passes
   useEffect(() => {
@@ -186,38 +188,38 @@ function Notifications() {
   }
 
 
-  // set up bell icons
-  const notificationButton = "Notifications";
-
-
 
   return (
     <div className="notification-dropdown" css={style}>
-      <Desktop>
-        <button className="drop-button-notification" data-count={notifications.length}>
-          {notificationButton}
-          <span className="badge" >
-            {notifications.length ? notifications.length : null }
+      <button
+        className="drop-button-notification"
+        data-count={notifications.length}
+      >
+        {/* If desktop or if mobile but head advisor, show text */}
+        {role === "2" ? (
+          "Notifications"
+        ) : (
+          <span>
+            <Desktop>Notification</Desktop>
+            <Mobile>
+              <i className="fas fa-bell fa-xs"></i>
+            </Mobile>
           </span>
-          <i className="fa fa-caret-down caret-down" />
-        </button>
-      </Desktop>
-      <Mobile>
-        <button className="drop-button-notification" data-count={notifications.length}>
-          <i className="fas fa-bell fa-xs"></i>
-          <span className="badge" >
-            {notifications.length ? notifications.length : null }
-          </span>
-          {/* <i className="fa fa-caret-down" /> */}
-        </button>
+        )}
 
-      </Mobile>
-
+        <span className="badge">
+          {notifications.length ? notifications.length : null}
+        </span>
+        {role !== "2" && <i className="fa fa-caret-down caret-down" />}
+      </button>
       <div className="dropdown-content">
         {notifications.length ? (
           notifications.map((item, index) => (
-            <Link key={item.notificationId} to={`/viewPlan/${item.planId}`}
-              onClick={(event) => handleClick(event, item, index)}>
+            <Link
+              key={item.notificationId}
+              to={`/viewPlan/${item.planId}`}
+              onClick={(event) => handleClick(event, item, index)}
+            >
               {item.text}
             </Link>
           ))

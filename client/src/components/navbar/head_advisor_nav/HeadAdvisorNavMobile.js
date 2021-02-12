@@ -7,9 +7,11 @@ import {logout} from "../../../utils/authService";
 import ManageRoles from "../../manage_roles/ManageRoles";
 import History from "../History";
 import Notifications from "../Notifications";
+import {useState} from "react";
+import MenuModal from "./MenuModal";
 
 function HeadAdvisorNavMobile({currentPlan}) {
-  const style = css`
+  const styleMain = css`
     /* Position and sizing of burger button */
     .bm-burger-button {
       position: fixed;
@@ -59,17 +61,20 @@ function HeadAdvisorNavMobile({currentPlan}) {
       font-size: 1rem;
     }
     a {
-      color: white
+      color: white;
     }
-    .nav-item {
+    .menu-item {
       display: block;
+      margin-bottom: 0.5rem;
     }
+
   `;
 
+  const [isOpen, setIsOpen] = useState(false);
 
   const LogoutBtn = () => {
     return (
-      <button className="logout-button nav-item" onClick={logout}>
+      <button className="logout-button menu-item" onClick={logout}>
         Log Out
       </button>
     );
@@ -77,7 +82,7 @@ function HeadAdvisorNavMobile({currentPlan}) {
 
   const ManageRoleBtn = () => {
     return (
-      <button className="nav-item">
+      <button className="menu-item">
         <a href="/manageRoles">Manage Roles</a>
       </button>
     );
@@ -85,18 +90,40 @@ function HeadAdvisorNavMobile({currentPlan}) {
 
   const HomeBtn = () => {
     return (
-      <button className="nav-item"><a href="/">Home</a></button>
+      <button className="menu-item">
+        <a href="/">Home</a>
+      </button>
     );
   };
 
+  const NotificationBtn = () => {
+    return (
+      <div className="menu-item" onClick={handleOnOpenClick}>
+        <Notifications />
+      </div>
+    );
+  };
 
+  const handleOnOpenClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const HistoryBtn = () => {
+    return (
+      <div>
+        <History currentPlan={currentPlan} />
+      </div>
+    );
+  };
+  console.log(isOpen);
   return (
-    <div css={style}>
+    <div css={styleMain}>
+      <MenuModal isOpen={isOpen} handleClose={handleOnOpenClick} />
       <Menu right>
         <HomeBtn />
         <ManageRoleBtn />
-        <Notifications/>
-        <History currentPlan={currentPlan} />
+        <NotificationBtn />
+        <HistoryBtn />
         <LogoutBtn />
       </Menu>
     </div>

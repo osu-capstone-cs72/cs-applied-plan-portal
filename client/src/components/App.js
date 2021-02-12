@@ -17,6 +17,10 @@ const globalStyles = css`
     background: #fbfaf9; /*#FFFDFC*/
   }
 
+  li {
+    list-style: none;
+  }
+
 
   :root {
     --color-orange-50: #fff5f2;

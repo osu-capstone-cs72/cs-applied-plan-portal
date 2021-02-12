@@ -7,11 +7,14 @@ import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import {Desktop, Mobile} from "../../utils/responsiveUI";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHistory} from "@fortawesome/free-solid-svg-icons";
+import {faCaretDown, faHistory} from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
+
 
 // dropdown menu that shows plan view history
 function History(props) {
   const [recentPlans, setRecentPlans] = useState([]);
+  const [role, setRole] = useState(-1);
 
   const style = css`
     & {
@@ -63,6 +66,12 @@ function History(props) {
       color: white;
     }
   `;
+
+  // Fetch role from cookie
+  useEffect(() => {
+    const role = Cookies.get("role");
+    setRole(role);
+  }, []);
 
   // get a list of the most recently viewed plans
   useEffect(() => {
@@ -118,13 +127,22 @@ function History(props) {
   return (
     <div className="history-dropdown" css={style}>
       <button className="drop-button">
-        <Desktop>
-          History
-          <i className="fa fa-caret-down caret-down" />
-        </Desktop>
-        <Mobile>
-          <FontAwesomeIcon icon={faHistory} size='xs' />
-        </Mobile>
+
+        {role === "2" ? (
+          <span>
+            History
+          </span>
+        ) : (
+          <span>
+            <Desktop>
+              History
+              <FontAwesomeIcon icon={faCaretDown} />
+            </Desktop>
+            <Mobile>
+              <FontAwesomeIcon icon={faHistory} size="xs" />
+            </Mobile>
+          </span>
+        )}
       </button>
 
       <div className="dropdown-content">
