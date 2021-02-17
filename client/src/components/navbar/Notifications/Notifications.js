@@ -1,91 +1,21 @@
 /** @jsx jsx */
+import React from "react";
 
 import {useState, useEffect} from "react";
-import {css, jsx} from "@emotion/core";
-import {Link} from "react-router-dom";
+import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
-import {Desktop, Mobile} from "../../utils/responsiveUI";
 import Cookies from "js-cookie";
+import NotificationCommon from "./NotificationCommon";
+import NotificationHeadAdv from "../head_advisor_nav/notifications/NotificationHeadAdv";
 
 
 
 // dropdown menu that shows notifications
 function Notifications() {
 
-  const responSize = "max-width: 860px";
   const [role, setRole] = useState(-1);
   const [notifications, setNotifications] = useState([]);
   const TIME_BETWEEN_NOTIFICATIONS = 5000;
-
-  const style = css`
-
-    & {
-      display: inline-block;
-      height: 35px;
-    }
-
-    button:hover {
-      background: rgba(0, 0, 0, 0.15);
-    }
-
-    &:hover .dropdown-content {
-      display: block;
-    }
-
-    .drop-button-notification {
-      height: 35px;
-      border: 1px solid white;
-      color: white;
-      border-radius: 0.25rem;
-      background: transparent;
-      margin-right: 0.5rem;
-    }
-
-    button.drop-button-notification {
-
-    }
-
-    .badge {
-      margin: 0 5px;
-      background: black;
-      color: white;
-    }
-
-    .drop-button-notification:before {
-      position: absolute;
-      top: 5px;
-      right: 0px;
-      padding: 5px 10px;
-      border-radius: 50%;
-      background-color: black;
-      color: white;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-      @media (${responSize}){
-        right: 60px;
-      }
-    }
-
-    .dropdown-content a {
-      float: none;
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      text-align: left;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #ddd;
-    }
-  `;
 
   useEffect(() => {
     const role = Cookies.get("role");
@@ -190,46 +120,16 @@ function Notifications() {
 
 
   return (
-    <div className="notification-dropdown" css={style}>
-      <button
-        className="drop-button-notification"
-        data-count={notifications.length}
-      >
-        {/* If desktop or if mobile but head advisor, show text */}
-        {role === "2" ? (
-          "Notifications"
-        ) : (
-          <span>
-            <Desktop>Notification</Desktop>
-            <Mobile>
-              <i className="fas fa-bell fa-xs"></i>
-            </Mobile>
-          </span>
-        )}
-
-        <span className="badge">
-          {notifications.length ? notifications.length : null}
-        </span>
-        {role !== "2" && <i className="fa fa-caret-down caret-down" />}
-      </button>
-      <div className="dropdown-content">
-        {notifications.length ? (
-          notifications.map((item, index) => (
-            <Link
-              key={item.notificationId}
-              to={`/viewPlan/${item.planId}`}
-              onClick={(event) => handleClick(event, item, index)}
-            >
-              {item.text}
-            </Link>
-          ))
-        ) : (
-          <Link to={`.`} onClick={(event) => event.preventDefault()}>
-            <p>No new notifications</p>
-          </Link>
-        )}
-      </div>
-    </div>
+    <React.Fragment>
+      {console.log(role)}
+      {role === "2" && <NotificationHeadAdv
+        notifications={notifications}
+        handleClick={handleClick}
+      />}
+      {role !== "2" && <NotificationCommon
+        notifications={notifications}
+        handleClick={handleClick} />}
+    </React.Fragment>
   );
 
 }

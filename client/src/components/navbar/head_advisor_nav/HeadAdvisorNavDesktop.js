@@ -1,6 +1,6 @@
 import React from "react";
 import History from "../History";
-import Notifications from "../Notifications";
+import Notifications from "../Notifications/Notifications";
 import {Link} from "react-router-dom";
 import UpdateCourses from "../UpdateCourses";
 import Logout from "../Logout";

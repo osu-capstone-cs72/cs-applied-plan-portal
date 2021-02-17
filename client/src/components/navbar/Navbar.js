@@ -4,7 +4,7 @@ import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
 import UpdateCourses from "./UpdateCourses";
-import Notifications from "./Notifications";
+import Notifications from "./Notifications/Notifications";
 import History from "./History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";

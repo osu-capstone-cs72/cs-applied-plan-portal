@@ -6,7 +6,7 @@ import {slide as Menu} from "react-burger-menu";
 import {logout} from "../../../utils/authService";
 import ManageRoles from "../../manage_roles/ManageRoles";
 import History from "../History";
-import Notifications from "../Notifications";
+import Notifications from "../Notifications/Notifications";
 import {useState} from "react";
 import MenuModal from "./MenuModal";
 
