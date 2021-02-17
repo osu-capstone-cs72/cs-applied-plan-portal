@@ -13,10 +13,19 @@ const ListItem = styled(Link)`
   font-size: 16px;
   margin-bottom: 1rem;
   color: #333;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+`;
+const PlanName = styled.div`
+  font-weight: 600;
 `;
 
+const StudentName = styled.div`
+  margin-left: 2rem;
+`;
 
-function MenuModal({isOpen, handleClose, list, handleClearNotif}) {
+function HistoryMenuModal({isOpen, handleClose, list}) {
   const style = css`
     & {
       position: fixed;
@@ -60,34 +69,27 @@ function MenuModal({isOpen, handleClose, list, handleClearNotif}) {
 
     /* ///// Custom CSS */
 
-    .notification-container {
+    .history-container {
       padding: 1rem 2rem;
       font-size: 16px;
     }
-
   `;
 
   if (!isOpen) {
     return null;
   }
 
-  function ListItems({list, handleClearNotif}) {
+  function ListItems({list}) {
+
     if (list.length === 0) {
-      return (
-        <div className='notification-container'>
-          No new notifications
-        </div>
-      );
+      return <div className="history-container">No recent history</div>;
     } else {
       return (
-        <ul className="notification-container">
+        <ul className="history-container">
           {list.map((item, index) => (
-            <ListItem
-              key={item.notificationId}
-              to={`/viewPlan/${item.planId}`}
-              onClick={(event) => handleClearNotif(event, item, index)}
-            >
-              {item.text}
+            <ListItem key={item.planId} to={`/viewPlan/${item.planId}`}>
+              <PlanName>{item.planName}</PlanName>
+              <StudentName>{`${item.firstName} ${item.lastName}`}</StudentName>
             </ListItem>
           ))}
         </ul>
@@ -96,27 +98,21 @@ function MenuModal({isOpen, handleClose, list, handleClearNotif}) {
   }
 
   return ReactDOM.createPortal(
-    <CSSTransition
-      in={isOpen}
-      timeout={1000}
-      unmountOnExit
-      classNames="my-node"
-    >
-      <div className="menu-modal" css={style}>
-        <div className="modal-content">
-          <FontAwesomeIcon
-            icon={faTimes}
-            size="lg"
-            className="close-window-icon"
-            onClick={handleClose}
-          />
-          <ListItems list={list} handleClearNotif={handleClearNotif} />
-        </div>
+    <div className="menu-modal" css={style}>
+      <div className="modal-content">
+        <FontAwesomeIcon
+          icon={faTimes}
+          size="lg"
+          className="close-window-icon"
+          onClick={handleClose}
+        />
+        {console.log(list)}
+        <ListItems list={list} />
       </div>
-    </CSSTransition>,
-    document.getElementById("notification-portal")
+    </div>
+    ,
+    document.getElementById("history-portal")
   );
-
 }
 
-export default MenuModal;
+export default HistoryMenuModal;

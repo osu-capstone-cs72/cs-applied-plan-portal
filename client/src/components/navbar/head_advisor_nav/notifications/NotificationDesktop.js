@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {css, jsx} from "@emotion/core";
 import styled from "@emotion/styled";
-import Badge from "../../Notifications/Badge";
+import Badge from "../../notifications/Badge";
 import {PropTypes} from "prop-types";
 import {Link} from "react-router-dom";
 

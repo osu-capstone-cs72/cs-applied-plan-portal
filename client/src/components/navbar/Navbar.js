@@ -3,9 +3,8 @@
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import UpdateCourses from "./UpdateCourses";
-import Notifications from "./Notifications/Notifications";
-import History from "./History";
+import Notifications from "./notifications/Notifications";
+import History from "./history/History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
@@ -181,13 +180,6 @@ function Navbar(props) {
           <div>
             {role ? <History currentPlan={props.currentPlan} /> : null}
             <Notifications />
-
-            {role === 2 ? (
-              <Link to={"/manageRoles"}>
-                <button id="manage-roles-button">Manage Roles</button>
-              </Link>
-            ) : null}
-            {role === 2 ? <UpdateCourses /> : null}
             <Logout />
           </div>
         )}

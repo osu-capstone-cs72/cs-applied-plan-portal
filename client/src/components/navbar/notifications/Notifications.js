@@ -5,8 +5,8 @@ import {useState, useEffect} from "react";
 import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import Cookies from "js-cookie";
-import NotificationCommon from "./NotificationCommon";
 import NotificationHeadAdv from "../head_advisor_nav/notifications/NotificationHeadAdv";
+import NotificationCommon from "./NotificationCommon";
 
 
 
@@ -121,7 +121,6 @@ function Notifications() {
 
   return (
     <React.Fragment>
-      {console.log(role)}
       {role === "2" && <NotificationHeadAdv
         notifications={notifications}
         handleClick={handleClick}
