@@ -110,7 +110,7 @@ function App() {
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="/createPlan">
+        <Route path="/createPlan/:planId">
           <StudentCreatePlan />
         </Route>
         <Route path="/viewPlan/:planId">

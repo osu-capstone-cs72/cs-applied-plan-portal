@@ -10,6 +10,7 @@ import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
+import logo from "./../../images/logo.png";
 
 // application navigation bar
 function Navbar(props) {
@@ -30,6 +31,8 @@ function Navbar(props) {
 
   }, []);
 
+  const responSize = "max-width: 860px";
+
   const style = css`
 
     & {
@@ -46,6 +49,9 @@ function Navbar(props) {
       left: 0;
       right: 0;
       z-index: 9;
+      @media (${responSize}){
+        height: 75px;
+      }
     }
 
     & a:first-of-type:hover {
@@ -63,7 +69,63 @@ function Navbar(props) {
       margin: 0;
       margin-right: 1rem;
       color: white;
+       width: 119px;
+       height: 66px;
+      @media (${responSize}){
+        width: 119px;
+        height: 75px;
+      }
     }
+
+    .logo-img {
+        display: block;
+        width: 33%;
+        position: relative;
+        left: 16px;
+        top: 9px;
+        @media (${responSize}){
+          width: 40%;
+       }
+    }
+
+    .logo-text {
+        display: flex;
+        flex-wrap: wrap;
+        position: absolute;
+        text-align:center;
+        top: 12px;
+        left: 41%;
+        width: 40%;
+
+      @media(${responSize}) {
+        display: block;
+        position: absolute;
+        text-align:center;
+        top: 12px;
+        left: 29%;
+        width: 40%;
+        height: 75px;
+        padding: 10px;
+      }
+    }
+
+    .logo-text p{
+      @media (${responSize}){
+        margin-bottom: 0px;
+      }
+    }
+
+    #logo-title{
+      margin-right: 6px;
+    }
+
+    #logo-title2{
+      @media (${responSize}){
+        font-size: 15px;
+        font-weight: 500;
+      }
+    }
+
 
     /* Don't style the last item, but in a way that's safe for SSR. */
     .right-container > * > button {
@@ -73,11 +135,19 @@ function Navbar(props) {
       border-radius: 0.25rem;
       background: transparent;
       margin-right: 0.5rem;
+
+      @media (${responSize}){
+        border: 1px solid transparent;
+        font-size: 2em;
+      }
     }
 
     .right-container {
       margin-left: auto;
+      display:flex;
     }
+
+
 
     #manage-roles-button:hover {
       background: rgba(0, 0, 0, 0.15);
@@ -94,7 +164,13 @@ function Navbar(props) {
   return (
     <div id="navbar" className="navbar-parent" css={style}>
       <Link to={"/"}>
-        <p className="osu-logo">OSU CS Applied Plan Portal</p>
+        <div className="osu-logo">
+          <img className="logo-img" src={logo}/>
+          <div className="logo-text">
+            <p id="logo-title">OSU CS</p>
+            <p id="logo-title2">Applied Plan</p>
+          </div>
+        </div>
       </Link>
       <div className="right-container">
         {role ? <History currentPlan={props.currentPlan}/> : null}
