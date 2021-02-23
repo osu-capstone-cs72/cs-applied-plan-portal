@@ -16,6 +16,9 @@ function ActivityFeed(props) {
       margin: 50px auto;
       text-align: center;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     @media print {

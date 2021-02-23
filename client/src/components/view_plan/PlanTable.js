@@ -8,7 +8,7 @@ function PlanTable(props) {
 
   const style = css`
     width: 100%;
-    margin-top: 150px;
+    margin-top: 205px;
 
     #courses-table {
       width: 95%;
@@ -95,7 +95,35 @@ function PlanTable(props) {
       }
 
     }
-  
+    @media screen and (max-width: 600px) {
+        table, thead, tbody, th, td, tr { 
+            display: block; 
+        }
+
+        thead tr { 
+            display: none;
+        }
+
+        tbody tr td:nth-of-type(3) {
+            text-align: left;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid black;
+        }
+
+        tbody tr:last-of-type {
+            border-style: none;
+        }
+
+        td:before {
+            font-weight: bold;
+        }
+
+        td:nth-of-type(1):before { content: "COURSE: "; }
+        td:nth-of-type(2):before { content: "NAME: "; }
+        td:nth-of-type(3):before { content: "CREDITS: "; }
+        td:nth-of-type(4):before { content: "RESTRICTIONS: "; }
   `;
 
   return (

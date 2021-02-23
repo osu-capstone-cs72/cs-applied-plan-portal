@@ -11,8 +11,7 @@ function Comment(props) {
     text-align: center;
     margin: 25px auto;
     padding: 25px;
-    min-width: 350px;
-    max-width: 33%;
+    width: 33%;
     word-wrap: break-word;
     overflow-wrap: break-word;
     border-radius: 0.5rem;
@@ -32,6 +31,13 @@ function Comment(props) {
 
     .comment-text {
       font-size: larger;
+    }
+
+    @media screen and (max-width: 800px) {
+        width: 45%;
+    }
+    @media screen and (max-width: 600px) {
+        width: 95%
     }
   `;
 

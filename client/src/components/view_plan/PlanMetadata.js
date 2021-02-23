@@ -12,6 +12,8 @@ function PlanMetadata(props) {
   const {planId} = useParams();
   const [creditSum, setCreditSum] = useState(0);
 
+  const responSize = "max-width: 860px";
+
   const style = css`
     display: flex;
     justify-content: center;
@@ -20,6 +22,19 @@ function PlanMetadata(props) {
     top: 50px;
     left: 0;
     right: 0;
+
+    .plan-buttons {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+        background: #f4f2f1;
+        width: 100%;
+    }
+
+    .plan-buttons .button-field {
+        max-width: 120px;
+    }
 
     .plan-metadata {
       padding: 10px;
@@ -102,7 +117,20 @@ function PlanMetadata(props) {
         display: inline-block;
         word-wrap: break-word;
       }
+    }
 
+    @media screen and (max-width: 600px) {
+        .field-type {
+            font-size: 12px;
+        }
+
+        .field-text {
+            font-size: 12px;
+        }
+    }
+
+    @media (${responSize}) {
+        top: 75px;
     }
   `;
 
@@ -116,51 +144,77 @@ function PlanMetadata(props) {
 
   return (
     <div id="metadata-container" css={style}>
-      <div className="plan-metadata">
-        <div className="metadata-field" id="plan-field">
-          <p className="field-type">Plan Name:</p>
-          <p className="field-text">{props.planName}</p>
-        </div>
-        <div className="metadata-field" id="student-field">
-          <p className="field-type">Student Name:</p>
-          <p className="field-text">{props.studentName}</p>
-        </div>
-        <div className="metadata-field" id="email-field">
-          <p className="field-type">Email:</p>
-          <p className="field-text">{props.email}</p>
-        </div>
-        <div className="metadata-field" id="credit-field">
-          <p className="field-type">Total Credits:</p>
-          <p className="field-text">{creditSum}</p>
-        </div>
-        <div className="metadata-field" id="status-field">
-          <p className="field-type">Plan Status:</p>
-          <p className="field-text">{statusText(props.status)}</p>
-        </div>
-        {/*
-        <div className="metadata-field button-field">
-          <button id="print-plan-button" onClick={() => props.onPrint()}>
-            Print Plan
-          </button>
-        </div>
-        */}
-        {props.status === 1 || props.status === 2 ? (
-          <div className="metadata-field button-field">
-            <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-              <button id="edit-plan-button">
-                Edit Plan
-              </button>
-            </Link>
-          </div>
-        ) : (null)}
-        {props.status === 1 || props.status === 2 ? (
-          <div className="metadata-field button-field">
-            <button id="delete-plan-button" onClick={() => props.onDelete()}>
-              Delete Plan
+        <div className="plan-metadata">
+            <div className="metadata-field" id="plan-field">
+            <p className="field-type">Plan Name:</p>
+            <p className="field-text">{props.planName}</p>
+            </div>
+            {
+                props.currentUser.role !== 0 ? (
+                    <div className="metadata-field" id="student-field">
+                        <p className="field-type">Student Name:</p>
+                        <p className="field-text">{props.studentName}</p>
+                    </div>
+                ) : (null)
+            }
+            {
+                props.currentUser.role !== 0 ? (
+                    <div className="metadata-field" id="email-field">
+                        <p className="field-type">Email:</p>
+                        <p className="field-text">{props.email}</p>
+                    </div>
+                ) : (null)
+            }
+            <div className="metadata-field" id="credit-field">
+            <p className="field-type">Total Credits:</p>
+            <p className="field-text">{creditSum}</p>
+            </div>
+            <div className="metadata-field" id="status-field">
+            <p className="field-type">Plan Status:</p>
+            <p className="field-text">{statusText(props.status)}</p>
+            </div>
+            {/*
+            <div className="metadata-field button-field">
+            <button id="print-plan-button" onClick={() => props.onPrint()}>
+                Print Plan
             </button>
-          </div>
-        ) : (null)}
-      </div>
+            </div>
+            */}
+            {/* {props.status === 1 || props.status === 2 ? (
+                <div className="metadata-field button-field">
+                    <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+                    <button id="edit-plan-button">
+                        Edit Plan
+                    </button>
+                    </Link>
+                </div>
+            ) : (null)}
+            {props.status === 1 || props.status === 2 ? (
+                <div className="metadata-field button-field">
+                    <button id="delete-plan-button" onClick={() => props.onDelete()}>
+                    Delete Plan
+                    </button>
+                </div>
+            ) : (null)} */}
+        </div>
+        <div className="plan-buttons">
+            {props.status === 1 || props.status === 2 ? (
+                <div className="metadata-field button-field">
+                    <Link to={`/editPlan/${planId}`} id="edit-plan-link">
+                        <button id="edit-plan-button">
+                            Edit Plan
+                        </button>
+                    </Link>
+                </div>
+            ) : (null)}
+            {props.status === 1 || props.status === 2 ? (
+                <div className="metadata-field button-field">
+                    <button id="delete-plan-button" onClick={() => props.onDelete()}>
+                        Delete Plan
+                    </button>
+                </div>
+            ) : (null)}
+        </div>
     </div>
   );
 

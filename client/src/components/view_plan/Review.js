@@ -15,8 +15,7 @@ function Reviews(props) {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 350px;
-    max-width: 33%;
+    width: 33%;
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     background: white;
@@ -39,6 +38,13 @@ function Reviews(props) {
       font-weight: bold;
       font-size: large;
       display: block;
+    }
+
+    @media screen and (max-width: 800px) {
+        width: 45%;
+    }
+    @media screen and (max-width: 600px) {
+        width: 95%
     }
   `;
 
