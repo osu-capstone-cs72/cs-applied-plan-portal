@@ -3,10 +3,12 @@
 
 console.log("Server JavaScript start");
 
-const {Env} = require("./entities/environment");
-
+require("dotenv").config({ silent: process.env.NODE_ENV === "PRODUCTION" });
+const { ENV } = require("./entities/environment");
+console.log(process.env.NODE_ENV)
 // setup database connection and routing
-if (process.env.ENV !== Env.production) {
+if (process.env.NODE_ENV !== ENV.PRODUCTION) {
+  console.log('Dev env')
   // use the .env file if not running on production
   require("dotenv").config();
 }

@@ -1,9 +1,8 @@
 // File: environment.js
 // Description: Specifies custom environments on which this app is to run.
 
-const Env = Object.freeze({
-  development: "DEVELOPMENT",
-  testing: "TESTING",
-  production: "PRODUCTION"
+export const ENV = Object.freeze({
+  DEVELOPMENT: "development",
+  TESTING: "testing",
+  PRODUCTION: "production"
 });
-exports.Env = Env;
