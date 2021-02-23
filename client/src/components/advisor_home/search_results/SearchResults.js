@@ -2,7 +2,7 @@
 import React from "react";
 import {jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
-import {Desktop, Mobile} from "../../utils/responsiveUI";
+import {Desktop, Mobile} from "../../../utils/responsiveUI";
 import SearchResultsDesktop from "./SearchResultsDesktop";
 import SearchResultsMobile from "./SearchResultsMobile";
 

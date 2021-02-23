@@ -1,12 +1,12 @@
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
-import { formatTime } from "../../utils/formatTime";
-import { statusText } from "../../utils/renderStatus";
-import { BOX_SHADOW_CARD, MOBILE_WIDTH } from '../../utils/constants';
+import {formatTime} from "../../../utils/formatTime";
+import {statusText} from "../../../utils/renderStatus";
+import {BOX_SHADOW_CARD, MOBILE_WIDTH} from "../../../utils/constants";
 
 
-function SearchResultsMobileCard({ plan }) {
+function SearchResultsMobileCard({plan}) {
   const style = css`
     & {
       width: ${MOBILE_WIDTH};

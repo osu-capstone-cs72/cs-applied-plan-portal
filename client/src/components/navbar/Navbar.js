@@ -3,13 +3,13 @@
 import {css, jsx} from "@emotion/core";
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router-dom";
-import UpdateCourses from "./UpdateCourses";
-import Notifications from "./Notifications";
-import History from "./History";
+import Notifications from "./notifications/Notifications";
+import History from "./history/History";
 import Logout from "./Logout";
 import {getProfile} from "../../utils/authService";
 import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
+import HeadAdvisorNav from "./head_advisor_nav/HeadAdvisorNav";
 import logo from "./../../images/logo.png";
 
 // application navigation bar
@@ -95,7 +95,7 @@ function Navbar(props) {
         text-align:center;
         top: 12px;
         left: 41%;
-        width: 40%;
+        /* width: 40%; */
 
       @media(${responSize}) {
         display: block;
@@ -128,7 +128,7 @@ function Navbar(props) {
 
 
     /* Don't style the last item, but in a way that's safe for SSR. */
-    .right-container > * > button {
+    .right-container button {
       height: 35px;
       border: 1px solid white;
       color: white;
@@ -165,7 +165,7 @@ function Navbar(props) {
     <div id="navbar" className="navbar-parent" css={style}>
       <Link to={"/"}>
         <div className="osu-logo">
-          <img className="logo-img" src={logo}/>
+          <img className="logo-img" src={logo} />
           <div className="logo-text">
             <p id="logo-title">OSU CS</p>
             <p id="logo-title2">Applied Plan</p>
@@ -173,21 +173,16 @@ function Navbar(props) {
         </div>
       </Link>
       <div className="right-container">
-        {role ? <History currentPlan={props.currentPlan}/> : null}
-        <Notifications />
+        {/* If head advisor, show HeadAdvisorNav */}
         {role === 2 ? (
-          <Link to={"/manageRoles"}>
-            <button id="manage-roles-button">Manage Roles</button>
-          </Link>
+          <HeadAdvisorNav currentPlan={props.currentPlan}/>
         ) : (
-          null
+          <div>
+            {role ? <History currentPlan={props.currentPlan} /> : null}
+            <Notifications />
+            <Logout />
+          </div>
         )}
-        {role === 2 ? (
-          <UpdateCourses />
-        ) : (
-          null
-        )}
-        <Logout />
       </div>
     </div>
   );

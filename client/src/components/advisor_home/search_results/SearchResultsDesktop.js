@@ -1,12 +1,12 @@
 /** @jsx jsx */
 
-import {statusText} from "../../utils/renderStatus";
-import {formatTime} from "../../utils/formatTime";
+import {statusText} from "../../../utils/renderStatus";
+import {formatTime} from "../../../utils/formatTime";
 import {css, jsx} from "@emotion/core";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import LoadMoreButton from "../general/LoadMoreButton";
-import {BOX_SHADOW_CARD, MOBILE_WIDTH, SCREENWIDTH} from "../../utils/constants";
+import LoadMoreButton from "../../general/LoadMoreButton";
+import {BOX_SHADOW_CARD, MOBILE_WIDTH, SCREENWIDTH} from "../../../utils/constants";
 
 function SearchResultsDesktop({
   props: {error,
