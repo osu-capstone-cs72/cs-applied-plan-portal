@@ -1,19 +1,14 @@
 import React from 'react'
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { Desktop, Mobile } from '../../../utils/responsiveUI';
 
 const Container = styled.div`
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 55px;
-      word-wrap: break-word;
-      flex-grow: 1;
 `
 
 const StyledLink = styled(Link)`
-  padding: 10px;
 `
 
 const StyledButton = styled.button`
@@ -26,10 +21,21 @@ function EditPlanBtn({ status, planId }) {
     <>
       {status === 1 || status === 2 ? (
         <Container>
+
           <StyledLink to={`/editPlan/${planId}`}>
-            <StyledButton>
-              Edit Plan
+            <Desktop>
+              <StyledButton>
+                Edit Plan
             </StyledButton>
+            </Desktop>
+            <Mobile>
+              <FontAwesomeIcon icon={faEdit} style={{
+                color: `var(--color-edit)`,
+                fontSize: '2.5rem',
+                margin: '1rem',
+                marginRight: '2rem'
+              }} />
+            </Mobile>
           </StyledLink>
         </Container>
       ) : (null)}

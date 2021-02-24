@@ -1,6 +1,6 @@
 import React from "react";
-import {Global, css} from "@emotion/core";
-import {Route, Switch} from "react-router-dom";
+import { Global, css } from "@emotion/core";
+import { Route, Switch } from "react-router-dom";
 import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
@@ -99,6 +99,9 @@ const globalStyles = css`
     --color-blue-700: #1d6f98;
     --color-blue-800: #166086;
     --color-blue-900: #0b4f71;
+
+    --color-delete: #E93B2D;
+    --color-edit: #F7A000;
   }
 `;
 

@@ -1,15 +1,11 @@
 import React from 'react'
 import styled from '@emotion/styled';
-
+import { Desktop, Mobile } from '../../../utils/responsiveUI';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 55px;
-      word-wrap: break-word;
-      flex-grow: 1;
+  margin-left: 10px;
 `
 const StyledButton = styled.button`
   padding: 10px;
@@ -18,12 +14,26 @@ const StyledButton = styled.button`
 function DeletePlanBtn({ status, onDelete }) {
   return (
     <>
+
       {status === 1 || status === 2 ? (
-        <Container>
-          <StyledButton onClick={() => onDelete()}>
-            Delete Plan
+        <>
+          <Container>
+            <Desktop>
+              <StyledButton onClick={() => onDelete()}>
+                Delete Plan
           </StyledButton>
-        </Container>
+            </Desktop>
+            <Mobile>
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                style={{
+                  color: `var(--color-delete)`,
+                  fontSize: '2.5rem'
+                }}
+                onClick={() => onDelete()} />
+            </Mobile>
+          </Container>
+        </>
       ) : (null)}
 
     </>

@@ -1,16 +1,16 @@
 /** @jsx jsx */
 
-import {useState, useEffect} from "react";
-import {css, jsx} from "@emotion/core";
+import { useState, useEffect } from "react";
+import { css, jsx } from "@emotion/core";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
 import ListSimilarPlans from "./ListSimilarPlans";
 import CreateReview from "./CreateReview";
-import PlanMetadata from "./PlanMetadata";
+import PlanMetadata from "./plan_meta_data/PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
-import {useParams, withRouter} from "react-router-dom";
-import {getProfile} from "../../utils/authService";
+import { useParams, withRouter } from "react-router-dom";
+import { getProfile } from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
@@ -33,7 +33,7 @@ function ViewPlan(props) {
   const [status, setStatus] = useState(-1);
   const [activity, setActivity] = useState([]);
   const [courses, setCourses] = useState([]);
-  const {planId} = useParams();
+  const { planId } = useParams();
   const [cursor, setCursor] = useState({
     primary: "null",
     secondary: "null"
@@ -46,7 +46,7 @@ function ViewPlan(props) {
       lastName: ""
     }
   );
-  const [request, setRequest] = useState ({
+  const [request, setRequest] = useState({
     primary: "null",
     secondary: "null",
     planId: planId
@@ -210,7 +210,7 @@ function ViewPlan(props) {
           lastName: studentLastName
         };
         const url = `/api/plan/${planId}/activity/${cursor.primary}/` +
-        `${cursor.secondary}`;
+          `${cursor.secondary}`;
         let obj = [];
 
         // get plan activity

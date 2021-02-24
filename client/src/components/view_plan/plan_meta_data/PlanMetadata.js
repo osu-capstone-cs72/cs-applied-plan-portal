@@ -176,46 +176,24 @@ function PlanMetadata(props) {
           <p className="field-text">{statusText(props.status)}</p>
         </div>
       </div>
-      {/*
-            <div className="metadata-field button-field">
-            <button id="print-plan-button" onClick={() => props.onPrint()}>
-                Print Plan
-            </button>
-            </div>
-            */}
-      {/* {props.status === 1 || props.status === 2 ? (
-                <div className="metadata-field button-field">
-                    <Link to={`/editPlan/${planId}`} id="edit-plan-link">
-                    <button id="edit-plan-button">
-                        Edit Plan
-                    </button>
-                    </Link>
-                </div>
-            ) : (null)}
-            {props.status === 1 || props.status === 2 ? (
-                <div className="metadata-field button-field">
-                    <button id="delete-plan-button" onClick={() => props.onDelete()}>
-                    Delete Plan
-                    </button>
-                </div>
-            ) : (null)} */}
-      {console.log(planId)}
+
+
       <div className="plan-buttons">
+
         <EditPlanBtn
           status={props.status}
           planId={planId} />
+
         <DeletePlanBtn
           status={props.status}
           onDelete={props.onDelete}
         />
-        {/* {props.status === 1 || props.status === 2 ? (
-          <div className="metadata-field button-field">
-            <button id="delete-plan-button" onClick={() => props.onDelete()}>
-              Delete Plan
-                    </button>
-          </div>
-        ) : (null)} */}
+
       </div>
+
+
+
+
     </div>
   );
 
