@@ -9,6 +9,7 @@ import {useLocation, useParams} from "react-router-dom";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
 import {css, jsx} from "@emotion/core";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // create plan page
 export default function StudentCreatePlan() {
@@ -25,6 +26,9 @@ export default function StudentCreatePlan() {
   const {planId} = useParams();
   const location = useLocation();
   
+  const width = SCREENWIDTH.MOBILE.MAX; 
+
+
   const style = css`
     & {
       display: grid;
@@ -46,6 +50,16 @@ export default function StudentCreatePlan() {
                            'left    plan    center  search  right'
                            'left    plan    center  search  right'
                            'bottom  bottom  bottom  bottom  bottom';
+      @media(max-width: ${width}px){
+        grid-template-areas:
+          'navbar'
+          'search'
+          'plan'
+          'bottom';
+        grid-template-rows: 75px;
+        grid-template-columns: auto;
+        padding: 0px 10px 0px 10px; 
+      }
     }
     
     #navbar {

@@ -6,6 +6,8 @@ import FilterBar from "./FilterBar";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
+import { Mobile,Desktop } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // search form for courses
 function CourseContainer(props) {
@@ -15,6 +17,7 @@ function CourseContainer(props) {
   const [filter, setFilter] = useState("*");
   const [request, setRequest] = useState("*");
 
+ const width = SCREENWIDTH.MOBILE.MAX; 
 
   const style = css`
 
@@ -27,6 +30,19 @@ function CourseContainer(props) {
                           'search   search'
                           'warn     warn'
                           'results  results';
+      @media(max-width: ${width}px){
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+        grid-template-areas:
+            'title'
+            'category'
+            'search'
+            'warn'
+            'results';
+        position: relative;
+        top: 10px;
+        grid-gap: 5px;
+      }
     }
     
     .search-title {
@@ -35,6 +51,9 @@ function CourseContainer(props) {
       grid-area: title;
       display: flex;
       align-items: center;
+      @media(max-width: ${width}px){
+        display: none;
+      }
     }
     
     .search-category {
@@ -47,6 +66,9 @@ function CourseContainer(props) {
       padding: 1rem 1rem;
       border-radius: 0.5rem;
       border: none;
+      @media(max-width: ${width}px){
+        padding: 0px;
+      }
     }
     
     .search-results {
@@ -86,6 +108,10 @@ function CourseContainer(props) {
     
     .form {
       display: inline;
+    }
+
+    .fas.fa-search{
+      font-size: 2.5rem;
     }
   `;
 
@@ -180,12 +206,24 @@ function CourseContainer(props) {
 
   return (
     <div id="search" css={style}>
-      <div className="search-title">Search</div>
+     
+        <div className="search-title">Search</div>
+      
+      
       <div className="search-container">
         <form className="form my-2 my-lg-0" onSubmit={submitHandler}>
           <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
         </form>
-        <button className="search-button" type="submit" onClick={callSearch}>Search</button>
+
+        <button className="search-button" type="submit" onClick={callSearch}>
+          <Desktop>
+            Search
+          </Desktop>
+          
+          <Mobile>
+            <i class="fas fa-search"></i>
+          </Mobile>
+        </button>
       </div>
       <form className="course-filter form-group">
         <FilterBar value={filter} onValueChange={handleFilterChange}/>

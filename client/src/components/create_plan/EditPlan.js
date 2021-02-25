@@ -6,12 +6,15 @@ import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 import {login} from "../../utils/authService";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // edit plan form
 function EditPlan(props) {
 
   const [warning, setWarning] = useState("");
 
+  const width = SCREENWIDTH.MOBILE.MAX;
   const style = css`
     & {
       grid-area: plan;
@@ -22,6 +25,11 @@ function EditPlan(props) {
       grid-template-areas: 'title'
                           'table'
                           'submit';
+      @media(max-width: ${width}px){
+        height: auto;
+        width: fit-content;
+        overflow: auto;
+      }
     }
     
     #title {
@@ -37,6 +45,9 @@ function EditPlan(props) {
       font-weight: bold;
       border-radius: 0.5rem;
       border: 1.5px solid #dfdad8;
+      @media(max-width: ${width}px){
+          width: 75vw;
+      }
     }
     
     #title-credits {
@@ -47,6 +58,10 @@ function EditPlan(props) {
       grid-template-rows: auto auto;
       text-align: center;
       font-weight: bold;
+      @media(max-width: ${width}px){
+          margin: 0px 10px;
+      }
+      
     }
     
     #credits-count {
