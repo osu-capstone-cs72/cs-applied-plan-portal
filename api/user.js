@@ -149,11 +149,13 @@ app.get("/login", async (req, res) => {
   });
 
   // send the ticket to this URL to validate it against CAS
-  const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-dev";
+  const hostname = (process.env.NODE_ENV === ENV.PRODUCTION)
+    ? "login.oregonstate.edu"
+    : "login-int.iam.oregonstate.edu"
   const casValidationUrl = url.format({
     protocol: "https",
-    hostname: "login.oregonstate.edu",
-    pathname: `/${casIdp}/profile/cas/serviceValidate`,
+    hostname: hostname,
+    pathname: `/idp/profile/cas/serviceValidate`,
     query: {
       ticket: ticket,
       service: callbackUrl
