@@ -14,13 +14,16 @@ const globalStyles = css`
   body {
     font-family: "Muli", sans-serif;
     margin: 0;
-    background: #fbfaf9; /*#FFFDFC*/
+    background: #fbfaf9;
   }
 
   li {
     list-style: none;
   }
 
+  select {
+    background-color: white;
+  }
 
   :root {
     --color-orange-50: #fff5f2;
@@ -100,14 +103,13 @@ const globalStyles = css`
     --color-blue-800: #166086;
     --color-blue-900: #0b4f71;
 
-    --color-delete: #E93B2D;
-    --color-edit: #F7A000;
+    --color-delete: #e93b2d;
+    --color-edit: #f7a000;
   }
 `;
 
 // handle all application URL page routing
 function App() {
-
   return (
     <div className="App">
       <Global styles={globalStyles} />

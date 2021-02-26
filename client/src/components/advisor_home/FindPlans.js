@@ -62,6 +62,10 @@ function FindPlans(props) {
       flex: 100%;
     }
 
+    #select-status {
+      background-color: white;
+    }
+
     @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
       & {
         width: ${MOBILE_WIDTH};
