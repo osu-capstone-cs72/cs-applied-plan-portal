@@ -52,10 +52,8 @@ export default function StudentCreatePlan() {
                            'bottom  bottom  bottom  bottom  bottom';
       @media(max-width: ${width}px){
         grid-template-areas:
-          'navbar'
-          'search'
-          'plan'
-          'bottom';
+        'navbar navbar'
+        'plan search';
         grid-template-rows: 75px;
         grid-template-columns: auto;
         padding: 0px 10px 0px 10px; 
@@ -234,6 +232,7 @@ export default function StudentCreatePlan() {
         <Navbar currentPlan={0} />
         <EditPlan courses={courses} reqCourse={reqCourseOption} edit={edit} planName={planName} onLoading={load => setSubmitLoading(load)}
           onChangePlanName={e => setPlanName(e)} onRemoveCourse={e => handleRemoveCourse(e)}  />
+      
         <CourseSearch warning={warning} onAddCourse={e => handleAddCourse(e)}
           onNewWarning={e => setWarning(e)}/>
       </div>

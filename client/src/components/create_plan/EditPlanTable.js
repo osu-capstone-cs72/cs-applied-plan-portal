@@ -22,6 +22,8 @@ function EditPlanTable(props) {
       background: white;
       border-radius: 0.5rem;
       position: relative;
+      @media(max-width: ${width}px){
+      }
     }
 
     #courses-table, th, tr, td, th {

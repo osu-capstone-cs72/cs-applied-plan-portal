@@ -29,6 +29,8 @@ function EditPlan(props) {
         height: auto;
         width: fit-content;
         overflow: auto;
+        position: relative;
+        top: 50px;
       }
     }
     

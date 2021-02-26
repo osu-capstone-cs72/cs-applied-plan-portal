@@ -4,10 +4,13 @@ import {useEffect, useState} from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
 import ErrorMessage from "../general/ErrorMessage";
-import PropTypes from "prop-types";
+import PropTypes, { func } from "prop-types";
 import {css, jsx} from "@emotion/core";
 import { Mobile,Desktop } from "../../utils/responsiveUI";
 import {SCREENWIDTH} from "../../utils/constants";
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root')
 
 // search form for courses
 function CourseContainer(props) {
@@ -17,7 +20,19 @@ function CourseContainer(props) {
   const [filter, setFilter] = useState("*");
   const [request, setRequest] = useState("*");
 
- const width = SCREENWIDTH.MOBILE.MAX; 
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const width = SCREENWIDTH.MOBILE.MAX; 
+
+  const ModalStyles = {
+  content : {
+    position             : "relative",
+    inset                : "13vh 0px 0px 0px",
+    border               : "1px solid transparent",
+    background           : "rgba(0, 0, 0, 0.5)",
+    padding              : "10px",
+    height               : "87vh"
+  }
+};
 
   const style = css`
 
@@ -31,17 +46,15 @@ function CourseContainer(props) {
                           'warn     warn'
                           'results  results';
       @media(max-width: ${width}px){
-        grid-template-columns: auto;
-        grid-template-rows: auto;
+        grid-template-columns: 94vw;
+        grid-template-rows: 43px auto;
         grid-template-areas:
-            'title'
-            'category'
             'search'
-            'warn'
             'results';
-        position: relative;
-        top: 10px;
         grid-gap: 5px;
+        position: absolute;
+        left: -95vw;
+        height: auto;
       }
     }
     
@@ -75,6 +88,10 @@ function CourseContainer(props) {
       grid-area: results;
       overflow-x: hidden;
       overflow-y: auto;
+      @media(max-width: ${width}px){
+        overflow-y: scroll;
+        // max-height: 76vh;
+      }
     }
 
     .search-container {
@@ -113,6 +130,20 @@ function CourseContainer(props) {
     .fas.fa-search{
       font-size: 2.5rem;
     }
+
+    button.closeButton{
+      position: relative;
+      left: -4vw;
+      margin-left: 92%;
+      width: fit-content;
+      top: -17vw;
+      border: 1px solid transparent;
+      font-size: 2em;
+      background: transparent;
+    color: white;
+    }
+
+
   `;
 
   // listen for new search requests and perform a new search when one arrives
@@ -184,6 +215,7 @@ function CourseContainer(props) {
       courses: courses,
       filter: filter
     });
+    openModal();
   }
 
   // if the filter value is changed clear the error field and set the filter
@@ -204,9 +236,19 @@ function CourseContainer(props) {
     props.onNewWarning(text);
   }
 
+  function openModal(){
+    setIsOpen(true);
+  }
+
+  function closeModal(){
+    setIsOpen(false);
+  }
+
+
+
   return (
     <div id="search" css={style}>
-     
+      
         <div className="search-title">Search</div>
       
       
@@ -225,18 +267,65 @@ function CourseContainer(props) {
           </Mobile>
         </button>
       </div>
-      <form className="course-filter form-group">
+
+      <Desktop>
+        <form className="course-filter form-group">
         <FilterBar value={filter} onValueChange={handleFilterChange}/>
       </form>
+      </Desktop>
+      
+
+
       <ErrorMessage text={props.warning} />
-      <div className="search-results">
+
+
+
+          
+      <Mobile>
+        <div className="search-results">
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={ModalStyles}
+        >
+            <button onClick={closeModal}>
+              <i class="fas fa-times"></i>
+            </button>
+
+            {courses.length > 0 ? courses.map(c =>
+              <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+                description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
+            ) : (
+              <Desktop>
+                <div>Search for courses...</div>
+              </Desktop>
+            )}
+        </Modal>
+      </div>
+      </Mobile>
+      
+            
+
+
+    
+
+
+      <Desktop>
+        <div className="search-results">
         {courses.length > 0 ? courses.map(c =>
           <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
             description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
         ) : (
-          <div>Search for courses...</div>
+          <Desktop>
+            <div>Search for courses...</div>
+          </Desktop>
+          
         )}
       </div>
+      </Desktop>
+      
+
+
     </div>
   );
 
