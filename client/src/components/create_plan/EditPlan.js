@@ -8,11 +8,13 @@ import {css, jsx} from "@emotion/core";
 import {login} from "../../utils/authService";
 import { Desktop, Mobile } from "../../utils/responsiveUI";
 import {SCREENWIDTH} from "../../utils/constants";
+import Modal from 'react-modal';
 
 // edit plan form
 function EditPlan(props) {
 
   const [warning, setWarning] = useState("");
+  const [modalIsOpen, setIsOpen] =useState(false);
 
   const width = SCREENWIDTH.MOBILE.MAX;
   const style = css`
@@ -158,6 +160,8 @@ function EditPlan(props) {
         }
         props.onLoading(false);
       }
+    }else{
+      openModal();
     }
   }
 
@@ -254,6 +258,16 @@ function EditPlan(props) {
     props.onChangePlanName(e.target.value);
   }
 
+  // show error modal
+  function openModal(){
+    setIsOpen(true);
+  }
+
+  // close error modal
+  function closeModal(){
+    setIsOpen(false);
+  }
+
   return (
     <div id="edit-container" css={style}>
       <div id="title">
@@ -263,9 +277,32 @@ function EditPlan(props) {
           value={props.planName}
           onChange={updatePlanName}
         />
-        <div id="submit-plan-error">
-          <ErrorMessage text={warning} className="error-hide-conditional"/>
-        </div>
+
+        <Desktop>
+          <div id="submit-plan-error">
+            <ErrorMessage text={warning} className="error-hide-conditional"/>
+          </div>
+        </Desktop>
+
+        <Mobile>
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+
+          >
+            <button id="closeButton" onClick={closeModal}>
+              close
+            </button>
+            <div id="submit-plan-error">
+              <ErrorMessage text={warning} className="error-hide-conditional"/>
+            </div>
+          </Modal>
+            
+        
+        </Mobile>
+        
+
+
         <div id="title-credits">
           <div id="credits-count">{loadCredits()}</div>
           <div id="credits-label">credits</div>
@@ -284,7 +321,7 @@ function EditPlan(props) {
       )}
       {props.courses.length > 0 ? (
         <div id="submit">
-          <button id="submit-button"onClick={submitPlan}>
+          <button id="submit-button" onClick={submitPlan}>
             {props.edit ? "Save Plan" : "Submit Plan"}
           </button>
         </div>

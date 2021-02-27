@@ -24,6 +24,7 @@ function CourseContainer(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const width = SCREENWIDTH.MOBILE.MAX; 
 
+  // modal css styles
   const ModalStyles = {
   overlay:{
     background          :  "rgba(0, 0, 0, 0.5)"
@@ -258,6 +259,12 @@ function CourseContainer(props) {
     callSearch();
   }
 
+  // handle mobile filter change
+  async function handleFilterChangeMobile(value) {
+    changeWarning("");
+    setFilter(value);
+  }
+
   // prevent default submit behavior of form elements
   function submitHandler(e) {
     e.preventDefault();
@@ -269,10 +276,12 @@ function CourseContainer(props) {
     props.onNewWarning(text);
   }
 
+  // show modal
   function openModal(){
     setIsOpen(true);
   }
 
+  // close modal
   function closeModal(){
     setIsOpen(false);
   }
@@ -300,14 +309,16 @@ function CourseContainer(props) {
         </button>
       </div>
 
-      
+      <Desktop>
         <form className="course-filter form-group">
-        <FilterBar value={filter} onValueChange={handleFilterChange}/>
-      </form>
-   
-      
-      
-
+          <FilterBar value={filter} onValueChange={handleFilterChange}/>
+        </form>
+      </Desktop>
+      <Mobile>
+        <form className="course-filter form-group">
+          <FilterBar value={filter} onValueChange={handleFilterChangeMobile}/>
+        </form>
+      </Mobile>
 
 
       {/* Mobile version for pop up modal for table containing search course result */}
