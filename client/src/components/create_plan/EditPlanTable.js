@@ -23,6 +23,8 @@ function EditPlanTable(props) {
       border-radius: 0.5rem;
       position: relative;
       @media(max-width: ${width}px){
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.35);
+
       }
     }
 

@@ -51,12 +51,14 @@ export default function StudentCreatePlan() {
                            'left    plan    center  search  right'
                            'bottom  bottom  bottom  bottom  bottom';
       @media(max-width: ${width}px){
-        grid-template-areas:
-        'navbar navbar'
-        'plan search';
-        grid-template-rows: 75px;
-        grid-template-columns: auto;
-        padding: 0px 10px 0px 10px; 
+          grid-template-areas:
+              'navbar'
+              'search'
+              'plan ';
+          grid-template-rows: 81px 94px auto;
+          grid-template-columns: auto;
+          padding: 0px 5px 0px 5px;
+          grid-row-gap: 0;
       }
     }
     

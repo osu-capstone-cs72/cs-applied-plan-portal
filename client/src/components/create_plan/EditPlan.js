@@ -26,11 +26,10 @@ function EditPlan(props) {
                           'table'
                           'submit';
       @media(max-width: ${width}px){
-        height: 89%;
-        width: fit-content;
+        height: 98%;
         overflow: auto;
-        position: relative;
-        top: 50px;
+        grid-template-columns: auto;
+
       }
     }
     

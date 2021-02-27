@@ -72,14 +72,14 @@ function CourseContainer(props) {
                           'warn     warn'
                           'results  results';
       @media(max-width: ${width}px){
-        grid-template-columns: 94vw;
-        grid-template-rows: 43px auto;
+        grid-template-columns: 96vw;
+        grid-template-rows: 40px 43px auto;
         grid-template-areas:
+            'filter'
             'search'
             'results';
         grid-gap: 5px;
         position: absolute;
-        left: -95vw;
         height: auto;
       }
     }
@@ -106,7 +106,7 @@ function CourseContainer(props) {
       border-radius: 0.5rem;
       border: none;
       @media(max-width: ${width}px){
-        padding: 0px;
+        padding: 0px 12px;
       }
     }
     
@@ -126,6 +126,9 @@ function CourseContainer(props) {
       grid-gap: 1rem;
       grid-template-rows: auto;
       grid-area: search;
+      @media(max-width: ${width}px){
+        grid-template-columns: 4fr auto;
+      }
     }
     
     #search-container {
@@ -297,11 +300,11 @@ function CourseContainer(props) {
         </button>
       </div>
 
-      <Desktop>
+      
         <form className="course-filter form-group">
         <FilterBar value={filter} onValueChange={handleFilterChange}/>
       </form>
-      </Desktop>
+   
       
       
 
