@@ -26,7 +26,7 @@ function EditPlan(props) {
                           'table'
                           'submit';
       @media(max-width: ${width}px){
-        height: auto;
+        height: 89%;
         width: fit-content;
         overflow: auto;
         position: relative;
@@ -49,6 +49,8 @@ function EditPlan(props) {
       border: 1.5px solid #dfdad8;
       @media(max-width: ${width}px){
           width: 75vw;
+          height: 45px;
+          max-width: 72%;
       }
     }
     
@@ -62,6 +64,7 @@ function EditPlan(props) {
       font-weight: bold;
       @media(max-width: ${width}px){
           margin: 0px 10px;
+          width: 32%;
       }
       
     }

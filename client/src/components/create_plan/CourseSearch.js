@@ -10,6 +10,7 @@ import { Mobile,Desktop } from "../../utils/responsiveUI";
 import {SCREENWIDTH} from "../../utils/constants";
 import Modal from 'react-modal';
 
+
 Modal.setAppElement('#root')
 
 // search form for courses
@@ -24,13 +25,38 @@ function CourseContainer(props) {
   const width = SCREENWIDTH.MOBILE.MAX; 
 
   const ModalStyles = {
+  overlay:{
+    background          :  "rgba(0, 0, 0, 0.5)"
+  },
   content : {
     position             : "relative",
-    inset                : "13vh 0px 0px 0px",
+    inset                : "113px 0px 0px 0px",
     border               : "1px solid transparent",
-    background           : "rgba(0, 0, 0, 0.5)",
-    padding              : "10px",
-    height               : "87vh"
+    background          :  "transparent",
+    padding              : "11px 9px",
+    height               : "80vh",
+    borderRadius         : "0px",
+    overflow             : "visible"
+  },
+  button : {
+    background            : "#e7501c",
+    position              : "absolute",
+    top                   : "-5vh",
+    right                  : "2vw",
+    border                : "1px solid transparent",
+    borderRadius          : "6px",
+    color                 : "white",
+    fontSize              : "4vh",
+    padding               : "0px 10px"
+  },
+  fontOfButton : {
+    position              : "relative",
+    top                   : "-14%"
+  },
+  resultTable : {
+    overflow              : "scroll",
+    height                : "76vh"
+
   }
 };
 
@@ -106,6 +132,9 @@ function CourseContainer(props) {
       padding: 2rem 1rem;
       border: 1.5px solid #dfdad8;
       box-shadow: none;
+      @media(max-width: ${width}px){
+          height: 45px;
+      }
     }
 
     .course-filter {
@@ -131,16 +160,17 @@ function CourseContainer(props) {
       font-size: 2.5rem;
     }
 
-    button.closeButton{
-      position: relative;
-      left: -4vw;
-      margin-left: 92%;
-      width: fit-content;
-      top: -17vw;
-      border: 1px solid transparent;
-      font-size: 2em;
-      background: transparent;
-    color: white;
+    // button#closeButton{
+    //   @media(max-width: ${width}px){
+    //     position: relative;
+    //     top: 2%;
+    //     left: 81vw;
+    //     border: 1px solid transparent;
+    //     color: white;
+    //     background: transparent;
+    //     font-size: 3rem;
+    //   }
+      
     }
 
 
@@ -261,7 +291,6 @@ function CourseContainer(props) {
           <Desktop>
             Search
           </Desktop>
-          
           <Mobile>
             <i class="fas fa-search"></i>
           </Mobile>
@@ -274,13 +303,11 @@ function CourseContainer(props) {
       </form>
       </Desktop>
       
-
-
-      <ErrorMessage text={props.warning} />
+      
 
 
 
-          
+      {/* Mobile version for pop up modal for table containing search course result */}
       <Mobile>
         <div className="search-results">
         <Modal
@@ -288,43 +315,35 @@ function CourseContainer(props) {
           onRequestClose={closeModal}
           style={ModalStyles}
         >
-            <button onClick={closeModal}>
-              <i class="fas fa-times"></i>
+            <button id="closeButton" onClick={closeModal} style={ModalStyles.button}>
+              <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
             </button>
-
-            {courses.length > 0 ? courses.map(c =>
+            <div style={ModalStyles.resultTable}>
+              {courses.length > 0 ? courses.map(c =>
               <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
                 description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
             ) : (
-              <Desktop>
-                <div>Search for courses...</div>
-              </Desktop>
+              <ErrorMessage text={props.warning} />
             )}
+            </div>
         </Modal>
       </div>
       </Mobile>
-      
-            
 
-
-    
-
-
+      {/* Desktop version for pop up modal for table containing search course result */}
       <Desktop>
         <div className="search-results">
-        {courses.length > 0 ? courses.map(c =>
-          <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
-            description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
-        ) : (
-          <Desktop>
-            <div>Search for courses...</div>
-          </Desktop>
-          
-        )}
-      </div>
+          {courses.length > 0 ? courses.map(c =>
+            <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+              description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
+          ) : (
+            <Desktop>
+              <div>Search for courses...</div>
+            </Desktop>
+            
+          )}
+        </div>
       </Desktop>
-      
-
 
     </div>
   );
