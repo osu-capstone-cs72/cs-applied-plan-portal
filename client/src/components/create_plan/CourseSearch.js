@@ -155,6 +155,17 @@ function CourseContainer(props) {
       float: right;
       outline: none;
     }
+
+    .course-filter select:focus {
+      @media(max-width: ${width}px){
+        position: relative;
+        top: 155px;
+        background:white;
+        border-radius: 6px;
+
+      }
+    }
+
     
     .form {
       display: inline;
@@ -162,19 +173,6 @@ function CourseContainer(props) {
 
     .fas.fa-search{
       font-size: 2.5rem;
-    }
-
-    // button#closeButton{
-    //   @media(max-width: ${width}px){
-    //     position: relative;
-    //     top: 2%;
-    //     left: 81vw;
-    //     border: 1px solid transparent;
-    //     color: white;
-    //     background: transparent;
-    //     font-size: 3rem;
-    //   }
-      
     }
 
 
@@ -290,10 +288,7 @@ function CourseContainer(props) {
 
   return (
     <div id="search" css={style}>
-      
-        <div className="search-title">Search</div>
-      
-      
+      <div className="search-title">Search</div>
       <div className="search-container">
         <form className="form my-2 my-lg-0" onSubmit={submitHandler}>
           <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
@@ -320,6 +315,9 @@ function CourseContainer(props) {
         </form>
       </Mobile>
 
+      <Desktop>
+        <ErrorMessage text={props.warning} />
+      </Desktop>
 
       {/* Mobile version for pop up modal for table containing search course result */}
       <Mobile>

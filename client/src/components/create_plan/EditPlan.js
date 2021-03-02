@@ -10,6 +10,8 @@ import { Desktop, Mobile } from "../../utils/responsiveUI";
 import {SCREENWIDTH} from "../../utils/constants";
 import Modal from 'react-modal';
 
+Modal.setAppElement('#root')
+
 // edit plan form
 function EditPlan(props) {
 
@@ -17,6 +19,38 @@ function EditPlan(props) {
   const [modalIsOpen, setIsOpen] =useState(false);
 
   const width = SCREENWIDTH.MOBILE.MAX;
+
+  const ModalStyles = {
+    overlay : {
+      background              : "rgba(0,0,0,0.5)"
+    },
+    content : {
+    position                 : "relative",
+    inset                    : "113px 0px 0px 0px",
+    border                   : "1px solid transparent",
+    background               :  "transparent",
+    padding                  : "11px 9px",
+    height                   : "80vh",
+    borderRadius             : "0px",
+    overflow                 : "visible"
+    },
+    button : {
+      background             : "#e7501c",
+      position               : "absolute",
+      top                    : "-5vh",
+      right                  : "2vw",
+      border                 : "1px solid transparent",
+      borderRadius           : "6px",
+      color                  : "white",
+      fontSize               : "4vh",
+      padding                : "0px 10px"
+    },
+    fontOfButton : {
+      position              : "relative",
+      top                   : "-14%"
+    }
+  };
+
   const style = css`
     & {
       grid-area: plan;
@@ -161,7 +195,10 @@ function EditPlan(props) {
         props.onLoading(false);
       }
     }else{
-      openModal();
+      if(Mobile){
+        openModal();
+      }
+      
     }
   }
 
@@ -288,10 +325,10 @@ function EditPlan(props) {
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
-
+            style={ModalStyles}
           >
-            <button id="closeButton" onClick={closeModal}>
-              close
+            <button onClick={closeModal} style={ModalStyles.button}>
+              <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
             </button>
             <div id="submit-plan-error">
               <ErrorMessage text={warning} className="error-hide-conditional"/>
