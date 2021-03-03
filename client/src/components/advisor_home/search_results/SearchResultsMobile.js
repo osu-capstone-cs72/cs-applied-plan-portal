@@ -1,28 +1,21 @@
 /* eslint-disable react/prop-types */
 /** @jsx jsx */
 
-import {css, jsx} from "@emotion/core";
-import {withRouter} from "react-router-dom";
+import { css, jsx } from "@emotion/core";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../../general/LoadMoreButton";
-import {MOBILE_WIDTH, BOX_SHADOW_CARD} from "../../../utils/constants";
+import { MOBILE_WIDTH, BOX_SHADOW_CARD } from "../../../utils/constants";
 import SearchResultsMobileCard from "./SearchResultsMobileCard";
 
 function SearchResultsMobile({
-  props: {
-    error,
-    loading,
-    plans,
-    cursor,
-    onLoadMore
-  },
+  props: { error, loading, plans, cursor, onLoadMore },
   goToPlan,
 }) {
   const mobileStyle = css`
-
     .prompt-container {
       background: white;
-      box-shadow:${BOX_SHADOW_CARD};
+      box-shadow: ${BOX_SHADOW_CARD};
       border-radius: 0.5rem;
       padding: 1rem;
       margin: auto;
@@ -32,17 +25,19 @@ function SearchResultsMobile({
       h3 {
         margin: 10px;
       }
-    },
+    }
 
+    ,
     ul {
       padding: 0;
-    },
+    }
 
+    ,
     li {
       list-style: none;
     }
   `;
-  const planList = plans.map(plan => (
+  const planList = plans.map((plan) => (
     <li key={plan.planId} onClick={() => goToPlan(plan)}>
       <SearchResultsMobileCard plan={plan} />
     </li>
@@ -51,6 +46,8 @@ function SearchResultsMobile({
   if (plans.length) {
     return (
       <div css={mobileStyle}>
+        <h3 style={{ marginLeft: "1.5rem" }}>Search Results</h3>
+
         <ul>{planList}</ul>
         {cursor.primary === "null" ? null : (
           <LoadMoreButton

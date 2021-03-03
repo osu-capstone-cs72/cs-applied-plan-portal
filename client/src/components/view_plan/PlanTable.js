@@ -1,14 +1,13 @@
 /** @jsx jsx */
 
-import {css, jsx} from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 import PropTypes from "prop-types";
 
 // table of all of the courses in the current plan
 function PlanTable(props) {
-
   const style = css`
     width: 100%;
-    margin-top: 205px;
+    /* margin-top: 205px; */
 
     #courses-table {
       width: 95%;
@@ -140,15 +139,9 @@ function PlanTable(props) {
         <tbody>
           {props.courses.map((course) => (
             <tr key={course.courseId}>
-              <td key={course.courseId + "a"}>
-                {course.courseCode}
-              </td>
-              <td key={course.courseId + "b"}>
-                {course.courseName}
-              </td>
-              <td key={course.courseId + "c"}>
-                {course.credits}
-              </td>
+              <td key={course.courseId + "a"}>{course.courseCode}</td>
+              <td key={course.courseId + "b"}>{course.courseName}</td>
+              <td key={course.courseId + "c"}>{course.credits}</td>
               <td className={"restriction-column"} key={course.courseId + "d"}>
                 {course.prerequisites}
               </td>
@@ -158,11 +151,10 @@ function PlanTable(props) {
       </table>
     </div>
   );
-
 }
 export default PlanTable;
 
 PlanTable.propTypes = {
   courses: PropTypes.array,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
 };

@@ -23,10 +23,10 @@ function PlanMetadata(props) {
       display: flex;
       justify-content: center;
       flex-direction: column;
-      position: fixed;
-      top: 50px;
-      left: 0;
-      right: 0;
+      /* position: fixed; */
+      /* top: 50px; */
+      /* left: 0; */
+      /* right: 0; */
       background: white;
     }
 
