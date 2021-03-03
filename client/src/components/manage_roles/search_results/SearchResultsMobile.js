@@ -14,6 +14,11 @@ const ListContainerUl = styled.ul`
   padding: 0;
 `;
 
+const ErrorMessage = styled.h3`
+  text-align: center;
+  margin-top: 4rem;
+`;
+
 // search results for a user search
 function SearchResults({ props }) {
   if (props.users.length) {
@@ -46,7 +51,9 @@ function SearchResults({ props }) {
     );
   } else {
     return (
-      <Container>{props.error !== "" && <h3>{props.error}</h3>}</Container>
+      <Container>
+        {props.error !== "" && <ErrorMessage>{props.error}</ErrorMessage>}
+      </Container>
     );
   }
 }

@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import {css, jsx} from "@emotion/core";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import { css, jsx } from "@emotion/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
-import {CSSTransition} from "react-transition-group";
-import {Link} from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
+import React from "react";
 
 const ListItem = styled(Link)`
   display: block;
@@ -13,7 +14,8 @@ const ListItem = styled(Link)`
   font-size: 16px;
   margin-bottom: 1rem;
   color: #333;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+  background-color: white;
   border-radius: 10px;
   padding: 1rem 2rem;
 `;
@@ -21,11 +23,16 @@ const PlanName = styled.div`
   font-weight: 600;
 `;
 
+const ModalTitle = styled.h3`
+  margin: 1rem 2.3rem;
+  /* color: black; */
+`;
+
 const StudentName = styled.div`
   margin-left: 2rem;
 `;
 
-function HistoryMenuModal({isOpen, handleClose, list}) {
+function HistoryMenuModal({ isOpen, handleClose, list }) {
   const style = css`
     & {
       position: fixed;
@@ -42,6 +49,7 @@ function HistoryMenuModal({isOpen, handleClose, list}) {
       margin: auto;
       display: flex;
       flex-direction: column;
+      background-color: #eee;
       /* animation: slideInRight;
       animation-duration: 0.60s; */
     }
@@ -79,20 +87,22 @@ function HistoryMenuModal({isOpen, handleClose, list}) {
     return null;
   }
 
-  function ListItems({list}) {
-
+  function ListItems({ list }) {
     if (list.length === 0) {
       return <div className="history-container">No recent history</div>;
     } else {
       return (
-        <ul className="history-container">
-          {list.map((item, index) => (
-            <ListItem key={item.planId} to={`/viewPlan/${item.planId}`}>
-              <PlanName>{item.planName}</PlanName>
-              <StudentName>{`${item.firstName} ${item.lastName}`}</StudentName>
-            </ListItem>
-          ))}
-        </ul>
+        <React.Fragment>
+          <ModalTitle>History</ModalTitle>
+          <ul className="history-container">
+            {list.map((item, index) => (
+              <ListItem key={item.planId} to={`/viewPlan/${item.planId}`}>
+                <PlanName>{item.planName}</PlanName>
+                <StudentName>{`${item.firstName} ${item.lastName}`}</StudentName>
+              </ListItem>
+            ))}
+          </ul>
+        </React.Fragment>
       );
     }
   }
@@ -109,8 +119,7 @@ function HistoryMenuModal({isOpen, handleClose, list}) {
         {console.log(list)}
         <ListItems list={list} />
       </div>
-    </div>
-    ,
+    </div>,
     document.getElementById("history-portal")
   );
 }
