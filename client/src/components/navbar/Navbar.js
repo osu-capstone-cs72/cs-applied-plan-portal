@@ -1,55 +1,50 @@
 /** @jsx jsx */
 
-import {css, jsx} from "@emotion/core";
-import {Link} from "react-router-dom";
-import {withRouter} from "react-router-dom";
+import { css, jsx } from "@emotion/core";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Notifications from "./notifications/Notifications";
 import History from "./history/History";
 import Logout from "./Logout";
-import {getProfile} from "../../utils/authService";
-import {useEffect, useState} from "react";
+import { getProfile } from "../../utils/authService";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import HeadAdvisorNav from "./head_advisor_nav/HeadAdvisorNav";
 import logo from "./../../images/logo.png";
 
 // application navigation bar
 function Navbar(props) {
-
   // role and function to set role, default to 0 (Student)
   const [role, setRole] = useState(0);
 
   // retrieve the logged in user and set role accordingly
   // if user cannot be retrieved, default to the student role
   useEffect(() => {
-
     async function checkRole() {
       const profile = getProfile();
       setRole(profile.role);
     }
 
     checkRole();
-
   }, []);
 
   const responSize = "max-width: 860px";
 
   const style = css`
-
     & {
       display: flex;
-      position: absolute;
       width: 100%;
       height: 50px;
       background-color: var(--color-orange-500);
       align-items: center;
       padding: 0rem 1rem;
       grid-area: header;
-      position: fixed;
+      position: sticky;
       top: 0;
       left: 0;
       right: 0;
       z-index: 9;
-      @media (${responSize}){
+      @media (${responSize}) {
         height: 75px;
       }
     }
@@ -69,38 +64,38 @@ function Navbar(props) {
       margin: 0;
       margin-right: 1rem;
       color: white;
-       width: 119px;
-       height: 66px;
-      @media (${responSize}){
+      width: 119px;
+      height: 66px;
+      @media (${responSize}) {
         width: 119px;
         height: 75px;
       }
     }
 
     .logo-img {
-        display: block;
-        width: 33%;
-        position: relative;
-        left: 16px;
-        top: 9px;
-        @media (${responSize}){
-          width: 40%;
-       }
+      display: block;
+      width: 33%;
+      position: relative;
+      left: 16px;
+      top: 9px;
+      @media (${responSize}) {
+        width: 40%;
+      }
     }
 
     .logo-text {
-        display: flex;
-        flex-wrap: wrap;
-        position: absolute;
-        text-align:center;
-        top: 12px;
-        left: 41%;
-        /* width: 40%; */
+      display: flex;
+      flex-wrap: wrap;
+      position: absolute;
+      text-align: center;
+      top: 12px;
+      left: 41%;
+      /* width: 40%; */
 
-      @media(${responSize}) {
+      @media (${responSize}) {
         display: block;
         position: absolute;
-        text-align:center;
+        text-align: center;
         top: 12px;
         left: 29%;
         width: 40%;
@@ -109,23 +104,22 @@ function Navbar(props) {
       }
     }
 
-    .logo-text p{
-      @media (${responSize}){
+    .logo-text p {
+      @media (${responSize}) {
         margin-bottom: 0px;
       }
     }
 
-    #logo-title{
+    #logo-title {
       margin-right: 6px;
     }
 
-    #logo-title2{
-      @media (${responSize}){
+    #logo-title2 {
+      @media (${responSize}) {
         font-size: 15px;
         font-weight: 500;
       }
     }
-
 
     /* Don't style the last item, but in a way that's safe for SSR. */
     .right-container button {
@@ -136,7 +130,7 @@ function Navbar(props) {
       background: transparent;
       margin-right: 0.5rem;
 
-      @media (${responSize}){
+      @media (${responSize}) {
         border: 1px solid transparent;
         font-size: 2em;
       }
@@ -144,10 +138,8 @@ function Navbar(props) {
 
     .right-container {
       margin-left: auto;
-      display:flex;
+      display: flex;
     }
-
-
 
     #manage-roles-button:hover {
       background: rgba(0, 0, 0, 0.15);
@@ -158,7 +150,6 @@ function Navbar(props) {
         display: none;
       }
     }
-
   `;
 
   return (
@@ -175,7 +166,7 @@ function Navbar(props) {
       <div className="right-container">
         {/* If head advisor, show HeadAdvisorNav */}
         {role === 2 ? (
-          <HeadAdvisorNav currentPlan={props.currentPlan}/>
+          <HeadAdvisorNav currentPlan={props.currentPlan} />
         ) : (
           <div>
             {role ? <History currentPlan={props.currentPlan} /> : null}
@@ -186,10 +177,9 @@ function Navbar(props) {
       </div>
     </div>
   );
-
 }
 export default withRouter(Navbar);
 
 Navbar.propTypes = {
-  currentPlan: PropTypes.number
+  currentPlan: PropTypes.number,
 };

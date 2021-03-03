@@ -28,6 +28,8 @@ function PlanMetadata(props) {
       /* left: 0; */
       /* right: 0; */
       background: white;
+      /* box-shadow: ${BOX_SHADOW_CARD}; */
+      padding-bottom: 0.5rem;
     }
 
     .plan-buttons {
