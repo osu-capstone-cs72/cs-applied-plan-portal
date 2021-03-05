@@ -1,6 +1,6 @@
 import React from "react";
-import {Global, css} from "@emotion/core";
-import {Route, Switch} from "react-router-dom";
+import { Global, css } from "@emotion/core";
+import { Route, Switch } from "react-router-dom";
 import StudentCreatePlan from "./create_plan/StudentCreatePlan";
 import ViewPlan from "./view_plan/ViewPlan";
 import PageInternalError from "./general/PageInternalError";
@@ -14,13 +14,16 @@ const globalStyles = css`
   body {
     font-family: "Muli", sans-serif;
     margin: 0;
-    background: #fbfaf9; /*#FFFDFC*/
+    background: #fbfaf9;
   }
 
   li {
     list-style: none;
   }
 
+  select {
+    background-color: white;
+  }
 
   :root {
     --color-orange-50: #fff5f2;
@@ -99,12 +102,14 @@ const globalStyles = css`
     --color-blue-700: #1d6f98;
     --color-blue-800: #166086;
     --color-blue-900: #0b4f71;
+
+    --color-delete: #e93b2d;
+    --color-edit: #f7a000;
   }
 `;
 
 // handle all application URL page routing
 function App() {
-
   return (
     <div className="App">
       <Global styles={globalStyles} />

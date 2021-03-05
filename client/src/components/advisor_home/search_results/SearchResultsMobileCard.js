@@ -1,22 +1,20 @@
 /** @jsx jsx */
-import {css, jsx} from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 import PropTypes from "prop-types";
-import {formatTime} from "../../../utils/formatTime";
-import {statusText} from "../../../utils/renderStatus";
-import {BOX_SHADOW_CARD, MOBILE_WIDTH} from "../../../utils/constants";
+import { formatTime } from "../../../utils/formatTime";
+import { statusText } from "../../../utils/renderStatus";
+import { BOX_SHADOW_CARD, MOBILE_WIDTH } from "../../../utils/constants";
 
-
-function SearchResultsMobileCard({plan}) {
+function SearchResultsMobileCard({ plan }) {
   const style = css`
     & {
       width: ${MOBILE_WIDTH};
-      box-shadow:  ${BOX_SHADOW_CARD};
+      box-shadow: ${BOX_SHADOW_CARD};
       margin: 1rem auto;
       padding: 1rem;
       border-radius: 0.7rem;
       background: white;
-
-    },
+    }
 
     .cardItem {
       margin-bottom: 0.4rem;
@@ -24,13 +22,12 @@ function SearchResultsMobileCard({plan}) {
 
     .title {
       font-weight: 600;
-    },
+    }
 
     .text {
       font-weight: 400;
     }
-
-   `;
+  `;
   return (
     <div css={style}>
       <div className="cardItem">
@@ -64,5 +61,5 @@ function SearchResultsMobileCard({plan}) {
 export default SearchResultsMobileCard;
 
 SearchResultsMobileCard.propTypes = {
-  plan: PropTypes.object
+  plan: PropTypes.object,
 };

@@ -1,25 +1,25 @@
 /** @jsx jsx */
 
-import {useState} from "react";
-import {css, jsx} from "@emotion/core";
-import {useParams} from "react-router-dom";
+import { useState } from "react";
+import { css, jsx } from "@emotion/core";
+import { useParams } from "react-router-dom";
 import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
-import {login} from "../../utils/authService";
+import { login } from "../../utils/authService";
 
 // plan review creation menu
 function CreateReview(props) {
 
   const [errorMessage, setErrorMessage] = useState("");
-  const {planId} = useParams();
+  const { planId } = useParams();
 
   const style = css`
 
     & {
-      display: block;
-      text-align: center;
-      margin: 0 auto;
-      width: 35%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     #review-input-container {
@@ -139,28 +139,28 @@ function CreateReview(props) {
             {props.status === 0 ? (
               <option value="0" disabled={true}>Rejected</option>
             ) : (
-              <option value="0">Rejected</option>
-            )}
+                <option value="0">Rejected</option>
+              )}
             {props.status === 1 ? (
               <option value="1" disabled={true}>Awaiting student changes</option>
             ) : (
-              <option value="1">Awaiting student changes</option>
-            )}
+                <option value="1">Awaiting student changes</option>
+              )}
             {props.status === 2 ? (
               <option value="2" disabled={true}>Awaiting review</option>
             ) : (
-              <option value="2">Awaiting review</option>
-            )}
+                <option value="2">Awaiting review</option>
+              )}
             {props.status === 3 ? (
               <option value="3" disabled={true}>Awaiting final review</option>
             ) : (
-              <option value="3">Awaiting final review</option>
-            )}
+                <option value="3">Awaiting final review</option>
+              )}
             {props.status === 4 || props.currentUser.role === 1 ? (
               <option value="4" disabled={true}>Accepted</option>
             ) : (
-              <option value="4">Accepted</option>
-            )}
+                <option value="4">Accepted</option>
+              )}
           </select>
           <button id="submit-review-button" onClick={() => { submit(planId); }}>
             Change Status
