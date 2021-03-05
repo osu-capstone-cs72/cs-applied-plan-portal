@@ -1,13 +1,13 @@
 /** @jsx jsx */
 
 import { css, jsx } from "@emotion/core";
-
 import { useEffect, useState } from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
 import SearchResults from "./search_results/SearchResults";
 import { login } from "../../utils/authService";
+import { SCREENWIDTH } from "../../utils/constants";
 
 // manage roles page
 export default function ManageRoles() {
@@ -27,13 +27,18 @@ export default function ManageRoles() {
 
   const style = css`
     #user-manage-container {
-      margin: auto;
+      margin: 100px 0 auto;
       width: 100%;
     }
 
     #user-manage-contents-container {
       margin: 25px auto;
       width: 100%;
+    }
+    @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
+      #user-manage-container {
+        margin: auto;
+      }
     }
   `;
 

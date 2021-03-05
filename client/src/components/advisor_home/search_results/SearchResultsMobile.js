@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import LoadMoreButton from "../../general/LoadMoreButton";
 import { MOBILE_WIDTH, BOX_SHADOW_CARD } from "../../../utils/constants";
 import SearchResultsMobileCard from "./SearchResultsMobileCard";
+import React from "react";
 
 function SearchResultsMobile({
   props: { error, loading, plans, cursor, onLoadMore },
@@ -62,11 +63,15 @@ function SearchResultsMobile({
     );
   } else {
     return (
-      <div css={mobileStyle}>
-        <div className="prompt-container">
-          {error === "" ? <h3>Search for plans...</h3> : <h3>{error}</h3>}
-        </div>
-      </div>
+      <React.Fragment>
+        {error !== "" && (
+          <div css={mobileStyle}>
+            <div className="prompt-container">
+              <h3>{error}</h3>
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }
