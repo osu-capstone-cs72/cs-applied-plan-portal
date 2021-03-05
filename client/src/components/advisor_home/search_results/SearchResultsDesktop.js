@@ -1,21 +1,27 @@
 /** @jsx jsx */
-
-import {statusText} from "../../../utils/renderStatus";
-import {formatTime} from "../../../utils/formatTime";
-import {css, jsx} from "@emotion/core";
-import {withRouter} from "react-router-dom";
+import { statusText } from "../../../utils/renderStatus";
+import { formatTime } from "../../../utils/formatTime";
+import { css, jsx } from "@emotion/core";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import LoadMoreButton from "../../general/LoadMoreButton";
-import {BOX_SHADOW_CARD, MOBILE_WIDTH, SCREENWIDTH} from "../../../utils/constants";
+import React from "react";
+import {
+  BOX_SHADOW_CARD,
+  MOBILE_WIDTH,
+  SCREENWIDTH,
+} from "../../../utils/constants";
 
 function SearchResultsDesktop({
-  props: {error,
+  props: {
+    error,
     loading,
     plans,
     cursor,
     searchFields,
     onLoadMore,
-    onChangeSort},
+    onChangeSort,
+  },
   goToPlan,
 }) {
   const desktopStyle = css`
@@ -122,7 +128,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(0, false)}
                 >
-                    User Name <small>▼</small>
+                  User Name <small>▼</small>
                 </th>
               )}
               {searchFields.sortValue === 1 ? (
@@ -137,7 +143,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(1, false)}
                 >
-                    User ID <small>▼</small>
+                  User ID <small>▼</small>
                 </th>
               )}
               {searchFields.sortValue === 2 ? (
@@ -152,7 +158,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(2, false)}
                 >
-                    Plan Name <small>▼</small>
+                  Plan Name <small>▼</small>
                 </th>
               )}
               {searchFields.sortValue === 3 ? (
@@ -167,7 +173,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(3, false)}
                 >
-                    Status <small>▼</small>
+                  Status <small>▼</small>
                 </th>
               )}
               {searchFields.sortValue === 4 ? (
@@ -183,7 +189,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(4, false)}
                 >
-                    Time Created <small>▼</small>
+                  Time Created <small>▼</small>
                 </th>
               )}
               {searchFields.sortValue === 5 ? (
@@ -199,7 +205,7 @@ function SearchResultsDesktop({
                   className="student-plans-data"
                   onClick={() => changeSort(5, false)}
                 >
-                    Time Updated <small>▼</small>
+                  Time Updated <small>▼</small>
                 </th>
               )}
             </tr>
@@ -242,11 +248,20 @@ function SearchResultsDesktop({
     );
   } else {
     return (
-      <div css={desktopStyle}>
+      /* <div css={desktopStyle}>
         <div className="prompt-container">
           {error === "" ? <h3>Search for plans...</h3> : <h3>{error}</h3>}
         </div>
-      </div>
+      </div> */
+      <React.Fragment>
+        {error !== "" && (
+          <div css={desktopStyle}>
+            <div className="prompt-container">
+              <h3>{error}</h3>
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }
