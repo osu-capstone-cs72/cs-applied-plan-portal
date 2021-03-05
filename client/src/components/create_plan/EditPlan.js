@@ -65,7 +65,7 @@ function EditPlan(props) {
         height: 98%;
         overflow: auto;
         grid-template-columns: auto;
-
+        padding: 0px 5px;
       }
     }
     
