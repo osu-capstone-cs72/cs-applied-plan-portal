@@ -4,7 +4,7 @@ import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import {useEffect, useState} from "react";
 import FindPlans from "./FindPlans";
-import SearchResults from "./SearchResults";
+import SearchResults from "./search_results/SearchResults";
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
 import {login} from "../../utils/authService";
@@ -103,7 +103,10 @@ function AdvisorHome() {
           if (results.ok) {
 
             // if the cursor is new then we will want to relist plans
+            console.log("Results: ", results);
             obj = await results.json();
+            console.log("Obj: ", obj);
+
             if (cursor.primary === "null") {
               setPlans([...obj.plans]);
             } else {

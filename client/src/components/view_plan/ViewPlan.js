@@ -1,16 +1,16 @@
 /** @jsx jsx */
 
-import {useState, useEffect} from "react";
-import {css, jsx} from "@emotion/core";
+import { useState, useEffect } from "react";
+import { css, jsx } from "@emotion/core";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import PlanTable from "./PlanTable";
 import ListSimilarPlans from "./ListSimilarPlans";
 import CreateReview from "./CreateReview";
-import PlanMetadata from "./PlanMetadata";
+import PlanMetadata from "./plan_meta_data/PlanMetadata";
 import ActivityFeed from "./ActivityFeed";
-import {useParams, withRouter} from "react-router-dom";
-import {getProfile} from "../../utils/authService";
+import { useParams, withRouter } from "react-router-dom";
+import { getProfile } from "../../utils/authService";
 import PropTypes from "prop-types";
 import PageInternalError from "../general/PageInternalError";
 import PageNotFound from "../general/PageNotFound";
@@ -18,7 +18,6 @@ import PHE from "print-html-element";
 
 // the view plan page
 function ViewPlan(props) {
-
   const [pageError, setPageError] = useState(0);
   const [loading, setLoading] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
@@ -33,34 +32,27 @@ function ViewPlan(props) {
   const [status, setStatus] = useState(-1);
   const [activity, setActivity] = useState([]);
   const [courses, setCourses] = useState([]);
-  const {planId} = useParams();
+  const { planId } = useParams();
   const [cursor, setCursor] = useState({
     primary: "null",
-    secondary: "null"
+    secondary: "null",
   });
-  const [currentUser, setCurrentUser] = useState(
-    {
-      id: 0,
-      role: 0,
-      firstName: "",
-      lastName: ""
-    }
-  );
-  const [request, setRequest] = useState ({
+  const [currentUser, setCurrentUser] = useState({
+    id: 0,
+    role: 0,
+    firstName: "",
+    lastName: "",
+  });
+  const [request, setRequest] = useState({
     primary: "null",
     secondary: "null",
-    planId: planId
+    planId: planId,
   });
 
-  const style = css`
-    display: inline-block;
-    width: 100%;
-    margin: 0 auto;
-  `;
+  const style = css``;
 
   // get current user data for creating comments or reviews
   useEffect(() => {
-
     // set ignore and controller to prevent a memory leak
     // in the case where we need to abort early
     let ignore = false;
@@ -68,7 +60,6 @@ function ViewPlan(props) {
 
     async function fetchUser() {
       try {
-
         setUserLoading(true);
         const profile = getProfile();
         const url = `/api/user/${profile.userId}`;
@@ -76,33 +67,29 @@ function ViewPlan(props) {
 
         // before checking the results, ensure the request was not canceled
         if (!ignore) {
-
           if (response.ok) {
             // get data from the response
             const obj = await response.json();
-            setCurrentUser(
-              {
-                id: obj.userId,
-                role: obj.role,
-                firstName: obj.firstName,
-                lastName: obj.lastName
-              }
-            );
+            setCurrentUser({
+              id: obj.userId,
+              role: obj.role,
+              firstName: obj.firstName,
+              lastName: obj.lastName,
+            });
           }
 
           setUserLoading(false);
-
         }
-
       } catch (err) {
         if (err instanceof DOMException) {
           // if we canceled the fetch request then don't show an error message
           console.log("HTTP request aborted");
         } else {
-          console.log("An internal server error occurred. Please try again later.");
+          console.log(
+            "An internal server error occurred. Please try again later."
+          );
         }
       }
-
     }
 
     fetchUser();
@@ -112,12 +99,10 @@ function ViewPlan(props) {
       controller.abort();
       ignore = true;
     };
-
   }, []);
 
   // get primary plan data
   useEffect(() => {
-
     // set ignore and controller to prevent a memory leak
     // in the case where we need to abort early
     let ignore = false;
@@ -126,7 +111,6 @@ function ViewPlan(props) {
     // get plan data based on the plan ID
     async function fetchPlan(planId) {
       try {
-
         setPlanLoading(true);
         const url = `/api/plan/${planId}`;
         let obj = [];
@@ -136,7 +120,6 @@ function ViewPlan(props) {
 
         // before checking the results, ensure the request was not canceled
         if (!ignore) {
-
           if (response.ok) {
             // get data from the response
             obj = await response.json();
@@ -159,9 +142,7 @@ function ViewPlan(props) {
           }
 
           setPlanLoading(false);
-
         }
-
       } catch (err) {
         if (err instanceof DOMException) {
           // if we canceled the fetch request then don't show an error message
@@ -171,7 +152,6 @@ function ViewPlan(props) {
           setPageError(500);
         }
       }
-
     }
 
     fetchPlan(planId);
@@ -187,30 +167,27 @@ function ViewPlan(props) {
 
   // get activity feed data for plan
   useEffect(() => {
-
     // set ignore and controller to prevent a memory leak
     // in the case where we need to abort early
     let ignore = false;
     const controller = new AbortController();
 
-
     // get the activity feed for the plan that matches the given plan ID
     async function fetchActivity(planId, cursor) {
       try {
-
         setFeedLoading(true);
-        const initialReview =
-        {
+        const initialReview = {
           id: "0r",
           status: 5,
           planId: planId,
           userId: userId,
           time: created,
           firstName: studentFirstName,
-          lastName: studentLastName
+          lastName: studentLastName,
         };
-        const url = `/api/plan/${planId}/activity/${cursor.primary}/` +
-        `${cursor.secondary}`;
+        const url =
+          `/api/plan/${planId}/activity/${cursor.primary}/` +
+          `${cursor.secondary}`;
         let obj = [];
 
         // get plan activity
@@ -218,9 +195,7 @@ function ViewPlan(props) {
 
         // before checking the results, ensure the request was not canceled
         if (!ignore) {
-
           if (response.ok) {
-
             // get data from the response
             obj = await response.json();
 
@@ -238,33 +213,35 @@ function ViewPlan(props) {
               setActivity([...pastActivity, ...obj.activity]);
             }
             setCursor(obj.nextCursor);
-
           } else {
             // if there is no activity to show, then show the initial review
             // but first wait for all of the plan metadata to load
-            if (activity.length === 0 && created !== "" && studentFirstName !== "" && studentLastName !== "") {
+            if (
+              activity.length === 0 &&
+              created !== "" &&
+              studentFirstName !== "" &&
+              studentLastName !== ""
+            ) {
               setActivity([initialReview]);
             }
           }
 
           setFeedLoading(false);
-
         }
-
       } catch (err) {
         // this is a server error
-        console.log("An internal server error occurred. Please try again later.");
+        console.log(
+          "An internal server error occurred. Please try again later."
+        );
       }
     }
 
     if (created !== "" && studentFirstName !== "" && studentLastName !== "") {
-
       const newCursor = {
         primary: request.primary,
-        secondary: request.secondary
+        secondary: request.secondary,
       };
       fetchActivity(planId, newCursor);
-
     }
 
     // cleanup function
@@ -288,12 +265,12 @@ function ViewPlan(props) {
 
   // add a new comment to the activity feed
   function handleAddComment(e) {
-    setActivity(prev => [e, ...prev]);
+    setActivity((prev) => [e, ...prev]);
   }
 
   // add a new review to the activity feed and update the metadata
   function handleChangeStatus(e) {
-    setActivity(prev => [e, ...prev]);
+    setActivity((prev) => [e, ...prev]);
     setStatus(parseInt(e.status));
   }
 
@@ -307,7 +284,6 @@ function ViewPlan(props) {
 
   // handle a user request to delete the current plan
   async function handleDelete() {
-
     if (window.confirm("Are you sure that you want to delete this plan?")) {
       setLoading(true);
       try {
@@ -317,8 +293,8 @@ function ViewPlan(props) {
         const response = await fetch(url, {
           method: "DELETE",
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         });
         if (response.ok) {
           // redirect user to home
@@ -330,7 +306,6 @@ function ViewPlan(props) {
           const obj = await response.json();
           alert(obj.error);
         }
-
       } catch (err) {
         // send to 500 error. show error
         alert("An internal server error occurred. Please try again later.");
@@ -343,7 +318,7 @@ function ViewPlan(props) {
     setRequest({
       primary: cursor.primary,
       secondary: cursor.secondary,
-      planId: planId
+      planId: planId,
     });
   }
 
@@ -352,17 +327,33 @@ function ViewPlan(props) {
       <div id="view-plan-container" css={style}>
         <PageSpinner loading={loading} />
         <Navbar currentPlan={planId} />
-        <PlanMetadata studentName={studentFirstName + " " + studentLastName} userId={userId} email={email}
-          planName={planName} status={status} currentUser={currentUser} courses={courses}
-          onPrint={() => handlePrint()} onDelete={() => handleDelete()} />
+        <PlanMetadata
+          studentName={studentFirstName + " " + studentLastName}
+          userId={userId}
+          email={email}
+          planName={planName}
+          status={status}
+          currentUser={currentUser}
+          courses={courses}
+          onPrint={() => handlePrint()}
+          onDelete={() => handleDelete()}
+        />
         <PlanTable courses={courses} />
         <ListSimilarPlans />
-        <CreateReview currentUser={currentUser} status={status}
-          onNewStatus={e => handleChangeStatus(e)} />
-        <ActivityFeed activity={activity} currentUser={currentUser}
-          status={status} loading={loading}
-          cursor={cursor} onNewComment={e => handleAddComment(e)}
-          onShowMore={cursor => requestActivity(planId, cursor)} />
+        <CreateReview
+          currentUser={currentUser}
+          status={status}
+          onNewStatus={(e) => handleChangeStatus(e)}
+        />
+        <ActivityFeed
+          activity={activity}
+          currentUser={currentUser}
+          status={status}
+          loading={loading}
+          cursor={cursor}
+          onNewComment={(e) => handleAddComment(e)}
+          onShowMore={(cursor) => requestActivity(planId, cursor)}
+        />
       </div>
     );
   } else if (pageError === 404) {
@@ -370,10 +361,9 @@ function ViewPlan(props) {
   } else {
     return <PageInternalError />;
   }
-
 }
 export default withRouter(ViewPlan);
 
 ViewPlan.propTypes = {
-  history: PropTypes.object
+  history: PropTypes.object,
 };

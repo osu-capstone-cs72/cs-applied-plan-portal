@@ -2,11 +2,22 @@
 
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
+import { Mobile,Desktop } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
+
 
 // a single selected course
 function PlanCourse(props) {
-
+  const width = SCREENWIDTH.MOBILE.MAX;
+  
   const style = css`
+
+    td.button{
+      @media(max-width: ${width}px){
+        position: relative;
+        right: 10px;;
+      }
+    }
 
     .remove-button {
       display: inline-block;
@@ -17,6 +28,11 @@ function PlanCourse(props) {
       color: var(--color-red-50);
       border-radius: 0.5rem;
       border: none;
+      @media(max-width: ${width}px){
+        background: transparent;
+        color: red;
+        font-size: x-large
+      }
     }
     
     .table-item-title {
@@ -43,9 +59,21 @@ function PlanCourse(props) {
         <div className="table-item-title">{props.courseName}</div>
         <div className="table-item-subtitle"><small>{props.courseCode.replace(/([A-z])(\d)/, "$1 $2")}</small></div>
       </td>
-      <td>{props.credits}</td>
-      <td></td>
-      <td><button className="remove-button" onClick={removeButton}>Remove</button></td>
+      <td className="planCredit">{props.credits}</td>
+      <Desktop>
+        <td></td>
+      </Desktop>
+      
+      <td className="button">
+        <button className="remove-button" onClick={removeButton}>
+          <Desktop>
+            Remove
+          </Desktop>
+          <Mobile>
+            <i class="fas fa-trash-alt"></i>
+          </Mobile>
+        </button>
+      </td>
     </tr>
   );
 
@@ -58,4 +86,4 @@ PlanCourse.propTypes = {
   courseName: PropTypes.string,
   credits: PropTypes.any,
   onRemoveCourse: PropTypes.func
-};
+};;

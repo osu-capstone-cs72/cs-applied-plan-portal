@@ -19,14 +19,19 @@ function CreateComment(props) {
       display: inline-flex;
       flex-direction: column;
       align-items: center;
+      max-width: 95%;
     }
 
     #comment-input-container {
-      display: inline-block;
-      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      aligh-items: center;
+      padding: 15px;
       border-radius: 0.5rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       background: white;
+      max-width: 100%;
     }
 
     #comment-text-input {
@@ -35,11 +40,7 @@ function CreateComment(props) {
       resize: none;
       border-radius: 0.5rem;
       border: 1px solid var(--color-lightgray-600);
-    }
-
-    #submit-comment-button {
-      display: block;
-      margin: auto;
+      max-width: 100%;
     }
     
     .toggle-creation-button {
@@ -56,7 +57,7 @@ function CreateComment(props) {
     
     #submit-comment-button {
       display: block;
-      margin: 10px auto;
+      margin: 0px 5px;
       background: var(--color-blue-500);
       color: var(--color-blue-50);
       padding: 1rem 1rem;
@@ -64,6 +65,12 @@ function CreateComment(props) {
       border: none;
     }
     
+    #comment-btn-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
     .toggle-state-red {
       background: var(--color-red-500);
       color: var(--color-red-50);
@@ -147,17 +154,17 @@ function CreateComment(props) {
     } else {
       return (
         <div id="create-comment-container" css={style}>
-          <button className="toggle-creation-button toggle-state-red" onClick={() => toggle()}>
-            Discard
-          </button>
-
           <ErrorMessage text={errorMessage} />
-
           <div id="comment-input-container">
             <textarea id="comment-text-input" rows="5" cols="50"/>
-            <button id="submit-comment-button" onClick={() => submit(planId)}>
-              Submit
-            </button>
+            <div id="comment-btn-container">
+                <button id="submit-comment-button" onClick={() => submit(planId)}>
+                    Submit
+                </button>
+                <button className="toggle-creation-button toggle-state-red" onClick={() => toggle()}>
+                    Discard
+                </button>
+            </div>
           </div>
         </div>
       );

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "bootstrap": "^4.6.0",
     "concurrently": "^5.1.0",
     "cookie": "^0.4.0",
     "cors": "^2.8.5",
@@ -17,12 +18,17 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.1.0",
     "needle": "^2.3.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
+    "pm2": "^4.5.4",
+    "react-bootstrap": "^1.5.0",
+    "react-modal": "^3.12.1",
+    "react-responsive": "^8.2.0",
     "react-test-renderer": "^16.13.1",
     "validator": "^12.2.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
     "jest": "^24.9.0",
@@ -30,13 +36,15 @@
     "wait-on": "^4.0.2"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "ENV=DEVELOPMENT REACT_APP_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
+    "start": "cross-env NODE_ENV=PRODUCTION pm2 start server.js",
+    "stop": "pm2 stop server.js",
+    "dev": "cross-env NODE_ENV=DEVELOPMENT concurrently \"npm run serverDev\" \"npm run client\"",
     "testAPI": "ENV=TESTING jest --watchAll=false --detectOpenHandles --forceExit --maxWorkers=10",
     "testReact": "cd client && npm test a",
     "serverDev": "nodemon server.js --ignore client/*",
     "client": "cd client && npm start",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "installAll": "npm install && cd client && npm install",
+    "build": "cd client && npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [

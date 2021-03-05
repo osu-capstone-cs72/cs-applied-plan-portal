@@ -3,10 +3,13 @@
 import PropTypes from "prop-types";
 import PlanCourse from "./PlanCourse";
 import {css, jsx} from "@emotion/core";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
 
 // table showing all of the currently selected courses
 function EditPlanTable(props) {
 
+  const width = SCREENWIDTH.MOBILE.MAX;
   const style = css`
 
     & {
@@ -19,10 +22,20 @@ function EditPlanTable(props) {
       background: white;
       border-radius: 0.5rem;
       position: relative;
+      @media(max-width: ${width}px){
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.35);
+
+      }
     }
 
     #courses-table, th, tr, td, th {
       border-collapse: collapse;
+    }
+
+    #credit{
+      @media(max-width: ${width}px){
+        padding: 10px;
+      }
     }
 
     th {
@@ -72,6 +85,9 @@ function EditPlanTable(props) {
     
     tbody tr td:nth-of-type(n+2), thead tr th:nth-of-type(2) {
       text-align: right;
+      @media(max-width: ${width}px){
+        text-align: center;
+      }
     }
   `;
 
@@ -81,9 +97,15 @@ function EditPlanTable(props) {
         <thead>
           <tr>
             <th>Course</th>
-            <th>Credits</th>
-            <th></th>
-            <th>Remove</th>
+            <th id="credit">Credits</th>
+            <Desktop>
+              <th></th>
+            </Desktop>
+            <th>
+              <Desktop>
+                Remove
+              </Desktop>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -108,5 +130,5 @@ export default EditPlanTable;
 EditPlanTable.propTypes = {
   onRemoveCourse: PropTypes.func,
   courseId: PropTypes.number,
-  courses: PropTypes.object
+  courses: PropTypes.array
 };

@@ -6,8 +6,8 @@ const express = require("express");
 const url = require("url");
 const validator = require("validator");
 
-const {Env} = require("../entities/environment");
-const {Role} = require("../entities/role");
+const { ENV } = require("../entities/environment");
+const { Role } = require("../entities/role");
 const userModel = require("../models/user");
 const {
   userSchema,
@@ -49,7 +49,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
 
       // only allow an Advisor or a Head Advisor to fetch Users
       if (authenticatedUser.role === Role.advisor ||
-          authenticatedUser.role === Role.headAdvisor) {
+        authenticatedUser.role === Role.headAdvisor) {
         const matchingUsers = await userModel.searchUsers(text, parseInt(role, 10), cursor);
 
         if (matchingUsers.users.length) {
@@ -57,7 +57,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
           res.status(200).send(matchingUsers);
         } else {
           console.error("404: No matching Users found\n");
-          res.status(404).send({error: "No matching users found."});
+          res.status(404).send({ error: "No matching users found." });
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -69,7 +69,7 @@ app.get("/search/:text/:role/:cursorPrimary/:cursorSecondary", requireAuth, asyn
     } else {
       // send an error explaining the schema violation
       console.error("400:", errorMessage, "\n");
-      res.status(400).send({error: errorMessage});
+      res.status(400).send({ error: errorMessage });
       return;
     }
 
@@ -99,10 +99,10 @@ app.post("/", requireAuth, async (req, res) => {
         const result = await userModel.createUser(newUser);
 
         console.log("201: User created\n");
-        res.status(201).send({userId: result.insertId});
+        res.status(201).send({ userId: result.insertId });
       } else {
         console.error(schemaViolations);
-        res.status(400).send({error: schemaViolations});
+        res.status(400).send({ error: schemaViolations });
       }
     } else {
       console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -119,7 +119,7 @@ app.post("/", requireAuth, async (req, res) => {
 });
 
 // check if a user is already authenticated
-app.get("/authenticated", requireAuth, (req, res)  => {
+app.get("/authenticated", requireAuth, (req, res) => {
   console.log("200: Test auth with React server - authenticated\n");
   res.status(200).send({
     message: "authenticated"
@@ -140,7 +140,7 @@ app.get("/login", async (req, res) => {
   // the callback URL, used as a query of the URL of the second request sent to
   // CAS to validate the ticket received from the first request
   const callbackUrl = url.format({
-    protocol: (process.env.ENV === Env.production) ? "https" : "http",
+    protocol: (process.env.NODE_ENV === ENV.PRODUCTION) ? "https" : "http",
     host: req.get("host"),
     pathname: url.parse(req.originalUrl).pathname,  // this route
     query: {
@@ -149,11 +149,13 @@ app.get("/login", async (req, res) => {
   });
 
   // send the ticket to this URL to validate it against CAS
-  const casIdp = (process.env.ENV === Env.production) ? "idp" : "idp-dev";
+  const hostname = (process.env.NODE_ENV === ENV.PRODUCTION)
+    ? "login.oregonstate.edu"
+    : "login-int.iam.oregonstate.edu"
   const casValidationUrl = url.format({
     protocol: "https",
-    hostname: "login.oregonstate.edu",
-    pathname: `/${casIdp}/profile/cas/serviceValidate`,
+    hostname: hostname,
+    pathname: `/idp/profile/cas/serviceValidate`,
     query: {
       ticket: ticket,
       service: callbackUrl
@@ -206,11 +208,11 @@ app.get("/login", async (req, res) => {
       res.status(200).redirect(targetUrl);
     } catch (err) {
       console.error("Error fetching or inserting User:", err);
-      res.status(500).send({error: err});
+      res.status(500).send({ error: err });
     }
   } catch (err) {
     console.error(`${err.code}:`, err.error);
-    res.status(err.code).send({error: err.error});
+    res.status(err.code).send({ error: err.error });
   }
 });
 
@@ -224,15 +226,15 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
 
     // ensure the provided target user's ID satisfies the schema
     if (Number.isInteger(userId) &&
-        userSchema.userId.minValue <= userId &&
-        userId <= userSchema.userId.maxValue) {
+      userSchema.userId.minValue <= userId &&
+      userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
       // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
       if (authenticatedUser &&
-          (authenticatedUser.userId === userId ||
+        (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's plans
@@ -243,7 +245,7 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
           res.status(200).send(results);
         } else {
           console.error("404: No plans found\n");
-          res.status(404).send({error: "No plans found"});
+          res.status(404).send({ error: "No plans found" });
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -253,7 +255,7 @@ app.get("/:userId/plans", requireAuth, async (req, res) => {
       }
     } else {
       console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
-      res.status(400).send({error: userSchema.userId.getErrorMessage()});
+      res.status(400).send({ error: userSchema.userId.getErrorMessage() });
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
@@ -273,15 +275,15 @@ app.get("/:userId", requireAuth, async (req, res) => {
 
     // ensure the provided target user's ID satisfies the schema
     if (Number.isInteger(userId) &&
-        userSchema.userId.minValue <= userId &&
-        userId <= userSchema.userId.maxValue) {
+      userSchema.userId.minValue <= userId &&
+      userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
       // only allow the authenticated user with the same ID as the target user,
       // an Advisor, and a Head Advisor to perform this action
       if (authenticatedUser &&
-          (authenticatedUser.userId === userId ||
+        (authenticatedUser.userId === userId ||
           authenticatedUser.role === Role.advisor ||
           authenticatedUser.role === Role.headAdvisor)) {
         // fetch the target user's info
@@ -292,7 +294,7 @@ app.get("/:userId", requireAuth, async (req, res) => {
           res.status(200).send(user);
         } else {
           console.error("404: No User found\n");
-          res.status(404).send({error: "No User found"});
+          res.status(404).send({ error: "No User found" });
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -302,7 +304,7 @@ app.get("/:userId", requireAuth, async (req, res) => {
       }
     } else {
       console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
-      res.status(400).send({error: userSchema.userId.getErrorMessage()});
+      res.status(400).send({ error: userSchema.userId.getErrorMessage() });
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);
@@ -322,8 +324,8 @@ app.patch("/:userId", requireAuth, async (req, res) => {
 
     // ensure the provided target user's ID satisfies the schema
     if (Number.isInteger(userId) &&
-        userSchema.userId.minValue <= userId &&
-        userId <= userSchema.userId.maxValue) {
+      userSchema.userId.minValue <= userId &&
+      userId <= userSchema.userId.maxValue) {
       // fetch the authenticated user's info
       const authenticatedUser = await userModel.getUserById(req.auth.userId);
 
@@ -338,10 +340,10 @@ app.patch("/:userId", requireAuth, async (req, res) => {
           const result = await userModel.updateUserPartial(userId, updatedUser);
 
           console.log("200: User partial update succeeded\n");
-          res.status(200).send({changedRows: result.changedRows});
+          res.status(200).send({ changedRows: result.changedRows });
         } else {
           console.error(schemaViolations);
-          res.status(400).send({error: schemaViolations});
+          res.status(400).send({ error: schemaViolations });
         }
       } else {
         console.error(`403: User ${authenticatedUser.userId} not authorized to perform this action\n`);
@@ -351,7 +353,7 @@ app.patch("/:userId", requireAuth, async (req, res) => {
       }
     } else {
       console.error(`400: ${userSchema.userId.getErrorMessage()}\n`);
-      res.status(400).send({error: userSchema.userId.getErrorMessage()});
+      res.status(400).send({ error: userSchema.userId.getErrorMessage() });
     }
   } catch (err) {
     console.error("500: An internal server error occurred\n Error:", err);

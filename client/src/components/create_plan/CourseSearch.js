@@ -4,8 +4,14 @@ import {useEffect, useState} from "react";
 import Course from "./Course";
 import FilterBar from "./FilterBar";
 import ErrorMessage from "../general/ErrorMessage";
-import PropTypes from "prop-types";
+import PropTypes, { func } from "prop-types";
 import {css, jsx} from "@emotion/core";
+import { Mobile,Desktop } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
+import Modal from 'react-modal';
+
+
+Modal.setAppElement('#root')
 
 // search form for courses
 function CourseContainer(props) {
@@ -15,6 +21,45 @@ function CourseContainer(props) {
   const [filter, setFilter] = useState("*");
   const [request, setRequest] = useState("*");
 
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const width = SCREENWIDTH.MOBILE.MAX; 
+
+  // modal css styles
+  const ModalStyles = {
+  overlay:{
+    background          :  "rgba(0, 0, 0, 0.5)"
+  },
+  content : {
+    position             : "relative",
+    inset                : "113px 0px 0px 0px",
+    border               : "1px solid transparent",
+    background          :  "transparent",
+    padding              : "11px 9px",
+    height               : "80vh",
+    borderRadius         : "0px",
+    overflow             : "visible"
+  },
+  button : {
+    background            : "#e7501c",
+    position              : "absolute",
+    top                   : "-5vh",
+    right                  : "2vw",
+    border                : "1px solid transparent",
+    borderRadius          : "6px",
+    color                 : "white",
+    fontSize              : "4vh",
+    padding               : "0px 10px"
+  },
+  fontOfButton : {
+    position              : "relative",
+    top                   : "-14%"
+  },
+  resultTable : {
+    overflow              : "scroll",
+    height                : "76vh"
+
+  }
+};
 
   const style = css`
 
@@ -27,6 +72,17 @@ function CourseContainer(props) {
                           'search   search'
                           'warn     warn'
                           'results  results';
+      @media(max-width: ${width}px){
+        grid-template-columns: 96vw;
+        grid-template-rows: 40px 43px auto;
+        grid-template-areas:
+            'filter'
+            'search'
+            'results';
+        grid-gap: 5px;
+        position: absolute;
+        height: auto;
+      }
     }
     
     .search-title {
@@ -35,6 +91,9 @@ function CourseContainer(props) {
       grid-area: title;
       display: flex;
       align-items: center;
+      @media(max-width: ${width}px){
+        display: none;
+      }
     }
     
     .search-category {
@@ -47,12 +106,19 @@ function CourseContainer(props) {
       padding: 1rem 1rem;
       border-radius: 0.5rem;
       border: none;
+      @media(max-width: ${width}px){
+        padding: 0px 12px;
+      }
     }
     
     .search-results {
       grid-area: results;
       overflow-x: hidden;
       overflow-y: auto;
+      @media(max-width: ${width}px){
+        overflow-y: scroll;
+        // max-height: 76vh;
+      }
     }
 
     .search-container {
@@ -61,12 +127,18 @@ function CourseContainer(props) {
       grid-gap: 1rem;
       grid-template-rows: auto;
       grid-area: search;
+      @media(max-width: ${width}px){
+        grid-template-columns: 4fr auto;
+      }
     }
     
     #search-container {
       padding: 2rem 1rem;
       border: 1.5px solid #dfdad8;
       box-shadow: none;
+      @media(max-width: ${width}px){
+          height: 45px;
+      }
     }
 
     .course-filter {
@@ -83,10 +155,27 @@ function CourseContainer(props) {
       float: right;
       outline: none;
     }
+
+    .course-filter select:focus {
+      @media(max-width: ${width}px){
+        position: relative;
+        top: 155px;
+        background:white;
+        border-radius: 6px;
+
+      }
+    }
+
     
     .form {
       display: inline;
     }
+
+    .fas.fa-search{
+      font-size: 2.5rem;
+    }
+
+
   `;
 
   // listen for new search requests and perform a new search when one arrives
@@ -158,6 +247,7 @@ function CourseContainer(props) {
       courses: courses,
       filter: filter
     });
+    openModal();
   }
 
   // if the filter value is changed clear the error field and set the filter
@@ -165,6 +255,12 @@ function CourseContainer(props) {
     changeWarning("");
     setFilter(value);
     callSearch();
+  }
+
+  // handle mobile filter change
+  async function handleFilterChangeMobile(value) {
+    changeWarning("");
+    setFilter(value);
   }
 
   // prevent default submit behavior of form elements
@@ -178,6 +274,18 @@ function CourseContainer(props) {
     props.onNewWarning(text);
   }
 
+  // show modal
+  function openModal(){
+    setIsOpen(true);
+  }
+
+  // close modal
+  function closeModal(){
+    setIsOpen(false);
+  }
+
+
+
   return (
     <div id="search" css={style}>
       <div className="search-title">Search</div>
@@ -185,20 +293,70 @@ function CourseContainer(props) {
         <form className="form my-2 my-lg-0" onSubmit={submitHandler}>
           <input id="search-container" className="form-control mr-sm-2" type="text" placeholder="Search for courses..." name="search"/>
         </form>
-        <button className="search-button" type="submit" onClick={callSearch}>Search</button>
+
+        <button className="search-button" type="submit" onClick={callSearch}>
+          <Desktop>
+            Search
+          </Desktop>
+          <Mobile>
+            <i class="fas fa-search"></i>
+          </Mobile>
+        </button>
       </div>
-      <form className="course-filter form-group">
-        <FilterBar value={filter} onValueChange={handleFilterChange}/>
-      </form>
-      <ErrorMessage text={props.warning} />
-      <div className="search-results">
-        {courses.length > 0 ? courses.map(c =>
-          <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
-            description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
-        ) : (
-          <div>Search for courses...</div>
-        )}
+
+      <Desktop>
+        <form className="course-filter form-group">
+          <FilterBar value={filter} onValueChange={handleFilterChange}/>
+        </form>
+      </Desktop>
+      <Mobile>
+        <form className="course-filter form-group">
+          <FilterBar value={filter} onValueChange={handleFilterChangeMobile}/>
+        </form>
+      </Mobile>
+
+      <Desktop>
+        <ErrorMessage text={props.warning} />
+      </Desktop>
+
+      {/* Mobile version for pop up modal for table containing search course result */}
+      <Mobile>
+        <div className="search-results">
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={ModalStyles}
+        >
+            <button id="closeButton" onClick={closeModal} style={ModalStyles.button}>
+              <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
+            </button>
+            <div style={ModalStyles.resultTable}>
+              {courses.length > 0 ? courses.map(c =>
+              <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+                description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
+            ) : (
+              <ErrorMessage text={props.warning} />
+            )}
+            </div>
+        </Modal>
       </div>
+      </Mobile>
+
+      {/* Desktop version for pop up modal for table containing search course result */}
+      <Desktop>
+        <div className="search-results">
+          {courses.length > 0 ? courses.map(c =>
+            <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
+              description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
+          ) : (
+            <Desktop>
+              <div>Search for courses...</div>
+            </Desktop>
+            
+          )}
+        </div>
+      </Desktop>
+
     </div>
   );
 

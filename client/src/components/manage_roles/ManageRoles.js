@@ -1,17 +1,16 @@
 /** @jsx jsx */
 
-import {css, jsx} from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../navbar/Navbar";
 import PageSpinner from "../general/PageSpinner";
 import FindUsers from "./FindUsers";
-import SearchResults from "./SearchResults";
-import {login} from "../../utils/authService";
+import SearchResults from "./search_results/SearchResults";
+import { login } from "../../utils/authService";
 
 // manage roles page
 export default function ManageRoles() {
-
   const [loading, setLoading] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
   const [moreLoading, setMoreLoading] = useState(false);
@@ -19,17 +18,16 @@ export default function ManageRoles() {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchFields, setSearchFields] = useState({
     textValue: "*",
-    roleValue: 3
+    roleValue: 3,
   });
   const [cursor, setCursor] = useState({
     primary: "null",
-    secondary: "null"
+    secondary: "null",
   });
 
   const style = css`
-
     #user-manage-container {
-      margin: 100px 0 auto;
+      margin: auto;
       width: 100%;
     }
 
@@ -37,8 +35,7 @@ export default function ManageRoles() {
       margin: 25px auto;
       width: 100%;
     }
-
-`;
+  `;
 
   // track the state of multiple page components loading and
   // display a spinner if any part of the page is still loading
@@ -71,10 +68,9 @@ export default function ManageRoles() {
 
       // only set the search values if we are performing a new search
       if (newSearch) {
-
         setSearchFields({
           textValue: textValue,
-          roleValue: roleValue
+          roleValue: roleValue,
         });
       } else {
         textValue = searchFields.textValue;
@@ -82,7 +78,8 @@ export default function ManageRoles() {
       }
 
       // construct the request url
-      const getUrl = `/api/user/search/${textValue}/${roleValue}` +
+      const getUrl =
+        `/api/user/search/${textValue}/${roleValue}` +
         `/${cursor.primary}/${cursor.secondary}`;
       let obj = [];
 
@@ -90,7 +87,6 @@ export default function ManageRoles() {
       const results = await fetch(getUrl);
 
       if (results.ok) {
-
         // if the cursor is new then we will want to relist users
         obj = await results.json();
         if (cursor.primary === "null") {
@@ -99,7 +95,6 @@ export default function ManageRoles() {
           setUsers([...users, ...obj.users]);
         }
         setCursor(obj.nextCursor);
-
       } else {
         // we got a bad status code. Show the error
         obj = await results.json();
@@ -110,13 +105,17 @@ export default function ManageRoles() {
           login();
         }
         if (results.status === 500) {
-          setErrorMessage("An internal server error occurred. Please try again later.");
+          setErrorMessage(
+            "An internal server error occurred. Please try again later."
+          );
         }
         setUsers([]);
       }
     } catch (err) {
       // show error message if error while searching
-      setErrorMessage("An internal server error occurred. Please try again later.");
+      setErrorMessage(
+        "An internal server error occurred. Please try again later."
+      );
     }
     setUserLoading(false);
   }
@@ -128,16 +127,18 @@ export default function ManageRoles() {
 
       <div id="user-manage-container">
         <div id="user-manage-contents-container">
+          <FindUsers onSearch={(cursor) => searchUsers(cursor, true)} />
 
-          <FindUsers onSearch={cursor => searchUsers(cursor, true)}/>
-
-          <SearchResults users={users} cursor={cursor} loading={loading}
-            onLoading={load => setMoreLoading(load)} error={errorMessage}
-            onLoadMore={cursor => searchUsers(cursor, false)} />
-
+          <SearchResults
+            users={users}
+            cursor={cursor}
+            loading={loading}
+            onLoading={(load) => setMoreLoading(load)}
+            error={errorMessage}
+            onLoadMore={(cursor) => searchUsers(cursor, false)}
+          />
         </div>
       </div>
-
     </div>
   );
 }

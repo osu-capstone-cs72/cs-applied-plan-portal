@@ -6,11 +6,50 @@ import ErrorMessage from "../general/ErrorMessage";
 import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 import {login} from "../../utils/authService";
+import { Desktop, Mobile } from "../../utils/responsiveUI";
+import {SCREENWIDTH} from "../../utils/constants";
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root')
 
 // edit plan form
 function EditPlan(props) {
 
   const [warning, setWarning] = useState("");
+  const [modalIsOpen, setIsOpen] =useState(false);
+
+  const width = SCREENWIDTH.MOBILE.MAX;
+
+  const ModalStyles = {
+    overlay : {
+      background              : "rgba(0,0,0,0.5)"
+    },
+    content : {
+    position                 : "relative",
+    inset                    : "113px 0px 0px 0px",
+    border                   : "1px solid transparent",
+    background               :  "transparent",
+    padding                  : "11px 9px",
+    height                   : "80vh",
+    borderRadius             : "0px",
+    overflow                 : "visible"
+    },
+    button : {
+      background             : "#e7501c",
+      position               : "absolute",
+      top                    : "-5vh",
+      right                  : "2vw",
+      border                 : "1px solid transparent",
+      borderRadius           : "6px",
+      color                  : "white",
+      fontSize               : "4vh",
+      padding                : "0px 10px"
+    },
+    fontOfButton : {
+      position              : "relative",
+      top                   : "-14%"
+    }
+  };
 
   const style = css`
     & {
@@ -22,6 +61,12 @@ function EditPlan(props) {
       grid-template-areas: 'title'
                           'table'
                           'submit';
+      @media(max-width: ${width}px){
+        height: 98%;
+        overflow: auto;
+        grid-template-columns: auto;
+
+      }
     }
     
     #title {
@@ -37,6 +82,11 @@ function EditPlan(props) {
       font-weight: bold;
       border-radius: 0.5rem;
       border: 1.5px solid #dfdad8;
+      @media(max-width: ${width}px){
+          width: 75vw;
+          height: 45px;
+          max-width: 72%;
+      }
     }
     
     #title-credits {
@@ -47,6 +97,11 @@ function EditPlan(props) {
       grid-template-rows: auto auto;
       text-align: center;
       font-weight: bold;
+      @media(max-width: ${width}px){
+          margin: 0px 10px;
+          width: 32%;
+      }
+      
     }
     
     #credits-count {
@@ -139,6 +194,11 @@ function EditPlan(props) {
         }
         props.onLoading(false);
       }
+    }else{
+      if(Mobile){
+        openModal();
+      }
+      
     }
   }
 
@@ -188,6 +248,28 @@ function EditPlan(props) {
       setWarning(`Plan name must be between ${NAME_MIN} and ${NAME_MAX} characters.`);
       return false;
     }
+    // check that at least 1 core course option is picked
+    // if reqCourse is empty skip this check
+    if (props.reqCourse && props.reqCourse.length > 0) {
+        let hasReqCourse = false;
+        for (let i = 0; i < props.courses.length; i++) {
+            // reqCourse contain list of core course option
+            // Student must take at least one course from reqCourse list
+            for (let j = 0; j < props.reqCourse.length; j++) {
+                if (props.courses[i].courseCode === props.reqCourse[j]) {
+                    hasReqCourse = true;
+                    break;
+                }
+            }
+            if (hasReqCourse) {
+                break;
+            }
+        }
+        if (hasReqCourse === false) {
+            setWarning(`Plan must contain at least 1 course from the following list: ${props.reqCourse.join(", ")}.`);
+            return false;
+        }
+    }
     // check that the minimum amount of credits are selected
     const credits = loadCredits();
     if (credits < CREDITS_MIN) {
@@ -213,6 +295,16 @@ function EditPlan(props) {
     props.onChangePlanName(e.target.value);
   }
 
+  // show error modal
+  function openModal(){
+    setIsOpen(true);
+  }
+
+  // close error modal
+  function closeModal(){
+    setIsOpen(false);
+  }
+
   return (
     <div id="edit-container" css={style}>
       <div id="title">
@@ -222,9 +314,32 @@ function EditPlan(props) {
           value={props.planName}
           onChange={updatePlanName}
         />
-        <div id="submit-plan-error">
-          <ErrorMessage text={warning} className="error-hide-conditional"/>
-        </div>
+
+        <Desktop>
+          <div id="submit-plan-error">
+            <ErrorMessage text={warning} className="error-hide-conditional"/>
+          </div>
+        </Desktop>
+
+        <Mobile>
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={ModalStyles}
+          >
+            <button onClick={closeModal} style={ModalStyles.button}>
+              <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
+            </button>
+            <div id="submit-plan-error">
+              <ErrorMessage text={warning} className="error-hide-conditional"/>
+            </div>
+          </Modal>
+            
+        
+        </Mobile>
+        
+
+
         <div id="title-credits">
           <div id="credits-count">{loadCredits()}</div>
           <div id="credits-label">credits</div>
@@ -243,7 +358,7 @@ function EditPlan(props) {
       )}
       {props.courses.length > 0 ? (
         <div id="submit">
-          <button id="submit-button"onClick={submitPlan}>
+          <button id="submit-button" onClick={submitPlan}>
             {props.edit ? "Save Plan" : "Submit Plan"}
           </button>
         </div>

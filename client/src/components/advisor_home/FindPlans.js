@@ -1,7 +1,8 @@
 /** @jsx jsx */
 
-import {css, jsx} from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 import PropTypes from "prop-types";
+import { SCREENWIDTH, MOBILE_WIDTH, BOX_SHADOW_CARD } from "../../utils/constants";
 
 // search form for plans
 function FindPlans(props) {
@@ -11,7 +12,7 @@ function FindPlans(props) {
     & {
       padding: 10px;
       border-radius: 0.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: ${BOX_SHADOW_CARD};
       background: white;
       margin: 25px auto;
       width: 50%;
@@ -60,6 +61,16 @@ function FindPlans(props) {
       padding: 1rem 1rem;
       flex: 100%;
     }
+
+    #select-status {
+      background-color: white;
+    }
+
+    @media screen and (max-width: ${SCREENWIDTH.MOBILE.MAX}px) {
+      & {
+        width: ${MOBILE_WIDTH};
+      }
+    }
     
   `;
 
@@ -68,7 +79,6 @@ function FindPlans(props) {
 
     // prevent the default behavior of the form button
     e.preventDefault();
-
     // perform a new search for plans
     const newCursor = {
       primary: "null",
