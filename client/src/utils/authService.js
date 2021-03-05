@@ -66,11 +66,15 @@ export function logout() {
   document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // redirect to the CAS logout page
-  const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-dev";
+  // const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-dev";
+  const hostname = (process.env.NODE_ENV === ENV.PRODUCTION)
+    ? "login.oregonstate.edu"
+    : "login-int.iam.oregonstate.edu"
+
   window.location.href = url.format({
     protocol: "https",
-    hostname: "login.oregonstate.edu",
-    pathname: `/${casIdp}/profile/cas/logout`,
+    hostname: hostname,
+    pathname: `idp/profile/cas/logout`,
   });
 
 }
@@ -85,11 +89,13 @@ export function login() {
   }
   const thisHost = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`;
   const protocol = (process.env.NODE_ENV === ENV.PRODUCTION) ? "https" : "http";
-  const casIdp = (process.env.NODE_ENV === ENV.PRODUCTION) ? "idp" : "idp-dev";
+  const hostname = (process.env.NODE_ENV === ENV.PRODUCTION)
+    ? "login.oregonstate.edu"
+    : "login-int.iam.oregonstate.edu"
   window.location.href = url.format({
     protocol: "https",
-    hostname: "login.oregonstate.edu",
-    pathname: `/${casIdp}/profile/cas/login`,
+    hostname: hostname,
+    pathname: "idp/profile/cas/login",
     // callback URL for CAS
     query: {
       service: url.format({
