@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {css, jsx} from "@emotion/core";
 import { Mobile,Desktop } from "../../utils/responsiveUI";
 import {SCREENWIDTH} from "../../utils/constants";
+import ErrorMessage from "../general/ErrorMessage";
 
 // a single course description
 function Course(props) {
@@ -18,7 +19,7 @@ function Course(props) {
       border-radius: 0.5rem;
       margin-right: 1rem;
       @media(max-width: ${width}px){
-        
+        margin-right: 0;
       }
     }
 
@@ -121,6 +122,7 @@ function Course(props) {
 
   return (
     <div className="course" css={style}>
+      
       <details>
         <summary>
           <div className="course-title">{props.courseName}
@@ -170,5 +172,6 @@ Course.propTypes = {
   description: PropTypes.string,
   prerequisites: PropTypes.string,
   restriction: PropTypes.number,
-  onAddCourse: PropTypes.func
+  onAddCourse: PropTypes.func,
+  warning: PropTypes.string
 };

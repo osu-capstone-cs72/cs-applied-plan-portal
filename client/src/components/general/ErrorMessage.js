@@ -2,14 +2,24 @@
 
 import {css, jsx} from "@emotion/core";
 import PropTypes from "prop-types";
+import {SCREENWIDTH} from "../../utils/constants";
+
 
 // generic error message container
 function ErrorMessage(props) {
 
+  const width = SCREENWIDTH.MOBILE.MAX;
   const style = css`
 
     & {
       grid-area: warn;
+      @media(max-width: ${width}px){
+        position: relative;
+        top: -3%;
+        margin: 0 2%;
+        width: 75vw;
+        min-height: 8vh;
+      }
     }
 
     .error-message, .hidden-error-message {
@@ -18,6 +28,9 @@ function ErrorMessage(props) {
       background: var(--color-yellow-50);
       border: 1px solid var(--color-yellow-300);
       color: var(--color-yellow-800);
+      
+
+      
     }
 
     .error-message p, .hidden-error-message p {

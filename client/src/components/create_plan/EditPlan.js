@@ -24,32 +24,40 @@ function EditPlan(props) {
     overlay : {
       background              : "rgba(0,0,0,0.5)"
     },
-    content : {
-    position                 : "relative",
-    inset                    : "113px 0px 0px 0px",
-    border                   : "1px solid transparent",
-    background               :  "transparent",
-    padding                  : "11px 9px",
-    height                   : "80vh",
-    borderRadius             : "0px",
-    overflow                 : "visible"
-    },
-    button : {
-      background             : "#e7501c",
-      position               : "absolute",
-      top                    : "-5vh",
-      right                  : "2vw",
-      border                 : "1px solid transparent",
-      borderRadius           : "6px",
-      color                  : "white",
-      fontSize               : "4vh",
-      padding                : "0px 10px"
-    },
-    fontOfButton : {
-      position              : "relative",
-      top                   : "-14%"
-    }
-  };
+     content : {
+    position             : "relative",
+    inset                : "103px 0px 0px 0px",
+    border               : "1px solid transparent",
+    background           :  "transparent",
+    margin               : "0px",
+    padding              : "0px",
+    height               : "80vh",
+    borderRadius         : "0px",
+    overflow             : "visible"
+  },
+  button : {
+    background            : "#e7501c",
+    position              : "relative",
+    top                   : "-3vh",
+    border                : "1px solid transparent",
+    borderRadius          : "6px",
+    color                 : "white",
+    fontSize              : "3rem",
+    padding               : "0px 10px",
+    margin                : "1% 4%",
+    float                 : "right"
+
+  },
+  fontOfButton : {
+    position              : "relative",
+    top                   : "-14%"
+  }, 
+  submitPlanError : {
+    position              : "relative",
+    top                   : "-3%",
+    width                 : "75vw"
+  }
+};
 
   const style = css`
     & {
@@ -65,7 +73,7 @@ function EditPlan(props) {
         height: 98%;
         overflow: auto;
         grid-template-columns: auto;
-
+        padding: 0px 5px 0px 5px;
       }
     }
     
@@ -128,6 +136,11 @@ function EditPlan(props) {
     #submit-plan-error {
       margin: 0 auto;
       text-align: center;
+      @media(max-width: ${width}px){
+        position: relative;
+        top: -3%;
+        width: 75vw;;
+      }
     }
 
     #submit-plan-error div {
@@ -330,7 +343,7 @@ function EditPlan(props) {
             <button onClick={closeModal} style={ModalStyles.button}>
               <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
             </button>
-            <div id="submit-plan-error">
+            <div id="submit-plan-error" style={ModalStyles.submitPlanError}>
               <ErrorMessage text={warning} className="error-hide-conditional"/>
             </div>
           </Modal>
