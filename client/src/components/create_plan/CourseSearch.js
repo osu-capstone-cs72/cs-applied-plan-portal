@@ -31,24 +31,27 @@ function CourseContainer(props) {
   },
   content : {
     position             : "relative",
-    inset                : "113px 0px 0px 0px",
+    inset                : "103px 0px 0px 0px",
     border               : "1px solid transparent",
-    background          :  "transparent",
-    padding              : "11px 9px",
+    background           :  "transparent",
+    margin               : "0px",
+    padding              : "0px",
     height               : "80vh",
     borderRadius         : "0px",
     overflow             : "visible"
   },
   button : {
     background            : "#e7501c",
-    position              : "absolute",
-    top                   : "-5vh",
-    right                  : "2vw",
+    position              : "relative",
+    top                   : "-3vh",
     border                : "1px solid transparent",
     borderRadius          : "6px",
     color                 : "white",
-    fontSize              : "4vh",
-    padding               : "0px 10px"
+    fontSize              : "3rem",
+    padding               : "0px 10px",
+    margin                : "1% 4%",
+    float                 : "right"
+
   },
   fontOfButton : {
     position              : "relative",
@@ -56,8 +59,15 @@ function CourseContainer(props) {
   },
   resultTable : {
     overflow              : "scroll",
-    height                : "76vh"
+    height                : "87%",
+    position              : "relative",
+    width                 : "93vw",
+    margin                : "0 3%"
 
+  },
+  errorMessage : {
+    position : "relative",
+    top : "-4%"
   }
 };
 
@@ -82,6 +92,7 @@ function CourseContainer(props) {
         grid-gap: 5px;
         position: absolute;
         height: auto;
+        padding: 0px 5px 0px 5px;
       }
     }
     
@@ -166,7 +177,12 @@ function CourseContainer(props) {
       }
     }
 
-    
+    #errorMessage{
+       @media(max-width: ${width}px){
+         color:red;
+       }
+    }
+
     .form {
       display: inline;
     }
@@ -327,15 +343,27 @@ function CourseContainer(props) {
           onRequestClose={closeModal}
           style={ModalStyles}
         >
-            <button id="closeButton" onClick={closeModal} style={ModalStyles.button}>
-              <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
-            </button>
+            {/* <div style={ModalStyles.errorMessage}> */}
+              
+              <button id="closeButton" onClick={closeModal} style={ModalStyles.button}>
+                {/* <i class="far fa-times-circle" style={ModalStyles.fontOfButton}></i> */}
+                <i class="fas fa-times" style={ModalStyles.fontOfButton}></i>
+              </button>
+              <ErrorMessage text={props.warning} />
+            {/* </div> */}
+             
+
+
             <div style={ModalStyles.resultTable}>
+             
               {courses.length > 0 ? courses.map(c =>
               <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
                 description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
-            ) : (
-              <ErrorMessage text={props.warning} />
+            ) 
+            : (
+            <Desktop>
+              <div>Search for courses...</div>
+            </Desktop>
             )}
             </div>
         </Modal>
@@ -349,10 +377,7 @@ function CourseContainer(props) {
             <Course key={c.courseId} courseId={c.courseId} courseCode={c.courseCode} courseName={c.courseName} credits={c.credits}
               description={c.description} prerequisites={c.prerequisites} restriction={c.restriction} onAddCourse={e => props.onAddCourse(e)}/>
           ) : (
-            <Desktop>
               <div>Search for courses...</div>
-            </Desktop>
-            
           )}
         </div>
       </Desktop>

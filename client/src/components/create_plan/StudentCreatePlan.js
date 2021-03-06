@@ -57,7 +57,6 @@ export default function StudentCreatePlan() {
               'plan ';
           grid-template-rows: 81px 94px auto;
           grid-template-columns: auto;
-          padding: 0px 5px 0px 5px;
           grid-row-gap: 0;
       }
     }

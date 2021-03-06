@@ -10,7 +10,7 @@ import PageSpinner from "../general/PageSpinner";
 import PageInternalError from "../general/PageInternalError";
 import {statusText} from "../../utils/renderStatus";
 import PlanSelect from "./PlanSelect";
-
+import {SCREENWIDTH} from "../../utils/constants";
 import {css, jsx} from "@emotion/core";
 
 
@@ -22,7 +22,8 @@ function StudentHome() {
   const [loading, setLoading] = useState(true);
   const [showPlans, setShowPlans] = useState(false);
 
-  const responSize = "max-width: 860px";
+  const width = SCREENWIDTH.MOBILE.MAX;
+  const responSize = "max-width: "+ width + "px";
 
   const style = css`
 
@@ -68,6 +69,11 @@ function StudentHome() {
       background-size: 3rem 3rem;
       background-repeat: no-repeat;
       background-position: center;
+      @media(${responSize}){
+          position: absolute;
+          bottom: 5%;
+          right:  5%;
+      }
     }
 
     .table-item-title {
@@ -120,6 +126,9 @@ function StudentHome() {
     table.student-plans-table tbody tr td {
       cursor: pointer;
       padding: 2rem 2rem;
+      @media(${responSize}){
+        padding: 1rem 0;
+      }
     }
 
     /* plan title */
