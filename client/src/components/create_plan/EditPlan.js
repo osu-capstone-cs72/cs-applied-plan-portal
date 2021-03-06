@@ -74,6 +74,7 @@ function EditPlan(props) {
         overflow: auto;
         grid-template-columns: auto;
         padding: 0px 5px 0px 5px;
+
       }
     }
     

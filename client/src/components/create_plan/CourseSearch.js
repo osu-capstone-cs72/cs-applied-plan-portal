@@ -51,7 +51,6 @@ function CourseContainer(props) {
     padding               : "0px 10px",
     margin                : "1% 4%",
     float                 : "right"
-
   },
   fontOfButton : {
     position              : "relative",
@@ -63,6 +62,8 @@ function CourseContainer(props) {
     position              : "relative",
     width                 : "93vw",
     margin                : "0 3%"
+
+
 
   },
   errorMessage : {
