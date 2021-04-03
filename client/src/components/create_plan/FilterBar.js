@@ -27,9 +27,9 @@ function FilterBar(props) {
   // handle responsive onchange for filter
    function handleChangeMobile(event) {
       props.onValueChange(event.target.value);
-      var select = document.querySelector("#select");
-      select.size=1;
-      select.blur();
+      // var select = document.querySelector("#select");
+      // select.size=1;
+      // select.blur();
 
   }
 
@@ -51,8 +51,8 @@ function FilterBar(props) {
 
       <Mobile>
         <select id="select"
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          // onFocus={handleFocus}
+          // onBlur={handleBlur}
           value={props.value} 
           onChange={handleChangeMobile}
         >
