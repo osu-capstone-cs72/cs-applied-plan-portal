@@ -170,10 +170,10 @@ function CourseContainer(props) {
 
     .course-filter select:focus {
       @media(max-width: ${width}px){
-        position: relative;
-        top: 155px;
-        background:white;
-        border-radius: 6px;
+        // position: relative;
+        // top: 155px;
+        // background:white;
+        // border-radius: 6px;
 
       }
     }
